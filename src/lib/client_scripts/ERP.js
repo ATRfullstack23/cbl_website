@@ -2,134 +2,23 @@
  * Created by Akhil Sekharan on 12/4/13.
  */
 
-function ERP(config, options) {
-    var self = this;
-    self.windowWidth = window.screen.width;
-    self.windowHeigth = window.screen.height;
-    var script = $(document.createElement('script')).attr({type: "text/javascript", src: "/socket.io/socket.io.js"});
-    script.appendTo(document.body);
-    self.config = config;
-    self.user = options.user;
-    self.id = config.appSettings.id;
-    self.lookUpDataConfig = {};
-    self.initialize();
-    return self;
-}
-ERP.KEY_CODES = {
-    CTRL: 17,
-    ENTER: 13,
-    ESC: 27,
-    RIGHT: 39,
-    LEFT: 37,
-    UP: 38,
-    DOWN: 40,
-    ALT: 18,
-    MINUS: 189,
-    EQUAL: 187
-}
-ERP.DEVICE_ORIENTATIONS = {
-    PORTRAIT: "portrait",
-    LANDSCAPE: "landscape"
-}
-ERP.DEVICE_TYPES = {
-    MOBILE: "mobile",
-    TABLET: "tablet",
-    PC: "pc"
-}
+export class ERP{
 
-ERP.prototype = {
-    selectors: {
-        bodyWrapper: "#body_wrapper",
-        documentWrapper: "#documentWrapper",
-        titleElement: "#header_title_message",
-        applicationDisplayNameFooterElement: "#applicationDisplayName",
-        moduleNavPointerContainer: "#documentWrapper #moduleNavPointerContainer",
-        reportsNavPointerContainer: "#reportsNavPointerContainer",
-        reportsContainer: "#reportsContainer",
-        reportsContentContainer: "#reportsContentContainer",
-        showReportsButton: "#showReports",
-        selectThemeChooser: "#themeChooser",
-        switchStyle: "#switchStyle",
-        logOutButton: "#logOutButton",
-        reportBugButton: "#reportBugButton",
-        contentContainer: "#body_wrapper > #content",
-        applicationSettingsContainer: "#applicationSettings",
-        appSettingsIcon: "#appSettingsIcon",
-        profileButton: "#profileButton",
-        preferencesButton: "#preferencesButton",
-        preferencesIcon: "#preferencesIcon",
-        sortableNavButton: "#sortableNavButton",
-        logoutButton: "#logoutButton",
-        appSettingsBackButton: "#appSettingsBackButton",
-        profileWindow: "#profileWindow",
-        preferencesWindow: "#preferencesWindow",
-        sortableNavWindow: "#sortableNavWindow",
-        settingModulesContentContainer: "#settingModulesContentContainer",
-        settingModulesNavPointerContainer: "#settingModulesNavPointerContainer",
-        userName: "#userName",
-        pdf: "#pdf",
-        buttonSortingWindow: "#buttonSortingWindow",
-        buttonsSortingWindowButton: "#buttonsSortingWindowButton",
+    constructor(config, options) {
+        var self = this;
+        self.windowWidth = window.screen.width;
+        self.windowHeigth = window.screen.height;
+        self.config = config;
+        self.user = options.user;
+        self.id = config.appSettings.id;
+        self.lookUpDataConfig = {};
+        // var script = $(document.createElement('script')).attr({type: "text/javascript", src: "/socket.io/socket.io.js"});
+        // script.appendTo(document.body);
+        self.initialize();
+        return self;
+    }
 
-        saveModuleNavigationMode: "#saveModuleNavigationMode",
-        moduleNavigationModeForMobile: "#moduleNavigationModeForMobile",
-        moduleNavigationModeForTablet: "#moduleNavigationModeForTablet",
-        moduleNavigationModeForPC: "#moduleNavigationModeForPC",
-
-        saveDefaultModule: "#saveDefaultModule",
-        defaultModuleForMobile: "#defaultModuleForMobile",
-        defaultModuleForTablet: "#defaultModuleForTablet",
-        defaultModuleForPC: "#defaultModuleForPC",
-
-        saveMiscSettings: "#saveMiscSettings",
-        applicationFontSize: "#applicationFontSize",
-
-        saveFloatingReportsSelection: "#saveFloatingReportsSelection",
-        floatingReportsCheckboxes: "#floatingReportsCheckboxes",
-
-        bugReportContainer: "#bugReportContainer",
-        reportsTitle:"#reportsTitle",
-
-        buttonsSortingWindowIcon: "#buttonsSortingWindowIcon",
-        sortableNavIcon: "#sortableNavIcon",
-        appSettingsBackButtonIcon: "#appSettingsBackButtonIcon",
-        directActionButton: "#directActionButton",
-
-        leftAlignReportNavContainer: "#leftAlignReportNavContainer"
-    },
-    constants: {
-        container: {
-            "class": "application"
-        },
-        reportsContainer:{
-            "class": "reports-container"
-        },
-        accountDetailsContainer: {
-            "class": "account-details-container"
-        },
-        visibilitySettingsContainer: {
-            "class": "visibility-settings-container"
-        },
-        addModuleGroup: {
-            "class": "add-module-group"
-        },
-        moduleGroupMainContainer: {
-            "class" : "module-group-main-container"
-        },
-        moduleGroupContainer: {
-            "class" : "module-group-container"
-        },
-        moduleGroupTitleDiv: {
-            "class" : "module-group-title-div"
-        },
-        groupCloseButtons: {
-            "class" : "group-close-buttons"
-        },
-        popUpMenu: {
-            "class" : "pop-up-menu"
-        }
-    },
-    getLocalStorageLookUps: function(){
+    getLocalStorageLookUps(){
         var self = this;
         try{
             var lookUpDataConfig = JSON.parse(localStorage[self.id]);
@@ -140,8 +29,8 @@ ERP.prototype = {
         }
 
         return self;
-    },
-    addLookUpsToLocalStorage: function(){
+    }
+    addLookUpsToLocalStorage(){
         var self = this;
         var localStorageName = '';
         self.forEachModule(function(module){
@@ -170,8 +59,8 @@ ERP.prototype = {
         });
         localStorage[self.id] = JSON.stringify(self.lookUpDataConfig);
         return self;
-    },
-    initialize: function(){
+    }
+    initialize(){
         var self = this;
         if(!self.config.appSettings.idleTimeout){
             self.config.appSettings.idleTimeout = 60;
@@ -183,6 +72,8 @@ ERP.prototype = {
         self.configureSocket();
         self.initializeDeviceType();
         self.floatingReports = {};
+
+        globalElements.body.trigger('erp_initialization_started');
 
         self.notifier = new Notifier({
             container: $(document.body)
@@ -197,10 +88,22 @@ ERP.prototype = {
         };
 
         self.initializeModules().initializeReports();
+
+
+
+        globalElements.body.trigger('erp_initialization_layout_created');
+
+
         var directActionMenuOrder = self.getUserSetting('direct-action-menu-order');
         self.directActionMenu.appendDirectActionButtons(directActionMenuOrder);
         self.createElements();
+
+        var moduleNavDisplayMode = self.user.userDetails.settings.module_navigation_mode || 'dock';
+        // if(moduleNavDisplayMode == 'accordionLeft'){
+        //     moduleNavDisplayMode = 'accordionLeft';
+        // }
         self.moduleNavPointer = new Navigation({
+            id : 'moduleNavPointer',
             options: self.modules,
             order: self.user.userDetails.settings.modulesNavigationArrangementHorizontal,
             deviceType: self.deviceType,
@@ -208,17 +111,25 @@ ERP.prototype = {
             swipeClickTarget: self.elements.titleElement,
             swipeTarget: self.elements.bodyWrapper,
             parentContainers: {
-                dock: document.body,
-                "default": self.elements.moduleNavPointerContainer,
+                dock: self.elements.content,
+                "default": self.elements.content,
+                "accordionLeft": self.elements.content,
                 mobileSwipe: self.elements.documentWrapper
             },
-            displayMode: self.user.userDetails.settings.moduleNavigationModeForPC || 'default',
+            displayMode: moduleNavDisplayMode,
             onChange: function(module){
                 self.setSelectedModule(module);
             }
         }, self);
 
+
+        if(self.directActionMenu.length() == 0){
+            self.elements.directActionButton.remove();
+            self.directActionMenu.container.remove()
+        }
+
         self.setModuleNavigationPostion();
+
 
         self.reportsNavPointer = new Navigation({
             options: self.reports,
@@ -234,6 +145,8 @@ ERP.prototype = {
                 mobileSwipe: self.elements.reportsContainer,
                 "leftAlign": self.elements.leftAlignReportNavContainer
             },
+            addTitleToListItems : true,
+            enableSearch: true,
             onChange: function(report){
                 self.setSelectedReport(report);
             }
@@ -259,10 +172,15 @@ ERP.prototype = {
             }
         }, self);
 
+        if(self.settingModulesNavPointer.numberOfItems === 0){
+            self.elements.preferencesButton.parent().detach();
+        }
+
 //        self.reportsNavPointer.container.appendTo(self.elements.reportsNavPointerContainer);
-        self.bugReportManager = new BugReportManager({
-            container: self.selectors.bugReportContainer
-        }, self);
+//         self.bugReportManager = new BugReportManager({
+//             container: self.selectors.bugReportContainer
+//         }, self);
+
         self.addElementsToAppSettingsContainer();
         if(self.user.userDetails.userName === 'admin'){
             self.createVisibilitySettingsContainer();
@@ -277,7 +195,29 @@ ERP.prototype = {
         self.user.configureSocket(self.socket, self);
 
         self.elements.userName.text(self.user.userDetails.userName);
-        self.createReportsSplitLayout();
+/////////////////yathi///////////////////////
+        var currentLoginUserId = self.user.userDetails.id;
+        var userIcon = self.elements.userImage;
+        try{
+            if(self.user.users[currentLoginUserId]){
+                var extensionArr = self.user.users[currentLoginUserId].image.split('.');
+                var extension = extensionArr[extensionArr.length-1];
+                var userIcon = self.elements.userImage;
+                userIcon.css({background: "url('uploads/_users/_users/"+currentLoginUserId+"_image."+extension+"')no-repeat", "background-size": "100%","height":"30px","width":"30px"});
+            }
+            else{
+                userIcon.css({background: "url('uploads/_users/_users/"+currentLoginUserId+"_image.png')no-repeat", "background-size": "100%","height":"30px","width":"30px"});
+            }
+        }
+        catch(e){
+
+        }
+//////////////////////////////////////////////
+
+        // self.createReportsSplitLayout();
+
+        self.initializeDashboardManager();
+        self.initializeTopNavigation();
 
         self.initializeDefaultModule();
         self.initializeDefaultSettingModule();
@@ -307,9 +247,9 @@ ERP.prototype = {
         });
         document.title = self.displayName;
 
-        setTimeout(function(){
-            self.setDefaultModule();
-        }, 100);
+        //setTimeout(function(){
+        //self.setDefaultModule();
+        //}, 100);
 
 //        self.setDefaultTheme();
 
@@ -324,10 +264,22 @@ ERP.prototype = {
         self.createBarcodeContainerInFormView();
         self.initializeHelpBox();
         self.initializeContextMenu();
+
+
+        if(self.dashboardManager.isEmpty()){
+            self.removeTopLevelNavigationItem('dashboard');
+            self.setSelectedTopNavigationMode('modules');
+        }
+        else{
+            self.setSelectedTopNavigationMode('dashboard');
+        }
+
+        globalElements.body.trigger('erp_initialization_complete');
+
         return self;
-    },
+    }
 /////////////////////////////////////////yathi//////////////////////////////////////////////////
-    createEasyAccessingReports: function(){
+    createEasyAccessingReports(){
         var self = this;
         self.forEachReport(function(report){
             report.forEachSubReport(function(subReport){
@@ -349,37 +301,334 @@ ERP.prototype = {
             });
         });
         return self;
-    },
+    }
 ///////////////////////////////////////////////////////////////////////////
-    initializeHelpBox: function(){
+    initializeHelpBox(){
         var self = this;
         self.helpBox = new HelpBox(self);
         self.elements.documentWrapper.append(self.helpBox.container);
         return self;
-    },
-    setModuleNavigationPostion: function(){
+    }
+    setModuleNavigationPostion(){
         var self = this;
-        var position = self.getUserSetting('module_navigation_position');
-        self.moduleNavPointer.container.addClass(position || 'bottom');
-        self.elements.documentWrapper.addClass('navigationOn_'+ position || 'bottom')
+        var mode = self.getUserSetting('module_navigation_mode');
+        self.moduleNavPointer.container.addClass(mode || 'bottom');
+        self.elements.documentWrapper.addClass('navigationMode_'+ mode || 'dock')
         return self;
-    },
-    changeModuleNavigationPosition: function(position){
+    }
+    initializeDashboardManager(){
         var self = this;
-        self.saveUserSetting('module_navigation_position', position, function(data){
+
+        var config = self.user.userDetails.dashboardInfo || { items : {}};
+
+        config.groups = config.groups || [];
+        config.items = config.items || [];
+
+        if(!config.groups['1000000']){
+            config.groups = {};
+            config.groups['1000000'] = {
+                displayName : 'Home',
+                id : 1000000
+            }
+        }
+
+        //
+        //
+        //
+        // config.items.numberOfReportedBugs = {
+        //     id : 'numberOfReportedBugs',
+        //     displayName : 'Bugs Reported',
+        //     type : 'statusCard',
+        //     groupId : 'home',
+        //     mainValue : {
+        //         textColor : '#FF5722',
+        //         dataSource : {
+        //             targets : {
+        //                 "feedback.feedback" : {
+        //                     moduleId : 'feedback',
+        //                     subModuleId : 'feedback',
+        //                     databaseName : 'feedback',
+        //                     isPrimary : true,
+        //                     whereCondition : {
+        //                         "condition": "AND",
+        //                         "rules": [
+        //                             {
+        //                                 "id": "type",
+        //                                 "field": "type",
+        //                                 "type": "string",
+        //                                 "input": "text",
+        //                                 "operator": "equal",
+        //                                 "value": "Report Bug"
+        //                             }
+        //                         ],
+        //                         "valid": true
+        //                     }
+        //                 },
+        //                 compiledSql : "select count(f.id) as count from feedback f where type = 'Report Bug'"
+        //             }
+        //         },
+        //     },
+        //     infoText : 'bugs'
+        // };
+        //
+        // config.items.numberOfRequestedMemes = {
+        //     id : 'numberOfReportedBugs',
+        //     displayName : 'Requested Memes',
+        //     type : 'statusCard',
+        //     groupId : 'home',
+        //     mainValue : {
+        //         textColor : '#607D8B',
+        //         dataSource : {
+        //             targets : {
+        //                 "feedback.feedback" : {
+        //                     moduleId : 'feedback',
+        //                     subModuleId : 'feedback',
+        //                     databaseName : 'feedback',
+        //                     isPrimary : true,
+        //                     whereCondition : {
+        //                         "condition": "AND",
+        //                         "rules": [
+        //                             {
+        //                                 "id": "type",
+        //                                 "field": "type",
+        //                                 "type": "string",
+        //                                 "input": "text",
+        //                                 "operator": "equal",
+        //                                 "value": "Request Meme"
+        //                             }
+        //                         ],
+        //                         "valid": true
+        //                     }
+        //                 },
+        //                 compiledSql : "select count(f.id) as count from feedback f where type = 'Request Meme'"
+        //             }
+        //         },
+        //     },
+        //     infoText : 'requests'
+        // };
+        //
+        // config.items.numberOfSuggestions = {
+        //     id : 'numberOfSuggestions',
+        //     displayName : 'Suggestions',
+        //     type : 'statusCard',
+        //     groupId : 'home',
+        //     mainValue : {
+        //         textColor : '#795548',
+        //         dataSource : {
+        //             targets : {
+        //                 "feedback.feedback" : {
+        //                     moduleId : 'feedback',
+        //                     subModuleId : 'feedback',
+        //                     databaseName : 'feedback',
+        //                     isPrimary : true,
+        //                     whereCondition : {
+        //                         "condition": "AND",
+        //                         "rules": [
+        //                             {
+        //                                 "id": "type",
+        //                                 "field": "type",
+        //                                 "type": "string",
+        //                                 "input": "text",
+        //                                 "operator": "equal",
+        //                                 "value": "Suggestion"
+        //                             }
+        //                         ],
+        //                         "valid": true
+        //                     }
+        //                 },
+        //                 compiledSql : "select count(f.id) as count from feedback f where type = 'Suggestion'"
+        //             }
+        //         },
+        //     },
+        //     infoText : 'items'
+        // };
+        //
+        // config.items.latestFiveFeedback = {
+        //     id : 'latestFiveFeedback',
+        //     displayName : 'Latest 5 Feedback',
+        //     type : 'table',
+        //     groupId : 'home',
+        //     tableDataSource : {
+        //         "feedback.feedback" : {
+        //             moduleId : 'feedback',
+        //             subModuleId : 'feedback',
+        //             databaseName : 'feedback',
+        //             isPrimary : true,
+        //             columns : {
+        //                 message : {
+        //                     id : 'message',
+        //                     displayName : 'Message',
+        //                     databaseName : 'message',
+        //                     type : 'multipleLine',
+        //                     dataType : "nvarchar(max)",
+        //                     index : 0,
+        //                 },
+        //                 type : {
+        //                     id : 'type',
+        //                     displayName : 'Type',
+        //                     databaseName : 'type',
+        //                     type : 'choice',
+        //                     dataType : "nvarchar(255)",
+        //                     index : 1,
+        //                 }
+        //             },
+        //             limit : {
+        //                 isEnabled : true,
+        //                 value : 5
+        //             },
+        //             whereCondition : {
+        //                 "condition": "AND",
+        //                 "rules": [
+        //                     {
+        //                         "id": "type",
+        //                         "field": "type",
+        //                         "type": "string",
+        //                         "input": "text",
+        //                         "operator": "equal",
+        //                         "value": "Report Bug"
+        //                     }
+        //                 ],
+        //                 "valid": true
+        //             }
+        //         }
+        //     },
+        //     compiledSql : "select top 5 message, type from feedback order by id desc"
+        // };
+
+
+
+
+
+        config.container = self.elements.dashboardContainer;
+        self.dashboardManager = new DashboardManager(config, self);
+
+        return self;
+    }
+    removeTopLevelNavigationItem(itemIdToRemove){
+        var self = this;
+
+        self.elements.topLevelNavigation.children('#' + itemIdToRemove).remove();
+        if(self.elements.topLevelNavigation.children().length  == 1){
+            self.elements.topLevelNavigation.hide();
+        }
+
+        return self;
+    }
+    initializeTopNavigation(){
+        var self = this;
+        var topNavigationUl = $(self.selectors.topLevelNavigation);
+        self.elements.topLevelNavigation = topNavigationUl;
+
+        topNavigationUl.on('click', 'li', function () {
+            self.setSelectedTopNavigationMode($(this).attr('id'));
+        });
+    }
+    setSelectedTopNavigationMode(newMode){
+        var self = this;
+        self.elements.topLevelNavigation.children('.selected').removeClass('selected');
+        self.elements.topLevelNavigation.children('#' + newMode).addClass('selected');
+
+        self.selectedTopNavigationMode = newMode;
+
+        switch (newMode){
+            case 'dashboard':
+                self.elements.content.addClass('hidden');
+                self.elements.reportsContainer.addClass('hidden');
+
+                self.elements.dashboardContainer.removeClass('hidden');
+                self.dashboardManager.onSetAsCurrentMainView && self.dashboardManager.onSetAsCurrentMainView();
+                break;
+            case 'reports':
+                self.elements.content.addClass('hidden');
+                self.elements.dashboardContainer.addClass('hidden');
+
+                self.elements.reportsContainer.removeClass('hidden');
+
+                if(!self.selectedReport){
+                    self.setDefaultReport();
+                }
+
+                self.onSetAsCurrentMainView && self.onSetAsCurrentMainView();
+                break;
+            case 'modules':
+                self.elements.reportsContainer.addClass('hidden');
+                self.elements.dashboardContainer.addClass('hidden');
+
+                self.elements.content.removeClass('hidden');
+                if(self.isSocketConnected){
+                    if(self.selectedModule){
+                        erp.setSelectedModule( erp.getSelectedModule() );
+                    }
+                    else{
+                        self.setDefaultModule();
+                    }
+                }
+                else{
+                    setTimeout(function () {
+                        if(self.selectedModule){
+                            erp.setSelectedModule( erp.getSelectedModule() );
+                        }
+                        else{
+                            self.setDefaultModule();
+                        }
+                    }, 1000);
+                }
+                self.onSetAsCurrentMainView && self.onSetAsCurrentMainView();
+                break;
+        }
+    }
+    onSocketConnected(){
+        var self = this;
+        self.isSocketConnected = true;
+        setTimeout(function () {
+            if(self.selectedTopNavigationMode == 'dashboard'){
+                self.dashboardManager.refreshItemsDataFromServer();
+            }
+            else if(self.selectedTopNavigationMode == 'modules'){
+                if(self.getSelectedModule() != null && self.getSelectedModule().getSelectedSubModule() != null){
+                    self.getSelectedModule().getSelectedSubModule()
+                        .filterManager.getAllFilterDataFromServer();
+                }
+            }
+        }, 1000);
+
+    }
+    onSocketDisconnected(){
+        var self = this;
+        self.isSocketConnected = false;
+    }
+
+    changeModuleNavigationPosition(newMode){
+        var self = this;
+
+        self.saveUserSetting('module_navigation_mode', newMode, function(data){
+            // if(data.success){
+            //     self.elements.documentWrapper.removeClass('navigationOn_top navigationOn_bottom navigationOn_left navigationOn_right');
+            //     self.moduleNavPointer.container.removeClass('bottom top left right')
+            //     self.moduleNavPointer.container.addClass(position);
+            //     self.elements.documentWrapper.addClass('navigationOn_'+position)
+            // }
+            // else{
+            //     self.notifier.showErrorNotification('Error In Changing Navigation Position')
+            // }
+
             if(data.success){
-                self.elements.documentWrapper.removeClass('navigationOn_top navigationOn_bottom navigationOn_left navigationOn_right');
-                self.moduleNavPointer.container.removeClass('bottom top left right')
-                self.moduleNavPointer.container.addClass(position);
-                self.elements.documentWrapper.addClass('navigationOn_'+position)
+                // self.elements.documentWrapper.removeClass('dock');
+                self.elements.documentWrapper.removeClass('navigationMode_accordionLeft');
+                self.elements.documentWrapper.removeClass('navigationMode_dock');
+
+                self.elements.documentWrapper.addClass('navigationMode_'+newMode);
+                self.moduleNavPointer.setDisplayMode(newMode);
+
             }
             else{
-                self.notifier.showErrorNotification('Error In Changing Navigation Position')
+                self.notifier.showErrorNotification('Error In Changing Navigation Position');
             }
-        })
+        });
+
         return self;
-    },
-    initializeContextMenu: function(){
+    }
+    initializeContextMenu(){
         var self = this;
         if(self.deviceType != ERP.DEVICE_TYPES.MOBILE){
             self.contextMenu = new ContextMenu({
@@ -482,9 +731,9 @@ ERP.prototype = {
         }
 
         return self;
-    },
+    }
 
-    createBarcodeContainerInFormView: function(){
+    createBarcodeContainerInFormView(){
         var self = this;
         self.forEachModule(function(module){
             module.forEachSubModule(function(subModule){
@@ -498,30 +747,34 @@ ERP.prototype = {
             })
         })
         return self;
-    },
-    initializeSocketIO: function(){
+    }
+    initializeSocketIO(){
         var self = this;
         var script = document.createElement('script');
         script.src = '/socket.io/socket.io.js';
         script.id = 'socket_io';
         $('#socket_io').remove();
         document.body.appendChild(script)
-    },
-    initializeMiscSettings: function(){
+    }
+    initializeMiscSettings(){
         var self = this;
         var settings = self.user.userDetails.settings || {};
         $(document.body).addClass((settings.applicationFontSize || 'small') + 'FontSize');
         return self;
-    },
-    initializeDefaultSettingModule: function(){
+    }
+    initializeDefaultSettingModule(){
         var self = this;
         var defaultModule = Object.keys(self.settingModules)[0];
         if(defaultModule){
             self.defaultSettingModule = self.settingModules[defaultModule];
         }
         return self;
-    },
-    initializeDefaultModule: function(){
+    }
+    get isMobileDevice(){
+        var self = this;
+        return self.deviceType == ERP.DEVICE_TYPES.MOBILE;
+    }
+    initializeDefaultModule(){
         var self = this;
         var settings = self.user.userDetails.settings;
         var defaultModule = '';
@@ -554,8 +807,8 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    initializeDeviceType: function(){
+    }
+    initializeDeviceType(){
         var self = this;
         if( window.screen.width <= 480 ) {
             self.deviceType = ERP.DEVICE_TYPES.MOBILE;
@@ -574,14 +827,14 @@ ERP.prototype = {
         document.body.classList.add(self.deviceType);
 //        self.container.addClass(self.deviceType);
         return self;
-    },
-    initializePCUIElements: function(){
+    }
+    initializePCUIElements(){
         var self = this;
         self.elements.titleElement.text(self.appSettings.displayName);
         self.elements.titleElement.text(self.appSettings.displayName);
         return self;
-    },
-    initializeDeviceOrientationType: function(){
+    }
+    initializeDeviceOrientationType(){
         var self = this;
         switch(self.deviceOrientation){
             case ERP.DEVICE_ORIENTATIONS.PORTRAIT:
@@ -597,8 +850,8 @@ ERP.prototype = {
         document.body.classList.remove(ERP.DEVICE_ORIENTATIONS.LANDSCAPE);
         document.body.classList.add(self.deviceOrientation);
         return self;
-    },
-    destroy: function(){
+    }
+    destroy(){
         var self = this;
         self.elements.reportsContentContainer.find('div').each(function(){
             $(this).remove();
@@ -638,8 +891,8 @@ ERP.prototype = {
         self.elements.sortableNavWindow.hide();
 
         return self;
-    },
-    addElementsToAppSettingsContainer: function(){
+    }
+    addElementsToAppSettingsContainer(){
         var self = this;
         if(self.user.userDetails.userName === 'admin'){
             var adminDiv = $(document.createElement('div')).attr(({id: "adminWindow", class: "hide-settings-window"})).appendTo(document.body);
@@ -684,8 +937,8 @@ ERP.prototype = {
             self.elements.userIcon = userIcon;
         }
         return self;
-    },
-    initializeColumnAndModuleVisibility: function(userConfig){
+    }
+    initializeColumnAndModuleVisibility(userConfig){
         var self = this;
         var config = {
             moduleVisibilityConfig:{
@@ -729,8 +982,8 @@ ERP.prototype = {
         self.moduleVisibilityManager.container.appendTo(self.elements.contentContainer);
         self.reportVisibilityManager.container.appendTo(self.elements.contentContainer);
         return self;
-    },
-    createVisibilitySettingsContainer: function(){
+    }
+    createVisibilitySettingsContainer(){
         var self = this;
         var container = $(document.createElement('div')).attr(self.constants.visibilitySettingsContainer);
         var tableContainer = $(document.createElement('div')).attr({class: "visibility-table-container"}).appendTo(container);
@@ -776,8 +1029,8 @@ ERP.prototype = {
         self.elements.visibilityWindow.append(container);
         self.elements.visibilitySettingsContainer = container;
         return self;
-    },
-    addContentsToAdministratorWindow: function(){
+    }
+    addContentsToAdministratorWindow(){
         var self = this;
         var adminWindow = self.elements.adminWindow;
         var userNamesContainer = $(document.createElement('div')).attr({class: "admin-window-user-names-container"}).appendTo(adminWindow);
@@ -790,8 +1043,8 @@ ERP.prototype = {
         var onlineUsersContainer = $(document.createElement('div')).attr({class: "online-users-container"}).appendTo(userNamesContainer);
         self.elements.onlineUsersContainer = onlineUsersContainer;
         return self;
-    },
-    addOnlineUsersToContainer: function(onlineUsers){
+    }
+    addOnlineUsersToContainer(onlineUsers){
         var self = this;
         self.elements.onlineUsersContainer.children().each(function(){
             var ele = $(this);
@@ -830,8 +1083,8 @@ ERP.prototype = {
 
         }
         return self;
-    },
-    bindUserContainerClick: function(userContainer, user,userName){
+    }
+    bindUserContainerClick(userContainer, user,userName){
         var self = this;
 
         userContainer.on('click', function(){
@@ -841,7 +1094,7 @@ ERP.prototype = {
             }
         });
         return self;
-    },
+    }
     /*bindAdminLogout: function(button, user){
      var self = this;
      button.on('click', function(){
@@ -849,7 +1102,7 @@ ERP.prototype = {
      });
      return self;
      },*/
-    addDetailsToProfileWindow: function(){
+    addDetailsToProfileWindow(){
         var self = this;
         var profileWindow = self.elements.profileWindow;
         var windowTitleContainer = $(document.createElement('div')).attr({class: "profile-window-title-container"}).appendTo(profileWindow);
@@ -866,8 +1119,8 @@ ERP.prototype = {
         self.elements.passwordContainer = passwordContainer;
         self.elements.managePasswordContainer = managePasswordContainer;
         return self;
-    },
-    managePassWordInProfileWindow: function(){
+    }
+    managePassWordInProfileWindow(){
         var self = this;
         var container = $(document.createElement('div')).attr({class: "password-changing-container"}).appendTo(self.elements.passwordContainer);
 
@@ -894,8 +1147,8 @@ ERP.prototype = {
         self.elements.passwordChangingContainer = container;
         backButton.hide();
         return self;
-    },
-    changePassword: function(){
+    }
+    changePassword(){
         var self = this;
         var newPassword = self.elements.newPassword.val();
         var reEnteredPassword = self.elements.reEnterPassWord.val();
@@ -922,15 +1175,15 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    saveModulePositionConfig: function(config){
+    }
+    saveModulePositionConfig(config){
         var self = this;
         self.saveUserSetting('modulesNavigationArrangementHorizontal', config, function(data){
 //            console.log(data)
         });
         return self;
-    },
-    addButtonsToButtonSortingWindow: function(){
+    }
+    addButtonsToButtonSortingWindow(){
         var self = this;
 
         var tableContainer = $(document.createElement('div')).attr({class: "button-sorting-window-table-container"}).appendTo(self.elements.buttonSortingWindow);
@@ -972,8 +1225,8 @@ ERP.prototype = {
         var title = $(document.createElement('div')).attr({class: "filters-title"}).text('Filters').appendTo(filtersTitleContainer);
         self.elements.filtersContainerInSortingWindow = filtersContainer;
         return self;
-    },
-    createSelectorTableForButtonSorting: function(){
+    }
+    createSelectorTableForButtonSorting(){
         var self = this;
         var table = $(document.createElement('table')).attr({class: "button-sorting-window-selector-table"});
         var tr = $(document.createElement('tr')).appendTo(table);
@@ -1016,9 +1269,9 @@ ERP.prototype = {
 //        columnVisibilityManager.elements.subModuleSelect = subModuleSelect;
 //        columnVisibilityManager.elements.columnSelect = columnSelect;
         return table;
-    },
+    }
 
-    logOut: function(){
+    logOut(){
         var self = this;
         $.ajax({
             url: "/logout",
@@ -1038,27 +1291,28 @@ ERP.prototype = {
                     var ele = $(this);
                     ele.find('div').off();
                 });
-                self.reportsSplitLayout.destroy();
+                // self.reportsSplitLayout.destroy();
                 self.user.clearUserConfig();
 
                 self.user.showLoginScreen(self.user.isDirectLogin);
                 self.initializeSocketIO();
-				self.moduleNavPointer.destroy();
+                self.moduleNavPointer.destroy();
             }
         });
-    },
-    unBindEvents: function(){
+    }
+
+    unBindEvents(){
         var self  =this;
         self.elements.logoutButton.off('click');
         self.elements.directActionButton.off('click');
         return self;
-    },
-    initializeUser: function(){
+    }
+    initializeUser(){
         var self = this;
 
         return self;
-    },
-    initializeModules: function(){
+    }
+    initializeModules(){
         var self = this;
         self.modules = {};
         self.hiddenModules = {};
@@ -1092,8 +1346,8 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    initializeFloatingWindows: function(){
+    }
+    initializeFloatingWindows(){
         var self = this;
         if(self.deviceType == ERP.DEVICE_TYPES.MOBILE){
             return self;
@@ -1115,8 +1369,8 @@ ERP.prototype = {
         }
         self.floatingReports = newFloatingReports;
         return self;
-    },
-    forEachFloatingReport: function(eachFunction, filterFunction){
+    }
+    forEachFloatingReport(eachFunction, filterFunction){
         var self = this;
         var count = 0;
         for(var key in self.floatingReports){
@@ -1131,8 +1385,8 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    createElements: function(){
+    }
+    createElements(){
         var self = this;
         self.elements = {};
         self.userDetailsContainers = {};
@@ -1156,7 +1410,9 @@ ERP.prototype = {
         self.elements.reportsNavPointerContainer  = $(self.selectors.reportsNavPointerContainer);
         self.elements.selectThemeChooser  = $(self.selectors.selectThemeChooser);
         self.elements.switchStyle  = $(self.selectors.switchStyle);
+        self.elements.dashboardContainer = $(self.selectors.dashboardContainer);
         self.elements.userName = $(self.selectors.userName);
+        self.elements.userImage= $(self.selectors.userImage);
         self.elements.content = $(self.selectors.contentContainer);
         self.elements.applicationSettingsContainer = $(self.selectors.applicationSettingsContainer);
         self.elements.appSettingsIcon = $(self.selectors.appSettingsIcon);
@@ -1169,7 +1425,6 @@ ERP.prototype = {
         self.elements.sortableNavWindow = $(self.selectors.sortableNavWindow);
         self.elements.bodyWrapper = $(self.selectors.bodyWrapper);
         self.elements.documentWrapper = $(self.selectors.documentWrapper);
-        self.elements.userName = $(self.selectors.userName);
         self.elements.pdf = $(self.selectors.pdf);
         self.elements.buttonSortingWindow = $(self.selectors.buttonSortingWindow);
 
@@ -1216,8 +1471,8 @@ ERP.prototype = {
 
         self._creation.createElements(self)
         return self;
-    },
-    setDefaultModuleValues: function(){
+    }
+    setDefaultModuleValues(){
         var self = this;
 
         var options = [];
@@ -1235,32 +1490,32 @@ ERP.prototype = {
 
 
         return self;
-    },
-    getDefaultModuleValues: function(){
+    }
+    getDefaultModuleValues(){
         var self = this;
         var obj = {};
         obj.defaultModuleForMobile = self.elements.defaultModuleForMobile.val();
         obj.defaultModuleForTablet = self.elements.defaultModuleForTablet.val();
         obj.defaultModuleForPC = self.elements.defaultModuleForPC.val();
         return obj;
-    },
-    setMiscSettingsValues: function(){
+    }
+    setMiscSettingsValues(){
         var self = this;
         var settings = self.user.userDetails.settings || {};
         self.elements.applicationFontSize.val(settings.applicationFontSize || 'small');
         return self;
-    },
-    getUserSetting: function(settingName){
+    }
+    getUserSetting(settingName){
         var self = this;
         return self.user.userDetails.settings[settingName];
-    },
-    getMiscSettingsValues: function(){
+    }
+    getMiscSettingsValues(){
         var self = this;
         var obj = {};
         obj.applicationFontSize = self.elements.applicationFontSize.val();
         return obj;
-    },
-    saveDefaultModuleValues: function(){
+    }
+    saveDefaultModuleValues(){
         var self = this;
         var obj = self.getDefaultModuleValues();
         for(var key in obj){
@@ -1268,9 +1523,9 @@ ERP.prototype = {
         }
         self.notifier.showSuccessNotification('Default Module Saved Successfully');
         return self;
-    },
+    }
 
-    saveMiscSettingsValues: function(){
+    saveMiscSettingsValues(){
         var self = this;
         var obj = self.getMiscSettingsValues();
         for(var key in obj){
@@ -1278,9 +1533,9 @@ ERP.prototype = {
         }
         self.notifier.showSuccessNotification('Settings Saved Successfully');
         return self;
-    },
+    }
 
-    setFloatingReportsSelectionValues: function(){
+    setFloatingReportsSelectionValues(){
         var self = this;
         self.elements.floatingReportsCheckboxes.empty();
         for(var key in self.floatingReports){
@@ -1305,16 +1560,16 @@ ERP.prototype = {
         }
 
         return self;
-    },
-    getFloatingReportsSelectionValues: function(){
+    }
+    getFloatingReportsSelectionValues(){
         var self = this;
         var obj = {};
         self.elements.floatingReportsCheckboxes.find('input:checkbox').each(function(){
             obj[this.value] = this.checked;
         });
         return obj;
-    },
-    saveFloatingReportsSelectionValues: function(){
+    }
+    saveFloatingReportsSelectionValues(){
         var self = this;
         var obj = self.getFloatingReportsSelectionValues();
         for(var key in obj){
@@ -1325,17 +1580,17 @@ ERP.prototype = {
         }
         self.notifier.showSuccessNotification('Floating Reports Settings Saved Successfully');
         return self;
-    },
+    }
 
-    setNavigationModeValues: function(){
+    setNavigationModeValues(){
         var self = this;
         var settings = self.user.userDetails.settings;
         self.elements.moduleNavigationModeForMobile.val(settings.moduleNavigationModeForMobile);
         self.elements.moduleNavigationModeForTablet.val(settings.moduleNavigationModeForTablet);
         self.elements.moduleNavigationModeForPC.val(settings.moduleNavigationModeForPC);
         return self;
-    },
-    getNavigationModeValues: function(){
+    }
+    getNavigationModeValues(){
         var self = this;
         var obj = {};
         obj.moduleNavigationModeForMobile = self.elements.moduleNavigationModeForMobile.val();
@@ -1343,8 +1598,8 @@ ERP.prototype = {
         obj.moduleNavigationModeForPC = self.elements.moduleNavigationModeForPC.val();
 
         return obj;
-    },
-    saveNavigationModeValues: function(){
+    }
+    saveNavigationModeValues(){
         var self = this;
         var obj = self.getNavigationModeValues();
         for(var key in obj){
@@ -1352,8 +1607,8 @@ ERP.prototype = {
         }
         self.notifier.showSuccessNotification('Navigation Modes Saved Successfully');
         return self;
-    },
-    saveButtonsOrder: function(){
+    }
+    saveButtonsOrder(){
         var self = this;
         var buttonsPosition = {
             gridViewButtonsOrder: self.createButtonsPositionJson(self.elements.buttonsContainerInSortingWindow, self.gridViewButtonsPositionConfig),
@@ -1367,8 +1622,8 @@ ERP.prototype = {
             }
         });
         return self;
-    },
-    saveGridOrder: function(subModule, json){
+    }
+    saveGridOrder(subModule, json){
         var self = this;
         var settingName = subModule.id + '_gridOrder';
         self.saveUserSetting(settingName, json, function(data){
@@ -1377,8 +1632,8 @@ ERP.prototype = {
             }
         });
         return self;
-    },
-    saveInlineFiltersOrder: function(subModule, obj){
+    }
+    saveInlineFiltersOrder(subModule, obj){
         var self = this;
         var settingName = subModule.id+ '_inlineFiltersOrder';
         self.saveUserSetting(settingName, obj, function(data){
@@ -1387,8 +1642,8 @@ ERP.prototype = {
             }
         });
         return self;
-    },
-    saveFormViewConfiguration: function(subModule, mode, obj){
+    }
+    saveFormViewConfiguration(subModule, mode, obj){
         var self = this;
         var settingName = subModule.id+ '_'+ mode + '_formViewConfiguration';
         self.saveUserSetting(settingName, obj, function(data){
@@ -1397,8 +1652,8 @@ ERP.prototype = {
 //            }
         });
         return self;
-    },
-    saveSimpleDataTableConfiguration: function(subModule, column, obj){
+    }
+    saveSimpleDataTableConfiguration(subModule, column, obj){
         var self = this;
         var settingName = subModule.id+ '_'+ column.id + '_simpleDataTableConfiguration';
         self.saveUserSetting(settingName, obj, function(data){
@@ -1407,8 +1662,8 @@ ERP.prototype = {
 //            }
         });
         return self;
-    },
-    saveUserSetting: function(settingName, settingValue, saveUserSettingCallBack){
+    }
+    saveUserSetting(settingName, settingValue, saveUserSettingCallBack){
         var self = this;
 
         var data = {
@@ -1420,8 +1675,8 @@ ERP.prototype = {
             saveUserSettingCallBack && saveUserSettingCallBack(data);
         });
         return self;
-    },
-    saveRoleSetting: function(settingName, settingValue, saveRoleSettingCallBack){
+    }
+    saveRoleSetting(settingName, settingValue, saveRoleSettingCallBack){
         var self = this;
 
         var data = {
@@ -1433,8 +1688,8 @@ ERP.prototype = {
             saveRoleSettingCallBack && saveRoleSettingCallBack(data);
         });
         return self;
-    },
-    saveRoleSettingForSpecificRole: function(roleId, settingName, settingValue, saveRoleSettingForSpecificRoleCallBack){
+    }
+    saveRoleSettingForSpecificRole(roleId, settingName, settingValue, saveRoleSettingForSpecificRoleCallBack){
         var self = this;
         var data = {
             roleId: roleId,
@@ -1446,13 +1701,12 @@ ERP.prototype = {
             saveRoleSettingForSpecificRoleCallBack && saveRoleSettingForSpecificRoleCallBack(data);
         });
         return self;
-    },
-    saveVisibilityConfig: function(){
+    }
+    saveVisibilityConfig(){
         var self = this;
         var obj = self.getVisibilityConfig();
 
         var moduleVisibilityRoles = obj[(self.visibilitySettingSelected || 'moduleVisibility')].roles;
-
         for(var key in moduleVisibilityRoles){
             var roleName = key;
             var value = moduleVisibilityRoles[key].modules || moduleVisibilityRoles[key].reports;
@@ -1461,8 +1715,8 @@ ERP.prototype = {
             });
         }
         return self;
-    },
-    getVisibilityConfig: function(){
+    }
+    getVisibilityConfig(){
         var self = this;
         var obj = {
             moduleVisibility: self.moduleVisibilityManager.moduleVisibilityJson,
@@ -1475,8 +1729,8 @@ ERP.prototype = {
 //        self.visibilityConfig.reportVisibilityConfig = reportVisibility;
 
         return obj;
-    },
-    initializeReports: function(){
+    }
+    initializeReports(){
         var self = this;
         self.reports = {};
 
@@ -1499,11 +1753,12 @@ ERP.prototype = {
         if(disableReportsAccess){
             setTimeout(function(){
                 self.elements.showReportsButton.hide();
+                self.removeTopLevelNavigationItem('reports');
             }, 100);
 
             return self;
         }
-		else{
+        else{
             setTimeout(function(){
                 self.elements.showReportsButton.show();
             }, 100);
@@ -1515,53 +1770,53 @@ ERP.prototype = {
             self.reports[reportConfig.id] = new Report(reportConfig, self);
         }
         return self;
-    },
-    createReportsSplitLayout: function(){
+    }
+    createReportsSplitLayout(){
         var self = this;
 
-        var reportsSplitLayoutConfig = {
-            container: self.elements.reportsContainer,
-            targetContainer: 'body',
-            direction: 'bottom',
-            zIndex: 999,
-            pageSize: "100%",
-            closeButton: ".hideReportsButton",
-            onShowForFirstTime: function(){
-                self.setDefaultReport();
-            },
-            onAfterShow: function(splitLayout){
-//        console.log('hiding')
-            },
-            onAfterHide: function(splitLayout){
-            }
-        }
-        self.reportsSplitLayout = new SplitLayout(reportsSplitLayoutConfig, self);
+//         var reportsSplitLayoutConfig = {
+//             container: self.elements.reportsContainer,
+//             targetContainer: 'body',
+//             direction: 'bottom',
+//             zIndex: 999,
+//             pageSize: "100%",
+//             closeButton: ".hideReportsButton",
+//             onShowForFirstTime(){
+//                 self.setDefaultReport();
+//             },
+//             onAfterShow(splitLayout){
+// //        console.log('hiding')
+//             },
+//             onAfterHide(splitLayout){
+//             }
+//         }
+//         self.reportsSplitLayout = new SplitLayout(reportsSplitLayoutConfig, self);
 
         return self;
-    },
-    configureSocket: function(){
+    }
+    configureSocket(){
         var self = this;
         self._socket.configureSocket(self);
         return self;
-    },
-    setDefaultModule: function(){
+    }
+    setDefaultModule(){
         var self = this;
         self.setSelectedModule(self.getDefaultModule(), true);
         return self;
-    },
-    setDefaultReport: function(){
+    }
+    setDefaultReport(){
         var self = this;
         self.setSelectedReport(self.getDefaultReport(), true);
         return self;
-    },
+    }
 
-    userLoggedIn: function(user){
+    userLoggedIn(user){
         var self = this;
         //self.moduleNavPointer.setDefaultValue();
         self.setSelectedModule(self.getDefaultModule(), true);
         return self;
-    },
-    addUltoSortableNavWindow: function(){
+    }
+    addUltoSortableNavWindow(){
         var self=  this;
         var modulesIndock = self.moduleNavPointer.container;
 
@@ -1594,7 +1849,7 @@ ERP.prototype = {
         modulesUl.sortable({
             connectWith: ".module-group-container",
 //            axis: 'x',
-            stop: function(){
+            stop(){
                 self.saveModulePositionConfig(self.createModulePositionConfig(modulesUl));
             }
         });
@@ -1609,8 +1864,8 @@ ERP.prototype = {
 //            li.addClass('module-names-in-sort-window');
 //        })
         return self;
-    },
-    showPopupMenu: function(){
+    }
+    showPopupMenu(){
         var self = this;
         var getGroupName = $(document.createElement('div')).appendTo(self.elements.sortableNavWindow).attr(self.constants.popUpMenu);
         var table = $(document.createElement('table')).appendTo(getGroupName);
@@ -1637,7 +1892,7 @@ ERP.prototype = {
 //                self.elements.sortableNavWindow.find('ul').sortable('disable')
                 (self.elements.sortableNavWindow.find('ul')).sortable({
                     connectWith: ".nav-element",
-                    stop: function(){
+                    stop(){
                         self.saveModulePositionConfig(self.createModulePositionConfig(self.elements.sortableNavWindow.find('ul')));
                     }
                 });
@@ -1653,8 +1908,8 @@ ERP.prototype = {
             getGroupName.remove();
         });
 
-    },
-    createGroupContainer: function(groupname,id){
+    }
+    createGroupContainer(groupname,id){
         var self = this;
         var containers = $(document.createElement('div')).attr(self.constants.moduleGroupMainContainer).attr('id',id);
         var container = $(document.createElement('ul')).attr(self.constants.moduleGroupContainer).attr('id',id)
@@ -1672,8 +1927,8 @@ ERP.prototype = {
             self.saveModulePositionConfig(self.createModulePositionConfig(self.elements.sortableNavWindow.find('ul')));
         });
         return containers;
-    },
-    removeUlBackToHeader: function(){
+    }
+    removeUlBackToHeader(){
         var self = this;
         var element = self.elements.sortableNavWindow.find('.modules-in-sorting-window');
         element.removeClass('modules-in-sorting-window');
@@ -1686,6 +1941,7 @@ ERP.prototype = {
             left: "",
             "border-radius": "",
             "box-shadow": ""});
+
         self.moduleNavPointer.container.appendTo(document.body)
 //        modulesUl.find('li').each(function(){
 //            var li = $(this);
@@ -1694,8 +1950,8 @@ ERP.prototype = {
 //        });
 //        self.elements.moduleNavPointerContainer.find('.navigation-pointer').show();
         return self;
-    },
-    createModulePositionConfig: function(modulesUl){
+    }
+    createModulePositionConfig(modulesUl){
         var self = this;
         var modulePositions = {};
         var posCount = 0;
@@ -1739,8 +1995,8 @@ ERP.prototype = {
          posCount++;
          });*/
         return mo;
-    },
-    hideAllFloatingReports: function(){
+    }
+    hideAllFloatingReports(){
         var self = this;
         self.forEachFloatingReport(function(floatingReport){
             floatingReport.hide();
@@ -1748,8 +2004,8 @@ ERP.prototype = {
             return !floatingReport.isInRecycleBin;
         });
         return self;
-    },
-    showAllFloatingReports: function(){
+    }
+    showAllFloatingReports(){
         var self = this;
         self.forEachFloatingReport(function(floatingReport){
             floatingReport.show();
@@ -1757,16 +2013,16 @@ ERP.prototype = {
             return !floatingReport.isInRecycleBin;
         });
         return self;
-    },
-    showAppSettingsContainer: function(){
+    }
+    showAppSettingsContainer(){
         var self = this;
         self.elements.applicationSettingsContainer.addClass('show-app-settings-container');
         self.elements.documentWrapper.addClass('body-wrapper-hide-partially');
         self.addUltoSortableNavWindow();
         self.hideAllFloatingReports();
         return self;
-    },
-    hideAppSettingsContainer: function(){
+    }
+    hideAppSettingsContainer(){
         var self = this;
         $(document.body).children('.show-settings-window').removeClass('show-settings-window');
         self.elements.documentWrapper.removeClass('body-wrapper-hide');
@@ -1774,8 +2030,8 @@ ERP.prototype = {
         self.elements.documentWrapper.removeClass('body-wrapper-hide-partially');
         self.showAllFloatingReports();
         return self;
-    },
-    showButtonsInWindow: function(){
+    }
+    showButtonsInWindow(){
         var self= this;
         var selectedModule = self.elements.buttonSortingWindowModuleSelect.val();
         var selectedSubModule = self.elements.buttonSortingWindowSubmoduleSelect.val();
@@ -1868,8 +2124,8 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    createButtonsPositionJson: function(buttonUlContainer, buttonPosJson){
+    }
+    createButtonsPositionJson(buttonUlContainer, buttonPosJson){
         var self = this;
         buttonUlContainer.children().each(function(){
             var ul = $(this);
@@ -1878,9 +2134,9 @@ ERP.prototype = {
             }
         });
         return buttonPosJson;
-    },
+    }
 
-    bindIdleTimeEvents: function(){
+    bindIdleTimeEvents(){
         var self = this;
         var idleTimeout = 0;
 
@@ -1905,9 +2161,31 @@ ERP.prototype = {
 
 
         return self;
-    },
+    }
 
-    bindEvents: function () {
+    showAboutUsPopup  () {
+        var self = this;
+        var aboutUsContainer = self.elements.aboutUsContainer;
+        if(!aboutUsContainer){
+            aboutUsContainer = globalElements.body.find('#aboutUsContainer');
+
+            aboutUsContainer.find('#aboutUsAppDisplayName').text(self.displayName);
+            aboutUsContainer.find('#aboutUsAppDescription').text(self.appSettings.description || '');
+            aboutUsContainer.find('#aboutUsAppExtendedDescription').html(self.appSettings.extendedDescription || '');
+
+            self.elements.aboutUsContainer = aboutUsContainer;
+            aboutUsContainer.on('click', function (eve) {
+                if($(eve.target).is('.overlay')){
+                    aboutUsContainer.fadeOut();
+                }
+            });
+        }
+
+        aboutUsContainer.fadeIn();
+
+    }
+
+    bindEvents () {
         var self = this;
         var showDirectAction = true;
         self.visibilitySettingSelected = '';
@@ -1919,8 +2197,10 @@ ERP.prototype = {
         })
 
         self.elements.reportBugButton.click(function () {
-            self.bugReportManager.show();
+            // self.bugReportManager.show();
+            self.showAboutUsPopup();
         });
+
         self.socket.on('get_Main_users_done',function(data){
             self.usersData = data;
 
@@ -1935,14 +2215,14 @@ ERP.prototype = {
         }
 
 
-		self.socket.on('consoleLog',function(data){
+        self.socket.on('consoleLog',function(data){
             var arr = [];
             for(var key in data){
                 arr.push(data[key]);
             }
             console.info.apply(console, arr);
         });
-		
+
         self.socket.on('session_expired', function(){
             self.user.notifier.showErrorNotification('your session has expired')
             setTimeout(function(){
@@ -1982,9 +2262,18 @@ ERP.prototype = {
         self.elements.buttonSortingWindowSubmoduleSelect. on('change', function(){
             self.showButtonsInWindow();
         });
-        self.elements.content.on('click', function(){
-            self.hideAppSettingsContainer();
-        });
+
+//         self.elements.content.on('click', function(){
+// /////////////////////////////////////yathi/////////////////////////////////////////
+//             self.removeClickFunctionsInAppSettings('');
+//             self.removeUlBackToHeader();
+//             self.hideAppSettingsContainer();
+//             $('.'+self.constants.groupCloseButtons.class).hide();
+//             $('.'+self.constants.addModuleGroup.class).remove();
+// /////////////////////////////////////////////////////////////////////////////////
+//
+//         });
+
         self.elements.appSettingsIcon.on('click', function(){
             $('.windows8tabs').removeClass('demoshow');
             self.socket.emit('get_Main_users');
@@ -2059,6 +2348,9 @@ ERP.prototype = {
         })
         self.elements.logoutButton.on('click', function(){
             self.logOut();
+            setTimeout(function(){
+                location.reload();
+            },1500)
         });
         self.elements.appSettingsBackButton.on('click', function(){
             self.removeClickFunctionsInAppSettings('');
@@ -2092,11 +2384,11 @@ ERP.prototype = {
             return self.handleKeyUp(eve.keyCode, eve);
         });
 
-        self.elements.showReportsButton.on('click', function(){
-            self.elements.directActionButton.hide();
-            self.reportsSplitLayout.show();
-            self.reportsNavPointer.showNavMenuContainer();
-        });
+        // self.elements.showReportsButton.on('click', function(){
+        //     self.elements.directActionButton.hide();
+        //     self.reportsSplitLayout.show();
+        //     self.reportsNavPointer.showNavMenuContainer();
+        // });
 
         self.elements.selectThemeChooser.on('change',function(){
             self.setSelectedTheme(self.elements.selectThemeChooser.val());
@@ -2160,16 +2452,16 @@ ERP.prototype = {
             self.helpBox.hide();
         });
         return self;
-    },
-    createDirectActionMenu: function(){
+    }
+    createDirectActionMenu(){
         var self = this;
         var directActionMenu = new DirectActionMenu(self);
-        directActionMenu.container.appendTo($('#documentWrapper'));
+        directActionMenu.container.appendTo( globalElements.documentWrapper );
         directActionMenu.hide();
         self.directActionMenu = directActionMenu;
         return self;
-    },
-    removeClickFunctionsInAppSettings: function(button){
+    }
+    removeClickFunctionsInAppSettings(button){
         var self = this;
         self.elements.applicationSettingsContainer.children().each(function(){
             var buttonContainer = $(this);
@@ -2187,8 +2479,8 @@ ERP.prototype = {
             button.parent().addClass('selected');
         }
         return self;
-    },
-    showAdminWindow: function(){
+    }
+    showAdminWindow(){
         var self = this;
         $('.windows8tabs').removeClass('demoshow')
         self.elements.adminButton.addClass('demoshow')
@@ -2200,8 +2492,8 @@ ERP.prototype = {
         self.elements.visibilityWindow.removeClass('show-settings-window');
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
         return self;
-    },
-    showUserWindow: function(){
+    }
+    showUserWindow(){
         var self = this;
         $('.windows8tabs').removeClass('demoshow')
         self.elements.userSettingsButton.addClass('demoshow')
@@ -2220,8 +2512,8 @@ ERP.prototype = {
 
         self.createUserDetailsContainer(self.elements.userWindow);
         return self;
-    },
-    createUserDetailsContainer: function(userWindow,data){
+    }
+    createUserDetailsContainer(userWindow,data){
         var self = this;
         var container = $(document.createElement('div')).addClass('user-details-container').appendTo(userWindow);
         self.createHeader(container);
@@ -2238,15 +2530,15 @@ ERP.prototype = {
         self.enterUserDetails(tr1,table,data);
         self.elements.showUserWindow = container;
         return self;
-    },
-    createHeader: function(tr){
+    }
+    createHeader(tr){
         var self = this ;
 
 //        var div = $(document.createElement('div')).appendTo(tr);
 //        var titleDiv = $(document.createElement('div')).addClass('user-details').appendTo(tr);
 //        titleDiv.text('User Details');
-    },
-    enterUserDetails: function(tr,table,loginUsers){
+    }
+    enterUserDetails(tr,table,loginUsers){
         var self = this;
         var i =0;
         if(!self.usersData){
@@ -2312,15 +2604,15 @@ ERP.prototype = {
         }
 
         return self;
-    },
-    bindUserChangePassword: function(button,user){
+    }
+    bindUserChangePassword(button,user){
         var self = this;
         button.on('click',function(){
             self.changeUserPasswordWindow(user);
         })
         return self;
-    },
-    changeUserPasswordWindow: function(user){
+    }
+    changeUserPasswordWindow(user){
         var self = this;
         var container =  $(document.createElement('div')).addClass('changeUserPasswordContainer').appendTo(document.body);
         var dataContainer =  $(document.createElement('div')).addClass('changeUserPasswordDataContainer').appendTo(container)
@@ -2360,8 +2652,8 @@ ERP.prototype = {
             container.remove();
         });
         return self;
-    },
-    adminChecker: function(userData){
+    }
+    adminChecker(userData){
         var self = this;
         var container =  $(document.createElement('div')).addClass('changeUserPasswordContainer').appendTo(document.body);
         var dataContainer =  $(document.createElement('div')).addClass('changeUserPasswordDataContainer').appendTo(container)
@@ -2407,8 +2699,8 @@ ERP.prototype = {
         });
 
         return false;
-    },
-    showVisibilityWindow: function(){
+    }
+    showVisibilityWindow(){
         var self = this;
         $('.windows8tabs').removeClass('demoshow')
         self.elements.visibilityButton.addClass('demoshow')
@@ -2420,8 +2712,8 @@ ERP.prototype = {
         self.elements.sortableNavButton.removeClass('show-settings-window');
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
         return self;
-    },
-    showPreferencesWindow: function(){
+    }
+    showPreferencesWindow(){
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.preferencesButton.addClass('demoshow');
@@ -2437,8 +2729,8 @@ ERP.prototype = {
         }
         self.setSelectedSettingModule(self.defaultSettingModule, true);
         return self;
-    },
-    showProfileWindow: function(){
+    }
+    showProfileWindow(){
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.profileButton.addClass('demoshow')
@@ -2453,8 +2745,8 @@ ERP.prototype = {
             self.elements.visibilityWindow.removeClass('show-settings-window');
         }
         return self;
-    },
-    showsortableNavWindow: function(){
+    }
+    showsortableNavWindow(){
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.sortableNavButton.addClass('demoshow')
@@ -2469,8 +2761,8 @@ ERP.prototype = {
             self.elements.visibilityWindow.removeClass('show-settings-window');
         }
         return self;
-    },
-    showButtonSortingWindow: function(){
+    }
+    showButtonSortingWindow(){
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.buttonsSortingWindowButton.addClass('demoshow')
@@ -2485,47 +2777,47 @@ ERP.prototype = {
             self.elements.visibilityWindow.removeClass('show-settings-window');
         }
         return self
-    },
+    }
 
-    disableNavigation: function(){
+    disableNavigation(){
         var self = this
         document.body.style.pointerEvents = 'none';
         return self;
-    },
-    enableNavigation: function(){
+    }
+    enableNavigation(){
         var self = this;
         document.body.style.pointerEvents = '';
         return self;
-    },
-    setSelectedTheme: function(theme){
+    }
+    setSelectedTheme(theme){
         var self = this;
         self.elements.switchStyle.attr("href", "/styles/"+theme+".css");
         self.selectedTheme = theme;
         return self;
-    },
-    setDefaultTheme: function(theme){
+    }
+    setDefaultTheme(theme){
         var self = this;
         var theme = self.defaultTheme || self.elements.selectThemeChooser.val();
         self.setSelectedTheme(theme);
         return self;
-    },
-    getSelectedTheme: function(theme){
+    }
+    getSelectedTheme(theme){
         var self = this;
         return self.selectedTheme;
-    },
-    handleCtrlKeyUpEvent: function(eve){
+    }
+    handleCtrlKeyUpEvent(eve){
         var self = this;
         self.container.removeClass('ctrlKeyDown');
         self.getTopMostModuleInViewPlane().getTopMostSubModuleInViewPlane().handleCtrlKeyUpEvent(eve);
         return self;
-    },
-    handleCtrlKeyDownEvent: function(eve){
+    }
+    handleCtrlKeyDownEvent(eve){
         var self = this;
         self.container.addClass('ctrlKeyDown');
         self.getTopMostModuleInViewPlane().getTopMostSubModuleInViewPlane().handleCtrlKeyDownEvent(eve);
         return self;
-    },
-    handleKeyUp: function(keyCode){
+    }
+    handleKeyUp(keyCode){
         var self = this;
         var ret = true;
         if(keyCode == ERP.KEY_CODES.CTRL){
@@ -2533,8 +2825,8 @@ ERP.prototype = {
             self.handleCtrlKeyUpEvent(eve);
         }
         return ret;
-    },
-    handleKeyDown: function(keyCode, eve){
+    }
+    handleKeyDown(keyCode, eve){
         var self = this;
         var ret = true;
 
@@ -2569,30 +2861,30 @@ ERP.prototype = {
             ret = self.getTopMostModuleInViewPlane().getTopMostSubModuleInViewPlane().handleKeyDown(eve.keyCode);
         }
         return ret;
-    },
-    getTopMostModuleInViewPlane: function(){
+    }
+    getTopMostModuleInViewPlane(){
         var self = this;
         return self.topMostModuleInViewPlane;
-    },
-    getSelectedModule: function(){
+    }
+    getSelectedModule(){
         var self = this;
         return self.selectedModule;
-    },
-    show      : function () {
+    }
+    show       () {
         var self = this;
         self.container.show();
         return self;
-    },
-    hide      : function () {
+    }
+    hide       () {
         var self = this;
         self.container.hide();
         return self;
-    },
-    getElement: function(){
+    }
+    getElement(){
         var self = this;
         return self.element;
-    },
-    forEachReport: function(eachFunction, filterFunction){
+    }
+    forEachReport(eachFunction, filterFunction){
         var self = this;
         for(var key in self.reports){
             var report = self.reports[key];
@@ -2606,8 +2898,8 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    forEachSettingModule: function(eachFunction, filterFunction){
+    }
+    forEachSettingModule(eachFunction, filterFunction){
         var self = this;
         for(var key in self.settingModules){
             var module = self.settingModules[key];
@@ -2621,8 +2913,8 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    forEachModule: function(eachFunction, filterFunction){
+    }
+    forEachModule(eachFunction, filterFunction){
         var self = this;
         for(var key in self.modules){
             var module = self.modules[key];
@@ -2636,8 +2928,8 @@ ERP.prototype = {
             }
         }
         return self;
-    },
-    setSelectedSettingModule: function(module, fromTrigger){
+    }
+    setSelectedSettingModule(module, fromTrigger){
         var self = this;
         if(fromTrigger){
             self.settingModulesNavPointer.setValue(module.id, true);
@@ -2655,15 +2947,15 @@ ERP.prototype = {
         self.selectedSettingModule.show();
         self.selectedSettingModuleChanged();
         return self;
-    },
-    selectedSettingModuleChanged: function(){
+    }
+    selectedSettingModuleChanged(){
         var self = this;
         var module = self.selectedSettingModule;
         module.setSelectedSubModule(module.getSelectedSubModule(), false);
         module.showFloatingReports();
         return self;
-    },
-    setSelectedModule: function(module, fromTrigger){
+    }
+    setSelectedModule(module, fromTrigger){
         var self = this;
         if(fromTrigger){
             self.moduleNavPointer.setValue(module.id, true);
@@ -2684,16 +2976,17 @@ ERP.prototype = {
         location.hash = module.id;
         self.selectedModuleChanged();
         return self;
-    },
-    selectedModuleChanged: function(){
+    }
+    selectedModuleChanged(){
         var self = this;
         var module = self.selectedModule;
         module.setSelectedSubModule(module.getSelectedSubModule(), false);
+        module.subModuleNavPointer.setValue(module.getSelectedSubModule().id, false);
         module.showFloatingReports();
         return self;
-    },
+    }
 
-    setSelectedReport: function(report, fromTrigger){
+    setSelectedReport(report, fromTrigger){
         var self = this;
         if(fromTrigger){
             self.reportsNavPointer.setValue(report.id, true);
@@ -2710,15 +3003,16 @@ ERP.prototype = {
         self.selectedReport.show();
         self.selectedReportChanged();
         return self;
-    },
-    selectedReportChanged: function(){
+    }
+    selectedReportChanged(){
         var self = this;
         var report = self.selectedReport;
         report.setSelectedSubReport(report.getSelectedSubReport(), false);
+        // report.subReportNavPointer.updatePointerPosition();
         return self;
-    },
+    }
 
-    getDefaultModule: function(){
+    getDefaultModule(){
         var self = this;
         if(self.defaultModule){
             return self.defaultModule;
@@ -2727,8 +3021,8 @@ ERP.prototype = {
             return self.modules[Object.keys(self.modules)[0]];
         }
         return self;
-    },
-    getDefaultReport: function(){
+    }
+    getDefaultReport(){
         var self = this;
         if(self.defaultReport){
             return self.defaultReport;
@@ -2738,8 +3032,8 @@ ERP.prototype = {
             return self.reports[firstVisibleReport];
         }
         return self;
-    },
-    getFirstVisibleReport:function(){
+    }
+    getFirstVisibleReport(){
         var self = this;
         var activeReports = {}
         for (var reportKey in self.reports){
@@ -2749,8 +3043,8 @@ ERP.prototype = {
         }
         var firstVisibleReport = Object.keys(activeReports)[0];
         return firstVisibleReport;
-    },
-    executeQuery: function(str){
+    }
+    executeQuery(str){
         var self = this;
         self.socket.emit('executeQuery', {query: str});
         self.socket.once('executeQuery_done', function(data){
@@ -2758,68 +3052,34 @@ ERP.prototype = {
             window.data = data;
         })
         return self;
-    },
-    _socket: {
-        configureSocket: function(erp){
-            var self = this;
-            var socket = io.connect('http://'+ location.hostname);
-            socket.formView = {};
-            socket.formView.events = {};
-            socket.gridView = {};
-            socket.gridView.events = {};
-            socket.thumbNailView = {};
-            socket.thumbNailView.events = {};
-            socket.simpleDataTableRow = {};
-            socket.simpleDataTableRow.events = {};
-            socket.subModule = {};
-            socket.subModule.events = {};
-            socket.childWindow = {};
-            socket.childWindow.events = {};
-            erp.socket = socket;
-            self.bindSocketEvents(erp);
-            return erp;
-        },
-        bindSocketEvents: function(erp){
-            var self = this;
-            var socket = erp.socket;
-            socket.on('disconnect', function(err, data){
-                setTimeout(function(){
-                    if(erp.user.userDetails){
-                        var str = 'Connection to server lost. Reload to retry.'
-                        erp.notifier.showErrorNotification(str, {
-                            buttons: {
-                                reload: {
-                                    displayName: "Reload",
-                                    onClick: function(){
-                                        location.reload();
-                                    }
-                                }
-                            }
-                        } );
-                        $('.window-container:visible').hide();
-                        erp.elements.container.transition({opacity:.25}, 1000);
-                    }
-                }, 1000);
-            });
+    }
 
-            socket.on(erp.socketEvents.registerChildWindowDone, function(data){
-                self.registerChildWindow_done(erp, data);
-            });
 
-            return self;
-        },
-        registerChildWindow_done: function(erp, data){
-            var self = this;
-            var callback = erp.socket.childWindow.events[data.randomId];
-            callback && callback(data);
-            delete erp.socket.childWindow.events[data.randomId]
-            return self;
-        }
-    },
-    registerChildWindow: function(subModule, column, dataRow, registerChildWindowCallBack){
+
+
+    getModulesListAsSelectOptions(addAll){
+    var self = this;
+    var options = [];
+    self.forEachModule(function(module){
+        var option = document.createElement('option');
+        option.value = module.id;
+        option.innerHTML = module.displayName;
+        options.push(option);
+    });
+    if(addAll){
+        var addAllOption = document.createElement('option');
+        addAllOption.value = '';
+        addAllOption.innerHTML = '--Please Select--';
+        options.unshift(addAllOption);
+    }
+    return $(options);
+}
+
+
+    registerChildWindow(subModule, column, dataRow, registerChildWindowCallBack){
         var self = this;
         var erp = subModule.erp;
-        var socket = erp.socket;
+        // var socket = erp.socket;
         var data = {
             config: column.typeSpecific.dataSource,
             parentSubModuleId: subModule.id,
@@ -2827,12 +3087,22 @@ ERP.prototype = {
         };
         data.config.dataRow = dataRow;
         data.config.randomId = crypto.getRandomValues(new Uint16Array(1))[0];
-        socket.childWindow.events[data.config.randomId] = registerChildWindowCallBack;
-        socket.emit(erp.socketEvents.registerChildWindow, data);
+        // socket.childWindow.events[data.config.randomId] = registerChildWindowCallBack;
+        // socket.emit(erp.socketEvents.registerChildWindow, data);
+        var url = subModule.getAjaxUrl('registerChildWindow');
+        $.ajax({
+            type: 'POST',
+            data: data,
+            url: url,
+        }).always(function (responseObj, status) {
+            console.log( 'registerChildWindow_Done', responseObj, status);
+            //grid._db.getData_done(grid, responseObj);
+            registerChildWindowCallBack && registerChildWindowCallBack(responseObj)
+        });
 
         return self;
-    },
-    getKeyFromValueOfObject: function(value, obj){
+    }
+    getKeyFromValueOfObject(value, obj){
         var self = this;
 
         for(var key in obj){
@@ -2840,51 +3110,257 @@ ERP.prototype = {
                 return key;
             }
         }
-    },
-    _creation : {
-        createContainer: function(erp){
-            var div = $(document.createElement('div')).attr({id: erp.id}).attr(erp.constants.container);
-            return div;
-        },
-//        createReportsContainer: function(erp){
-//            var div = $(document.createElement('div')).attr({id: erp.id}).attr(erp.constants.reportsContainer);
-//            return div;
-//        },
-        createElements: function(erp){
-            var self = this;
-            var container = self.createContainer(erp);
-            erp.forEachModule(function(module){
-                container.append(module.getElement());
-            });
-            erp.forEachSettingModule(function(module){
-                erp.elements.settingModulesContentContainer.append(module.getElement());
-            });
-            erp.forEachReport(function(report){
-                erp.elements.reportsContentContainer.append(report.getElement());
-            });
-            erp.container = container;
-//            erp.elements.reportsContainer = self.createReportsContainer(erp).appendTo(document.body);
-            erp.elements.container = container;
-            return erp;
-        }
-    },
-    _events   : {
-    },
-    _ui       : {
     }
 }
 
+
+ERP.prototype.selectors = {
+    bodyWrapper: "#body_wrapper",
+        documentWrapper: "#documentWrapper",
+        topLevelNavigation: "#topLevelNavigation",
+        titleElement: "#header_title_message",
+        applicationDisplayNameFooterElement: "#applicationDisplayName",
+        moduleNavPointerContainer: "#documentWrapper #moduleNavPointerContainer",
+        reportsNavPointerContainer: "#reportsNavPointerContainer",
+        dashboardContainer: "#dashboardContainer",
+        reportsContainer: "#reportsContainer",
+        reportsContentContainer: "#reportsContentContainer",
+        showReportsButton: "#showReports",
+        selectThemeChooser: "#themeChooser",
+        switchStyle: "#switchStyle",
+        logOutButton: "#logOutButton",
+        reportBugButton: "#reportBugButton",
+        contentContainer: "#body_wrapper > #content",
+        applicationSettingsContainer: "#applicationSettings",
+        appSettingsIcon: "#appSettingsIcon",
+        profileButton: "#profileButton",
+        preferencesButton: "#preferencesButton",
+        preferencesIcon: "#preferencesIcon",
+        sortableNavButton: "#sortableNavButton",
+        logoutButton: "#logoutButton",
+        appSettingsBackButton: "#appSettingsBackButton",
+        profileWindow: "#profileWindow",
+        preferencesWindow: "#preferencesWindow",
+        sortableNavWindow: "#sortableNavWindow",
+        settingModulesContentContainer: "#settingModulesContentContainer",
+        settingModulesNavPointerContainer: "#settingModulesNavPointerContainer",
+        userName: "#userName",
+        userImage:"#userImage",
+        pdf: "#pdf",
+        buttonSortingWindow: "#buttonSortingWindow",
+        buttonsSortingWindowButton: "#buttonsSortingWindowButton",
+
+        saveModuleNavigationMode: "#saveModuleNavigationMode",
+        moduleNavigationModeForMobile: "#moduleNavigationModeForMobile",
+        moduleNavigationModeForTablet: "#moduleNavigationModeForTablet",
+        moduleNavigationModeForPC: "#moduleNavigationModeForPC",
+
+        saveDefaultModule: "#saveDefaultModule",
+        defaultModuleForMobile: "#defaultModuleForMobile",
+        defaultModuleForTablet: "#defaultModuleForTablet",
+        defaultModuleForPC: "#defaultModuleForPC",
+
+        saveMiscSettings: "#saveMiscSettings",
+        applicationFontSize: "#applicationFontSize",
+
+        saveFloatingReportsSelection: "#saveFloatingReportsSelection",
+        floatingReportsCheckboxes: "#floatingReportsCheckboxes",
+
+        bugReportContainer: "#bugReportContainer",
+        reportsTitle:"#reportsTitle",
+
+        buttonsSortingWindowIcon: "#buttonsSortingWindowIcon",
+        sortableNavIcon: "#sortableNavIcon",
+        appSettingsBackButtonIcon: "#appSettingsBackButtonIcon",
+        directActionButton: "#directActionButton",
+
+        leftAlignReportNavContainer: "#leftAlignReportNavContainer"
+}
+ERP.prototype.constants = {
+    container: {
+        "class": "application"
+    },
+    reportsContainer:{
+        "class": "reports-container"
+    },
+    accountDetailsContainer: {
+        "class": "account-details-container"
+    },
+    visibilitySettingsContainer: {
+        "class": "visibility-settings-container"
+    },
+    addModuleGroup: {
+        "class": "add-module-group"
+    },
+    moduleGroupMainContainer: {
+        "class" : "module-group-main-container"
+    },
+    moduleGroupContainer: {
+        "class" : "module-group-container"
+    },
+    moduleGroupTitleDiv: {
+        "class" : "module-group-title-div"
+    },
+    groupCloseButtons: {
+        "class" : "group-close-buttons"
+    },
+    popUpMenu: {
+        "class" : "pop-up-menu"
+    }
+}
+
+
+
+ERP.prototype._socket = {
+    configureSocket: function(erp){
+        var self = this;
+        let socket_url = location.protocol + '//' + location.host + '?sessionId=' + erp.user.config.user.sessionId;
+        if(erp.config.socket_io_url){
+            socket_url = erp.config.socket_io_url;
+        }
+        var socket = io(socket_url, {'userId' : 'aki143s', transport : 'websocket'});
+        socket.connect();
+
+        socket.formView = {};
+        socket.formView.events = {};
+        socket.gridView = {};
+        socket.gridView.events = {};
+        socket.thumbNailView = {};
+        socket.thumbNailView.events = {};
+        socket.simpleDataTableRow = {};
+        socket.simpleDataTableRow.events = {};
+        socket.subModule = {};
+        socket.subModule.events = {};
+        socket.childWindow = {};
+        socket.childWindow.events = {};
+        erp.socket = socket;
+        self.bindSocketEvents(erp);
+        return erp;
+    },
+    bindSocketEvents: function(erp){
+        var self = this;
+        var socket = erp.socket;
+        socket.on('connect', function(){
+            // erp.setDefaultModule();
+            erp.elements.container.css({opacity: 1});
+
+            erp.onSocketConnected();
+
+        });
+        socket.on('disconnect', function(err, data){
+            setTimeout(function(){
+
+                erp.onSocketDisconnected();
+
+                if(erp.user.userDetails){
+                    var str = 'Connection to server lost. Reload to retry.'
+                    erp.notifier.showErrorNotification(str, {
+                        buttons: {
+                            reload: {
+                                displayName: "Reload",
+                                onClick: function(){
+                                    location.reload();
+                                }
+                            }
+                        }
+                    } );
+                    $('.window-container:visible').hide();
+                    erp.elements.container.transition({opacity:.25}, 1000);
+                }
+            }, 1000);
+        });
+
+        // socket.on(erp.socketEvents.registerChildWindowDone, function(data){
+        //     self.registerChildWindow_done(erp, data);
+        // });
+
+        return self;
+    },
+// registerChildWindow_done: function(erp, data){
+//     var self = this;
+//     var callback = erp.socket.childWindow.events[data.randomId];
+//     callback && callback(data);
+//     delete erp.socket.childWindow.events[data.randomId]
+//     return self;
+// }
+}
+
+
+
+
+ERP.prototype._creation = {
+    createContainer: function(erp){
+        var div = $(document.createElement('div')).attr({id: erp.id}).attr(erp.constants.container);
+        return div;
+    },
+    createElements: function(erp){
+        var self = this;
+        var container = self.createContainer(erp);
+        erp.forEachModule(function(module){
+            container.append(module.getElement());
+        });
+        erp.forEachSettingModule(function(module){
+            erp.elements.settingModulesContentContainer.append(module.getElement());
+        });
+        erp.forEachReport(function(report){
+            erp.elements.reportsContentContainer.append(report.getElement());
+        });
+        erp.container = container;
+//            erp.elements.reportsContainer = self.createReportsContainer(erp).appendTo(document.body);
+        erp.elements.container = container;
+        return erp;
+    }
+}
+ERP.prototype._events = {
+}
+ERP.prototype._ui = {
+}
+
+
+ERP.KEY_CODES = {
+    CTRL: 17,
+    ENTER: 13,
+    ESC: 27,
+    RIGHT: 39,
+    LEFT: 37,
+    UP: 38,
+    DOWN: 40,
+    ALT: 18,
+    MINUS: 189,
+    EQUAL: 187
+}
+ERP.DEVICE_ORIENTATIONS = {
+    PORTRAIT: "portrait",
+    LANDSCAPE: "landscape"
+}
+ERP.DEVICE_TYPES = {
+    MOBILE: "mobile",
+    TABLET: "tablet",
+    PC: "pc"
+}
+
+// ERP.prototype = {
+//
+// }
+
 ERP.HELPER_FUNCTIONS = {
     createImageFromText: function(text, options, getImageFromTextCallBack){
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        canvas.width = 350;
-        canvas.height = 60;
-        ctx.font = (options.fontSize || 30) + " Georgia";
-        ctx.fillText(text,10,40);
-        canvas.toBlob(function(blob){
-            getImageFromTextCallBack(blob)
-        });
+        if(!ERP.HELPER_FUNCTIONS.isWaitingForImageCreation){
+            ERP.HELPER_FUNCTIONS.isWaitingForImageCreation = true;
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var span = $(document.createElement('span')).text(text)
+                .appendTo(document.body)
+
+            canvas.width = (span.width() * 3) || 350;
+            canvas.height = 60;
+            ctx.font = (options.fontSize || 30) + " Georgia";
+            ctx.fillText(text,10,40);
+            span.remove();
+            canvas.toBlob(function(blob){
+                getImageFromTextCallBack(blob);
+            });
+        }
     }
 }
 
@@ -2894,26 +3370,17 @@ ERP.prototype.socketEvents = {
 };
 
 var moduleNavMenuConfig = {
-    position: {
-        id: "position",
-        displayName: "Position",
-
+    mode: {
+        id: "mode",
+        displayName: "Mode",
         subMenuConfig:{
-            top:{
-                id: "top",
-                displayName: "Top"
+            dock:{
+                id: "dock",
+                displayName: "Dock"
             },
-            bottom:{
-                id: "bottom",
-                displayName: "Bottom"
-            },
-            left:{
-                id: "left",
-                displayName: "Left"
-            },
-            right:{
-                id: "right",
-                displayName: "Right"
+            accordionLeft:{
+                id: "accordionLeft",
+                displayName: "Accordion"
             }
         }
     }

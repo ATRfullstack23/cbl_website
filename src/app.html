@@ -11,6 +11,7 @@
 
 		<link rel="stylesheet" href="/lib/jquery.ui.css">
 		<link rel="stylesheet" href="/styles/SimpleDataTableRow.css">
+		<link rel="stylesheet" href="/styles/Notifier.css">
 		<link rel="stylesheet" href="/styles/FormView.css">
 		<link rel="stylesheet" href="/styles/FormElements.css">
 		<link rel="stylesheet" href="/styles/Filter.css">
@@ -19,6 +20,8 @@
 		<link rel="stylesheet" href="/lib/jsonview/jsonview.min.css">
 		<link rel="stylesheet" href="/styles/tabber.css">
 		<link rel="stylesheet" href="/lib/helpBox.css">
+
+		<link rel="stylesheet" href="/index_v2.css">
 
 
 		%sveltekit.head%
@@ -69,7 +72,7 @@
 
 	<script type="text/javascript" src="/scripts/SubReport.js"></script>
 	<script type="text/javascript" src="/scripts/Report.js"></script>
-	<script type="text/javascript" src="/scripts/ERP.js"></script>
+<!--	<script type="text/javascript" src="/scripts/ERP.js"></script>-->
 	<script type="text/javascript" src="/scripts/DirectActionMenu.js"></script>
 	<script type="text/javascript" src="/scripts/DirectActionButton.js"></script>
 
@@ -506,31 +509,31 @@
 			"sessionId": "1ZL9J0tmhRqGKTxNgLBODXC5ENH_vC1K"
 		};
 
-		window.initialize_erp = function () {
-			const user_obj = {
-				config: {
-					user: window.__default_user_config
-				},
-				userDetails: window.__default_user_config,
-				users: {
-					1000001: window.__default_user_config
-				},
-				configureSocket: ()=>{
-
-				}
-			}
-			$.ajax({
-				url: '/configuration.json',
-				cache: false,
-				type: 'GET'
-			}).success(function(data){
-				data.socket_io_url = 'https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js?_=1719394543097';
-				window.erp = new ERP(data, {user: user_obj});
-				// window.erp.elements.content.prepend(erp.container);
-			});
-		}
-
-		initialize_erp();
+		// window.initialize_erp = function () {
+		// 	const user_obj = {
+		// 		config: {
+		// 			user: window.__default_user_config
+		// 		},
+		// 		userDetails: window.__default_user_config,
+		// 		users: {
+		// 			1000001: window.__default_user_config
+		// 		},
+		// 		configureSocket: ()=>{
+		//
+		// 		}
+		// 	}
+		// 	$.ajax({
+		// 		url: '/configuration.json',
+		// 		cache: false,
+		// 		type: 'GET'
+		// 	}).success(function(data){
+		// 		data.socket_io_url = 'https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js?_=1719394543097';
+		// 		window.erp = new ERP(data, {user: user_obj});
+		// 		// window.erp.elements.content.prepend(erp.container);
+		// 	});
+		// }
+		//
+		// initialize_erp();
 	</script>
 
 
