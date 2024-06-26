@@ -112,15 +112,15 @@ DashboardManager.prototype = {
             }
         ];
 
-        if(DashboardItem_StatusCard.CONTEXT_MENU_TARGET_AREAS){
-            targetAreas = targetAreas.concat(DashboardItem_StatusCard.CONTEXT_MENU_TARGET_AREAS);
-        }
-        if(DashboardItem_Table.CONTEXT_MENU_TARGET_AREAS){
-            targetAreas = targetAreas.concat(DashboardItem_Table.CONTEXT_MENU_TARGET_AREAS);
-        }
-        if(DashboardItem_List.CONTEXT_MENU_TARGET_AREAS){
-            targetAreas = targetAreas.concat(DashboardItem_List.CONTEXT_MENU_TARGET_AREAS);
-        }
+        // if(DashboardItem_StatusCard.CONTEXT_MENU_TARGET_AREAS){
+        //     targetAreas = targetAreas.concat(DashboardItem_StatusCard.CONTEXT_MENU_TARGET_AREAS);
+        // }
+        // if(DashboardItem_Table.CONTEXT_MENU_TARGET_AREAS){
+        //     targetAreas = targetAreas.concat(DashboardItem_Table.CONTEXT_MENU_TARGET_AREAS);
+        // }
+        // if(DashboardItem_List.CONTEXT_MENU_TARGET_AREAS){
+        //     targetAreas = targetAreas.concat(DashboardItem_List.CONTEXT_MENU_TARGET_AREAS);
+        // }
 
         self.contextMenu = new ContextMenu({
             targetContainer: self.container,
@@ -306,7 +306,8 @@ DashboardManager.prototype = {
 
             var group = self.groups[key];
             // group.elements = {};
-            group.container = $(DashboardManager.Templates.dashboardGroupElementTemplate(group ));
+            group.container = $(document.createElement('div'));
+            // group.container = $(DashboardManager.Templates.dashboardGroupElementTemplate(group ));
 
             group.container.appendTo(self.elements.dashboardContents);
         }
@@ -585,5 +586,5 @@ DashboardManager.API_ENDPOINTS.UPDATE_DASHBOARD_ITEM_CONFIGURATION = DashboardMa
 DashboardManager.API_ENDPOINTS.UPDATE_DASHBOARD_ITEMS_ORDER = DashboardManager.API_ENDPOINTS.ROOT + "/updateDashboardItemsOrder";
 
 DashboardManager.Templates = {
-    dashboardGroupElementTemplate : Handlebars.compile ($("#dashboardGroupElementTemplate").html()),
+    // dashboardGroupElementTemplate : Handlebars.compile ($("#dashboardGroupElementTemplate").html()),
 }

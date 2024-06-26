@@ -24,10 +24,14 @@ SubReport.prototype = {
             container: $(document.body)
         });
 
-        self.cardManager = new CardManager(self.config.cards, self);
-        self.graphManager = new GraphManager(self.config.graphs, self);
-        self.listManager = new ListManager(self.config.lists, self);
-        self.reportFilterManager = new ReportFilterManager(self.config.reportFilters, self);
+        self.elements = {};
+        self.container = self.elements.container = $(document.createElement('div'));
+        return;
+
+        // self.cardManager = new CardManager(self.config.cards, self);
+        // self.graphManager = new GraphManager(self.config.graphs, self);
+        // self.listManager = new ListManager(self.config.lists, self);
+        // self.reportFilterManager = new ReportFilterManager(self.config.reportFilters, self);
 
         self.createElements();
         self.intializeSocketEventsObject();

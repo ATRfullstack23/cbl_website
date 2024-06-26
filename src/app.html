@@ -18,6 +18,7 @@
 		<link rel="stylesheet" href="/lib/chosen/chosen.css">
 		<link rel="stylesheet" href="/lib/jsonview/jsonview.min.css">
 		<link rel="stylesheet" href="/styles/tabber.css">
+		<link rel="stylesheet" href="/lib/helpBox.css">
 
 
 		%sveltekit.head%
@@ -78,7 +79,9 @@
 	<script type="text/javascript" async src="/scripts/ValidationError.js"></script>
 	<script type="text/javascript" src="/scripts/User.js"></script>
 	<script type="text/javascript" src="/scripts/Tabber.js"></script>
-
+	<script type="text/javascript" src="/scripts/NavigationPointer.js"></script>
+	<script type="text/javascript" src="/scripts/DashboardManager.js"></script>
+	<script type="text/javascript" src="/lib/HelpBox.js"></script>
 
 	<script type="text/javascript" src="https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js"></script>
 
@@ -90,6 +93,8 @@
 			body : $(document.body),
 			documentWrapper : $('#documentWrapper'),
 		};
+
+		window.ERP_API_AJAX_ROOT_URL = 'https://events-platform-sandbox.bigdate.events:17584/ajax'
 
 		window.__default_user_config = {
 			"settings": {

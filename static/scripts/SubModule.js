@@ -2207,7 +2207,7 @@ SubModule.prototype = {
 
     getAjaxUrl: function (queryType, itemId) {
         var self = this;
-        var url = '/ajax/@moduleId@/@subModuleId@/@queryType@';
+        var url = window.ERP_API_AJAX_ROOT_URL + '/@moduleId@/@subModuleId@/@queryType@';
         url = url.replace('@moduleId@', self.module.id);
         url = url.replace('@subModuleId@', self.id);
         url = url.replace('@queryType@', queryType);

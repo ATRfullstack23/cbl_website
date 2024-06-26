@@ -289,29 +289,29 @@ FormView.prototype = {
     bindEvents: function () {
         var self = this;
         var currentEvent;
-        self.container.scannerDetection({
-            onComplete: function(data){
-                var scannedContainer = $(currentEvent.target);
-                if(scannedContainer.attr('class') === 'barcodeInput'){
-                    var value = scannedContainer.val();
-                    if(value.length > 7){
-                        value = value.substring(0, value.length - 7);
-                        scannedContainer.val(value);
-                    }
-                    else{
-                        scannedContainer.val('')
-                    }
-                    self.barcodeConfig.value = data;
-                    self.addValueToChildTable(self.barcodeConfig);
-                }
-            },
-            onReceive: function(eve){
-                currentEvent = eve;
-            },
-            onError: function(data){
-
-            }
-        });
+        // self.container.scannerDetection({
+        //     onComplete: function(data){
+        //         var scannedContainer = $(currentEvent.target);
+        //         if(scannedContainer.attr('class') === 'barcodeInput'){
+        //             var value = scannedContainer.val();
+        //             if(value.length > 7){
+        //                 value = value.substring(0, value.length - 7);
+        //                 scannedContainer.val(value);
+        //             }
+        //             else{
+        //                 scannedContainer.val('')
+        //             }
+        //             self.barcodeConfig.value = data;
+        //             self.addValueToChildTable(self.barcodeConfig);
+        //         }
+        //     },
+        //     onReceive: function(eve){
+        //         currentEvent = eve;
+        //     },
+        //     onError: function(data){
+        //
+        //     }
+        // });
 
         self.elements.barcodeScanStartButton && self.elements.barcodeScanStartButton.on('click', function(){
             self.barcodeConfig.simpleDataTableWithBarcode && self.barcodeConfig.simpleDataTableWithBarcode.addNewRow();
