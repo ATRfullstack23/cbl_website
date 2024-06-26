@@ -1,0 +1,6 @@
+.simpleDataTableRowValidationError{
+    padding: 3px;
+    color: rgb(139, 106, 106);
+    background: rgb(243, 228, 209);
+    font-size: 12px;
+}

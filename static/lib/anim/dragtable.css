@@ -1,0 +1,46 @@
+/* 
+ * dragtable
+ *
+ * @Version 2.0.11
+ *
+ * default css
+ *
+ */
+/*##### the dragtable stuff #####*/
+.dragtable-sortable { 
+    list-style-type: none; margin: 3px; padding: 0px;
+    color: black;
+    width:103% !important;
+}
+.dragtable-sortable li {
+    margin: 3px; padding: 0px; float: left; font-size: 1em;
+    background: rgba(195, 195, 195, 0.87);
+    color: black;
+
+}
+
+.dragtable-sortable th, .dragtable-sortable td{
+    border-left: 0px;
+    color: black;
+}
+
+.dragtable-sortable li:first-child th, .dragtable-sortable li:first-child td {
+    border-left: 1px solid #CCC;
+}
+
+.ui-sortable-helper {
+    opacity: 1;
+}
+.ui-sortable-placeholder { 
+    -moz-box-shadow: 4px 5px 4px #C6C6C6 inset;
+    -webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;
+    box-shadow: 4px 5px 4px #C6C6C6 inset;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    visibility: visible !important;
+    background: #EFEFEF !important;
+    visibility: visible !important;
+}
+.ui-sortable-placeholder * { 
+    opacity: 0.0; visibility: hidden;
+}

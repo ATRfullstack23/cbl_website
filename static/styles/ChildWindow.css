@@ -1,0 +1,126 @@
+.window-container.defaultMode{
+    background: #ecf0f1;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99999;
+}
+.window-container.defaultMode .window-content{
+    height: calc(100% - 35px);
+}
+.window-container.defaultMode .window-buttons{
+    text-align: right;
+}
+.window-container.defaultMode .defaultMode .reference-message{
+    color: #fff;
+}
+.window-container.quickViewMode{
+    background: rgb(255, 255, 255);
+    border: 1px solid #DBDBDB;
+}
+.window-container.quickViewMode > header{
+    display: none;
+}
+.window-container.quickViewMode .gridViewButtonsContainer{
+    float: right;
+}
+.window-container.quickViewMode .gridViewButtonsContainer button{
+    padding: .3em .7em .6em;
+}
+.window-container.quickViewMode .defaultButtonsContainer{
+    display: none;
+}
+.window-container.quickViewMode .grid-container th, .window-container.quickViewMode .grid-container td{
+    font-size: 11px !important;
+}
+.window-container.quickViewMode .grid-container.pc #grid > thead > tr > th{
+    padding: 1px 2px !important;
+}
+.window-container.quickViewMode .grid-container.pc #grid > tbody > tr > td{
+    padding: 1px 2px !important;
+}
+.window-container.quickViewMode .grid-container.pc #grid > tfoot > tr > td{
+    padding: 1px 2px !important;
+}
+.window-container.quickViewMode .grid-container .grid-data-item{
+    font-size: 11px !important;
+}
+.window-container.quickViewMode .filter-tabPanel{
+    display:none !important;
+}
+
+.window-container.quickViewMode .grid-container{
+    margin: 0px;
+    background: transparent;
+}
+.window-container.quickViewMode .buttonsRow{
+    height: 20px !important;
+}
+
+.formview-edit .window-container.quickViewMode .buttonsRow button{
+    display: none !important;
+}
+
+
+
+
+
+
+.window-container.quickViewMode .gridViewButtonsContainer{
+    float: none;
+}
+.window-container.inlineViewMode {
+    position: relative;
+}
+.window-container.inlineViewMode:hover td{
+    background: transparent !important;
+}
+.window-container .inline-mode-pointer {
+    display: none;
+}
+
+.window-container.inlineViewMode .inline-mode-pointer {
+    position: absolute;
+    top: 0px;
+    width: 7px;
+    height: 7px;
+    background: whitesmoke;
+    z-index: 3;
+    left: 980px;
+    top: -2px;
+    transform: rotate(45deg);
+    border-top: 1px solid #AAA;
+    border-left: 1px solid #AAA;
+    display: block;
+    padding: 0;
+}
+
+.window-container #inlineModeCloseButton {
+    display: none;
+}
+.window-container.inlineViewMode #inlineModeCloseButton {
+    position: absolute;
+    display: block;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    width: 20px;
+    z-index: 3;
+    font-size: 14px;
+    padding: 3px 10px;
+}
+
+.window-container.inlineViewMode .window-content {
+    position: relative;
+    /* border: 1px solid #AAA; */
+    padding: 2px;
+    /* margin-top: 5px; */
+}
+
+.window-container.inlineViewMode .window-content .module-panel {
+    border: 1px solid #AAA;
+    z-index: 2;
+}

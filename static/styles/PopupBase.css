@@ -1,0 +1,148 @@
+
+
+
+.popupBase{
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    background-color: rgba(3,3,3,.3);
+    display: none;
+    overflow: auto;
+}
+
+.popupBase.visible{
+    display: block;
+}
+
+
+.popupMain{
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+    border: 1px solid #444;
+    min-width: 300px;
+    max-width: 800px;
+    width: 60vw;
+    background-color: white;
+    position: relative;
+    top: 15vh;
+    margin-bottom: 20px;
+}
+
+
+
+.popupHeader {
+    padding: 7px 10px;
+    text-align: left;
+    border-bottom:1px solid #AAA;
+    background: white;
+}
+.popupHeader h4{
+    font-size: 16px;
+    font-weight:bold;
+    display: inline-block;
+}
+
+.popupHeader .popupCloseButton{
+    font-size: 16px;
+    position: absolute;
+    right: 20px;
+    cursor: pointer;
+}
+
+
+
+
+.popupContent {
+    min-height: 100px;
+    padding: 5px;
+}
+
+
+
+.popupFooterButtonPanel{
+    text-align: right;
+    padding-right:10px;
+    padding: 10px;
+}
+
+.popupFooterButtonPanel button{
+    border: 1px solid #888;
+    padding: 4px;
+    background: #e8e8e8;
+    border-radius: 1px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.popupFooterButtonPanel button:hover{
+    border: #58502c 1px solid;
+    background-color: #fefee6;
+    cursor: pointer;
+    text-decoration: underline;
+    color: #333;
+}
+
+.popupMain{
+}
+
+
+
+.popupBase.showLoadingOverlay .popupMain:after{
+    content: 'Loading...';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(3,3,3,.5);
+    text-align: center;
+    line-height: 100%;
+    z-index: 10;
+    color: white;
+    /* font-size: 100%; */
+    padding-top: 14%;
+    font-size: 36px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.popupContent form {
+    text-align: left;
+}
+
+.popupContent form td {
+    padding: 5px;
+    font-size: 14px;
+}
+
+.popupContent form input {
+    padding: 3px;
+}
+
+.popupContent form textarea {
+    padding: 3px;
+}
+
+
+
+
+
+
+
+
+

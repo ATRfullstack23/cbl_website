@@ -1,0 +1,238 @@
+.filter-panel{
+    opacity: .1;
+    -webkit-transform: translateY(50px);
+    -webkit-transition: opacity 200ms ease, -webkit-transform 200ms ease;
+    -moz-transform: translateY(50px);
+    -moz-transition: opacity 200ms ease, -webkit-transform 200ms ease;
+    -ms-transform: translateY(50px);
+    -ms-transition: opacity 200ms ease, -webkit-transform 200ms ease;
+    transform: translateY(50px);
+    transition: opacity 200ms ease, -webkit-transform 200ms ease;
+}
+.filter-panel-shown{
+    opacity: 1;
+    -webkit-transform: translateY(0px);
+    -moz-transform: translateY(0px);
+    -ms-transform: translateY(0px);
+    transform: translateY(0px);
+}
+.filter-panel.pc{
+    border: 1px solid #EEE;
+    display: inline-block;
+    position: fixed;
+    box-shadow: 0px 0px 15px 0px #C2C2C2;
+    top:150px;
+    left: 150px;
+    z-index: 3;
+    background-color: #ffffff;
+}
+.filter-tabPanel{
+    background: white;
+    margin: 10px 10px 1px 9px;
+    border: 1px solid #DDD;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.filter-panel.pc .reArrangeButton {
+    float: right;
+    background: blue;
+    width: 24px;
+    height: 24px;
+}
+
+.filter-panel.pc .filter-divHeader {
+    padding: 15px;
+    background: #3f4944;
+    cursor: move;
+    color: white;
+    font-size: 20px;
+}
+
+.filter-panel.pc > table > tbody> tr:nth-child(2)> td{
+    padding: 15px;
+}
+.filter-panel.pc > table > tbody> tr:nth-child(3)> td{
+    padding: 5px;
+}
+
+.filter-container.pc {
+    padding: 5px;
+    margin-right: 10px;
+}
+.filter-container.pc .filter-display-name{
+    padding: 3px;
+}
+.filter-container.pc .filter-button-panel{
+    padding: 3px;
+}
+.filter-container.pc select {
+    min-width: 150px;
+}
+.filter-container.pc .chosen-container {
+    min-width: 150px;
+}
+
+
+
+
+.filter-button-panel.pc .filter-form-elements{
+    position: relative;
+}
+.filter-container.pc .filter-form-elements{
+    position: relative;
+}
+.filter-container.pc .filter-form-elements::before {
+    transition: all 300ms ease;
+    content: '';
+    visibility: hidden;
+    opacity: 0;
+    bottom: 10px;
+    left: 42%;
+    border-right: 7px solid rgba(0, 0, 255, 0);
+    border-top: 7px solid #3f4944;
+    border-left: 7px solid rgba(255, 255, 255, 0.00);
+    position: absolute;
+}
+.filter-container.pc .filter-form-elements::after {
+    transition: all 300ms ease;
+    content: attr(title);
+    visibility: hidden;
+    width: 84%;
+    opacity: 0;
+    position: absolute;
+    left: 2px;
+    bottom: 10px;
+    background-color: #3f4944;
+    color: white;
+    padding: 5px 10px;
+    line-height: 14px;
+    border-radius: 2px;
+}
+.filter-container.pc .filter-form-elements.showTitle::before {
+    bottom: 23px;
+    visibility: visible;
+    opacity: 1;
+}
+.filter-container.pc .filter-form-elements.showTitle::after {
+    bottom: 30px;
+    visibility: visible;
+    opacity: 1;
+}
+
+.filter-container.pc input[type="search"]{
+    padding: 1px 0px;
+}
+
+body.pc .filter-tabPanel{
+    background: #F5F5F5;
+    margin: 10px 10px 1px 9px;
+    border: 1px solid #DDD;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.filter-tabPanel > .filter-container{
+    display: inline-block;
+}
+.filter-container.pc .filter-tabOptions{
+    /*padding: 6px;*/
+}
+
+
+.filter-panel.mobile{
+    display: block;
+    position: fixed;
+    box-shadow: 0px 0px 15px 0px #C2C2C2;
+    top:0px;
+    left: 0px;
+    bottom:0px;
+    right:0px;
+    z-index: 3;
+    background-color: #ffffff;
+}
+.filter-container.mobile {
+    padding: 5px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+.filter-container.mobile .filter-display-name{
+    padding: 3px;
+}
+.filter-container.mobile .filter-button-panel{
+    padding: 3px;
+}
+.filter-container.mobile .filter-divHeader {
+    padding: 10px;
+    background: #3f4944;
+    cursor: move;
+    color: white;
+}
+.filter-container.mobile .filter-tabOptions{
+    /*padding: 6px;*/
+}
+
+.filter-container.mobile .ui-button-text-only .ui-button-text {
+    padding: .1em .4em;
+}
+
+.filter-panel.mobile .filter-divHeader{
+    padding: 10px;
+    display: block;
+    background: #3f4944;
+    text-align: center;
+    color: #FFF;
+}
+.filter-panel.mobile .filter-button-search{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+}
+.filter-panel.mobile .filter-button-clear{
+    position: fixed;
+    top: 0px;
+    right: 75px;
+}
+.filter-panel.mobile .filter-button-cancel{
+    position: fixed;
+    top: 0px;
+    right: 0px;
+}
+.filter-panel.mobile .filter-display-name{
+    width: 100px;
+}
+
+body.mobile .filter-tabPanel{
+    /*padding: 6px;*/
+    background: white;
+    margin: 5px 5px 0px 4px;
+    border: 1px solid #DDD;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.filter-tabPanel > .filter-container{
+    display: inline-block;
+}
+
+.filter-panel.mobile .filter-container.mobile > table{
+    width: 90%;
+}
+.filter-panel.mobile input[type="text"]{
+    width: 92%;
+}
+.filter-panel.mobile select{
+    width: 100%;
+}
+.filter-panel.mobile input[type="date"]{
+    width: 100%;
+}
+.filter-panel.mobile .filter-table-main{
+}
+
+.filter-panel.mobile .filter-table-main td{
+    display: block;
+}
+
+.filterImageContainer{
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-left: 4px;
+    position: relative;
+    top: 3px;
+}

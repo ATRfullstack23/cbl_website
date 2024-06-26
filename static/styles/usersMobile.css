@@ -1,0 +1,347 @@
+.user-panel-container{
+    -webkit-transition: all 350ms;
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+
+    /*background: url('pic/loginScreen.jpg')no-repeat !important;*/
+    background: -webkit-linear-gradient(#1e1e1e, #363636, #535353, #6d6d6d, #808080);;
+    /*background-size: 100%;*/
+    z-index: 10;
+    opacity: 0;
+}
+
+.user-panel-container-in{
+    opacity: 1;
+}
+
+.direct-login-container{
+    -webkit-transition: all 350ms;
+    -webkit-transform: translateY(-1400px);
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: rgba(70, 70, 70, 0.80);
+    z-index: 13;
+
+}
+
+.direct-login-container-in{
+    -webkit-transform: translateY(0px);
+}
+
+.direct-login-panel{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.user-panel-button-container{
+    display: inline-block;
+    width: 100%;
+    height: 6%;
+    text-align: right;
+    z-index: 145;
+}
+.user-panel-button-element{
+    display: inline-block;
+    width: 54px;
+    height: 34px;
+}
+
+.user-panel-button{
+    background: #999;
+    color: black;
+    width: 100%;
+    box-shadow: inset 0 0 0 1px hsla(0,0%,0%,.2), inset 0 2px 0 hsla(0,0%,100%,.1), inset 0 1.2em 0 hsla(0,0%,100%,0.1), inset 0 -.2em 0 hsla(0,0%,100%,.1), inset 0 -.25em 0 hsla(0,0%,0%,.25), 0 .25em .25em hsla(0,0%,0%,.05);
+    height: 100%;
+}
+
+.users-panel{
+    -webkit-transition: all 350ms;
+    -webkit-transform: translateY(-1400px);
+    position: absolute;
+    width: 100%;
+    height: 89%;
+    overflow: scroll;
+    display: inline-block;
+    top: 11%;
+    left: 0%;
+    text-align: center;
+    z-index: 11;
+}
+
+.user-panel-in{
+    -webkit-transform: translateY(0px);
+}
+
+.user-main-container{
+    -webkit-transition: all 350ms;
+    display: inline-block;
+    width: 10%;
+    height: 18%;
+    margin-right: 2.5%;
+    margin-left: 10%;
+    margin-bottom: 20px;
+}
+
+.user-main-container-selected-absolute{
+    position: absolute;
+}
+.user-main-container-selected{
+    position: absolute;
+    left: 35% !important;
+    top: 23% !important;
+    margin-left: 0% !important;
+}
+
+.user-main-container-not-selected{
+    margin-right: 4.5%;
+    margin-left: 4.5%;
+    margin-bottom: -17px;
+}
+
+.user-container{
+    /*-webkit-transition: -webkit-transform 1s;*/
+    /*-webkit-transition: left 1s;*/
+    -webkit-transition: all 350ms;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.33);
+    margin-bottom: 5%;
+    top: 0px;
+    border-radius: 50%;
+}
+
+.user-container-selected{
+    width: 110px !important;
+    height: 110px !important;
+    /*position: absolute;*/
+}
+
+.user-container-after-logged-in{
+    /*position: absolute;*/
+    /*left: 42% !important;*/
+    /*top: 30% !important;*/
+}
+
+.user-container-not-selected{
+    width: 50px !important;
+    height: 50px !important;
+    background: rgba(250, 247, 247, 0.59);
+    margin-left: 37%;
+}
+
+.user-container-logged-in{
+    -webkit-transform: translateY(-500px);
+}
+
+.user-container-active{
+    -webkit-transform: rotate(270deg) scale(0.01);
+}
+
+.user{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.user-icon-container{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.user-icon-container-selected{
+    /*height: 33% !important;*/
+}
+
+.login-icon{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: url('pic/userIcon.jpg') no-repeat;
+    background-size: 100%;
+    border-radius: 50%;
+}
+
+.login-icon-selected{
+    /*width: 32% !important;*/
+}
+
+.user-name-container{
+    display: inline-block;
+    width: 80px;
+    /* height: 22px; */
+    height: 13%;
+    text-align: center;
+    margin-bottom: 17px;
+}
+
+.user-name-container-selected{
+    display: inline-block;
+    width: 110px;
+    margin-bottom: 17px;
+    height: 13%;
+}
+
+.login-user-name{
+    display: inline-block;
+    color: white;
+    width: 100%;
+    height: 100%;
+}
+.login-name{
+    font-size: 140%;
+}
+
+.login-name-input{
+    font-size: 16px;
+    text-align: center;
+    width: 100%;
+    background: transparent;
+    color: white;
+    border-radius: 5px;
+}
+
+.login-user-name-not-selected{
+    font-size: 70% !important;
+}
+
+.password-button-container{
+    display: inline-block;
+    width: 100%;
+    height: 13%;
+    box-sizing: border-box;
+
+}
+.password-button-container-unknown{
+    display: inline-block;
+    width: 100%;
+    height: 13%;
+    box-sizing: border-box;
+    margin-top: 4%;
+}
+
+.user-password-container{
+    width: 100%;
+    height: 95%;
+}
+
+.login-user-password{
+    display: inline-table;
+    width: 100%;
+    height: 100%;
+}
+
+.login-password{
+    width: 110px;
+    height: 20px;
+    text-align: center;
+    font-size: 128%;
+    background: transparent;
+    color: white;
+    border-radius: 5px;
+}
+
+.login-buttons-container{
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    background: transparent;
+    margin-top: 55%;
+    margin-left: 24%;
+}
+
+.login-button-container{
+    display: inline-block;
+    width: 26%;
+    height: 120%;
+    background: url('pic/loginArrow.png')no-repeat;
+    background-size: 100%;
+}
+
+.login-button{
+    width: 100%;
+    border-radius: 5%;
+    height: 100%;
+    color: white;
+    box-shadow: inset 0 0 0 1px hsla(0,0%,0%,.2), inset 0 2px 0 hsla(0,0%,100%,.1), inset 0 1.2em 0 hsla(0,0%,100%,0.1), inset 0 -.2em 0 hsla(0,0%,100%,.1), inset 0 -.25em 0 hsla(0,0%,0%,.25), 0 .25em .25em hsla(0,0%,0%,.05);
+
+    background: transparent !important;
+    border: none;
+    font-size: 100%;
+    padding: 0px !important;
+}
+
+.remove-pointer-events{
+    pointer-events: none;
+}
+
+
+/*-------------------------------------loginScreenAnimate---------------------------------*/
+
+.login-animate-container{
+    display: inline-block;
+    position: absolute;
+    top: 75%;
+    left: -100%;
+    height: 5%;
+    width: 100%;
+    background: transparent;
+    z-index: 15;
+    text-align: center;
+}
+
+.login-animate-container-in{
+    left: 0%;
+}
+.login-animate-container-out{
+    left: 100%;
+}
+
+.animate-container{
+    display: inline-block;
+    height: 100%;
+    color: white;
+    font-size: 24px;
+    position: relative;
+}
+.animate-container span{
+
+}
+
+.animate-content{
+    display: inline-block;
+    color: white;
+    font-size: 13px;
+}
+
+.scroll-dot{
+    opacity: 0;
+}
+.animate-dot{
+    opacity: 1;
+}
+
+.animate-scroll-in-container{
+    -webkit-animation: scrollMove 5s;
+}
+
+
+
+@-webkit-keyframes scrollMove{
+    0% {left : -20%}
+    10% {left : 5%}
+    80% {left : 5%; opacity: 1}
+    90% {left : 100%; opacity: 0}
+    100% {left : -100%; opacity: 0}
+}

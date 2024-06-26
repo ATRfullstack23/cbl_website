@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="initial-scale=1.0, width=device-width, height=device-height, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!--		<link rel="stylesheet" href="/generated/beforeLogin.css">-->
+<!--		<script type="text/javascript" src="/generated/beforeLogin.js"></script>-->
+
+
+		<link rel="stylesheet" href="/lib/jquery.ui.css">
+		<link rel="stylesheet" href="/styles/SimpleDataTableRow.css">
+		<link rel="stylesheet" href="/styles/FormView.css">
+		<link rel="stylesheet" href="/styles/FormElements.css">
+		<link rel="stylesheet" href="/styles/Filter.css">
+		<link rel="stylesheet" href="/styles/ContextMenu.css">
+		<link rel="stylesheet" href="/lib/chosen/chosen.css">
+		<link rel="stylesheet" href="/lib/jsonview/jsonview.min.css">
+		<link rel="stylesheet" href="/styles/tabber.css">
+
+
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+
+<!--	<script type="text/javascript" id="socket_io" src="/socket.io/socket.io.js"></script>-->
+	<script type="text/javascript" src="/lib/jquery.min.js"></script>
+	<script type="text/javascript" src="/lib/jquery.ui.min.js"></script>
+	<script type="text/javascript" src="/lib/transit.js"></script>
+	<script type="text/javascript" src="/lib/jquery.utils.js"></script>
+	<script type="text/javascript" src="/lib/moment.js"></script>
+	<script type="text/javascript" src="/lib/chosen/chosen.jquery.js"></script>
+
+	<script type="text/javascript" src="/lib/hammer.min.js"></script>
+	<script type="text/javascript" src="/lib/FileSaver.js"></script>
+	<script type="text/javascript" src="/scripts/ContextMenu.js"></script>
+	<script type="text/javascript" src="/lib/notifier.js"></script>
+
+	<script type="text/javascript" src="/scripts/ValidationManager.js"></script>
+
+	<script type="text/javascript" src="/scripts/SimpleDataTableRowValidationManager.js"></script>
+	<script type="text/javascript" src="/scripts/FormView.js"></script>
+	<script type="text/javascript" src="/scripts/FilterableViewHelper.js"></script>
+	<script type="text/javascript" src="/scripts/Column.js"></script>
+	<script type="text/javascript" src="/scripts/ColumnManager.js"></script>
+	<script type="text/javascript" src="/scripts/Pager.js"></script>
+	<script type="text/javascript" src="/scripts/SimpleDataTable.js"></script>
+	<script type="text/javascript" src="/scripts/Grid.js"></script>
+	<script type="text/javascript" src="/scripts/Filter.js"></script>
+	<script type="text/javascript" src="/scripts/FilterManager.js"></script>
+	<script type="text/javascript" src="/scripts/Button.js"></script>
+	<script type="text/javascript" src="/scripts/ButtonManager.js"></script>
+	<script type="text/javascript" src="/scripts/SubModule.js"></script>
+	<script type="text/javascript" src="/scripts/Module.js"></script>
+	<script type="text/javascript" src="/scripts/SimpleDataTableRow.js"></script>
+	<script type="text/javascript" src="/scripts/Card.js"></script>
+	<script type="text/javascript" src="/scripts/CardManager.js"></script>
+	<script type="text/javascript" src="/scripts/List.js"></script>
+
+	<script type="text/javascript" src="/scripts/ListManager.js"></script>
+	<script type="text/javascript" src="/scripts/ReportFilter.js"></script>
+	<script type="text/javascript" src="/scripts/ReportFilterManager.js"></script>
+	<script type="text/javascript" src="/scripts/ModuleVisibilityManager.js"></script>
+	<script type="text/javascript" src="/scripts/ColumnVisibilityManager.js"></script>
+
+	<script type="text/javascript" src="/scripts/SubReport.js"></script>
+	<script type="text/javascript" src="/scripts/Report.js"></script>
+	<script type="text/javascript" src="/scripts/ERP.js"></script>
+	<script type="text/javascript" src="/scripts/DirectActionMenu.js"></script>
+	<script type="text/javascript" src="/scripts/DirectActionButton.js"></script>
+
+
+	<script type="text/javascript" async src="/lib/jsonview/jsonview.min.js"></script>
+	<script type="text/javascript" async src="/scripts/SimpleDataTableRowValidationError.js"></script>
+	<script type="text/javascript" async src="/scripts/ValidationError.js"></script>
+	<script type="text/javascript" src="/scripts/User.js"></script>
+	<script type="text/javascript" src="/scripts/Tabber.js"></script>
+
+
+	<script type="text/javascript" src="https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js"></script>
+
+
+
+
+	<script>
+		window.globalElements = {
+			body : $(document.body),
+			documentWrapper : $('#documentWrapper'),
+		};
+
+		window.__default_user_config = {
+			"settings": {
+				"moduleNavigationModeForPC": "dock",
+				"moduleNavigationModeForMobile": "dock",
+				"moduleNavigationModeForTablet": "dock",
+				"defaultModuleForMobile": "employeeProfile",
+				"defaultModuleForTablet": "employeeProfile",
+				"defaultModuleForPC": "employeeProfile",
+				"staffProfile_inlineFiltersOrder": [
+					"name",
+					"designation",
+					"contactNumber",
+					"officeNumber",
+					"emailId"
+				],
+				"transactions_inlineFiltersOrder": [
+					"kioskId",
+					"location",
+					"productDetails",
+					"account",
+					"supplierRef",
+					"etisalatReferenceNumber"
+				],
+				"clientProfile_create_formViewConfiguration": {
+					"size": {
+						"width": 1360
+					}
+				},
+				"renewalDetails_create_formViewConfiguration": {
+					"size": {
+						"width": 1261
+					}
+				},
+				"clientProfile_inlineFiltersOrder": [
+					"admissionNumber",
+					"clientName",
+					"package",
+					"contactNumber",
+					"dateOfBirth",
+					"gender",
+					"bloodGroup",
+					"status",
+					"joiningDateFrom",
+					"joiningDateTo"
+				],
+				"clientProfile_gridOrder": {
+					"admissionNumber": {
+						"id": "admissionNumber",
+						"index": 0
+					},
+					"clientName": {
+						"id": "clientName",
+						"index": 1
+					},
+					"packageProfileId": {
+						"id": "packageProfileId",
+						"index": 2
+					},
+					"contactNumber": {
+						"id": "contactNumber",
+						"index": 3
+					},
+					"weight": {
+						"id": "weight",
+						"index": 4
+					},
+					"gender": {
+						"id": "gender",
+						"index": 5
+					},
+					"joiningDate": {
+						"id": "joiningDate",
+						"index": 6
+					},
+					"admissionRenewalDate": {
+						"id": "admissionRenewalDate",
+						"index": 7
+					},
+					"clientImage": {
+						"id": "clientImage",
+						"index": 8
+					},
+					"status": {
+						"id": "status",
+						"index": 9
+					},
+					"renewalDetails": {
+						"id": "renewalDetails",
+						"index": 10
+					}
+				},
+				"birthdayReport_gridster_pc": {
+					"cards": {},
+					"graphs": {},
+					"lists": {
+						"birthdayReminder": {
+							"top": -2,
+							"left": -278,
+							"width": 1323,
+							"height": 310,
+							"data-row": "1",
+							"data-col": "1",
+							"data-sizex": "1",
+							"data-sizey": "1"
+						}
+					},
+					"reportFilters": {}
+				},
+				"admissionsReport_gridster_pc": {
+					"cards": {},
+					"graphs": {},
+					"lists": {
+						"admissionRenewalTotalAmount": {
+							"top": -39,
+							"left": 5,
+							"width": 1038,
+							"height": 428,
+							"data-row": "1",
+							"data-col": "1",
+							"data-sizex": "5",
+							"data-sizey": "4"
+						},
+						"newAdmissionsTotalAmount": {
+							"top": 445,
+							"left": 5,
+							"width": 1038,
+							"height": 318,
+							"data-row": "5",
+							"data-col": "1",
+							"data-sizex": "5",
+							"data-sizey": "3"
+						}
+					},
+					"reportFilters": {
+						"admissionToDate": {
+							"top": 0,
+							"left": 570.5,
+							"width": 119,
+							"height": 49,
+							"index": 1
+						},
+						"admissionFromDate": {
+							"top": 0,
+							"left": 399.171875,
+							"width": 119,
+							"height": 49,
+							"index": 0
+						}
+					}
+				},
+				"admissionRenewals_gridster_pc": {
+					"cards": {},
+					"graphs": {},
+					"lists": {
+						"before7Days": {
+							"top": 775,
+							"left": 5,
+							"width": 1038,
+							"height": 318,
+							"data-row": "8",
+							"data-col": "1",
+							"data-sizex": "5",
+							"data-sizey": "3"
+						},
+						"admissionRenewalReminder": {
+							"top": 5,
+							"left": 5,
+							"width": 1038,
+							"height": 758,
+							"data-row": "1",
+							"data-col": "1",
+							"data-sizex": "5",
+							"data-sizey": "7"
+						}
+					},
+					"reportFilters": {
+						"dateFrom": {
+							"top": 0,
+							"left": 676.171875,
+							"width": 119,
+							"height": 49,
+							"index": 0
+						},
+						"dateTo": {
+							"top": 0,
+							"left": 847.5,
+							"width": 119,
+							"height": 49,
+							"index": 1
+						}
+					}
+				},
+				"birthdayReport_floatingWindow": {
+					"top": 606,
+					"isLeft": false,
+					"childWindowPosition": {
+						"left": 549.71875,
+						"top": 0
+					}
+				},
+				"admissionsReport_floatingWindow": {
+					"isLeft": false,
+					"childWindowPosition": {
+						"left": 152,
+						"top": 174
+					}
+				},
+				"admissionRenewals_floatingWindow": {
+					"top": 591,
+					"left": 0,
+					"isLeft": true,
+					"childWindowPosition": {}
+				},
+				"modulesNavigationArrangementHorizontal": {
+					"employeeProfile": {
+						"name": "employeeProfile",
+						"index": 0
+					},
+					"financialYearProfile": {
+						"name": "financialYearProfile",
+						"index": 1
+					},
+					"leaveRequests": {
+						"name": "leaveRequests",
+						"index": 2
+					},
+					"employeeLedger": {
+						"name": "employeeLedger",
+						"index": 3
+					},
+					"groups": {},
+					"companyLeaves": {
+						"name": "companyLeaves",
+						"index": 5
+					},
+					"_scheduledTaskLog": {
+						"name": "_scheduledTaskLog",
+						"index": 6
+					}
+				},
+				"renewalDetails_inlineFiltersOrder": [
+					"package",
+					"dateFrom",
+					"clientName",
+					"dateTo"
+				],
+				"employeeProfile_create_formViewConfiguration": {
+					"size": {
+						"width": 1269
+					}
+				},
+				"module_navigation_mode": "accordionLeft",
+				"employeeLeaveReport_gridster_pc": {
+					"cards": {},
+					"graphs": {},
+					"lists": {
+						"employeeLeaveStatusReport": {
+							"top": 5,
+							"left": 5,
+							"width": 1458,
+							"height": 648,
+							"data-row": "1",
+							"data-col": "1",
+							"data-sizex": "7",
+							"data-sizey": "6"
+						}
+					},
+					"reportFilters": {
+						"leaveType": {
+							"top": 0,
+							"left": 724,
+							"width": 200,
+							"height": 49,
+							"index": 0
+						}
+					}
+				},
+				"employeeAttendanceReport_gridster_pc": {
+					"cards": {},
+					"graphs": {},
+					"lists": {
+						"employeeAttendanceList": {
+							"top": 5,
+							"left": 10,
+							"width": 1038,
+							"height": 428,
+							"data-row": "1",
+							"data-col": "1",
+							"data-sizex": "5",
+							"data-sizey": "4"
+						}
+					},
+					"reportFilters": {
+						"employeeName": {
+							"top": 0.15625,
+							"left": 895.328125,
+							"width": 200,
+							"height": 49,
+							"index": 2
+						},
+						"dateTo": {
+							"top": 0,
+							"left": 724,
+							"width": 119,
+							"height": 49,
+							"index": 1
+						},
+						"dateFrom": {
+							"top": 0,
+							"left": 552.671875,
+							"width": 119,
+							"height": 49,
+							"index": 0
+						}
+					}
+				},
+				"employeeLeaveReport_floatingWindow": {
+					"top": 640,
+					"left": 0,
+					"isLeft": true,
+					"childWindowPosition": {}
+				},
+				"employeeAttendanceReport_floatingWindow": {
+					"top": 685,
+					"left": 0,
+					"isLeft": true,
+					"childWindowPosition": {}
+				},
+				"companyLeaves_inlineFiltersOrder": [
+					"leaveDate",
+					"reason"
+				],
+				"financialYearAttendanceReport_floatingWindow": {
+					"isLeft": false,
+					"childWindowPosition": {}
+				},
+				"financialYearAttendanceReport_gridster_pc": {
+					"cards": {},
+					"graphs": {},
+					"lists": {
+						"financialYearAttendanceReport": {
+							"top": 5,
+							"left": 5,
+							"width": 1248,
+							"height": 648,
+							"data-row": "1",
+							"data-col": "1",
+							"data-sizex": "6",
+							"data-sizey": "6"
+						}
+					},
+					"reportFilters": {
+						"financialYear": {
+							"top": 0,
+							"left": 724,
+							"width": 200,
+							"height": 49,
+							"index": 0
+						}
+					}
+				},
+				"leaveRequests_create_formViewConfiguration": {
+					"size": {
+						"width": 1054
+					}
+				}
+			},
+			"roleSettings": {
+				"moduleVisibility": {},
+				"columnButtonFilterVisibility": {
+					"employeeLedger": {
+						"id": "employeeLedger",
+						"subModules": {
+							"employeeLedger": {
+								"id": "employeeLedger",
+								"columns": {},
+								"buttons": {},
+								"filters": {}
+							}
+						}
+					},
+					"leaveRequests": {
+						"id": "leaveRequests",
+						"subModules": {
+							"leaveRequests": {
+								"id": "leaveRequests",
+								"columns": {},
+								"buttons": {},
+								"filters": {}
+							},
+							"employeeLeaveDays": {
+								"id": "employeeLeaveDays",
+								"columns": {},
+								"buttons": {},
+								"filters": {}
+							}
+						}
+					}
+				}
+			},
+			"userId": 1000001,
+			"roleId": 1000001,
+			"userName": "admin",
+			"roleName": "admin",
+			"user": "admin",
+			"role": "admin",
+			"id": 1000001,
+			"sessionId": "1ZL9J0tmhRqGKTxNgLBODXC5ENH_vC1K"
+		};
+
+		window.initialize_erp = function () {
+			const user_obj = {
+				config: {
+					user: window.__default_user_config
+				},
+				userDetails: window.__default_user_config,
+				users: {
+					1000001: window.__default_user_config
+				},
+				configureSocket: ()=>{
+
+				}
+			}
+			$.ajax({
+				url: '/configuration.json',
+				cache: false,
+				type: 'GET'
+			}).success(function(data){
+				data.socket_io_url = 'https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js?_=1719394543097';
+				window.erp = new ERP(data, {user: user_obj});
+				// window.erp.elements.content.prepend(erp.container);
+			});
+		}
+
+		initialize_erp();
+	</script>
+
+
+</html>

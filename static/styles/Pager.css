@@ -1,0 +1,67 @@
+.pager-panel{
+    padding: 6px;
+}
+
+.pager-page-item-panel{
+    /*border: 1px solid #5b5b5b;*/
+    padding: 2px 0px;
+    border-radius: 2px;
+}
+.pager-panel div{
+    display: inline-block;
+}
+
+.pager-main > tr > td:first-child{
+    text-align: left;
+}
+
+.pager-main > tr > td:last-child{
+    text-align: right;
+}
+.pager-page-item{
+    padding: 2px 6px;
+    margin: 0;
+    cursor: pointer;
+    color: #333;
+}
+
+.pager-page-item[disabled]{
+    pointer-events: none;
+    opacity: .7;
+}
+
+.pager-page-item:hover{
+    text-decoration: underline;
+    background: rgba(133, 131, 131, 0.35);
+}
+
+.pager-page-item-selected{
+    background: rgba(133, 131, 131, 0.35);
+}
+
+.webpages-nav-panel{
+    background: #eeeeee;
+}
+.webpages-nav-pointer{
+    background: #aaaaaa;
+}
+
+
+body.pc.smallFontSize .pager-main{
+     font-size: 12px;
+ }
+body.pc.smallFontSize .pager-main{
+    font-size: 12px;
+}
+body.pc.mediumFontSize .pager-main{
+    font-size: 14px;
+}
+body.pc.mediumFontSize .pager-main{
+    font-size: 14px;
+}
+body.pc.largeFontSize .pager-main{
+    font-size: 16px;
+}
+body.pc.largeFontSize .pager-main{
+    font-size: 16px;
+}

@@ -1,0 +1,2 @@
+.user-panel-container{ background: url(/pic/loginBg.jpg) !important; background-size:cover !important; background-position:left !important;background-repeat:no-repeat !important;} 
+.user-panel-container:before { content: ''; height: 100%; width: 100%; background: url(/pic/overlayPattern.png); position: absolute; opacity: 0.5;}

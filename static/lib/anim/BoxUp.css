@@ -1,0 +1,29 @@
+/*to show containers with images while clicking corresponding button */
+
+/*initially negative 3D rotation is given to hide the containers*/
+.box-up-animation{
+    -webkit-transition: -webkit-transform .3s;
+    /*-webkit-transform: perspective(300) rotateX(-90deg);*/
+    -webkit-transform: perspective(300px) rotateX(90deg) translateY(-250px);
+}
+
+/*to make the container visible*/
+.box-up-animation-visible{
+    -webkit-transform: perspective(300px) rotateX(0deg)
+}
+
+
+.grid-data-animation{
+    transition: filter .3s ease, opacity .3s ease;
+    filter: blur(4px);
+    opacity: 0.50;
+}
+
+/*to make the container visible*/
+.grid-data-animation-visible{
+    filter: none;
+    opacity: 1;
+}
+
+
+

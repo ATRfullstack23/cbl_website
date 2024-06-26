@@ -1,0 +1,81 @@
+#invoiceBarcodePrintHelper{
+    width: 65vh;
+    border: none;
+    position: fixed;
+    top: 100px;
+}
+#invoiceBarcodePrintHelper::backdrop{
+    background: rgba(3,3,3,.5);
+}
+
+#invoiceBarcodePrintHelper{
+
+}
+
+
+#invoiceBarcodePrintHelper .content{
+    height: auto;
+    width: auto;
+    position: relative;
+}
+
+
+#invoiceBarcodePrintHelper .header{
+    font-size: 20px;
+    margin: 0px 0px 20px 0px;
+    display: inline-block;
+}
+
+
+
+#invoiceBarcodePrintHelper .invoiceDetails > div{
+       max-height: 200px;
+    overflow: auto;
+}
+
+
+
+
+
+
+#invoiceBarcodePrintHelper .footer{
+    text-align: right;
+    padding: 10px;
+}
+
+#invoiceBarcodePrintHelper .formItem{
+    margin: 10px;
+}
+
+#invoiceBarcodePrintHelper .formItem input, #invoiceBarcodePrintHelper .formItem select{
+    margin: 10px;
+}
+
+#invoiceBarcodePrintHelper .content .invoiceDetails{
+    border: 1px solid;
+    display: inline-block;
+    padding: 10px;
+    margin-left: 20%;
+    background: #F3F3F3;
+}
+#invoiceBarcodePrintHelper .content .invoiceDetails > *{
+    margin: 15px;
+}
+
+#invoiceBarcodePrintHelper .content .invoiceDetails div span:first-child{
+    display: inline-block;
+    width: 100px;
+}
+
+
+#invoiceBarcodePrintHelper #tblProductsToPrint th {
+    padding: 5px;
+}
+
+
+#invoiceBarcodePrintHelper #tblProductsToPrint td {
+    padding: 5px;
+}
+
+
+

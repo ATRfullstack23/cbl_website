@@ -1,0 +1,53 @@
+.calenderContainer{
+    position: absolute;
+    width: 99%;
+}
+#calendar{
+    position: relative;
+}
+.view_conatiner{
+    position: relative;
+    top: 10px;
+}
+.addConatiner{
+    position: relative;
+    top: 320px;
+    left: 500px;
+    display: inline-block;
+    background-color: ghostwhite;
+    box-shadow: 0px 0px 6px 0px #003;
+}
+.addConatiner input, .addConatiner textarea{
+    width: 200px;
+    border-color: beige;
+}
+.view_data_conatiner{
+    position: relative;
+    top: 320px;
+    left: 500px;
+}
+.edit_data_conatiner{
+    position: relative;
+    top: 320px;
+    left: 500px;
+}
+.addMainConatiner{
+    position: absolute;
+    width: 99%;
+    height: 95%;
+    top: 10px;
+    background-color: rgba(174, 199, 225, 0.27);
+    z-index: 1000;
+
+}
+.headContainer{
+    text-align: center;
+    cursor: move;
+    padding: 10px;
+    background-color: darkgrey;
+}
+.table{
+    padding: 10px;
+}
+
+

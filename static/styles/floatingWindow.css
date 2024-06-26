@@ -1,0 +1,162 @@
+.floatingWindowContainer {
+    /*background-size: 80px 80px;*/
+    background-size: contain;
+    width: 70px;
+    height: 70px;
+    -webkit-border-radius: 55px;
+    -moz-border-radius: 55px;
+    -ms-border-radius: 55px;
+    border-radius: 55px;
+    color: #ffffff;
+    -webkit-box-shadow: 0 2px 12px 1px rgba(0,0,0,.89);
+    -moz-box-shadow: 0 2px 12px 1px rgba(0,0,0,.89);
+    -ms-box-shadow: 0 2px 12px 1px rgba(0,0,0,.89);
+    box-shadow: 0 2px 12px 1px rgba(0,0,0,.89);
+    position: fixed;
+    right: -70px;
+    top: 360px;
+    z-index: 100000;
+    text-decoration: none;
+    /*Temprory Image*/
+    background-image: url(/images/fb_icon.png);
+    background-position: 75px;
+    /*-webkit-transition: all .3s ease-in-out; -moz-transition: all .3s ease-in-out; -o-transition: all .3s ease-in-out; -ms-transition: all .3s ease-in-out;*/
+}
+
+.floatingWindowContainer.smallForm{
+    -webkit-transform: scale(.5,.5);
+    -moz-transform: scale(.5,.5);
+    -ms-transform: scale(.5,.5);
+    transform: scale(.5,.5);
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -ms-transition: all .3s ease;
+    transition: all .3s ease;
+    font-size: 65px;
+    font-family: monospace;
+    font-size: 73px;
+	z-index: 10000000;
+}
+
+.floatingWindowContainer .notificationCount {
+    /*width: 17px;*/
+    display: inline-block;
+    height: 24px;
+    -webkit-border-radius: 4px/3px;
+    -moz-border-radius: 4px/3px;
+    -ms-border-radius: 4px/3px;
+    border-radius: 4px/3px;
+    background-color: #adafb5;
+    background-image: -webkit-linear-gradient(bottom, #ff1919, #ff5959);
+    background-image: -moz-linear-gradient(bottom, #ff1919, #ff5959);
+    background-image: -o-linear-gradient(bottom, #ff1919, #ff5959);
+    background-image: -ms-linear-gradient(bottom, #ff1919, #ff5959);
+    background-image: linear-gradient(to top, #ff1919, #ff5959);
+    color: #fff;
+    font-style: normal;
+    font-family: 'Helvetica';
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    line-height: 28px;
+    opacity: 0;
+    box-shadow: 0px 1px 3px #000;
+    -ms-box-shadow: 0px 1px 3px #000;
+    -moz-box-shadow: 0px 1px 3px #000;
+    -webkit-box-shadow: 0px 1px 3px #000;
+    border: 1px solid rgba(255, 0, 0, .5);
+    margin: -5px 0 0 -5px;
+    text-shadow: 0 2px 0 #c51414;
+    transition: opacity 1s ease;
+}
+
+.floatingWindowContainer .notificationCount.visible{
+    opacity: 1;
+}
+.floatingWindowContainer .notificationCount.right{
+    display: block;
+}
+.floatingWindowContainer .notificationCount.left{
+    display: block;
+}
+.animateLeft{
+    -webkit-transition: left .5s ease-in-out, opacity .5s ease-in-out;
+    -moz-transition: left .5s ease-in-out, opacity .5s ease-in-out;
+    -ms-transition: left .5s ease-in-out, opacity .5s ease-in-out;
+    transition: left .3s ease-in-out, opacity .5s ease-in-out;
+}
+.animateRight{
+    -webkit-transition: right .5s ease-in-out, opacity .5s ease-in-out;
+    -moz-transition: right .5s ease-in-out, opacity .5s ease-in-out;
+    -ms-transition: right .5s ease-in-out, opacity .5s ease-in-out;
+    transition: right .5s ease-in-out, opacity .5s ease-in-out;
+}
+
+.childWindowContainer{
+    z-index: 9999999;
+    display: none;
+    position: fixed;
+    min-width: 350px;
+    min-height: 250px;
+    background: #EEE;
+    border: 1px solid #AAA;
+    box-shadow: 0px 0px 11px 1px #AAA;
+    opacity: 0;
+}
+.childWindowContainer .childWindowHeader{
+    padding: 15px;
+    z-index: 1;
+    background-color: #3f4944;
+    font-size: 20px;
+    border-top: 1px solid rgba(48, 64, 74, 0.98);
+    color: #ffffff;
+    cursor: move;
+}
+.childWindowContainer.childWindowVisible{
+    top: 10px;
+    display: block;
+    /*left: 10px;*/
+}
+.childWindowContainer .btn-subReportReOrder{
+    display: none;
+}
+.childWindowContainer .subReportItem {
+    display: block;
+    position: relative !important;
+    zoom: .95;
+}
+.childWindowContainer .report-panel{
+    max-height: 600px;
+    overflow: auto;
+    height: calc(100% - 55px);
+}
+.childWindowContainer .reportFilter-container {
+    display: inline-block !important;
+}
+.recycleBin{
+    position: fixed;
+    z-index: 9999999;
+    bottom: 10px;
+    height: 100px;
+    width: 100px;
+    background-image: url(/images/recycle_bin.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: .4;
+    left: 45%;
+    display: none;
+}
+.recycleBinAllowDrop{
+    opacity: 1;
+}
+
+.childWindowContainer .tr-subReportNavigationContainer{
+    display: none;
+}
+.childWindowContainer .report-panel>table{
+    height: 100%;
+}
+
+.childWindowContainer .reportFilter-container{
+    padding: 0px;
+}

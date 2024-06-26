@@ -1,0 +1,609 @@
+
+/*------------------------------PC------------------------------*/
+.simpleDataTableRow-container.pc.simpleDataTableRowInline{
+    position: relative;
+    background-color: transparent;
+    display: none;
+    z-index: 99;
+}
+.simpleDataTableRowInline .simpleDataTableRow-close-button{
+    display: none;
+}
+.simpleDataTableRowInline .simpleDataTableRow-main{
+    box-shadow: none;
+}
+.simpleDataTableRow-container.pc{
+    pointer-events: all;
+    z-index: 1001;
+    position: fixed;
+    display: none;
+    left: 0px;
+    top: 0px;
+    background-color: rgba(25, 25, 25,.2);
+    overflow: auto;
+    height: 100%;
+    width: 100%;
+    text-align:center;
+    -webkit-perspective: 1400px;
+    -moz-perspective: 1400px;
+    -ms-perspective: 1400px;
+    perspective: 1400px;
+}
+/*.form-view-in-direct-create{*/
+    /*top: 90px !important;*/
+    /*background-color: rgba(255, 255, 255, 0) !important;*/
+    /*height: 70% !important;*/
+    /*width: 99% !important;*/
+    /*left: 8px !important;*/
+/*}*/
+.simpleDataTableRow-container.pc .simpleDataTableRow-draggable-header-in-direct-create{
+    background: #ffffff !important;
+    height: 33px !important;
+    padding: 0px !important;
+    border-bottom: 2px solid rgb(173, 173, 172) !important;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-draggable-header{
+    background: #5DABDF;
+    border-bottom: 1px solid #eeeeee;
+    height: 40px;
+    cursor: move;
+    border-radius: 0px;
+    padding: 5px;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-draggable-header .button-panel{
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main-in-direct-create{
+    margin-top: 35px !important;
+    max-width: 100% !important;
+    width: 75% !important;
+    /*background-color: rgba(177, 177, 177, 0.98) !important;*/
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main{
+    position: relative;
+    display: inline-block;
+    margin: auto;
+    width: 70%;
+    top: 50px;
+    padding-bottom: 5px;
+    border-radius: 0px;
+    text-align: center;
+    background-color: #FFFFFF;
+    border: 1px solid #9B9797;
+    box-shadow: 1px 1px 12px 4px #A2A2A2;
+    max-width: 1100px;
+    /*overflow: hidden;*/
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.simpleDataTableRow-container.pc.stackedView{
+
+}
+
+.simpleDataTableRow-container.pc.stackedView .simpleDataTableRow-main{
+    width: 48%;
+    pointer-events: all;
+}
+.simpleDataTableRow-container.pc.stackedView.parent .simpleDataTableRow-main{
+    float: left;
+    margin-left: 10px;
+}
+.simpleDataTableRow-container.pc.stackedView.child{
+    pointer-events: none;
+    background-color: transparent;
+}
+.simpleDataTableRow-container.pc.stackedView.child .simpleDataTableRow-main{
+    float: right;
+    margin-right: 10px;
+}
+.simpleDataTableRow-container.pc * {
+    box-sizing: border-box;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main table{
+    width:100%;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main .simpleDataTableRow-header-table td:nth-child(1){
+    width: 40%;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main .simpleDataTableRow-header-table td:nth-child(2){
+    width: 55%;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main .simpleDataTableRow-header-table td:nth-child(3){
+    width: 5%;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-container.pc input[type="submit"]{
+    display: none;
+}
+.simpleDataTableRow-container.pc.simpleDataTableRow-main-edit .simpleDataTableRow-create, .simpleDataTableRow-container.pc.simpleDataTableRow-main-edit .simpleDataTableRow-view{
+    display:none
+}
+.simpleDataTableRow-container.pc.simpleDataTableRow-main-create .simpleDataTableRow-edit, .simpleDataTableRow-container.pc.simpleDataTableRow-main-create .simpleDataTableRow-view{
+    display:none
+}
+.simpleDataTableRow-main-create.error{
+    background: rgba(245, 0, 0, 0.19);
+}
+
+.simpleDataTableRow-container.pc.simpleDataTableRow-main-view .simpleDataTableRow-create, .simpleDataTableRow-container.pc.simpleDataTableRow-main-view .simpleDataTableRow-edit{
+    display:none
+}
+.simpleDataTableRow-container.pc.simpleDataTableRow-main-view .simpleDataTableRow-save-panel{
+    display: none;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main .mandatory-field span:after{
+    color: rgb(228, 108, 108);
+    content: '*';
+    position: absolute;
+    margin-left: 3px;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-column-holder{
+    position: relative;
+    padding: 7px;
+    vertical-align: middle;
+    min-width: 200px;
+    -webkit-transition: opacity 300ms ease;
+    -moz-transition: opacity 300ms ease;
+    -ms-transition: opacity 300ms ease;
+    transition: opacity 300ms ease;
+    opacity: 1;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-column-holder.simpleDataTableRowColumnFadeOut{
+    opacity: .5;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-column-display-name-indirect-create{
+    width: 150px !important;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-column-display-name{
+    position: relative;
+    width: 100px;
+    max-width: 100px;;
+    text-align: left;
+    padding-left: 10px;
+    vertical-align: middle;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-column-elements-holder{
+    width: 95%;
+    padding-left: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-column-display-value{
+    width: 95%;
+    padding-left: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+/*.chosen-container{*/
+    /*width: 370px !important;*/
+/*}*/
+.simpleDataTableRow-container.pc .simpleDataTableRow-main input[type=text],.simpleDataTableRow-main input[type=password],.simpleDataTableRow-main input[type=datetime-local],.simpleDataTableRow-main input[type=date],.simpleDataTableRow-main input[type=time],.simpleDataTableRow-main input[type=number],
+.simpleDataTableRow-container.pc .simpleDataTableRow-main select, .simpleDataTableRow-main textarea{
+    font-size: 100%;
+    padding: 3px;
+    width: 91.7%;
+    font-family: inherit;
+}
+.simpleDataTableRow-main input[type=date],.simpleDataTableRow-main input[type=time],.simpleDataTableRow-main input[type=number],{
+    font-size: 100%;
+    padding: 3px;
+    width: 41.7%;
+    font-family: inherit;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main td[colspan="2"] input[type=text], .simpleDataTableRow-main td[colspan="2"] input[type=password],
+.simpleDataTableRow-container.pc .simpleDataTableRow-main td[colspan="2"] input[type=number], .simpleDataTableRow-main td[colspan="2"] select, .simpleDataTableRow-main td[colspan="2"] textarea{
+    padding: 3px;
+    width: 100%;
+    font-size: 100%;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main input[type=text][disabled],.simpleDataTableRow-main input[type=password][disabled],.simpleDataTableRow-main input[type=number][disabled],
+.simpleDataTableRow-container.pc .simpleDataTableRow-main select[disabled], .simpleDataTableRow-main textarea[disabled]{
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    -ms-appearance: button;
+    appearance: button;
+    border: none;
+    background: none;
+    font-size: 100%;
+    color: #000;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main textarea{
+    font-size: 100%;
+    padding: 3px;
+    width: 91.7%;
+    resize: vertical;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-save-panel{
+    text-align: center;
+}
+.simpleDataTableRow-container.pc .button-panel{
+    background: #ffffff;
+    /*padding: 10px;*/
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main .button-panel{
+    padding: 0px;
+    text-align: right;
+    padding-right: 50px;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-close-button{
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 4px 6px;
+    width: 20px;
+    color: #FFF;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-close-button:hover{
+    background: #FFF;
+    color: #333;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-header-text-panel-in-direct-create{
+    font-size: 27px !important;
+    color: #585555 !important;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-header-text-panel{
+    font-size: 30px;
+    color: #FFF;
+    padding-left: 10px;
+}
+.simpleDataTableRow-container.pc .simpleDataTableRow-main .simpleDataTableRow-subForm_create{
+    min-height: 20px;
+    cursor: pointer;
+}
+
+.simpleDataTableRowContainer .simpleDataTableRowButton{
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: .8;
+}
+.simpleDataTableRowContainer .simpleDataTableRowButton:hover{
+    opacity: 1;
+}
+.simpleDataTableRowContainer .simpleDataTableRowButton.remove{
+    background: url(/images/trash.png);
+}
+
+
+.simpleDataTableRow-container.pc .table-main{
+    /*padding: 10px;*/
+}
+.simpleDataTableRow-container.pc .table-main > tr:nth-child(odd) > td{
+    /*border: 1px solid #F2F2F2;*/
+}
+.simpleDataTableRow-container.pc .table-main > tr:nth-child(even){
+    background: #FAFAFA;
+}
+.simpleDataTableRow-container.pc .table-main-in-direct-create> tr:nth-child(even){
+    /*background: rgba(177, 177, 177, 0.98) !important;*/
+}
+.simpleDataTableRow-container.pc .table-main > tr > td{
+    vertical-align: middle;
+    width: 50%;
+    /*border: 1px solid #eee;*/
+}
+
+
+
+/*------------------------------Mobile------------------------------*/
+
+
+.simpleDataTableRow-container.mobile.simpleDataTableRowInline{
+    position: relative;
+    background-color: transparent;
+    display: none;
+    z-index: 99;
+}
+.simpleDataTableRowInline .simpleDataTableRow-close-button{
+    display: none;
+}
+.simpleDataTableRowInline .simpleDataTableRow-main{
+    box-shadow: none;
+}
+.simpleDataTableRow-container.mobile{
+    pointer-events: all;
+    z-index: 1000;
+    position: fixed;
+    display: none;
+    left: 0px;
+    top: 0px;
+    background-color: transparent;
+    overflow: auto;
+    height: 100%;
+    width: 100%;
+    text-align:center;
+    -webkit-perspective: 1400px;
+    -moz-perspective: 1400px;
+    -ms-perspective: 1400px;
+    perspective: 1400px;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-draggable-header{
+    background: #5DABDF;
+    border-bottom: 1px solid #eeeeee;
+    height: 25px;
+    border-radius: 0px;
+    padding: 5px;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-header-text-panel{
+    font-size: 15px;
+    color: #FFF;
+    padding-left: 10px;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-draggable-header .button-panel{
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main{
+    text-align: center;
+    background-color: #FFFFFF;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main table{
+    width:100%;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main .simpleDataTableRow-header-table{
+    padding-left: 50px;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main .simpleDataTableRow-header-table td:nth-child(1){
+    width: 40%;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main .simpleDataTableRow-header-table td:nth-child(2){
+    width: 55%;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main .simpleDataTableRow-header-table td:nth-child(3){
+    width: 5%;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-container.mobile input[type="submit"]{
+    display: none;
+}
+
+.simpleDataTableRow-container.mobile.simpleDataTableRow-main-edit .simpleDataTableRow-create, .simpleDataTableRow-container.mobile.simpleDataTableRow-main-edit .simpleDataTableRow-view{
+    display:none
+}
+.simpleDataTableRow-container.mobile.simpleDataTableRow-main-create .simpleDataTableRow-edit, .simpleDataTableRow-container.mobile.simpleDataTableRow-main-create .simpleDataTableRow-view{
+    display:none
+}
+.simpleDataTableRow-container.mobile.simpleDataTableRow-main-view .simpleDataTableRow-create, .simpleDataTableRow-container.mobile.simpleDataTableRow-main-view .simpleDataTableRow-edit{
+    display:none
+}
+.simpleDataTableRow-container.mobile{
+    font-size: 14px;
+}
+
+.simpleDataTableRow-container.mobile.simpleDataTableRow-main-view .simpleDataTableRow-save-panel{
+    display: none;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main .mandatory-field span:after{
+    color: rgb(228, 108, 108);
+    content: '*';
+    position: absolute;
+    margin-left: 3px;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-column-holder{
+    position: relative;
+    padding: 7px;
+    vertical-align: middle;
+    /*min-width: 300px;*/
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-column-display-name{
+    position: relative;
+    width: 100px;
+    max-width: 100px;;
+    text-align: left;
+    padding-left: 10px;
+    vertical-align: middle;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-column-elements-holder{
+    width: 95%;
+    padding-left: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-column-display-value{
+    width: 95%;
+    padding-left: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.simpleDataTableRow-main input[type=text],
+
+.simpleDataTableRow-main input[type=password],
+
+.simpleDataTableRow-main input[type=datetime-local],
+
+.simpleDataTableRow-main select, 
+
+.simpleDataTableRow-main textarea{
+
+    font-size: 100%;
+
+    padding: 3px;
+
+    width: 93%;
+
+    font-family: inherit;
+
+}
+
+.simpleDataTableRow-main input[type=number], 
+
+.simpleDataTableRow-main input[type="text"].setNumericElement{
+
+    font-size: 100%;
+
+    padding: 3px 0px;
+
+    width: 91.37%;
+
+    font-family: inherit;
+
+}
+
+
+.simpleDataTableRow-column-holder input[type="date"]{
+    position: relative;
+}
+.simpleDataTableRow-column-holder input[type="date"]::-webkit-calendar-picker-indicator{
+    position: absolute;
+    right: 11px;
+}
+.simpleDataTableRow-column-holder input[type="date"]::-webkit-inner-spin-button{
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main td[colspan="2"] input[type=text], .simpleDataTableRow-main td[colspan="2"] input[type=password],
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main td[colspan="2"] input[type=number], .simpleDataTableRow-main td[colspan="2"] select, .simpleDataTableRow-main td[colspan="2"] textarea{
+    padding: 3px;
+    width: 100%;
+    font-size: 100%;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main input[type=text][disabled],.simpleDataTableRow-main input[type=password][disabled],.simpleDataTableRow-main input[type=number][disabled],
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main select[disabled], .simpleDataTableRow-main textarea[disabled]{
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    -ms-appearance: button;
+    appearance: button;
+    border: none;
+    background: none;
+    font-size: 100%;
+    color: #000;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main textarea{
+    font-size: 100%;
+    padding: 3px;
+    width: 95%;
+    resize: vertical;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-save-panel{
+    text-align: center;
+}
+.simpleDataTableRow-container.mobile .button-panel{
+    background: #ffffff;
+    /*padding: 10px;*/
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main .button-panel{
+    padding: 0px;
+    text-align: right;
+    padding-right: 50px;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-close-button{
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 4px 6px;
+    width: 10px;
+    color: #FFF;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-close-button:hover{
+    background: #FFF;
+    color: #333;
+}
+
+.simpleDataTableRow-container.mobile .simpleDataTableRow-main .simpleDataTableRow-subForm_create{
+    min-height: 20px;
+    cursor: pointer;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-save-panel{
+    text-align: center;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-save-button{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+}
+.simpleDataTableRow-container.mobile .simpleDataTableRow-cancel-button{
+    position: fixed;
+    top: 0px;
+    right: 30px;
+}
+
+.simpleDataTableRow-container.mobile .table-main{
+    padding: 3px;
+}
+.simpleDataTableRow-container.mobile .table-main > tr:nth-child(odd) > td{
+    /*border: 1px solid #F2F2F2;*/
+}
+.simpleDataTableRow-container.mobile .table-main > tr:nth-child(even){
+    background: #FAFAFA;
+}
+.simpleDataTableRow-container.mobile .table-main > tr > td{
+    vertical-align: middle;
+    /*border: 1px solid #eee;*/
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.simpleDataTableRowContainer td[merged-column-parent] .simpleDataTableRow-column-holder{
+    margin: 3px;
+}
+
+.simpleDataTable-container > tbody > tr:nth-child(even) {
+    background: #eeeeee;
+}
+
+
+
+
+
+
+

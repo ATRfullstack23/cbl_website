@@ -1,0 +1,64 @@
+.simpleDataTable-container{
+    border: 1px solid #BEC2C6;
+    /*background: rgb(243, 243, 243);*/
+    background: linear-gradient(rgb(245, 245, 245) 0%, rgb(246, 246, 246) 47%, rgb(237, 237, 237) 100%);
+}
+.simpleDataTable-container th{
+    padding: 5px;
+    border-bottom: 1px solid #BEC2C6;
+    position: relative;
+}
+.simpleDataTable-container th, .simpleDataTable-container td {
+    padding: 3px 3px;
+}
+
+.simpleDataTable-container.resizeMode th{
+    border-right: 1px solid #aaaaaa;
+}
+
+.simpleDataTable-container button {
+    padding: 1px 4px !important;
+}
+.simpleDataTable-container div.mandatory:after{
+    content: ' *';
+    color: red;
+}
+.simpleDataTableRowContainer img{
+    max-height: 100px;
+}
+.simpleDataTable-container .simpleDataTableAddButton{
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    background: url(/images/newItem.png);
+    opacity: .5;
+    background-size: contain;
+}
+.simpleDataTable-container .simpleDataTableAddButton:hover{
+    opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.simpleDataTableRowContainer td[merged-column-parent] .simpleDataTableRow-column-holder{
+    margin: 3px;
+}
+
+.simpleDataTable-container > tbody > tr:nth-child(even) {
+    background: #eeeeee;
+}

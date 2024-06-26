@@ -1,0 +1,72 @@
+#inventoryAdditionBarcodePrintHelper{
+    width: 65vh;
+    border: none;
+    position: fixed;
+    top: 100px;
+}
+#inventoryAdditionBarcodePrintHelper::backdrop{
+    background: rgba(3,3,3,.5);
+}
+
+#inventoryAdditionBarcodePrintHelper{
+
+}
+
+
+#inventoryAdditionBarcodePrintHelper .content{
+    height: auto;
+    width: auto;
+    position: relative;
+}
+
+
+#inventoryAdditionBarcodePrintHelper .header{
+    font-size: 20px;
+    margin: 0px 0px 20px 0px;
+    display: inline-block;
+}
+
+
+#inventoryAdditionBarcodePrintHelper .footer{
+    text-align: right;
+    padding: 10px;
+}
+
+#inventoryAdditionBarcodePrintHelper .formItem{
+    margin: 10px;
+}
+
+#inventoryAdditionBarcodePrintHelper .formItem input, #inventoryAdditionBarcodePrintHelper .formItem select{
+    margin: 10px;
+}
+
+#inventoryAdditionBarcodePrintHelper .content .inventoryAdditionDetails{
+    border: 1px solid;
+    display: inline-block;
+    padding: 10px;
+    margin-left: 20%;
+    background: #F3F3F3;
+	overflow: auto;
+    max-height: 200px;
+}
+#inventoryAdditionBarcodePrintHelper .content .inventoryAdditionDetails > *{
+    margin: 15px;
+}
+
+#inventoryAdditionBarcodePrintHelper .content .inventoryAdditionDetails div span:first-child{
+    display: inline-block;
+    width: 100px;
+}
+
+
+#inventoryAdditionBarcodePrintHelper #tblProductsToPrint th {
+    padding: 5px;
+}
+
+
+#inventoryAdditionBarcodePrintHelper #tblProductsToPrint td {
+    padding: 5px;
+}
+
+
+
