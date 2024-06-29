@@ -9,7 +9,7 @@ function SubModule(config, parentObject) {
     self.erp = self.module.erp;
     self.socket = self.erp.socket;
     self.config = config;
-    self.initialize();
+    // self.initialize();
 
 //For Debugging
 //    window.notifier = self.notifier;
@@ -19,7 +19,7 @@ function SubModule(config, parentObject) {
 }
 
 SubModule.prototype = {
-    initialize: function () {
+    initialize: async function () {
         var self = this;
         for(var key in self.config){
             self[key] = self.config[key];
@@ -70,12 +70,13 @@ SubModule.prototype = {
             self.grid = new Grid(self.config.gridView, self);
         }
         if(self.hasThumbnailViewMode){
-            self.thumbNailView = new ThumbNailView(self.config.thumbNailView||{}, self);
+            self.hasThumbnailViewMode = false;
+            // self.thumbNailView = new ThumbNailView(self.config.thumbNailView||{}, self);
         }
         if(self.hasCalendarViewMode){
             self.calendarView = new CalendarView(self.config.calendarView || {}, self);
         }
-        self.createElements();
+        await self.createElements();
 
         if(self.hasFormViewMode){
             var formViewConfig = JSON.parse(JSON.stringify(self.config.formView));
@@ -329,9 +330,9 @@ SubModule.prototype = {
         return self;
     },
 
-    createElements: function () {
+    createElements: async function () {
         var self = this;
-        self._creation.createElements(self);
+        await self._creation.createElements(self);
         return self;
     },
 ////////////////////////////////////yathi//////////////////////////////////////////
@@ -496,9 +497,9 @@ SubModule.prototype = {
         self.displayMode = newDisplayMode;
 
         if(!self.isInQuickViewModeChildWindow){
-            if(self.erp.isSocketConnected){
+            // if(self.erp.isSocketConnected){
                 self.filterManager.getAllFilterDataFromServer();
-            }
+            // }
         }
 
 
@@ -750,65 +751,79 @@ SubModule.prototype = {
         createTable: function(subModule){
 
         },
-        createElements: function(subModule){
+        createElements: async function (subModule) {
             var self = this;
             var elements = {};
 
-            var container = self.createContainer(subModule);
+            await subModule.module.add_submodule_instance_for_reference(subModule);
+            var container = $(subModule.svelte_element_instance.container_element); // self.createContainer(module);
+
+            // var container = self.createContainer(subModule);
             elements.container = container;
 
+
+            elements.childSubReportsContainer = container.find('.childSubReportsContainer').eq(0);
+            elements.childSubReportsContainerCloseButton = container.find('.childSubReportsContainerCloseButton').eq(0);
+
+
+
 ////////////////////////////////////////yathi////////////////////////////////////////////////////////////////////////
-            elements.childSubReportsContainer = $(document.createElement('div')).attr({'class':'childSubReportsContainer'});
-            elements.container.append(elements.childSubReportsContainer);
-
-            elements.childSubReportsContainerCloseButton = $(document.createElement('div'))
-                .attr({'class':'childSubReportsContainerCloseButton'});
-            elements.childSubReportsContainer.append(elements.childSubReportsContainerCloseButton);
+//             elements.childSubReportsContainer = $(document.createElement('div')).attr({'class': 'childSubReportsContainer'});
+//             elements.container.append(elements.childSubReportsContainer);
+//
+//             elements.childSubReportsContainerCloseButton = $(document.createElement('div'))
+//                 .attr({'class': 'childSubReportsContainerCloseButton'});
+//             elements.childSubReportsContainer.append(elements.childSubReportsContainerCloseButton);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            var table = $(document.createElement('table')).attr({class: 'hundred-percent subModule-container-table'});
-            var trFilters = $(document.createElement('tr'));
+//             var table = $(document.createElement('table')).attr({class: 'hundred-percent subModule-container-table'});
+//             var trFilters = $(document.createElement('tr'));
 //            var tdFilters = $(document.createElement('td'));
-            var trButtons = $(document.createElement('tr')).addClass('buttonsRow');
-            var tdButtons = $(document.createElement('td'));
-            var trViews = $(document.createElement('tr'));
-            var tdViews = $(document.createElement('td'))
-                .attr('id', 'viewsContainer');
+//             var trButtons = $(document.createElement('tr')).addClass('buttonsRow');
+//             var tdButtons = $(document.createElement('td'));
+//             var trViews = $(document.createElement('tr'));
+//             var tdViews = $(document.createElement('td')).attr('id', 'viewsContainer');
 
-//            trFilters.append(subModule.filterManager.getElement());
+            const table = container.find('.subModule-container-table').eq(0);
+            const trButtons = container.find('.buttonsRow').eq(0);
+            const tdButtons = trButtons.children().eq(0);
+            const tdViews = container.find('#viewsContainer').eq(0);
+            const trFilters = container.find('.submodule-filter-container').eq(0);
+
+
+           trFilters.append(subModule.filterManager.getElement());
             tdButtons.append(subModule.buttonManager.getElement('gridView'));
-            if(subModule.filterManager.hasTabFilterPanelFilters){
+            if (subModule.filterManager.hasTabFilterPanelFilters) {
                 var tabFilterPanel = subModule.filterManager.elements.tabFilterPanel;
-                if(tabFilterPanel.children().length){
+                if (tabFilterPanel.children().length) {
                     tdButtons.append(tabFilterPanel);
                 }
 
                 trButtons.css('height', '90px')
-            }
-            else{
+            } else {
                 trButtons.css('height', '45px')
             }
 
-            if(subModule.hasGridViewMode){
+            if (subModule.hasGridViewMode) {
                 tdViews.append(subModule.grid.getElement());
             }
-            if(subModule.hasThumbnailViewMode){
+            if (subModule.hasThumbnailViewMode) {
                 tdViews.append(subModule.thumbNailView.getElement());
             }
-            if(subModule.hasCalendarViewMode){
+            if (subModule.hasCalendarViewMode) {
                 tdViews.append(subModule.calendarView.getElement());
             }
-            trButtons.append(tdButtons);
-            trViews.append(tdViews);
+            // trButtons.append(tdButtons);
+            // trViews.append(tdViews);
 
-//            table.append(trFilters);
-            table.append(trButtons);
-            table.append(trViews);
-            if(subModule.type == 'singleRow'){
+           // table.append(trFilters);
+//             table.append(trButtons);
+//             table.append(trViews);
+            if (subModule.type == 'singleRow') {
                 table.hide();
             }
 
             container.append(table);
-            container.append( subModule.filterManager.getElement());
+            container.append(subModule.filterManager.getElement());
             elements.viewsContainer = tdViews;
             subModule.elements = elements;
             subModule.container = container;
@@ -825,9 +840,9 @@ SubModule.prototype = {
         initialize: function(subModule){
             var self = this;
             var socket = subModule.getSocket();
-            socket.on(subModule.socketEvents.deleteRowsDone, function(data){
-                subModule._db.deleteRow_done(subModule, subModule.buttonManager.buttons[data.buttonId] , data);
-            });
+            // socket.on(subModule.socketEvents.deleteRowsDone, function(data){
+            //     subModule._db.deleteRow_done(subModule, subModule.buttonManager.buttons[data.buttonId] , data);
+            // });
             socket.on(subModule.socketEvents.statusChangeDone, function(data){
                 subModule._db.statusChange_done(subModule, subModule.buttonManager.buttons[data.buttonId], data);
             });
@@ -1042,7 +1057,12 @@ SubModule.prototype = {
             data.buttonMode = buttonMode;
             data.mode = mode;
             button.loading = true;
-            socket.emit(subModule.socketEvents.deleteRows, data);
+
+            subModule.do_ajax_request('deleteRows', data, function(ajax_err, responseObj){
+                self.deleteRow_done(subModule, button, responseObj);
+            });
+
+            // socket.emit(subModule.socketEvents.deleteRows, data);
             return self;
         },
         deleteRow_done: function(subModule, button, data){
@@ -1116,7 +1136,10 @@ SubModule.prototype = {
             data.buttonId = button.id;
             data.buttonMode = buttonMode;
             button.loading = true;
-            socket.emit(subModule.socketEvents['execSql_'+button.id], data);
+            // socket.emit(subModule.socketEvents['execSql_'+button.id], data);
+            subModule.do_ajax_request('execSql_'+button.id, data, function(ajax_err, responseObj){
+                self.execSql_done(subModule, button, responseObj);
+            });
             return self;
         },
         execSql_done: function(subModule, button, data){
@@ -2228,7 +2251,7 @@ SubModule.prototype = {
             url: ajax_url,
         }).always(function (responseObj, status) {
             if(responseObj.error || responseObj.errorMessage){
-                do_ajax_request_callback && do_ajax_request_callback(responseObj); // shall return result only?
+                do_ajax_request_callback && do_ajax_request_callback(responseObj, responseObj); // shall return result only?
                 return;
             }
             do_ajax_request_callback && do_ajax_request_callback(null, responseObj);

@@ -8,12 +8,12 @@ function Module(config, parentObject){
     self.parentObject = parentObject;
     self.erp = parentObject;
     self.config = config;
-    self.initialize();
+    // self.initialize();
     return self;
 }
 
 Module.prototype = {
-    initialize: function(){
+    initialize: async function(){
         var self = this;
         for(var key in self.config){
             self[key] = self.config[key];
@@ -21,7 +21,6 @@ Module.prototype = {
 
         self.visibilitySettings = self.erp.visibilitySettings.columnButtonFilterVisibility[self.id] || {};
 
-        self.initializeSubModules();
 
         self.subModuleNavPointer = new Navigation({
             options: self.subModules,
@@ -36,6 +35,10 @@ Module.prototype = {
             }
         }, self);
 
+        await self.createElements();
+
+        await self.initializeSubModules();
+
         if(self.defaultSubModule){
             self.defaultSubModule = self.subModules[self.defaultSubModule];
         }
@@ -45,7 +48,6 @@ Module.prototype = {
         self.selectedSubModule = self.defaultSubModule;
         self.topMostSubModuleInViewPlane = self.defaultSubModule;
 
-        self.createElements();
         if(!self.icon){
             self.icon = "billing.png";
         }
@@ -64,7 +66,7 @@ Module.prototype = {
 
         return self;
     },
-    initializeSubModules: function(){
+    initializeSubModules: async function(){
         var self = this;
         self.subModules = {};
         for(var key in self.config.subModules){
@@ -84,6 +86,7 @@ Module.prototype = {
                 subModuleConfig.parentSubModule = self.parentSubModule;
             }
             self.subModules[subModuleConfig.id] = new SubModule(subModuleConfig, self);
+            await self.subModules[subModuleConfig.id].initialize();
         }
         return self;
     },
@@ -266,9 +269,9 @@ Module.prototype = {
             var self = this;
         }
     },
-    createElements: function(){
+    createElements: async function () {
         var self = this;
-        self._creation.createElements(self)
+        await self._creation.createElements(self)
         return self;
     },
     _creation : {
@@ -276,14 +279,18 @@ Module.prototype = {
             var div = $(document.createElement('div')).attr({id: module.id, class: 'module-panel hidden'});
             return div;
         },
-        createElements: function(module){
+        createElements: async function (module) {
             var self = this;
 
             var elements = {};
 
-            var container = self.createContainer(module);
-            var table = document.createElement('table');
-            table.className = 'hundred-percent';
+            // (async () => {
+            // })();
+            await window._add_module_instance_for_reference(module);
+
+            var container = $(module.svelte_element_instance.container_element); // self.createContainer(module);
+            // var table = document.createElement('table');
+            // table.className = 'hundred-percent';
 
 //            var trNav = document.createElement('tr');
 //            var tdNav = document.createElement('td');
@@ -292,16 +299,25 @@ Module.prototype = {
 //            trNav.appendChild(tdNav);
 //            table.appendChild(trNav);
 
-            var trSubModules = document.createElement('tr');
-            var tdSubModules = document.createElement('td');
-            tdSubModules.id = module.id+'_subModules-panel';;
-            module.forEachSubModule(function(subModule){
-                tdSubModules.appendChild(subModule.getElement().get(0));
-            });
-            trSubModules.appendChild(tdSubModules);
-            table.appendChild(trSubModules);
+            // var trSubModules = document.createElement('tr');
+            // var tdSubModules = document.createElement('td');
+            // tdSubModules.id = module.id+'_subModules-panel';
+            // module.forEachSubModule(function(subModule){
+            //     tdSubModules.appendChild(subModule.getElement().get(0));
+            // });
+            // trSubModules.appendChild(tdSubModules);
+            // table.appendChild(trSubModules);
 
-            container.append(table);
+            // container.append(table);
+            elements.submodule_navigation_container = container.find('.submodule_navigation_container').eq(0);
+            elements.submodules_container = container.find('.submodules_container').eq(0);
+
+            // elements.submodule_navigation_container.append(module.subModuleNavPointer.getElement().get(0));
+
+            // module.forEachSubModule(function(subModule){
+            //     elements.submodules_container.appendChild(subModule.getElement().eq(0));
+            // });
+
             elements.container = container
             module.elements = elements;
             module.container = container;

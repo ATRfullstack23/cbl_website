@@ -1,14 +1,15 @@
 
 <script>
-    import {onMount} from "svelte";
+    import {onMount, tick} from "svelte";
     import {ERP} from '$lib/client_scripts/ERP.js'
-    import erp_config from '$lib/app_data/configuration.json'
+    import {time_sleep} from '$lib/client_scripts/BrowserUtils.js'
     import {page} from "$app/stores";
     import Sidebar from "$lib/navigation_sidebar/Sidebar.svelte";
-    import {NavBrand} from "flowbite-svelte";
+    import Module from "$lib/submodule/Module.svelte";
 
     export let data;
     let device_type = $page.data.device_type;
+    const backend_root_url = 'https://events-platform-sandbox.bigdate.events:17584';
 
     let erp_instance;
     function initialize_erp () {
@@ -25,28 +26,36 @@
             }
         }
 
-        window.ERP = ERP;
-        erp_config.backend_root_url = 'https://events-platform-sandbox.bigdate.events:17584';
-        erp_config.socket_io_url = 'https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js?_=1719394543097';
-        erp_instance = new ERP(erp_config, {user: user_obj});
-        window.erp = erp_instance;
+        jQuery.ajax({
+            url: backend_root_url + '/configuration.json',
+            cache: false,
+            type: 'GET'
+        }).success(function(erp_config){
+            window.ERP = ERP;
+            console.log('new erp', erp_instance)
+            erp_config.backend_root_url = backend_root_url;
+            erp_config.socket_io_url = backend_root_url + '/socket.io/socket.io.js?_=1719394543097';
+            erp_instance = new ERP(erp_config, {user: user_obj});
+            console.log('new erp', erp_instance)
+            window.erp = erp_instance;
+            erp_instance.initialize().then(()=>{
+                erp_instance.get_navigation_configuration().then((n_c)=>{
+                    navigation_config = n_c;
+                    console.log('navigation_config', navigation_config );
+                    erp_instance.container.appendTo(erp_content__container_element);
+                });
+            });
 
-        // jQuery.ajax({
-        //     url: '/configuration.json',
-        //     cache: false,
-        //     type: 'GET'
-        // }).success(function(data){
-        //     // window.erp.elements.content.prepend(erp.container);
-        // });
+
+        });
+
     }
 
     let erp_content__container_element;
     let navigation_config;
     onMount(async()=>{
+        window._add_module_instance_for_reference = add_module_instance_for_reference;
         initialize_erp();
-        navigation_config = await erp_instance.get_navigation_configuration();
-        console.log('navigation_config', navigation_config );
-        erp_instance.container.appendTo(erp_content__container_element);
     });
 
     function handle_navigation_item_selected(evt) {
@@ -55,6 +64,18 @@
         if(item_info.action_type === 'go_to_module'){
             erp_instance.setSelectedModule(item_info.context_data.module_id);
         }
+    }
+
+    let module_instances_for_reference = [];
+    let module_svelte_elements_for_reference = [];
+    async function add_module_instance_for_reference(module_info) {
+        module_instances_for_reference.push(module_info);
+        module_instances_for_reference = module_instances_for_reference;
+        module_info.svelte_reference_index = module_instances_for_reference.length - 1;
+        await tick();
+        // await time_sleep(100);
+        module_info.svelte_element_instance = module_svelte_elements_for_reference[module_info.svelte_reference_index];
+        return module_info.svelte_element_instance;
     }
 
 </script>
@@ -91,6 +112,15 @@
     <div bind:this={erp_content__container_element} class="erp_content__container">
 
     </div>
+
+
+    {#each module_instances_for_reference as module_info, index}
+        <pre class="mineee">{module_info.id}</pre>
+        <Module module="{module_info}"
+                   bind:this={module_svelte_elements_for_reference[index]}/>
+    {/each}
+
+
 </section>
 
 

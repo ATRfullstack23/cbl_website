@@ -18,7 +18,7 @@ export class ERP{
         self.lookUpDataConfig = {};
         // var script = $(document.createElement('script')).attr({type: "text/javascript", src: "/socket.io/socket.io.js"});
         // script.appendTo(document.body);
-        self.initialize();
+        // self.initialize();
         return self;
     }
 
@@ -73,7 +73,7 @@ export class ERP{
         localStorage[self.id] = JSON.stringify(self.lookUpDataConfig);
         return self;
     }
-    initialize(){
+    async initialize(){
         var self = this;
         if(!self.config.appSettings.idleTimeout){
             self.config.appSettings.idleTimeout = 60;
@@ -107,7 +107,8 @@ export class ERP{
             reportVisibility: self.user.userDetails.roleSettings.reportVisibility || {}
         };
 
-        self.initializeModules().initializeReports();
+        await self.initializeModules();
+        await self.initializeReports();
 
 
 
@@ -1332,7 +1333,7 @@ export class ERP{
 
         return self;
     }
-    initializeModules(){
+    async initializeModules(){
         var self = this;
         self.modules = {};
         self.hiddenModules = {};
@@ -1363,6 +1364,9 @@ export class ERP{
             }
             else{
                 self.allModules[moduleConfig.id] = self.modules[moduleConfig.id] = new Module(moduleConfig, self);
+            }
+            if(self.allModules[moduleConfig.id]){
+                await self.allModules[moduleConfig.id].initialize();
             }
         }
         return self;
@@ -3242,7 +3246,7 @@ ERP.prototype._socket = {
             socket_url = erp.config.backend_root_url + `/socket.io/socket.io.js?_=1719394543097&sessionId=${erp.user.config.user.sessionId}`;
         }
         console.log('socket_url', socket_url)
-        var socket = io(socket_url, {'userId' : 'aki143s', transport : 'websocket'});
+        var socket = io(socket_url, {'userId' : 'aki143s', transport : 'polling'});
         socket.connect();
 
         socket.formView = {};
@@ -3267,6 +3271,7 @@ ERP.prototype._socket = {
         socket.on('connect', function(){
             // erp.setDefaultModule();
             erp.elements.container.css({opacity: 1});
+            console.log('socket connected')
 
             erp.onSocketConnected();
 
