@@ -193,7 +193,7 @@ FilterManager.prototype = {
         var socket = self.getSocket();
         var data = {config: config};
         self.hide();
-        socket.emit(self.socketEvents.search, data);
+        // socket.emit(self.socketEvents.search, data);
         // console.log('search ', self.socketEvents.search, data);
 
         self.subModule.do_ajax_request('search', data, function(ajax_err, responseObj){
@@ -212,7 +212,12 @@ FilterManager.prototype = {
         config[filter.id] = filter.selectedValue;
         var socket = self.getSocket();
         var data = {config: config};
-        socket.emit(self.socketEvents.search, data);
+        // socket.emit(self.socketEvents.search, data);
+        self.subModule.do_ajax_request('search', data, function(ajax_err, responseObj){
+            // console.log('search requested', data, responseObj);
+            self.subModule.setDisplayMode(self.subModule.displayMode, true);
+        });
+
         return self;
     },
     clearSearch: function(){
