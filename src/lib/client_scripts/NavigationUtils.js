@@ -19,6 +19,10 @@ export async function generate_main_navigation_configuration(erp_instance) {
         const single_item_config = {
             "icon": "MailBoxSolid",
             "id": module_info.id,
+            "custom_icon": {
+                "url": "M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8",
+                "color": "#fff"
+            },
             "display_name": module_info.displayName,
             "item_type": "item",
             "action_type": "go_to_module",

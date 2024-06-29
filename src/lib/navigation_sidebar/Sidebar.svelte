@@ -1,14 +1,18 @@
 <script>
-    import {createEventDispatcher} from "svelte";
-
     export let navigation_config;
     import SidebarItem from './SidebarItem.svelte'
     import SidebarDropdownWrapper from './SidebarDropdownWrapper.svelte' 
+    import { createEventDispatcher } from 'svelte';
 
     const dispatch_event = createEventDispatcher();
-    function handle_sidebar_item_click(navigation_item) {
+
+
+    export let selected_navigation_item;
+    function handle_sidebar_item_selected(navigation_item){
+        selected_navigation_item = navigation_item;
         dispatch_event('navigation_item_selected', navigation_item);
     }
+   
 </script>
 
 <ul class="sidebar">
@@ -16,12 +20,15 @@
         <li>
             {#if navigation_item.item_type == "group"}
                 <div>
-                    <SidebarDropdownWrapper array={navigation_item.items} label={navigation_item.display_name}
+                    <SidebarDropdownWrapper array={navigation_item.items} 
+                        on:dropdown_item_click={(evt)=>{handle_sidebar_item_selected(evt.detail)}} 
+                        icon={navigation_item.custom_icon} label={navigation_item.display_name}
                     ></SidebarDropdownWrapper>
                 </div>
             {:else if navigation_item.item_type == "item"}
-                <SidebarItem on:click={()=>{handle_sidebar_item_click(navigation_item);}} label={navigation_item.display_name}></SidebarItem>
-<!--                <SidebarItem label=" Sharon "></SidebarItem>-->
+                <SidebarItem label={navigation_item.display_name}  
+                    on:click={()=>{handle_sidebar_item_selected(navigation_item);}}
+                    icon={navigation_item.custom_icon}></SidebarItem>
             {/if}
         </li>
     {/each}
@@ -29,13 +36,23 @@
 
 <style>
 
-
     li,ul{
         color: white;
+        cursor: pointer;
+    }
+
+    ul{
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    li{
+        width: 100%;
     }
 
     .sidebar{
-        padding: 1rem;
+        padding: 2rem;
         padding-left: 1.5rem;
         padding-right: 1.5rem;  
         
@@ -45,4 +62,5 @@
         gap: 1rem;
         flex-direction: column;
     }
+
 </style>
