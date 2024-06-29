@@ -53,7 +53,7 @@ Grid.prototype = {
                 sortType: ''
             }
         }
-        // self.boxUpAnimation = new GridDataAnimation();
+        self.boxUpAnimation = new GridDataAnimation();
         self._sortCondition.initialize(self, self.defaultSort);
 
         self.intializeSocketEventsObject();

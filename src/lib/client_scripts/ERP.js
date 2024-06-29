@@ -1,6 +1,10 @@
 /**
  * Created by Akhil Sekharan on 12/4/13.
  */
+import {
+    generate_main_navigation_configuration,
+    get_main_navigation_configuration
+} from "$lib/client_scripts/NavigationUtils.js";
 
 export class ERP{
 
@@ -17,6 +21,15 @@ export class ERP{
         self.initialize();
         return self;
     }
+
+
+    async get_navigation_configuration() {
+        if (!this.main_navigation_configuration) {
+            this.main_navigation_configuration = await generate_main_navigation_configuration(this);
+        }
+        return this.main_navigation_configuration;
+    }
+
 
     getLocalStorageLookUps(){
         var self = this;
@@ -65,9 +78,16 @@ export class ERP{
         if(!self.config.appSettings.idleTimeout){
             self.config.appSettings.idleTimeout = 60;
         }
+
         for(var key in self.config){
             self[key] = self.config[key];
         }
+
+        jQuery.ajaxSetup({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${self.user.userDetails.sessionId}`);
+            }
+        });
 
         self.configureSocket();
         self.initializeDeviceType();
@@ -1801,7 +1821,9 @@ export class ERP{
     }
     setDefaultModule(){
         var self = this;
-        self.setSelectedModule(self.getDefaultModule(), true);
+        // console.log(self.getDefaultModule().container.attr('style'))
+        self.setSelectedModule(self.getDefaultModule(), false);
+        // console.log(self.getDefaultModule().container.attr('style'))
         return self;
     }
     setDefaultReport(){
@@ -2817,7 +2839,7 @@ export class ERP{
         self.getTopMostModuleInViewPlane().getTopMostSubModuleInViewPlane().handleCtrlKeyDownEvent(eve);
         return self;
     }
-    handleKeyUp(keyCode){
+    handleKeyUp(keyCode, eve){
         var self = this;
         var ret = true;
         if(keyCode == ERP.KEY_CODES.CTRL){
@@ -2972,6 +2994,7 @@ export class ERP{
         self.topMostModuleInViewPlane = module;
 
         window._module = module;
+
         self.selectedModule.show();
         location.hash = module.id;
         self.selectedModuleChanged();
@@ -3215,9 +3238,10 @@ ERP.prototype._socket = {
     configureSocket: function(erp){
         var self = this;
         let socket_url = location.protocol + '//' + location.host + '?sessionId=' + erp.user.config.user.sessionId;
-        if(erp.config.socket_io_url){
-            socket_url = erp.config.socket_io_url;
+        if(erp.config.backend_root_url){
+            socket_url = erp.config.backend_root_url + `/socket.io/socket.io.js?_=1719394543097&sessionId=${erp.user.config.user.sessionId}`;
         }
+        console.log('socket_url', socket_url)
         var socket = io(socket_url, {'userId' : 'aki143s', transport : 'websocket'});
         socket.connect();
 

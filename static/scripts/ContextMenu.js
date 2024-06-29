@@ -82,16 +82,20 @@ ContextMenu.prototype={
         self.contextMenuClickEvent = '';
         $(self.config.targetContainer).on('contextmenu', function (e) {
             self.contextMenuClickEvent = e;
-            e.preventDefault();
-            e.stopPropagation();
+
             if(self.disabled){
                 return;
             }
+
+
             var options = self.validateClick($(e.target), e);
             if(options && Object.keys(options).length){
                 self.currentOptions = options;
                 self.showContextMenu(e, options);
+                e.preventDefault();
+                e.stopPropagation();
             }
+
         });
         self.elements.rightClickMenuUl.on('click', 'li', function(liEvent){
             var li = $(this);
@@ -165,12 +169,13 @@ ContextMenu.prototype={
             self.elements.container.css('left', e.pageX);
             self.elements.container.css('top', e.pageY);
         }
+        let options_arr = self._creation.createRightClickMenuOptions(self, options);
         self.elements.rightClickMenuUl
             .empty()
-            .append(self._creation.createRightClickMenuOptions(self, options));
+            .append(options_arr);
         self.elements.container.show();
         self.startFocusOut();
-        return self;
+        return options_arr;
     },
     showSubMenu: function(mainMenuItem){
         var self = this;

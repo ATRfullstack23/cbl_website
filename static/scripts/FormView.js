@@ -1469,7 +1469,7 @@ FormView.prototype = {
             }
 
 
-            async.mapLimit(lookUpColumns, 3, function(column, next){
+            window.async_lib.mapLimit(lookUpColumns, 3, function(column, next){
 
 
                 if(column.disableCondition && column.disableCondition.disabled){
@@ -1600,15 +1600,18 @@ FormView.prototype = {
         initialize: function(formView){
             var socket = formView.getSocket();
 
-            socket.on(formView.socketEvents.insertRowDone, function(data){
-                formView._db.insert_done(formView, data);
-            });
+            // socket.on(formView.socketEvents.insertRowDone, function(data){
+            //     formView._db.insert_done(formView, data);
+            // });
+
             socket.on(formView.socketEvents.executeBeforeSqlOnlyInsertDone, function(data){
                 formView._db.executeBeforeSqlOnlyInsert_done(formView, data);
             });
+
             socket.on(formView.socketEvents.updateRowDone, function(data){
                 formView._db.updateRow_done(formView, data);
             });
+
             socket.on(formView.socketEvents.getOneRowDataDone, function(data){
                 formView._db.getOneRowData_done(formView, data);
             });
@@ -1665,11 +1668,25 @@ FormView.prototype = {
                                 console.log(formView.id, formView.dynamicCallBacks, data);
                             }
 
-
                             data.buttonId = formView.button.id;
                             formView.disableSaveAndCancelButtons();
                             //socket.emit(formView.socketEvents.insertRow, data);
-                            socket.emit(formView.socketEvents.insertRow, data);
+
+
+                            formView.subModule.do_ajax_request('insertRow', data, function(ajax_err, responseObj){
+                                formView._db.insert_done(formView, responseObj);
+                            });
+
+                            // $.ajax({
+                            //     type: 'POST',
+                            //     data: {_source : JSON.stringify(data)},
+                            //     url: insert_url,
+                            // }).always(function (responseObj, status) {
+                            //     // console.log(grid.socketEvents.insertRowDone + '_Done', responseObj, status);
+                            //     formView._db.insert_done(formView, responseObj);
+                            // });
+
+                            // socket.emit(formView.socketEvents.insertRow, data);
                         }
                     }
                 }]);
@@ -1704,10 +1721,12 @@ FormView.prototype = {
                         formView.hide();
                     }
                 }
+                console.log('setAsDataChanged', data)
 
                 formView.subModule.setAsDataChanged('insert');
             }
             else{
+                console.log('insert error', data)
                 if(data.errorMessage){
                     if(data.errorMessage.simpleDataTableRowId){
                         formView.simpleDataTables[formView.mode][data.errorMessage.columnId]
@@ -1831,7 +1850,12 @@ FormView.prototype = {
             var formData = {
                 id: formView.data.view['id']
             };
-            socket.emit(formView.socketEvents.getOneRowData, {config: formData});
+            // socket.emit(formView.socketEvents.getOneRowData, {config: formData});
+
+            formView.subModule.do_ajax_request('getOneRowData', formData, function(ajax_err, responseObj){
+                self.getOneRowData_done(formView, responseObj);
+            });
+
             return self;
         },
         getOneRowData_done: function(formView, data){

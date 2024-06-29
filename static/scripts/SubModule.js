@@ -667,7 +667,11 @@ SubModule.prototype = {
         var config = {
             selectedRowId: self.formView.data.edit.id
         }
-        self.socket.emit(self.socketEvents.lockRow, config);
+        self.do_ajax_request('lockRow', config, function(ajax_err, responseObj){
+            self.lockRow_done(responseObj);
+        });
+
+        // self.socket.emit(self.socketEvents.lockRow, config);
         return self;
     },
     lockRow_done: function(responseData){
@@ -2205,6 +2209,33 @@ SubModule.prototype = {
         return filters;
     },
 
+    do_ajax_request: function (queryType, data_with_config_inside, do_ajax_request_callback) {
+        const self = this;
+        const ajax_url = self.getAjaxUrl(queryType);
+
+        let data_to_pass;
+
+        if(data_with_config_inside.config){
+            data_to_pass = {_source : JSON.stringify(data_with_config_inside)};
+        }
+        else{
+            data_to_pass = {_source : JSON.stringify({config: data_with_config_inside})};
+        }
+
+        $.ajax({
+            type: 'POST',
+            data: data_to_pass,
+            url: ajax_url,
+        }).always(function (responseObj, status) {
+            if(responseObj.error || responseObj.errorMessage){
+                do_ajax_request_callback && do_ajax_request_callback(responseObj); // shall return result only?
+                return;
+            }
+            do_ajax_request_callback && do_ajax_request_callback(null, responseObj);
+            // console.log(grid.socketEvents.insertRowDone + '_Done', responseObj, status);
+
+        });
+    },
     getAjaxUrl: function (queryType, itemId) {
         var self = this;
         var url = window.ERP_API_AJAX_ROOT_URL + '/@moduleId@/@subModuleId@/@queryType@';

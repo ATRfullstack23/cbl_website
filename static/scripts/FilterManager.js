@@ -50,6 +50,11 @@ FilterManager.prototype = {
 
         self.filtersOrder = [];
         self.inlineFiltersOrder = self.erp.getUserSetting(self.subModule.id + '_inlineFiltersOrder') || [];
+        if(self.inlineFiltersOrder){
+            if(typeof self.inlineFiltersOrder === 'string'){
+                self.inlineFiltersOrder = JSON.parse(self.inlineFiltersOrder)
+            }
+        }
         self.forEachFilter(function(filter, index){
             self.filtersOrder[index] = filter;
         });

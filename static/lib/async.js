@@ -949,7 +949,8 @@
     }
     // included directly via <script> tag
     else {
-        root.async = async;
+        root.async_lib = async;
+        // root.async = async;
     }
 
 }());

@@ -26,6 +26,7 @@
         }
 
         window.ERP = ERP;
+        erp_config.backend_root_url = 'https://events-platform-sandbox.bigdate.events:17584';
         erp_config.socket_io_url = 'https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js?_=1719394543097';
         erp_instance = new ERP(erp_config, {user: user_obj});
         window.erp = erp_instance;
