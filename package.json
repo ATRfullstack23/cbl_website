@@ -20,6 +20,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"dayjs": "^1.11.11",
 		"flowbite-svelte": "^0.46.7",
 		"flowbite-svelte-icons": "^1.6.1",
 		"fs-extra": "^11.2.0",

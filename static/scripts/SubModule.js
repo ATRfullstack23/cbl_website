@@ -65,12 +65,127 @@ SubModule.prototype = {
         else{
             self.buttonManager = new ButtonManager(self.config.buttons, self);
         }
+
+
         self.columnManager = new ColumnManager(self.config.columns, self);
         if(self.hasGridViewMode){
             self.grid = new Grid(self.config.gridView, self);
+            self.common_pager = self.grid.pager;
         }
+
         if(self.hasThumbnailViewMode){
-            self.hasThumbnailViewMode = false;
+            // self.hasThumbnailViewMode = false;
+            self.hasCardViewMode = true;
+            self.defaultDisplayMode = SubModule.DISPLAY_MODES.CARD_VIEW;
+            // aki temp remove later
+            self.cardViewConfig  = self.config.cardViewConfig = {
+                "display_type": "card With Image",
+                "orientation": "landscape",
+                "buttons": [
+                    {
+                        "display_name": "Edit",
+                        "type": "edit_in_view_mode"
+                    }
+                ],
+                "header_title_column": {
+                    "type": "lookUpDropDownList",
+                    "id": "employee_profile_id",
+                },
+                "header_subtitle_column": {
+                    "type": "choice",
+                    "id": "leave_type_id",
+                },
+                "columns": [
+                    {
+                        "display_name": "Status",
+                        "type": "choice",
+                        "id": "status",
+                        "index": 1,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {
+                            "style_type": "sub_title"
+                        }
+                    },
+                    {
+                        "display_name": "Available Leaves",
+                        "type": "integer",
+                        "id": "available_leaves_id",
+                        "index": 3,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {
+
+                        }
+                    },
+                    {
+                        "display_name": "Employee Profile Id",
+                        "type": "lookUpDropDownList",
+                        "id": "employee_profile_id",
+                        "index": 4,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {
+
+                        }
+                    },
+                    {
+                        "display_name": "Leave Type",
+                        "type": "choice",
+                        "id": "leave_type_id",
+                        "index": 6,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {}
+                    },
+                    {
+                        "display_name": "Leave Days",
+                        "type": "integer",
+                        "id": "leave_days",
+                        "index": 7,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {}
+                    },
+                    {
+                        "display_name": "Start Date",
+                        "type": "date",
+                        "id": "start_date",
+                        "index": 8,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {}
+                    },
+                    {
+                        "display_name": "End Date",
+                        "type": "date",
+                        "id": "end_date",
+                        "index": 9,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {}
+                    },
+                    {
+                        "display_name": "Reason",
+                        "type": "multipleLine",
+                        "id": "reason",
+                        "index": 10,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {}
+                    },
+                    {
+                        "display_name": "Informed To",
+                        "type": "singleLine",
+                        "id": "informed_to",
+                        "index": 11,
+                        "is_hidden": false,
+                        "is_editable": false,
+                        "style": {}
+                    }
+                ]
+            };
+            // self.thumbNailView = new CardViewHelper(self.config.thumbNailView||{}, self);
             // self.thumbNailView = new ThumbNailView(self.config.thumbNailView||{}, self);
         }
         if(self.hasCalendarViewMode){
@@ -413,6 +528,9 @@ SubModule.prototype = {
     hideAllViews: function(){
         var self = this;
         self.elements.viewsContainer.children().addClass('hidden');
+        if(self.cardViewHelper){
+            self.cardViewHelper.hide();
+        }
         return self;
     },
     clearReceivedData: function(){
@@ -477,7 +595,7 @@ SubModule.prototype = {
                     self.formView.cancel();
                 }
                 break;
-            case SubModule.DISPLAY_MODES.THUMBNAIL_VIEW:
+            case SubModule.DISPLAY_MODES.CARD_VIEW:
                 self.setDisplayModeToCardView();
                 break;
             case SubModule.DISPLAY_MODES.FORM_VIEW:
@@ -518,8 +636,10 @@ SubModule.prototype = {
     },
     setDisplayModeToCardView: function(){
         var self = this;
-        self.thumbNailView.container.removeClass('hidden');
-        self.thumbNailView.getData();
+        self.cardViewHelper.show();
+        self.cardViewHelper.get_data();
+        // self.thumbNailView.container.removeClass('hidden');
+        // self.thumbNailView.getData();
         return self;
     },
     setDisplayModeToDirectCreateView: function(){
@@ -806,9 +926,9 @@ SubModule.prototype = {
             if (subModule.hasGridViewMode) {
                 tdViews.append(subModule.grid.getElement());
             }
-            if (subModule.hasThumbnailViewMode) {
-                tdViews.append(subModule.thumbNailView.getElement());
-            }
+            // if (subModule.hasThumbnailViewMode) {
+            //     tdViews.append(subModule.thumbNailView.getElement());
+            // }
             if (subModule.hasCalendarViewMode) {
                 tdViews.append(subModule.calendarView.getElement());
             }
@@ -2274,11 +2394,19 @@ SubModule.prototype = {
         }
 
         return url;
+    },
+
+    set_latest_display_data: function(data_arr, data_map){
+        this.latest_display_data = {
+            arr: data_arr,
+            map: data_map
+        };
     }
 };
 
 SubModule.DISPLAY_MODES = {
     GRID_VIEW: "gridView",
+    CARD_VIEW: "thumbnailView",
     THUMBNAIL_VIEW: "thumbnailView",
     FORM_VIEW: "formView",
     CALENDAR_VIEW: "calendarView",

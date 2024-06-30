@@ -704,7 +704,9 @@ Grid.prototype = {
                     });
                     grid.dataArr = data.result.data;
                 }
-//                console.log(data.result)
+
+                grid.subModule.set_latest_display_data(grid.dataArr, grid.data);
+                //                console.log(data.result)
                 var toRestoreChildWindows = [];
                 if(grid.elements.tbody){
                     grid.elements.tbody.children('tr.inlineViewMode').each(function () {
@@ -874,7 +876,7 @@ Grid.prototype = {
 
                 grid.elements.rows[dataRow['id']] = {};
                 var tr = document.createElement('tr');
-                tr.className = 'gridDataRow';
+                tr.className = 'gridDataRow single_data_row_of_submodule';
                 tr.appendChild(self.createRowSelectorDataRow(grid.elements.rows[dataRow['id']], dataRow));
                 grid.columnOrder.forEach(function(columnId){
                     var column = subModule.columnManager.columns[columnId];

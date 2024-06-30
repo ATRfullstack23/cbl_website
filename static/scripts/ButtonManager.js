@@ -305,11 +305,15 @@ ButtonManager.prototype = {
                     },
 
                     {
-                        selector: ".gridDataRow",
+                        selector: ".single_data_row_of_submodule",
                         onContextMenu: function(element, contextMenu){
                             self.selectUnselectAllRows(false, true);
-                            self.rowSelectorChanged(element.find('.grid-row-selector')
-                                .prop('checked', true));
+                            if(self.subModule.displayMode === SubModule.DISPLAY_MODES.GRID_VIEW){
+                                self.rowSelectorChanged(element.find('.grid-row-selector').prop('checked', true));
+                            }
+                            else{
+                                self.rowSelectorChanged(element.find('.card-row-selector').prop('checked', true));
+                            }
 
                         },
                         onContextMenuHide: function(element){
@@ -653,9 +657,13 @@ ButtonManager.prototype = {
 
         if(self.subModule.grid){
             self.subModule.grid.grid.find('.grid-row-selector').prop('checked', checked);
-            if(!preventChangeEvent){
-                self.updateRowSelectorCondition();
-            }
+        }
+        if(self.subModule.cardViewHelper){
+            self.subModule.cardViewHelper.container.find('.card-row-selector').prop('checked', checked);
+        }
+
+        if(!preventChangeEvent){
+            self.updateRowSelectorCondition();
         }
         return self;
     },
@@ -671,7 +679,12 @@ ButtonManager.prototype = {
         var self = this;
         var arr = [];
         self.selectedRows.forEach(function(rowId){
-            arr.push(self.subModule.grid.data[rowId]);
+                if(self.subModule.displayMode === SubModule.DISPLAY_MODES.GRID_VIEW){
+                    arr.push(self.subModule.grid.data[rowId]);
+                }
+                else if(self.subModule.displayMode === SubModule.DISPLAY_MODES.CARD_VIEW){
+                    arr.push(self.subModule.cardViewHelper.card_data_map[rowId]);
+                }
         });
         return arr;
     },
@@ -679,11 +692,19 @@ ButtonManager.prototype = {
         var self = this;
         self.selectedRows = [];
         self.disableCondition = {};
-        self.selectedRowSelectors = self.subModule.grid.elements.table.find('.grid-row-selector:checked');
-        self.subModule.grid.elements.table.find('tr.selected').removeClass('selected');
+        if(self.subModule.displayMode === SubModule.DISPLAY_MODES.GRID_VIEW){
+            self.selectedRowSelectors = self.subModule.grid.elements.table.find('.grid-row-selector:checked');
+            self.subModule.grid.elements.table.find('tr.selected').removeClass('selected');
+        }
+        else if(self.subModule.displayMode === SubModule.DISPLAY_MODES.CARD_VIEW){
+            self.selectedRowSelectors = self.subModule.cardViewHelper.container.find('.card-row-selector:checked');
+            self.subModule.cardViewHelper.container.find('.single_card_view_data_row.selected').removeClass('selected');
+        }
+
         self.selectedRowsCount = self.selectedRowSelectors.each(function(){
             var element = $(this);
             element.closest('tr[id]').addClass('selected');
+            element.closest('.single_card_view_data_row').addClass('selected');
             self.selectedRows.push(element.data('id'));
         }).length;
         self.disableCondition.none = (self.selectedRowsCount == 0);
@@ -1096,14 +1117,14 @@ ButtonManager.prototype = {
             var self = this;
             var subModule = buttonManager.getWebpage();
             if(button.typeSpecific && button.typeSpecific.showEditModeDirectly){
-                subModule.formView.show(FormView.VIEW_MODE, buttonManager.subModule.grid.data[buttonManager.selectedRows[0]], button, {
+                subModule.formView.show(FormView.VIEW_MODE, buttonManager.subModule.latest_display_data.map[buttonManager.selectedRows[0]], button, {
                     onEditModeReady: function(formView){
                         self.editButtonClicked(buttonManager, buttonManager.buttons.edit);
                     }
                 });
             }
             else{
-                subModule.formView.show(FormView.VIEW_MODE, buttonManager.subModule.grid.data[buttonManager.selectedRows[0]], button);
+                subModule.formView.show(FormView.VIEW_MODE, buttonManager.subModule.latest_display_data.map[buttonManager.selectedRows[0]], button);
             }
             return self;
         },

@@ -141,6 +141,8 @@ ContextMenu.prototype={
             else if(actualElement.length){
                 isCurrent = true;
             }
+
+
             if( isCurrent){
                 self.currentTargetArea = targetArea;
                 self.currentTargetAreaElement = actualElement;
@@ -153,6 +155,7 @@ ContextMenu.prototype={
                 // break;
             }
         }
+        console.log(options, element.get(0))
         return options;
     },
     showContextMenu: function(e, options){
