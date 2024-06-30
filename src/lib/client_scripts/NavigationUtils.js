@@ -14,6 +14,22 @@ export async function generate_main_navigation_configuration(erp_instance) {
         items: []
     };
 
+    const main_dashboard_item_config = {
+        "icon": "MailBoxSolid",
+        "id": "d_1000001",
+        "custom_icon": {
+            "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+            "color": "#fff"
+        },
+        "display_name": "Main Dashboard",
+        "item_type": "item",
+        "action_type": "go_to_dashboard",
+        "context_data": {
+            "dashboard_id" : 1000001
+        }
+    };
+    nav_config.items.push(main_dashboard_item_config);
+
     for(var key in erp_instance.modules){
         const module_info = erp_instance.modules[key];
         const single_item_config = {

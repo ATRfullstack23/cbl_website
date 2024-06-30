@@ -1,0 +1,404 @@
+[
+    {
+        "type":"card",
+        "title":"Total Sales",
+        "data":{
+            "value":"$12,345",
+            "sub_note":"Nos",
+            "backgroundColor":"#fdba8c",
+            "color":"#fff"
+        },
+        "width":"30%",
+        "height":"300"
+
+    },
+    {  
+       "type":"chart",
+       "chart_instance":"",
+       "chart_type":"line",
+       "chart_title":"Sales this week",
+       "chart_value":"$12,345",
+       "chart_width":"100%",
+       "chart_height":"200",
+       "data":{
+           "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+           "datasets":[
+                {
+                    "label":"Revenue",
+                    "data":[6356,6218,6156,6556,6356,6256,6056],
+                    "borderWidth": 3,
+                    "backgroundColor": "#1b53d4",
+                    "borderColor": "#1b53d4",
+                    "tension": 0.3,
+                    "radius":5
+                },
+                {
+                    "label":"Revenue (Previous Period)",
+                    "data":[6556,6725,6424,6356,6586,6756,6616],
+                    "borderWidth": 3,
+                    "backgroundColor": "#fdba8c",
+                    "borderColor": "#fdba8c",
+                    "tension": 0.3,
+                    "radius":5
+                }
+            ]
+        },
+        "options":{}
+    },
+    {  
+       "type":"chart",
+       "chart_instance":"",
+       "chart_type":"line",
+       "chart_title":"Sales this week",
+       "chart_value":"$12,345",
+       "chart_width":"50%",
+       "chart_height":"200",
+       "data":{
+           "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+           "datasets":[
+                {
+                    "label":"Revenue",
+                    "data":[6356,6218,6156,6356,6356,6256,6056],
+                    "borderWidth": 3,
+                    "backgroundColor": "#1b53d4",
+                    "borderColor": "#1b53d4",
+                    "tension": 0.2,
+                    "radius":5
+                }
+            ]
+        },
+        "options":{}
+    },
+    {
+       "type":"chart",
+       "chart_instance":"",
+       "chart_type":"bar",
+       "chart_title":"Sales this week",
+       "chart_value":"$12,345",
+       "chart_width":"40%",
+       "chart_height":"200",
+       "data":{
+           "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+           "datasets":[
+                {
+                    "label":"Revenue",
+                    "data":[6356,6218,6156,6356,6356,6256,6056],
+                    "borderWidth": 0,
+                    "backgroundColor": "#1b53d4",
+                    "borderColor": "#1b53d4"
+                }
+            ]
+        },
+        "options":{}
+    },
+    {
+       "type":"chart",
+       "chart_instance":"",
+       "chart_type":"bar",
+       "chart_title":"Sales this week",
+       "chart_value":"$12,345",
+       "chart_width":"50%",
+       "chart_height":"200",
+       "data":{
+           "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+           "datasets":[
+                {
+                    "label":"Revenue",
+                    "data":[6356,6218,6156,6356,6356,6256,6056],
+                    "borderWidth": 0,
+                    "backgroundColor": "#1b53d4",
+                    "borderColor": "#1b53d4"
+                },
+                {
+                    "label":"Revenue (Previous Period)",
+                    "data":[6556,6725,6424,6356,6586,6756,6616],
+                    "borderWidth": 3,
+                    "backgroundColor": "#fe8d51",
+                    "borderColor": "#fe8d51"
+                    
+                }
+            ]
+        },
+        "options":{}
+    },
+    {
+        "type":"chart",
+        "chart_instance":"",
+        "chart_type":"bar",
+        "chart_title":"Sales this week",
+        "chart_value":"$12,345",
+        "chart_width":"40%",
+        "chart_height":"200",
+        "data":{
+            "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+            "datasets":[
+                 {
+                     "label":"Revenue",
+                     "data":[6356,6218,6156,6356,6356,6256,6056],
+                     "borderWidth": 0,
+                     "backgroundColor": "#1b53d4",
+                     "borderColor": "#1b53d4"
+                 },
+                 {
+                     "label":"Revenue (Previous Period)",
+                     "data":[6556,6725,6424,6356,6586,6756,6616],
+                     "borderWidth": 3,
+                     "backgroundColor": "#fe8d51",
+                     "borderColor": "#fe8d51"    
+                 },
+                {
+                    "label":"Revenue (Highest)",
+                    "data":[6956,6625,6824,6356,6786,6656,6916],
+                    "borderWidth": 3,
+                    "backgroundColor": "#000",
+                    "borderColor": "#000"
+                    
+                }
+             ]
+         }
+    },
+    {
+        "type":"chart",
+        "chart_instance":"",
+        "chart_type":"bar",
+        "chart_title":"Sales this week",
+        "chart_value":"$12,345",
+        "chart_width":"30%",
+        "chart_height":"300",
+        "data":{
+            "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+            "datasets":[
+                 {
+                     "label":"Revenue",
+                     "data":[6356,6218,6156,6356,6356,6256,6056],
+                     "borderWidth": 0,
+                     "backgroundColor": "#1b53d4",
+                     "borderColor": "#1b53d4"
+                 }
+             ]
+         },
+         "options": {
+            "indexAxis": "y"
+          }
+     },
+     {
+        "type":"chart",
+        "chart_instance":"",
+        "chart_type":"bar",
+        "chart_title":"Sales this week",
+        "chart_value":"$12,345",
+        "chart_width":"30%",
+        "chart_height":"300",
+        "data":{
+            "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+            "datasets":[
+                 {
+                     "label":"Revenue",
+                     "data":[6356,6218,6156,6356,6356,6256,6056],
+                     "borderWidth": 0,
+                     "backgroundColor": "#1b53d4",
+                     "borderColor": "#1b53d4"
+                 },
+                 {
+                     "label":"Revenue (Previous Period)",
+                     "data":[6556,6725,6424,6356,6586,6756,6616],
+                     "borderWidth": 3,
+                     "backgroundColor": "#fe8d51",
+                     "borderColor": "#fe8d51"
+                     
+                 }
+             ]
+         },
+         "options": {
+            "indexAxis": "y"
+          }
+     },
+     {
+        "type":"chart",
+        "chart_instance":"",
+        "chart_type":"bar",
+        "chart_title":"Sales this week",
+        "chart_value":"$12,345",
+        "chart_width":"30%",
+        "chart_height":"300",
+        "data":{
+            "labels":["01 Feb","02 Feb","03 Feb","04 Feb","05 Feb","06 Feb","07 Feb"],
+            "datasets":[
+                 {
+                     "label":"Revenue",
+                     "data":[6356,6218,6156,6356,6356,6256,6056],
+                     "borderWidth": 0,
+                     "backgroundColor": "#1b53d4",
+                     "borderColor": "#1b53d4"
+                 },
+                 {
+                     "label":"Revenue (Previous Period)",
+                     "data":[6556,6725,6424,6356,6586,6756,6616],
+                     "borderWidth": 0,
+                     "backgroundColor": "#fe8d51",
+                     "borderColor": "#fe8d51"
+                     
+                 }
+             ]
+         },
+         "options": {
+            "scales":{
+                "y":{
+                    "stacked":true
+                },
+                "x":{
+                    "stacked":true
+                }
+            },
+            "indexAxis": "y"
+          }
+     },
+     {
+        "type":"chart",
+        "chart_instance":"",
+        "chart_type":"doughnut",
+        "chart_title":"Sales by region",
+        "chart_value":"",
+        "chart_width":"30%",
+        "chart_height":"200",
+        "data":{
+            "labels":["US","UK","EU"],
+            "datasets":[
+                 {
+                     "label":"Sales",
+                     "data":[6356,6218,6156],
+                     "borderWidth": 0,
+                     "backgroundColor": ["#1b53d4","#fe8d51","#000"],
+                     "hoverOffset": 4
+                 }
+             ]
+         }
+     },
+     {
+        "type":"chart",
+        "chart_instance":"",
+        "chart_type":"pie",
+        "chart_title":"Sales by region",
+        "chart_value":"",
+        "chart_width":"30%",
+        "chart_height":"200",
+        "data":{
+            "labels":["US","UK","EU"],
+            "datasets":[
+                 {
+                     "label":"Sales",
+                     "data":[6356,6218,6156],
+                     "borderWidth": 0,
+                     "backgroundColor": ["#1b53d4","#fe8d51","#000"],
+                     "hoverOffset": 4
+                 }
+             ]
+         }
+     },
+     {
+        "type":"list",
+        "title":"Latest Customers",
+        "list_width":"30%",
+        "list_height":"400",
+        "data":[
+            {
+                "value_1":"John Doe",
+                "value_2":"value_2@usc.com",
+                "image":"https://ik.imagekit.io/ABN/sample_img.png",
+                "data_value":"$320"
+            },
+            {
+                "value_1":"Bonnie Green",
+                "value_2":"value_2@usc.com",
+                "image":"https://ik.imagekit.io/ABN/sample_img.png",
+                "data_value":"$3467"
+
+            },
+            {
+                "value_1":"Jane Doe",
+                "value_2":"value_2@usc.com",
+                "image":"https://ik.imagekit.io/ABN/sample_img.png",
+                "data_value":"$67"
+            },
+            {
+                "value_1":"Thomes Lean",
+                "value_2":"value_2@usc.com",
+                "image":"https://ik.imagekit.io/ABN/sample_img.png",
+                "data_value":"$2367"
+            },
+            {
+                "value_1":"Lana Byrd",
+                "value_2":"value_2@usc.com",
+                "image":"https://ik.imagekit.io/ABN/sample_img.png",
+                "data_value":"$367"
+            }
+        ],
+        "button":{
+            "title":"View All",
+            "action_type":"log"
+        }
+     },
+     {
+        "type":"table",
+        "title":"Transactions",
+        "description":"This is a latest transactions",
+        "table_width":"100%",
+        "table_height":"600",
+        "table_data":{
+            "columns":[
+                {
+                    "title":"TRANSACTION",
+                    "id":"col_1"
+                },
+                {
+                    "title":"DATE & TIME",
+                    "id":"col_2"
+                },
+                {
+                    "title":"AMOUNT",
+                    "id":"col_3"
+                },
+                {
+                    "title":"STATUS",
+                    "id":"col_4"
+                }
+            ],
+            "data":[
+                {
+                    "col_1":"Payment from Bonnie Green",
+                    "col_2":"Apr 23,2021",
+                    "col_3":"$2300",
+                    "col_4":"Completed"
+                },
+                {
+                    "col_1":"Payment refund to #00910",
+                    "col_2":"Apr 23,2021",
+                    "col_3":"-$670",
+                    "col_4":"Completed"
+                },
+                {
+                    "col_1":"Payment failed from #087651",
+                    "col_2":"Apr 18,2021",
+                    "col_3":"$234",
+                    "col_4":"Cancelled"
+                },
+                {
+                    "col_1":"Payment from Lana Byrd",
+                    "col_2":"Apr 15,2021",
+                    "col_3":"$5000",
+                    "col_4":"In progress"
+                },
+                {
+                    "col_1":"Payment from Jese Leos",
+                    "col_2":"Apr 11,2021",
+                    "col_3":"$2300",
+                    "col_4":"Completed"
+                }
+            ]
+        },
+        "button":{
+            "title":"View All",
+            "action_type":"log"
+        }
+     }
+]

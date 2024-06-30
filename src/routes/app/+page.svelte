@@ -6,12 +6,16 @@
     import {page} from "$app/stores";
     import Sidebar from "$lib/navigation_sidebar/Sidebar.svelte";
     import Module from "$lib/submodule/Module.svelte";
+    import Dashboard from "$lib/dashboard_utils/Dashboard.svelte";
 
     export let data;
     let device_type = $page.data.device_type;
     const backend_root_url = 'https://events-platform-sandbox.bigdate.events:17584';
 
     let erp_instance;
+    let dashboard_configurations_for_reference = [];
+    let dashboards_container_element;
+
     function initialize_erp () {
         const user_obj = {
             config: {
@@ -37,13 +41,26 @@
             erp_config.socket_io_url = backend_root_url + '/socket.io/socket.io.js?_=1719394543097';
             erp_instance = new ERP(erp_config, {user: user_obj});
             console.log('new erp', erp_instance)
+
             window.erp = erp_instance;
             erp_instance.initialize().then(()=>{
-                erp_instance.get_navigation_configuration().then((n_c)=>{
-                    navigation_config = n_c;
-                    console.log('navigation_config', navigation_config );
-                    erp_instance.container.appendTo(erp_content__container_element);
-                });
+                dashboard_configurations_for_reference = erp_instance.user.userDetails.dashboards;
+                tick().then(()=>{
+                    for(const d_svelte_item of erp_instance.dashboards_arr){
+                        console.log('d_svelte_item', d_svelte_item)
+                        erp_instance.dashboards[d_svelte_item.id] = d_svelte_item;
+                    }
+
+                    erp_instance.elements.dashboardContainer = jQuery(dashboards_container_element);
+                    erp_instance.container.append(erp_instance.elements.dashboardContainer);
+
+                    erp_instance.get_navigation_configuration().then((n_c)=>{
+                        navigation_config = n_c;
+                        console.log('navigation_config', navigation_config );
+                        erp_instance.container.appendTo(erp_content__container_element);
+                    });
+                })
+
             });
 
 
@@ -63,6 +80,9 @@
         let item_info = evt.detail;
         if(item_info.action_type === 'go_to_module'){
             erp_instance.setSelectedModule(item_info.context_data.module_id);
+        }
+        else if(item_info.action_type === 'go_to_dashboard'){
+            erp_instance.setSelectedDashboard(item_info.context_data.dashboard_id);
         }
     }
 
@@ -111,14 +131,31 @@
 
     <div bind:this={erp_content__container_element} class="erp_content__container">
 
+
+
     </div>
 
 
+    <div class="dashboards_container hidden" bind:this={dashboards_container_element}>
+
+        {#each dashboard_configurations_for_reference as dashboard_config, index}
+            <!--        <pre class="mineee">{dashboard_config.id}</pre>-->
+            <Dashboard dashboard_configuration="{dashboard_config}"
+                       bind:this={erp_instance.dashboards_arr[index]}/>
+        {/each}
+    </div>
+
+
+
     {#each module_instances_for_reference as module_info, index}
-        <pre class="mineee">{module_info.id}</pre>
+<!--        <pre class="mineee">{module_info.id}</pre>-->
         <Module module="{module_info}"
                    bind:this={module_svelte_elements_for_reference[index]}/>
     {/each}
+
+
+
+
 
 
 </section>
@@ -153,9 +190,18 @@
     }
 
     .erp_content__container{
-        height: 100%;
         width: calc(100% - var(--main_navigation_width));
         margin-left: var(--main_navigation_width);
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .dashboards_container{
+        height: 100%;
+        width: 100%;
+        /*width: calc(100% - var(--main_navigation_width));*/
+        /*margin-left: var(--main_navigation_width);*/
+        overflow-y: auto;
     }
 </style>
 

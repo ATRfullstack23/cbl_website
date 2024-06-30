@@ -287,7 +287,7 @@ export class ERP{
         self.initializeContextMenu();
 
 
-        if(self.dashboardManager.isEmpty()){
+        if(self.dashboards_arr.length === 0){
             self.removeTopLevelNavigationItem('dashboard');
             self.setSelectedTopNavigationMode('modules');
         }
@@ -340,18 +340,18 @@ export class ERP{
     initializeDashboardManager(){
         var self = this;
 
-        var config = self.user.userDetails.dashboardInfo || { items : {}};
+        var dashboards_config = self.user.userDetails.dashboards || [];
 
-        config.groups = config.groups || [];
-        config.items = config.items || [];
-
-        if(!config.groups['1000000']){
-            config.groups = {};
-            config.groups['1000000'] = {
-                displayName : 'Home',
-                id : 1000000
-            }
-        }
+        // config.groups = config.groups || [];
+        // config.items = config.items || [];
+        //
+        // if(!config.groups['1000000']){
+        //     config.groups = {};
+        //     config.groups['1000000'] = {
+        //         displayName : 'Home',
+        //         id : 1000000
+        //     }
+        // }
 
         //
         //
@@ -517,11 +517,12 @@ export class ERP{
         // };
 
 
+        self.dashboards_arr = [];
+        self.dashboards = {};
 
 
-
-        config.container = self.elements.dashboardContainer;
-        self.dashboardManager = new DashboardManager(config, self);
+        // config.container = self.elements.dashboardContainer;
+        // self.dashboardManager = new DashboardManager(config, self);
 
         return self;
     }
@@ -553,14 +554,14 @@ export class ERP{
 
         switch (newMode){
             case 'dashboard':
-                self.elements.content.addClass('hidden');
+                self.elements.modulesContainer.addClass('hidden');
                 self.elements.reportsContainer.addClass('hidden');
 
                 self.elements.dashboardContainer.removeClass('hidden');
-                self.dashboardManager.onSetAsCurrentMainView && self.dashboardManager.onSetAsCurrentMainView();
+                // self.dashboardManager.onSetAsCurrentMainView && self.dashboardManager.onSetAsCurrentMainView();
                 break;
             case 'reports':
-                self.elements.content.addClass('hidden');
+                self.elements.modulesContainer.addClass('hidden');
                 self.elements.dashboardContainer.addClass('hidden');
 
                 self.elements.reportsContainer.removeClass('hidden');
@@ -575,25 +576,25 @@ export class ERP{
                 self.elements.reportsContainer.addClass('hidden');
                 self.elements.dashboardContainer.addClass('hidden');
 
-                self.elements.content.removeClass('hidden');
-                if(self.isSocketConnected){
-                    if(self.selectedModule){
-                        erp.setSelectedModule( erp.getSelectedModule() );
-                    }
-                    else{
-                        self.setDefaultModule();
-                    }
-                }
-                else{
-                    setTimeout(function () {
-                        if(self.selectedModule){
-                            erp.setSelectedModule( erp.getSelectedModule() );
-                        }
-                        else{
-                            self.setDefaultModule();
-                        }
-                    }, 1000);
-                }
+                self.elements.modulesContainer.removeClass('hidden');
+                // if(self.isSocketConnected){
+                //     if(self.selectedModule){
+                //         erp.setSelectedModule( erp.getSelectedModule() );
+                //     }
+                //     else{
+                //         self.setDefaultModule();
+                //     }
+                // }
+                // else{
+                //     setTimeout(function () {
+                //         if(self.selectedModule){
+                //             erp.setSelectedModule( erp.getSelectedModule() );
+                //         }
+                //         else{
+                //             self.setDefaultModule();
+                //         }
+                //     }, 1000);
+                // }
                 self.onSetAsCurrentMainView && self.onSetAsCurrentMainView();
                 break;
         }
@@ -1826,7 +1827,7 @@ export class ERP{
     setDefaultModule(){
         var self = this;
         // console.log(self.getDefaultModule().container.attr('style'))
-        self.setSelectedModule(self.getDefaultModule(), false);
+        self.setSelectedModule(self.getDefaultModule(), {fromTrigger: false});
         // console.log(self.getDefaultModule().container.attr('style'))
         return self;
     }
@@ -1839,7 +1840,7 @@ export class ERP{
     userLoggedIn(user){
         var self = this;
         //self.moduleNavPointer.setDefaultValue();
-        self.setSelectedModule(self.getDefaultModule(), true);
+        self.setSelectedModule(self.getDefaultModule(), {fromTrigger: true});
         return self;
     }
     addUltoSortableNavWindow(){
@@ -2981,8 +2982,10 @@ export class ERP{
         module.showFloatingReports();
         return self;
     }
-    setSelectedModule(module, fromTrigger){
+    setSelectedModule(module, view_options){
         var self = this;
+        const fromTrigger = view_options?.fromTrigger || false;
+
         if(fromTrigger){
             self.moduleNavPointer.setValue(module.id, true);
             return;
@@ -2998,6 +3001,10 @@ export class ERP{
         self.topMostModuleInViewPlane = module;
 
         window._module = module;
+
+        if(self.selectedTopNavigationMode !== 'modules'){
+            self.setSelectedTopNavigationMode('modules');
+        }
 
         self.selectedModule.show();
         location.hash = module.id;
@@ -3027,6 +3034,9 @@ export class ERP{
         }
         self.selectedReport = report;
         window._report = report;
+        if(self.selectedTopNavigationMode !== 'reports'){
+            self.setSelectedTopNavigationMode('reports');
+        }
         self.selectedReport.show();
         self.selectedReportChanged();
         return self;
@@ -3036,6 +3046,34 @@ export class ERP{
         var report = self.selectedReport;
         report.setSelectedSubReport(report.getSelectedSubReport(), false);
         // report.subReportNavPointer.updatePointerPosition();
+        return self;
+    }
+
+    selectedDashboardChanged(){
+        var self = this;
+        var dashboard = self.selectedDashboard;
+        dashboard.refresh_data().then(()=>{});
+        return self;
+    }
+    setSelectedDashboard(dashboard, fromTrigger){
+        var self = this;
+
+        if(self.selectedDashboard){
+            self.selectedDashboard.hide();
+        }
+        if(!dashboard.id){
+            dashboard = self.dashboards[dashboard];
+        }
+        self.selectedDashboard = dashboard;
+        self.topMostDashboardInViewPlane = dashboard;
+
+        window._dashboard = dashboard;
+        if(self.selectedTopNavigationMode !== 'dashboard'){
+            self.setSelectedTopNavigationMode('dashboard');
+        }
+        self.selectedDashboard.show();
+        location.hash = dashboard.unique_id;
+        self.selectedDashboardChanged();
         return self;
     }
 
@@ -3325,9 +3363,27 @@ ERP.prototype._creation = {
     createElements: function(erp){
         var self = this;
         var container = self.createContainer(erp);
+
+
+        const modules_container = $(document.createElement('div')).attr({"class": "modules_container hidden"});
+        // const dashboards_container = $(document.createElement('div')).attr({"class": "dashboards_container hidden"});
+
+
         erp.forEachModule(function(module){
-            container.append(module.getElement());
+            modules_container.append(module.getElement());
         });
+
+        // for(const d_svelte_instance of erp.dashboards_arr){
+        //     dashboards_container.append(d_svelte_instance.container_element);
+        // }
+
+        erp.elements.modulesContainer = modules_container;
+        // erp.elements.dashboardContainer = dashboards_container;
+
+        container.append(modules_container);
+        // container.append(dashboards_container);
+
+
         erp.forEachSettingModule(function(module){
             erp.elements.settingModulesContentContainer.append(module.getElement());
         });
