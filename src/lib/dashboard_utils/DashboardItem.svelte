@@ -16,7 +16,7 @@
 
     export async function refresh_data(latest_filter_values_map){
         let api_result = await get_dashboard_report_item_data_from_server(dashboard_item_config, latest_filter_values_map);
-        report_item_instance.on_new_data_received(api_result);
+        await report_item_instance.on_new_data_received(api_result);
     }
 
 

@@ -3295,11 +3295,25 @@ ERP.prototype._socket = {
         var self = this;
         let socket_url = location.protocol + '//' + location.host + '?sessionId=' + erp.user.config.user.sessionId;
         if(erp.config.backend_root_url){
-            socket_url = erp.config.backend_root_url + `/socket.io/socket.io.js?_=1719394543097&sessionId=${erp.user.config.user.sessionId}`;
+            socket_url = erp.config.backend_root_url + `/socket.io/socket.io.js?sessionId=${erp.user.config.user.sessionId}`;
         }
         console.log('socket_url', socket_url)
-        var socket = io(socket_url, {'userId' : 'aki143s', transport : 'polling'});
+        var socket = io(socket_url, {'userId' : 'aki143s'});
         socket.connect();
+
+        socket.on("disconnect", (reason, details) => {
+            // the reason of the disconnection, for example "transport error"
+            console.log(reason);
+
+            // the low-level reason of the disconnection, for example "xhr post error"
+            console.log(details.message);
+
+            // some additional description, for example the status code of the HTTP response
+            console.log(details.description);
+
+            // some additional context, for example the XMLHttpRequest object
+            console.log(details.context);
+        });
 
         socket.formView = {};
         socket.formView.events = {};
@@ -3322,6 +3336,7 @@ ERP.prototype._socket = {
         var socket = erp.socket;
         socket.on('connect', function(){
             // erp.setDefaultModule();
+            console.log('socket connected 1')
             erp.elements.container.css({opacity: 1});
             console.log('socket connected')
 
@@ -3329,6 +3344,7 @@ ERP.prototype._socket = {
 
         });
         socket.on('disconnect', function(err, data){
+            console.log('socket disconnected')
             setTimeout(function(){
 
                 erp.onSocketDisconnected();

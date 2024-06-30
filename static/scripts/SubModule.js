@@ -2400,6 +2400,28 @@ SubModule.prototype = {
 
         });
     },
+    do_ajax_request_legacy: function (queryType, data_with_config_inside, do_ajax_request_callback) {
+        const self = this;
+        const ajax_url = self.getAjaxUrl(queryType);
+
+        let data_to_pass;
+
+        data_to_pass = {_source : JSON.stringify(data_with_config_inside)};
+
+        $.ajax({
+            type: 'POST',
+            data: data_to_pass,
+            url: ajax_url,
+        }).always(function (responseObj, status) {
+            if(responseObj.error || responseObj.errorMessage){
+                do_ajax_request_callback && do_ajax_request_callback(responseObj, responseObj); // shall return result only?
+                return;
+            }
+            do_ajax_request_callback && do_ajax_request_callback(null, responseObj);
+            // console.log(grid.socketEvents.insertRowDone + '_Done', responseObj, status);
+
+        });
+    },
     getAjaxUrl: function (queryType, itemId) {
         var self = this;
         var url = window.ERP_API_AJAX_ROOT_URL + '/@moduleId@/@subModuleId@/@queryType@';

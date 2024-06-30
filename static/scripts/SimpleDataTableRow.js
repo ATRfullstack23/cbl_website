@@ -689,7 +689,12 @@ SimpleDataTableRow.prototype = {
             socket.simpleDataTableRow.events[requestId] = eventsObj;
 //            column.fadeOutChildColumnsInSimpleDataTableRow(simpleDataTableRowMode);
 //            console.log(simpleDataTableRow.socketEvents['lookUpParentChanged_'+ column.id], data)
-            socket.emit(simpleDataTableRow.socketEvents['lookUpParentChanged_'+ column.id], data);
+//             socket.emit(simpleDataTableRow.socketEvents['lookUpParentChanged_'+ column.id], data);
+            simpleDataTableRow.subModule.do_ajax_request_legacy('lookUpParentChanged_'+ column.id, data, (a_err, response_data)=>{
+                // console.log('lookUpParentChanged_done', data, response_data)
+                console.log('dbl check here aki simpleDataTableRow, is submodule passing value ??')
+                self.lookUpParentChanged_done(simpleDataTableRow, response_data);
+            });
             return self;
         },
         lookUpParentChanged_done: function(simpleDataTableRow, data, options){

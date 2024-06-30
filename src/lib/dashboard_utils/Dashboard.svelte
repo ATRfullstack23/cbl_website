@@ -27,13 +27,13 @@
         filter_items = dashboard_configuration.dashboard_items.filter(item => item.config.type === "filter");
 
         report_items = dashboard_configuration.dashboard_items.filter(item => item.config.type === "report_item");
-        for(let chart of report_items.filter(data => data.type == "chart")){
-            new Chart(chart.chart_instance,{
-                type: chart.chart_type,
-                data: chart.data,
-                options: chart.options
-            })
-        }
+        // for(let chart of report_items.filter(data => data.type == "chart")){
+        //     new Chart(chart.chart_instance,{
+        //         type: chart.chart_type,
+        //         data: chart.data,
+        //         options: chart.options
+        //     })
+        // }
     }
 
 
@@ -43,11 +43,13 @@
         is_hidden = false;
         if(!shall_initialize){
             shall_initialize = true;
-            refresh_data_of_all_report_items().then(()=>{
-                tick().then(()=>{
-                    create_chart_reports()
-                });
-            })
+            create_chart_reports();
+
+            tick().then(()=>{
+                refresh_data_of_all_report_items().then(()=>{});
+                // create_chart_reports()
+            });
+
         }
     }
 

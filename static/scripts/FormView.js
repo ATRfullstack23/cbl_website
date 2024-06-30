@@ -1365,7 +1365,13 @@ FormView.prototype = {
             socket.formView.events[requestId] = eventsObj;
             column.fadeOutChildColumnsInFormView(formViewMode);
 //            console.log(formView.socketEvents['lookUpParentChanged_'+ column.id], data)
-            socket.emit(formView.socketEvents['lookUpParentChanged_'+ column.id], data);
+//             socket.emit(formView.socketEvents['lookUpParentChanged_'+ column.id], data);
+
+            formView.subModule.do_ajax_request_legacy('lookUpParentChanged_'+ column.id, data, (a_err, response_data)=>{
+                // console.log('lookUpParentChanged_done', data, response_data)
+                self.lookUpParentChanged_done(formView, response_data);
+            });
+
             return self;
         },
         lookUpParentChanged_done: function(formView, data, options){
@@ -1573,8 +1579,14 @@ FormView.prototype = {
             data.formView.mode = formView.mode;
             data.columns = columns;
             var socket = formView.getSocket();
-            throw 'err'
-            socket.emit(formView.socketEvents.getLookUpDataForEditMode, data);
+            // throw 'err'
+            // socket.emit(formView.socketEvents.getLookUpDataForEditMode, data);
+
+            formView.subModule.do_ajax_request_legacy('getLookUpDataForEditMode', data, (a_err, response_data)=>{
+                // console.log('lookUpParentChanged_done', data, response_data)
+                self.lookUpData_done(formView, response_data);
+            });
+
             return self;
         },
         toLookUpRequest: function(formView, column){
@@ -1766,7 +1778,12 @@ FormView.prototype = {
                         else{
                             data.buttonId = formView.button.id;
                             formView.disableSaveAndCancelButtons();
-                            socket.emit(formView.socketEvents.executeBeforeSqlOnlyInsert, data);
+
+                            formView.subModule.do_ajax_request('executeBeforeSqlOnlyInsert', data, function(ajax_err, responseObj){
+                                formView._db.executeBeforeSqlOnlyInsert_done(formView, responseObj);
+                            });
+
+                            // socket.emit(formView.socketEvents.executeBeforeSqlOnlyInsert, data);
                         }
                     }
                 }]);
@@ -1800,7 +1817,12 @@ FormView.prototype = {
             obj.buttonId = formView.button.id;
             obj.config = formData;
             formView.disableSaveAndCancelButtons();
-            socket.emit(formView.socketEvents.updateRow, obj);
+
+            formView.subModule.do_ajax_request('updateRow', obj, function(ajax_err, responseObj){
+                formView._db.updateRow_done(formView, responseObj);
+            });
+
+            // socket.emit(formView.socketEvents.updateRow, obj);
             return self;
         },
         refreshDisableValueEditMode: function(formView){
@@ -1854,6 +1876,10 @@ FormView.prototype = {
 
             formView.subModule.do_ajax_request('getOneRowData', formData, function(ajax_err, responseObj){
                 self.getOneRowData_done(formView, responseObj);
+
+                formView._lookUp.getLookUpDataForEditMode(formView);
+                // call getAllLookUpLabelData also here
+
             });
 
             return self;
