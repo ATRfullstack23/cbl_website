@@ -84,15 +84,15 @@
           class="w-5 h-5 mb-1 text-gray-400 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-grey-500"
         />
       </BottomNavItem>
-      <BottomNavItem
-        btnName="Wallet"
-        btnClass="text-white btn-hover border-0 border-x-0"
-        btnSpan="text-gray-400"
-      >
-        <WalletSolid
-          class="w-5 h-5 mb-1 text-gray-400 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-grey-500"
-        />
-      </BottomNavItem>
+<!--      <BottomNavItem-->
+<!--        btnName="Wallet"-->
+<!--        btnClass="text-white btn-hover border-0 border-x-0"-->
+<!--        btnSpan="text-gray-400"-->
+<!--      >-->
+<!--        <WalletSolid-->
+<!--          class="w-5 h-5 mb-1 text-gray-400 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-grey-500"-->
+<!--        />-->
+<!--      </BottomNavItem>-->
       <BottomNavItem
         btnName="Settings"
         btnClass="text-white btn-hover border-0 border-x-0"
@@ -198,6 +198,7 @@
 
   header :global(.btn-hover) {
     border-color: #000;
+    background: transparent;
   }
   header :global(.btn-hover:hover) {
     background: transparent;

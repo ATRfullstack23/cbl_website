@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
 html,
 body,
 div,
@@ -77,7 +79,9 @@ body {
     background: #fff;
     overflow: hidden;
     -webkit-perspective: 1000px;
+    font-family: 'Raleway', sans-serif;
 }
+
 ol,
 ul {
     list-style: none;
@@ -98,6 +102,15 @@ td {
 td{
     /*vertical-align: top;*/
 }
+
+td.headerTitleTd {
+    padding: 15px;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    --tw-border-opacity: 1;
+    border-bottom: 1px solid rgb(229 231 235 / var(--tw-border-opacity));
+}
+
 a img {
     border: none;
 }

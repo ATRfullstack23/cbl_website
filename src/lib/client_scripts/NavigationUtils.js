@@ -89,7 +89,7 @@ export async function generate_main_navigation_configuration(erp_instance) {
                 },
                 "display_name": actual_module.displayName,
                 "item_type": "item",
-                "action_type": "go_to_dashboard",
+                "action_type": "go_to_module",
                 "context_data": {
                     "module_id": actual_module.id,
                     "submodule_id": actual_module.getDefaultSubModule()?.id

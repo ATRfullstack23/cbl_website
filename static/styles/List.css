@@ -1,7 +1,7 @@
 
 .list-container {
     display: inline-block;
-    position: absolute;
+    position: relative !important;
     background-color: #fff;
     border: 1px solid #0e83cd;
     /* position: relative; */
@@ -20,7 +20,7 @@
 .list-divHeader {
     padding: 12px 0px;
     position: absolute;
-    width: 100%;
+    width: 96%;
     z-index: 999;
 }
 .list-btnExportToExcel{
