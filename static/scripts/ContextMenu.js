@@ -176,7 +176,7 @@ ContextMenu.prototype={
         self.elements.rightClickMenuUl
             .empty()
             .append(options_arr);
-        self.elements.container.show();
+        self.elements.container.fadeIn('fast');
         self.startFocusOut();
         return options_arr;
     },

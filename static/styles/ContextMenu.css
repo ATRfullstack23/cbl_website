@@ -5,6 +5,11 @@
     z-index: 999999999999;
     position: absolute;
 }
+.contextMenuContainer .menuItems{
+    margin: 0;
+    margin-bottom: 0;
+}
+
 .contextMenuContainer .menuItems > li{
     color: white;
     display: block;

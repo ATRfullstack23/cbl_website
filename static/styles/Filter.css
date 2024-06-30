@@ -175,9 +175,11 @@ body.pc .filter-tabPanel{
     width: 320px;
     transform: translateX(92%);
     transition: all 300ms ease-in-out;
+    transition-delay: 500ms;
     overflow-y: auto;
 }
 body.pc .filter-tabPanel:hover{
+    transition-delay: 100ms;
     transform: initial;
 }
 body.pc .filter-tabPanel .show-icon{
@@ -200,10 +202,12 @@ body.pc .filter-tabPanel:hover .show-icon{
     opacity: 0;
     visibility: hidden;
 }
+
 table.filter-table-main tr {
     display: flex;
     flex-direction: column;
 }
+
 
 .filter-tabPanel .filter-heading {
     width: 90%;
@@ -333,4 +337,39 @@ body.mobile .filter-tabPanel{
     margin-left: 4px;
     position: relative;
     top: 3px;
+}
+
+
+
+.filter-inlineTabFilterPanel table.filter-table-main {
+    width: auto;
+}
+
+.filter-inlineTabFilterPanel table.filter-table-main tr {
+    display: table-row;
+}
+
+.filter-inlineTabFilterPanel .filter-display-name{
+    display: none;
+}
+.filter-tabOptions {
+    display: inline-block;
+    border: 1px solid #EEE;
+    padding: 4px;
+    border-radius: 5px;
+}
+
+.filter-tabOptions label {
+    padding: 4px 6px;
+    font-family: sans-serif;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+}
+
+.filter-tabOptions input {
+    display: none;
+}
+
+.filter-tabOptions input:checked+label {
+    border-bottom: 1px solid crimson;
 }

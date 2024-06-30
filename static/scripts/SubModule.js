@@ -911,8 +911,15 @@ SubModule.prototype = {
 
 
            trFilters.append(subModule.filterManager.getElement());
+
             tdButtons.append(subModule.buttonManager.getElement('gridView'));
             if (subModule.filterManager.hasTabFilterPanelFilters) {
+
+                var inlineTabFilterPanel = subModule.filterManager.elements.inlineTabFilterPanel;
+                if (inlineTabFilterPanel.children().length) {
+                    tdButtons.append(inlineTabFilterPanel);
+                }
+                console.log('inlineTabFilterPanel', inlineTabFilterPanel.get(0))
                 var tabFilterPanel = subModule.filterManager.elements.tabFilterPanel;
                 if (tabFilterPanel.children().length) {
                     tdButtons.append(tabFilterPanel);

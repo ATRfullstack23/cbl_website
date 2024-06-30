@@ -37,6 +37,9 @@ FilterManager.prototype = {
         filterTableMain: {
             "class": "filter-manager-table-main hundred-percent"
         },
+        inlineTabFilterPanel:{
+            "class": "filter-inlineTabFilterPanel"
+        },
         tabFilterPanel:{
             "class": "filter-tabPanel"
         },
@@ -311,6 +314,10 @@ FilterManager.prototype = {
     createTabFilterPanel: function(){
         var self = this;
 
+        var divInlineTabFilterPanel = $(document.createElement('div'))
+            .attr(self.constants.inlineTabFilterPanel)
+            .attr('id', self.id);
+
         var div = $(document.createElement('div'))
             .attr(self.constants.tabFilterPanel)
             .attr('id', self.id);
@@ -369,7 +376,8 @@ FilterManager.prototype = {
                 append = true;
             }
             else if(filter.type == 'tabFilter'){
-                append = true;
+                divInlineTabFilterPanel.append(filter.getElement());
+                // append = true;
             }
             if(append){
                 div.append(filter.getElement());
@@ -377,6 +385,7 @@ FilterManager.prototype = {
         });
 
         self.elements.tabFilterPanel = div;
+        self.elements.inlineTabFilterPanel = divInlineTabFilterPanel;
         self.elements.reArrangeButton = reArrangeButton;
 
         return self;
@@ -482,6 +491,9 @@ FilterManager.prototype = {
         var self = this;
         return self;
     },
+    get_filter_count: function (){
+        return Object.keys(this.filters).length; // can ignore hidden for visible filter count
+    },
     forEachFilter: function(eachFunction, filterFunction){
         var self = this;
         var count = 0;
@@ -519,6 +531,17 @@ FilterManager.prototype = {
             elements.container = container;
             filterManager.elements = elements;
             filterManager.container = container;
+
+
+            var div_inline_filters = $(document.createElement('div')).attr({
+                "class": "inline_filters"
+            });
+
+            let use_all_inline_filters = false;
+            if(filterManager.get_filter_count() <= 3){
+                use_all_inline_filters = true;
+            }
+            filterManager.use_all_inline_filters = use_all_inline_filters;
 
             var table = $(document.createElement('table')).attr({
                 "class": "hundred-percent-x"
