@@ -3,7 +3,7 @@
     import { slide } from "svelte/transition";
     import { sineInOut } from "svelte/easing";
 
-    import { createEventDispatcher } from 'svelte';
+    import {createEventDispatcher, onMount} from 'svelte';
 
     const dispatch_event = createEventDispatcher();
 
@@ -11,11 +11,15 @@
     let show = false;
     const show_hide_slide = () => {
         show = !show;
+        localStorage.setItem('sidebar_dropdown_wrapper_show_status__' + label, show ? '1' : '0');
     };
 
     function handle_sidebar_dropdown_item_click(item){
         dispatch_event('dropdown_item_click', item);
     }
+    onMount(()=>{
+        show = localStorage.getItem('sidebar_dropdown_wrapper_show_status__' + label) === '1';
+    });
 
 </script>
 
@@ -84,6 +88,7 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        padding-bottom: 10px;
     }
 
     .icon{

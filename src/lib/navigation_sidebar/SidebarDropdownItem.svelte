@@ -10,7 +10,7 @@
 
     li{
         margin-top: .55rem;
-        margin-left: 2rem;
+        margin-left: 32px;
     }
 
 </style>

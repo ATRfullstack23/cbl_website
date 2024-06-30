@@ -3177,6 +3177,19 @@ export class ERP{
             }
         }
     }
+    get_user_setting_value(key){
+        const str_value = this.user.userDetails?.settings[key];
+        if(str_value !== undefined && str_value.length){
+            // not efficient, update later
+            try{
+                return JSON.parse(str_value)
+            }
+            catch(errr){
+                return str_value;
+            }
+        }
+        return str_value;
+    }
 }
 
 
