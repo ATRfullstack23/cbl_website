@@ -105,14 +105,14 @@
       handle_cancel()
     }
 
-  function handle_cancel() {
-    dispatch('cancel');
-  }
+    function handle_cancel() {
+      dispatch('cancel');
+    }
 
 
-  let dashboard_type = 'card';
-  let selected_module
-  let selected_sub_module
+    let dashboard_type = 'card';
+    let selected_module
+    let selected_sub_module
 </script>
 
 <div class="popup_overlay">
@@ -273,6 +273,9 @@
     margin: 0;
     font-size: 14px;
     padding-right: 8px;
+  }
+  .single_block select{
+    width: unset;
   }
   .button_group {
     display: flex;

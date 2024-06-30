@@ -40,7 +40,7 @@
 
   function handle_logout_button_click() {
     window.erp.logOut(()=>{
-
+      location.href = '/login';
     });
   }
 

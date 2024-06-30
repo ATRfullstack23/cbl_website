@@ -1293,10 +1293,10 @@ export class ERP{
         return table;
     }
 
-    logOut(){
+    logOut(logout_callback){
         var self = this;
         $.ajax({
-            url: "/logout",
+            url: self.backend_root_url + "/logout",
             type: "POST"
         }).done(function(data){
             if(data.success){
@@ -1314,11 +1314,12 @@ export class ERP{
                     ele.find('div').off();
                 });
                 // self.reportsSplitLayout.destroy();
-                self.user.clearUserConfig();
+                // self.user.clearUserConfig();
 
-                self.user.showLoginScreen(self.user.isDirectLogin);
-                self.initializeSocketIO();
-                self.moduleNavPointer.destroy();
+                // self.user.showLoginScreen(self.user.isDirectLogin);
+                // self.initializeSocketIO();
+                // self.moduleNavPointer.destroy();
+                logout_callback && logout_callback();
             }
         });
     }
