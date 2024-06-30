@@ -6,6 +6,37 @@ export function get_main_navigation_configuration() {
     return null;
 }
 
+
+const kiosk_dashboard_item_config = {
+    "icon": "MailBoxSolid",
+    "id": "d_1000002",
+    "custom_icon": {
+        "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        "color": "#fff"
+    },
+    "display_name": "Kiosk Dashboard",
+    "item_type": "item",
+    "action_type": "go_to_dashboard",
+    "context_data": {
+        "dashboard_id" : 1000002
+    }
+};
+
+const provider_dashboard_item_config = {
+    "icon": "MailBoxSolid",
+    "id": "d_1000003",
+    "custom_icon": {
+        "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        "color": "#fff"
+    },
+    "display_name": "Provider Dashboard",
+    "item_type": "item",
+    "action_type": "go_to_dashboard",
+    "context_data": {
+        "dashboard_id" : 1000003
+    }
+};
+
 export async function generate_main_navigation_configuration(erp_instance) {
     let nav_config_by_user = erp_instance.get_user_setting_value('modulesNavigationArrangementHorizontal');
     const nav_config = {
@@ -54,6 +85,14 @@ export async function generate_main_navigation_configuration(erp_instance) {
             if(item_key === 'id'){
                 continue;
             }
+
+            if(item_key === 'providerTransactions'){
+                group_config_obj.items.push(provider_dashboard_item_config);
+            }
+            else if(item_key === 'kioskTransactions'){
+                group_config_obj.items.push(kiosk_dashboard_item_config);
+            }
+
             let actual_module = erp.modules[item_key];
             let item_config_obj = {
                 "icon": "ChartPieSolid",
