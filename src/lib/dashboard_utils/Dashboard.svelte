@@ -6,6 +6,7 @@
     import {onMount, tick} from 'svelte'
     // import chart_data from '$lib/dashboard_utils/chart_data.json'
     import DashboardFilterItem from "$lib/dashboard_utils/DashboardFilterItem.svelte";
+    import {get_dashboard_report_item_data_from_server} from "$lib/dashboard_utils/DashboardHelper.js";
 
     export let dashboard_configuration;
     export let id = dashboard_configuration.id;
@@ -15,21 +16,20 @@
     let chart_data = dashboard_configuration.dashboard_items.filter(item => item.config.type !== "filter");
 
     function create_chart_reports() {
-
         if(!dashboard_configuration.dashboard_items.length){
             return;
         }
 
         filter_items = dashboard_configuration.dashboard_items.filter(item => item.config.type === "filter");
 
-        for(let chart of chart_data.filter(data => data.type == "chart")){
+        report_items = dashboard_configuration.dashboard_items.filter(item => item.config.type === "report_item");
+        for(let chart of report_items.filter(data => data.type == "chart")){
             new Chart(chart.chart_instance,{
                 type: chart.chart_type,
                 data: chart.data,
                 options: chart.options
             })
         }
-
     }
 
 
@@ -39,11 +39,14 @@
         is_hidden = false;
         if(!shall_initialize){
             shall_initialize = true;
-            tick().then(()=>{
-                create_chart_reports()
-            });
+            refresh_data_of_all_report_items().then(()=>{
+                tick().then(()=>{
+                    create_chart_reports()
+                });
+            })
         }
     }
+
     export function hide(){
         is_hidden = true;
     }
@@ -51,14 +54,14 @@
     export async function refresh_data() {
         window._filter_instances = filter_instances;
         window._filter_items = filter_items;
-
+        window._report_item_instances = report_item_instances;
+        window._dashboard_items = dashboard_configuration.dashboard_items;
         console.log('getting report items data : ', report_item_instances, latest_filter_values_map);
-
-
     }
 
 
     let filter_items = [];
+    let report_items = [];
     let filter_instances = {};
     let report_item_instances = {};
     let show_add_new_popup = false;
@@ -68,8 +71,18 @@
 
     const latest_filter_values_map = {};
     async function handle_filter_value_changed(single_filter_config, new_value_obj) {
-        latest_filter_values_map[single_filter_config.id] = new_value_obj;
-        await refresh_data();
+        console.log('filter changed', single_filter_config)
+        latest_filter_values_map[single_filter_config.config.unique_id] = new_value_obj;
+        await refresh_data_of_all_report_items();
+    }
+
+    async function refresh_data_of_all_report_items(){
+        for(let item_id of Object.keys(report_item_instances)){
+            let item_config = dashboard_configuration.dashboard_items.find((item)=>{return item.id == item_id});
+            let api_result = await get_dashboard_report_item_data_from_server(item_config, latest_filter_values_map);
+            item_config.config.data = api_result;
+        }
+        report_items = report_items;
     }
 
 
@@ -92,18 +105,16 @@
         </div>
 
 
-        {#each chart_data.filter(data => data.config.type == "card") as card}
+        {#each report_items.filter(data => data.config.report_item_type == "card") as card}
             <div bind:this={report_item_instances[card.id]} class="card_container" style="width:{card.config.width}; height:{card.config.height}px; background-color:{card.data?.backgroundColor}; color:{card.data?.color};">
                 <p>{card.config.title}</p>
                 <h5>{card.config.data?.value} <span>{card.config.data?.sub_note}</span></h5>
             </div>
         {/each}
 
-        {#each chart_data.filter(data => data.config.type !== "filter") as report_item}
-            <DRI report_item>
-
-            </DRI>
-        {/each}
+        <!--{#each chart_data.filter(data => data.config.type !== "filter") as report_item}-->
+        <!--   -->
+        <!--{/each}-->
 
         {#each chart_data.filter(data => data.type == "chart") as chart}
             <div class="inner" style ="width:{chart.chart_width};">

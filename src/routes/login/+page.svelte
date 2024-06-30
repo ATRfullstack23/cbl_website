@@ -15,7 +15,7 @@
     let platform_caption = env.PUBLIC_WEBSITE_PLATFORM_CAPTION || 'Custom Erp Solution';
 
 
-    const erp_root_url = env.PUBLIC_ERP_ROOT_URL || 'https://events-platform-sandbox.bigdate.events:17584';
+    const erp_root_url = env.PUBLIC_ERP_ROOT_URL;
 
     export let data;
 

@@ -7,16 +7,23 @@
     import Sidebar from "$lib/navigation_sidebar/Sidebar.svelte";
     import Module from "$lib/submodule/Module.svelte";
     import Dashboard from "$lib/dashboard_utils/Dashboard.svelte";
+    import {env} from "$env/dynamic/public";
 
     export let data;
     let device_type = $page.data.device_type;
-    const backend_root_url = 'https://events-platform-sandbox.bigdate.events:17584';
+    const backend_root_url = env.PUBLIC_ERP_ROOT_URL;
 
     let erp_instance;
     let dashboard_configurations_for_reference = [];
     let dashboards_container_element;
 
     function initialize_erp () {
+
+        window.ERP_API_AJAX_ROOT_URL = env.PUBLIC_ERP_ROOT_URL + '/ajax';
+        if(localStorage.user_login_result){
+            window.__default_user_config = JSON.parse(localStorage.user_login_result);
+        }
+
         const user_obj = {
             config: {
                 user: window.__default_user_config

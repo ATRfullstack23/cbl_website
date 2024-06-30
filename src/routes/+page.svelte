@@ -6,12 +6,19 @@
     import {page} from "$app/stores";
     import Sidebar from "$lib/navigation_sidebar/Sidebar.svelte";
     import {NavBrand} from "flowbite-svelte";
+    import {env} from "$env/dynamic/public";
 
     export let data;
     let device_type = $page.data.device_type;
 
     let erp_instance;
     function initialize_erp () {
+
+        window.ERP_API_AJAX_ROOT_URL = env.PUBLIC_ERP_ROOT_URL + '/ajax';
+        if(localStorage.user_login_result){
+            window.__default_user_config = JSON.parse(localStorage.user_login_result);
+        }
+
         const user_obj = {
             config: {
                 user: window.__default_user_config
@@ -26,7 +33,7 @@
         }
 
         window.ERP = ERP;
-        erp_config.socket_io_url = 'https://events-platform-sandbox.bigdate.events:17584/socket.io/socket.io.js?_=1719394543097';
+        erp_config.socket_io_url = env.PUBLIC_ERP_ROOT_URL + '/socket.io/socket.io.js?_=1719394543097';
         erp_instance = new ERP(erp_config, {user: user_obj});
         window.erp = erp_instance;
 

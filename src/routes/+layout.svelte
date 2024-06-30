@@ -38,8 +38,13 @@
     }
   }
 
+  function handle_logout_button_click() {
+    window.erp.logOut(()=>{
+
+    });
+  }
+
   onMount(async function () {
-   
     is_mounted = true;
   });
 </script>
@@ -97,6 +102,7 @@
         />
       </BottomNavItem>
       <BottomNavItem
+              on:click={handle_logout_button_click}
         btnName="Profile"
         btnClass="text-white btn-hover border-0 border-x-0"
       >
