@@ -45,6 +45,10 @@
 
 <style>
 
+.module-panel, .submodules_container{
+    position: relative;
+    height: 100%;
+}
 
 </style>
 

@@ -174,6 +174,7 @@
         height: calc(100vh - 100px);
     }
 
+
     .main_navigation_container{
         background-color: #262338;
         width: var(--main_navigation_width);
@@ -201,6 +202,7 @@
         margin-left: var(--main_navigation_width);
         height: 100%;
         overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .dashboards_container{

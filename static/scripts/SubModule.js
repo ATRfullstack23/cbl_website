@@ -1856,16 +1856,20 @@ SubModule.prototype = {
 
         self.erp.registerChildWindow(self, column, dataRow, function(result){
             if(result.success){
-                setTimeout(function(){
+                setTimeout( function(){
+                    console.log('async 1 start');
+
                     var absorbContainer2 = self.grid.elements.rows[dataRow['id']].tr.find('[data-id="'+column.id+'"]');
-                    var childWindow = self.createChildWindowForColumn(column, result.randomId, dataRow, childWindowDisplayMode);
-                    if(!options.createOnly){
-                        childWindow.show({
-                            absorbContainer: absorbContainer2
-                        });
-                    }
-                    options.onSuccess && options.onSuccess.apply(self, [childWindow])
-                }, 0)
+                    self.createChildWindowForColumn(column, result.randomId, dataRow, childWindowDisplayMode, (c_err, childWindow)=>{
+                        if(!options.createOnly){
+                            childWindow.show({
+                                absorbContainer: absorbContainer2
+                            });
+                        }
+                        options.onSuccess && options.onSuccess.apply(self, [childWindow])
+                    });
+
+                }, 1);
             }
             else{
 //                childWindow.hide();
@@ -1874,7 +1878,7 @@ SubModule.prototype = {
         });
         return self;
     },
-    createChildWindowForColumn: function(column, randomId, dataRow, childWindowDisplayMode){
+    createChildWindowForColumn: function(column, randomId, dataRow, childWindowDisplayMode, createChildWindowForColumnCallback){
         var self = this;
         var dataSource = column.typeSpecific.dataSource;
         var moduleConfig = self.erp.allModules[dataSource.moduleId].config;
@@ -1900,84 +1904,93 @@ SubModule.prototype = {
         moduleConfig.isInChildWindow = true;
 
         var childModule = new Module( moduleConfig, self.erp );
-        childModule.forEachSubModule(function(subModule){
-            subModule.parentDataRow = subModule.config.parentDataRow = dataRow;
-            subModule.isInChildWindow = true;
-            subModule.viewOnlyMode = setAsViewOnlyMode;
-        });
-        var previousTopMostModuleInViewPlane = '';
-        var previousTopMostSubModuleInViewPlane = '';
 
-        // var childWindowMode = 'fullPage';
-        // if(column.typeSpecific.showAsInline){
-        //     if(!forceShowFullPageLayout){
-        //         childWindowMode = 'inline';
-        //     }
-        // }
-        // childWindowMode = 'inline';
+        childModule.initialize().then(()=>{
 
-        var childWindow = new ChildWindow({
-            id: column.id,
-            column: column,
-            dataRow: dataRow,
-            initialDisplayMode: childWindowDisplayMode,
-            childModule: childModule,
-            onClose: function(){
-                //delete self.childWindows[childWindow.id];
-                self.erp.topMostModuleInViewPlane = previousTopMostModuleInViewPlane;
-                self.parentObject.topMostSubModuleInViewPlane = previousTopMostSubModuleInViewPlane;
-                if(childWindowDisplayMode == 'inline'){
-                    if(childWindow.hasDefaultSubModuleDataChanged){
-                        self.setDisplayMode();
+
+            childModule.forEachSubModule(function(subModule){
+                subModule.parentDataRow = subModule.config.parentDataRow = dataRow;
+                subModule.isInChildWindow = true;
+                subModule.viewOnlyMode = setAsViewOnlyMode;
+            });
+            var previousTopMostModuleInViewPlane = '';
+            var previousTopMostSubModuleInViewPlane = '';
+
+            // var childWindowMode = 'fullPage';
+            // if(column.typeSpecific.showAsInline){
+            //     if(!forceShowFullPageLayout){
+            //         childWindowMode = 'inline';
+            //     }
+            // }
+            // childWindowMode = 'inline';
+
+            var childWindow = new ChildWindow({
+                id: column.id,
+                column: column,
+                dataRow: dataRow,
+                initialDisplayMode: childWindowDisplayMode,
+                childModule: childModule,
+                onClose: function(){
+                    //delete self.childWindows[childWindow.id];
+                    self.erp.topMostModuleInViewPlane = previousTopMostModuleInViewPlane;
+                    self.parentObject.topMostSubModuleInViewPlane = previousTopMostSubModuleInViewPlane;
+                    if(childWindowDisplayMode == 'inline'){
+                        if(childWindow.hasDefaultSubModuleDataChanged){
+                            self.setDisplayMode();
+                        }
+                        else{
+                            console.log('ignoring close, no data changed')
+                        }
                     }
                     else{
-                        console.log('ignoring close, no data changed')
+                        self.setDisplayMode();
                     }
-                }
-                else{
-                    self.setDisplayMode();
-                }
-            },
-            onShow: function(){
-                previousTopMostModuleInViewPlane = self.erp.topMostModuleInViewPlane;
-                previousTopMostSubModuleInViewPlane = self.parentObject.topMostSubModuleInViewPlane;
+                },
+                onShow: function(){
+                    previousTopMostModuleInViewPlane = self.erp.topMostModuleInViewPlane;
+                    previousTopMostSubModuleInViewPlane = self.parentObject.topMostSubModuleInViewPlane;
 
-                self.erp.topMostModuleInViewPlane = childModule;
-                self.parentObject.topMostSubModuleInViewPlane = childModule.getSelectedSubModule();
-                childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), true);
-            }
-        }, self);
-        self.childWindows[childWindow.id] = childWindow;
+                    self.erp.topMostModuleInViewPlane = childModule;
+                    self.parentObject.topMostSubModuleInViewPlane = childModule.getSelectedSubModule();
+                    childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), true);
+                }
+            }, self);
+            self.childWindows[childWindow.id] = childWindow;
 //        childWindow.hide();
-        childModule.parentWindow = childWindow;
-        childModule.setSelectedSubModule(dataSource.subModuleId);
+            childModule.parentWindow = childWindow;
+            childModule.setSelectedSubModule(dataSource.subModuleId);
 
 
 
-        if(childWindowDisplayMode == 'inline'){
-            var rowElement = self.grid.elements.rows[dataRow['id']].tr;
-            var columnElement = self.grid.elements.rows[dataRow['id']].tr.find('[data-id="'+column.id+'"]');
+            if(childWindowDisplayMode == 'inline'){
+                var rowElement = self.grid.elements.rows[dataRow['id']].tr;
+                var columnElement = self.grid.elements.rows[dataRow['id']].tr.find('[data-id="'+column.id+'"]');
 
-            childWindow.setAsInlineViewMode(rowElement, columnElement, {
-                viewOnlyMode: false
-            })
+                childWindow.setAsInlineViewMode(rowElement, columnElement, {
+                    viewOnlyMode: false
+                })
 
-            childWindow.config.onClose = function () {
-                self.erp.topMostModuleInViewPlane = self;
-                self.setDisplayMode(); // continue here
+                childWindow.config.onClose = function () {
+                    self.erp.topMostModuleInViewPlane = self;
+                    self.setDisplayMode(); // continue here
+                }
+
             }
+            else{
+                $(document.body).append(childWindow.getElement());
+            }
+            childWindow.hide({
+                absorbContainer: absorbContainer,
+                preventAnimation: true
+            });
+            // return childWindow;
 
-        }
-        else{
-            $(document.body).append(childWindow.getElement());
-        }
-        childWindow.hide({
-            absorbContainer: absorbContainer,
-            preventAnimation: true
+
+            createChildWindowForColumnCallback(null, childWindow);
         });
-        return childWindow;
+
     },
-    createChildWindowForButton: function(button, config, dataRow, extendConfig){
+    createChildWindowForButton: function(button, config, dataRow, extendConfig, createChildWindowForButtonCallback){
         var self = this;
         var dataSource = button.typeSpecific.dataSource;
         var moduleConfig = $.extend({}, self.erp.allModules[dataSource.moduleId].config);
@@ -2000,45 +2013,49 @@ SubModule.prototype = {
 
         var childModule = new Module( moduleConfig, self.erp );
 
-        childModule.forEachSubModule(function(subModule){
-            subModule.parentDataRow = subModule.config.parentDataRow = dataRow;
-            subModule.isInChildWindow = true;
-        });
-        var previousTopMostModuleInViewPlane = '';
-        var previousTopMostSubModuleInViewPlane = '';
+        childModule.initialize().then(()=>{
 
-        var childWindow = new ChildWindow({
-            id: button.id,
-            button: button,
-            hideControls: config.hideControls,
-            dataRow: dataRow,
-            preventAnimation: preventAnimation,
-            childModule: childModule,
-            onClose: function(){
-                //delete self.childWindows[childWindow.id];
-                self.erp.topMostModuleInViewPlane = previousTopMostModuleInViewPlane;
-                self.parentObject.topMostSubModuleInViewPlane = previousTopMostSubModuleInViewPlane;
-                self.setDisplayMode();
-            },
-            onShow: function(){
-                previousTopMostModuleInViewPlane = self.erp.topMostModuleInViewPlane;
-                previousTopMostSubModuleInViewPlane = self.parentObject.topMostSubModuleInViewPlane;
+            childModule.forEachSubModule(function(subModule){
+                subModule.parentDataRow = subModule.config.parentDataRow = dataRow;
+                subModule.isInChildWindow = true;
+            });
+            var previousTopMostModuleInViewPlane = '';
+            var previousTopMostSubModuleInViewPlane = '';
 
-                self.erp.topMostModuleInViewPlane = childModule;
-                self.parentObject.topMostSubModuleInViewPlane = childModule.getSelectedSubModule();
-                childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), true);
-            }
-        }, self);
-        self.childWindows[childWindow.id] = childWindow;
+            var childWindow = new ChildWindow({
+                id: button.id,
+                button: button,
+                hideControls: config.hideControls,
+                dataRow: dataRow,
+                preventAnimation: preventAnimation,
+                childModule: childModule,
+                onClose: function(){
+                    //delete self.childWindows[childWindow.id];
+                    self.erp.topMostModuleInViewPlane = previousTopMostModuleInViewPlane;
+                    self.parentObject.topMostSubModuleInViewPlane = previousTopMostSubModuleInViewPlane;
+                    self.setDisplayMode();
+                },
+                onShow: function(){
+                    previousTopMostModuleInViewPlane = self.erp.topMostModuleInViewPlane;
+                    previousTopMostSubModuleInViewPlane = self.parentObject.topMostSubModuleInViewPlane;
+
+                    self.erp.topMostModuleInViewPlane = childModule;
+                    self.parentObject.topMostSubModuleInViewPlane = childModule.getSelectedSubModule();
+                    childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), true);
+                }
+            }, self);
+            self.childWindows[childWindow.id] = childWindow;
 //        childWindow.hide();
-        childModule.parentWindow = childWindow;
-        childModule.setSelectedSubModule(dataSource.subModuleId);
-        $(document.body).append(childWindow.getElement());
-        childWindow.hide({
-            absorbContainer: absorbContainer,
-            preventAnimation: true
+            childModule.parentWindow = childWindow;
+            childModule.setSelectedSubModule(dataSource.subModuleId);
+            $(document.body).append(childWindow.getElement());
+            childWindow.hide({
+                absorbContainer: absorbContainer,
+                preventAnimation: true
+            });
+            createChildWindowForButtonCallback(null, childWindow);
         });
-        return childWindow;
+
     },
     openChildWindowInNormalMode: function(dataRow, button){
         var self = this;
@@ -2048,15 +2065,17 @@ SubModule.prototype = {
             if(result.success){
                 setTimeout(function(){
                     var absorbContainer2 = button.getElement(Button.BUTTON_MODES.GRID);
-                    var childWindow = self.createChildWindowForButton(button, {
+                    self.createChildWindowForButton(button, {
                         randomId: result.randomId,
                         hideControls: false
                     }, dataRow, {
                         preventAnimation: false
+                    }, (c_err, childWindow)=>{
+                        childWindow.show({
+                            absorbContainer: absorbContainer2
+                        });
                     });
-                    childWindow.show({
-                        absorbContainer: absorbContainer2
-                    });
+
                 }, 0)
             }
             else{
@@ -2074,17 +2093,19 @@ SubModule.prototype = {
             if(result.success){
                 setTimeout(function(){
                     var absorbContainer2 = button.getElement();
-                    var childWindow = self.createChildWindowForButton(button, {
+                    self.createChildWindowForButton(button, {
                         randomId: result.randomId,
                         hideControls: true
                     }, dataRow, {
                         formViewOnlyMode: true,
                         formViewMode: button.typeSpecific.formViewMode
+                    }, (c_err, childWindow)=>{
+                        childWindow.show({
+                            absorbContainer: absorbContainer2,
+                            preventAnimation: true
+                        });
                     });
-                    childWindow.show({
-                        absorbContainer: absorbContainer2,
-                        preventAnimation: true
-                    });
+
                 }, 0)
             }
             else{

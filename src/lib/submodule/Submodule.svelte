@@ -14,8 +14,7 @@
 </script>
 
 
-<div bind:this={container_element} class="subModule-container hidden">
-    <div class="subModule-container" id="{submodule_id}">
+<div bind:this={container_element} class="subModule-container hidden" id="{submodule_id}">
         <div class="childSubReportsContainer">
             <div class="childSubReportsContainerCloseButton"></div>
         </div>
@@ -39,12 +38,15 @@
             </tr>
             </tbody>
         </table>
-    </div>
 </div>
 
 
 <style>
 
+    .subModule-container, .submodules_container{
+        position: relative;
+        height: 100%;
+    }
 
 </style>
 
