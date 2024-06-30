@@ -4,18 +4,23 @@
     import AddNewDashboardPopup from '$lib/dashboard_utils/AddNewDashboardPopup.svelte';
     import Chart from 'chart.js/auto'
     import {onMount, tick} from 'svelte'
-    import chart_data from '$lib/dashboard_utils/chart_data.json'
+    // import chart_data from '$lib/dashboard_utils/chart_data.json'
+    import DashboardFilterItem from "$lib/dashboard_utils/DashboardFilterItem.svelte";
 
     export let dashboard_configuration;
     export let id = dashboard_configuration.id;
     export let unique_id = dashboard_configuration.unique_id;
     export let display_name = dashboard_configuration.display_name;
 
+    let chart_data = dashboard_configuration.dashboard_items.filter(item => item.config.type !== "filter");
+
     function create_chart_reports() {
 
         if(!dashboard_configuration.dashboard_items.length){
             return;
         }
+
+        filter_items = dashboard_configuration.dashboard_items.filter(item => item.config.type === "filter");
 
         for(let chart of chart_data.filter(data => data.type == "chart")){
             new Chart(chart.chart_instance,{
@@ -24,7 +29,6 @@
                 options: chart.options
             })
         }
-
 
     }
 
@@ -45,14 +49,30 @@
     }
 
     export async function refresh_data() {
+        window._filter_instances = filter_instances;
+        window._filter_items = filter_items;
+
+        console.log('getting report items data : ', report_item_instances, latest_filter_values_map);
+
 
     }
 
 
-    let show_add_new_popup = false
+    let filter_items = [];
+    let filter_instances = {};
+    let report_item_instances = {};
+    let show_add_new_popup = false;
     onMount(async () => {
-        console.log('dashboard_configuration', dashboard_configuration)
+        // console.log('dashboard_configuration', dashboard_configuration);
     });
+
+    const latest_filter_values_map = {};
+    async function handle_filter_value_changed(single_filter_config, new_value_obj) {
+        latest_filter_values_map[single_filter_config.id] = new_value_obj;
+        await refresh_data();
+    }
+
+
 </script>
 
 <div class="chart_container single_dashboard_container"  class:hidden={is_hidden}>
@@ -63,13 +83,28 @@
 
     {#if shall_initialize}
 
+        <div class="dashboard_filters">
+            {#each filter_items as single_filter_config}
+                <DashboardFilterItem dashboard_id="{id}" dashboard_item_config="{single_filter_config}"
+                                     on:filter_value_changed={async (evt)=>{await handle_filter_value_changed(single_filter_config, evt.detail);}}
+                    bind:this={filter_instances[single_filter_config.id]}/>
+            {/each}
+        </div>
 
-        {#each chart_data.filter(data => data.type == "card") as card}
-            <div class="card_container" style="width:{card.width}; height:{card.height}px; background-color:{card.data.backgroundColor}; color:{card.data.color};">
-                <p>{card.title}</p>
-                <h5>{card.data.value} <span>{card.data.sub_note}</span></h5>
+
+        {#each chart_data.filter(data => data.config.type == "card") as card}
+            <div bind:this={report_item_instances[card.id]} class="card_container" style="width:{card.config.width}; height:{card.config.height}px; background-color:{card.data?.backgroundColor}; color:{card.data?.color};">
+                <p>{card.config.title}</p>
+                <h5>{card.config.data?.value} <span>{card.config.data?.sub_note}</span></h5>
             </div>
         {/each}
+
+        {#each chart_data.filter(data => data.config.type !== "filter") as report_item}
+            <DRI report_item>
+
+            </DRI>
+        {/each}
+
         {#each chart_data.filter(data => data.type == "chart") as chart}
             <div class="inner" style ="width:{chart.chart_width};">
                 <div class="header">
