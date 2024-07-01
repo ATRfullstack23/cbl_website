@@ -41,7 +41,7 @@ ChildWindow.prototype = {
 
         self.elements.content.append(self.childModule.getElement());
         self.childSubModule = self.childModule.getSelectedSubModule();
-        self.childModule.setSelectedSubModule(self.childSubModule, true);
+        self.childModule.setSelectedSubModule(self.childSubModule, {fromTrigger: true});
         self.childSubModule.parentChildWindow = self;
 
         self.container.attr('data-child-sub-module-id', self.childSubModule.id);

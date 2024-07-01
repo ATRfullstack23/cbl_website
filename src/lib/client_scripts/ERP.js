@@ -2979,12 +2979,13 @@ export class ERP{
     selectedSettingModuleChanged(){
         var self = this;
         var module = self.selectedSettingModule;
-        module.setSelectedSubModule(module.getSelectedSubModule(), false);
+        module.setSelectedSubModule(module.getSelectedSubModule());
         module.showFloatingReports();
         return self;
     }
     setSelectedModule(module, view_options){
         var self = this;
+        // view_options = view_options || undefined;
         const fromTrigger = view_options?.fromTrigger || false;
 
         if(fromTrigger){
@@ -3009,13 +3010,19 @@ export class ERP{
 
         self.selectedModule.show();
         location.hash = module.id;
-        self.selectedModuleChanged();
+        self.selectedModuleChanged(view_options);
         return self;
     }
-    selectedModuleChanged(){
+    selectedModuleChanged(view_options){
         var self = this;
         var module = self.selectedModule;
-        module.setSelectedSubModule(module.getSelectedSubModule(), false);
+        console.log('view_options', view_options)
+        if(view_options?.submodule_id){
+            module.setSelectedSubModule(module.subModules[view_options.submodule_id], view_options);
+        }
+        else{
+            module.setSelectedSubModule(module.getSelectedSubModule(), view_options);
+        }
         module.subModuleNavPointer.setValue(module.getSelectedSubModule().id, false);
         module.showFloatingReports();
         return self;
@@ -3189,6 +3196,26 @@ export class ERP{
             }
         }
         return str_value;
+    }
+
+    async handle_action_button_click_go_to_module(button_info, report_item_instance, latest_report_item_data){
+        let target_module_id = button_info.context_data.module_id;
+        let target_submodule_id = button_info.context_data.submodule_id;
+        this.setSelectedModule(target_module_id, {
+            submodule_id: target_submodule_id,
+            filter_config: button_info.context_data.filter_config || undefined
+        });
+    }
+
+    async handle_action_button_click_of_dashboard_item(dashboard_id, report_item_instance, evt_info){
+        let dashboard_info = this.dashboards[dashboard_id];
+        console.log('handle_action_button_click_of_dashboard_item', dashboard_info, report_item_instance, evt_info);
+        const button_info = evt_info.button_info;
+        switch (button_info.action_type) {
+            case 'go_to_module':
+                await this.handle_action_button_click_go_to_module(button_info, report_item_instance, evt_info.latest_report_item_data);
+                break;
+        }
     }
 }
 

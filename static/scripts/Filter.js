@@ -174,6 +174,32 @@ Filter.prototype = {
             case Filter.FILTER_TYPES.LOOKUP:
                 self.getFilterFormElement().val(value);
                 break;
+            case Filter.FILTER_TYPES.TAB_FILTER:
+                if(self.typeSpecific.allowMultipleSelection){
+                    throw 'set Edit Value for '+ self.type + ' allowMultipleSelection is not defined';
+                    self.selectedValue.forEach(function(selectedValueItem){
+                        self.elements.tabFilterOptions
+                            .children('[value="'+ selectedValueItem+'"]')
+                            .prop('checked', true);
+                    });
+                }
+                else{
+                    console.log('tabfilter set value : ', self)
+                    if(self.elements.tabFilterOptions){
+                        self.selectedValue = value;
+                        self.elements.tabFilterOptions
+                            .children('[value="'+ self.selectedValue+'"]')
+                            .prop('checked', false);
+                        self.elements.tabFilterOptions
+                            .children('[value="'+ self.selectedValue+'"]')
+                            .prop('checked', true);
+                    }
+                    else{
+                        self.selectedValue = value;
+                        // self.selectedValueToUseOnTabfilterLookupOptionsLoad = value;
+                    }
+                }
+                break;
             default:
                 throw 'set Edit Value for '+ self.type + ' is not defined';
         }
@@ -218,7 +244,7 @@ Filter.prototype = {
     },
     getFilterFormElement: function(index){
         var self = this;
-        return self.elements.formElements.element;;
+        return self.elements.formElements.element;
     },
 
     getLookUpData: function(){

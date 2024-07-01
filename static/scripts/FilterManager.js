@@ -190,6 +190,16 @@ FilterManager.prototype = {
         var self = this;
         return self.erp.socket;
     },
+    updateSearchValueAndSearch: function(new_filter_config){
+        var self = this;
+        self.resetFilterValues();
+        for(const filter_id in new_filter_config){
+            const filter = self.filters[filter_id];
+            filter.editValue = new_filter_config[filter_id];
+        }
+        self.doSearch();
+        return self;
+    },
     doSearch: function(){
         var self = this;
         var config = self.getFilterValues();

@@ -10,11 +10,11 @@
     import DashboardItem from "$lib/dashboard_utils/DashboardItem.svelte";
 
     export let dashboard_configuration;
-    export let id = dashboard_configuration.id;
+    export let dashboard_id = dashboard_configuration.id;
     export let unique_id = dashboard_configuration.unique_id;
     export let display_name = dashboard_configuration.display_name;
 
-    let chart_data = dashboard_configuration.dashboard_items.filter(item => item.config.type !== "filter");
+    // let chart_data = dashboard_configuration.dashboard_items.filter(item => item.config.type !== "filter");
 
     const latest_filter_values_map = {};
     // setContext('latest_filter_values_map', latest_filter_values_map);
@@ -90,6 +90,10 @@
         report_items = report_items;
     }
 
+    async function handle_primacy_action_button_click(single_report_item_id, evt_info) {
+        await window.erp.handle_action_button_click_of_dashboard_item(dashboard_id, report_item_instances[single_report_item_id], evt_info);
+    }
+
 
 </script>
 
@@ -103,7 +107,7 @@
 
         <div class="dashboard_filters">
             {#each filter_items as single_filter_config}
-                <DashboardFilterItem dashboard_id="{id}"
+                <DashboardFilterItem dashboard_id="{dashboard_id}"
                                      dashboard_item_config="{single_filter_config}"
                                      on:filter_value_changed={async (evt)=>{await handle_filter_value_changed(single_filter_config, evt.detail);}}
                     bind:this={filter_instances[single_filter_config.id]}/>
@@ -113,7 +117,8 @@
         <div class="dashboard_report_items">
 
             {#each report_items as single_report_item_config}
-                <DashboardItem dashboard_id="{id}"
+                <DashboardItem dashboard_id="{dashboard_id}"
+                               on:primacy_action_button_click={async (evt)=>{await handle_primacy_action_button_click(single_report_item_config.id, evt.detail);}}
                                bind:this={report_item_instances[single_report_item_config.id]}
                                dashboard_item_config="{single_report_item_config}"/>
             {/each}

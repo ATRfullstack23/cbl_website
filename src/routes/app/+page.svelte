@@ -55,7 +55,7 @@
                 tick().then(()=>{
                     for(const d_svelte_item of erp_instance.dashboards_arr){
                         console.log('d_svelte_item', d_svelte_item)
-                        erp_instance.dashboards[d_svelte_item.id] = d_svelte_item;
+                        erp_instance.dashboards[d_svelte_item.dashboard_id] = d_svelte_item;
                     }
 
                     erp_instance.elements.dashboardContainer = jQuery(dashboards_container_element);
@@ -208,6 +208,7 @@
     .dashboards_container{
         height: 100%;
         width: 100%;
+        background: rgb(239 240 246);
         /*width: calc(100% - var(--main_navigation_width));*/
         /*margin-left: var(--main_navigation_width);*/
         overflow-y: auto;

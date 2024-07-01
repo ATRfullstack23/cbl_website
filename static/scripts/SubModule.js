@@ -919,7 +919,7 @@ SubModule.prototype = {
                 if (inlineTabFilterPanel.children().length) {
                     tdButtons.append(inlineTabFilterPanel);
                 }
-                console.log('inlineTabFilterPanel', inlineTabFilterPanel.get(0))
+                // console.log('inlineTabFilterPanel', inlineTabFilterPanel.get(0))
                 var tabFilterPanel = subModule.filterManager.elements.tabFilterPanel;
                 if (tabFilterPanel.children().length) {
                     tdButtons.append(tabFilterPanel);
@@ -1959,7 +1959,7 @@ SubModule.prototype = {
 
                     self.erp.topMostModuleInViewPlane = childModule;
                     self.parentObject.topMostSubModuleInViewPlane = childModule.getSelectedSubModule();
-                    childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), true);
+                    childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), {fromTrigger: true});
                 }
             }, self);
             self.childWindows[childWindow.id] = childWindow;
@@ -2048,7 +2048,7 @@ SubModule.prototype = {
 
                     self.erp.topMostModuleInViewPlane = childModule;
                     self.parentObject.topMostSubModuleInViewPlane = childModule.getSelectedSubModule();
-                    childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), true);
+                    childModule.show().setSelectedSubModule(childModule.getSelectedSubModule(), {fromTrigger: true});
                 }
             }, self);
             self.childWindows[childWindow.id] = childWindow;

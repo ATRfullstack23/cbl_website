@@ -209,12 +209,13 @@ Module.prototype = {
         var self = this;
         return self.defaultSubModule;
     },
-    setSelectedSubModule: function(subModule, fromTrigger){
+    setSelectedSubModule: function(subModule, view_options){
         var self = this;
         window._subModule = self.selectedSubModule;
+        const fromTrigger = view_options?.fromTrigger || false;
         if(fromTrigger){
 //            self.navPointer.setValue(subModule.id, true);
-            self.selectedSubModuleChanged(true);
+            self.selectedSubModuleChanged({fromTrigger: true});
             return;
         }
         if(self.selectedSubModule){
@@ -227,12 +228,13 @@ Module.prototype = {
         self.topMostSubModuleInViewPlane = subModule;
 
         self.selectedSubModule.show();
-        self.selectedSubModuleChanged();
+        self.selectedSubModuleChanged(view_options); // -- shall pass view_options here ??
         return self;
     },
-    selectedSubModuleChanged: function(fromTrigger){
+    selectedSubModuleChanged: function(view_options){
         var self = this;
         var subModule = self.selectedSubModule;
+        const fromTrigger = view_options?.fromTrigger || false;
         window._subModule = subModule;
         subModule.show();
         if(subModule.isInChildWindow){
@@ -259,9 +261,15 @@ Module.prototype = {
 //                console.log(self)
 //            }
         }
-        if(!fromTrigger){
-            subModule.setDisplayMode();
+        if(view_options?.filter_config){
+            subModule.filterManager.updateSearchValueAndSearch(view_options.filter_config);
         }
+        else{
+            if(!fromTrigger){
+                subModule.setDisplayMode();
+            }
+        }
+
         return self;
     },
     _socket: {

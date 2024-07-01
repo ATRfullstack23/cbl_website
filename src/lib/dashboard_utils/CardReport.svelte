@@ -29,7 +29,7 @@
         cursor: pointer;
     }
     .item_container p{
-        font-size: 35px;
+        font-size: 26px;
 
     }
     .item_container h5{

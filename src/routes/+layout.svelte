@@ -38,6 +38,10 @@
     }
   }
 
+  function handle_home_button_click() {
+    window.erp.setDefaultModule();
+  }
+
   function handle_logout_button_click() {
     window.erp.logOut(()=>{
       location.href = '/login';
@@ -73,10 +77,11 @@
       navType="border"
       class=" border-none"
       classOuter="w-fit border-0"
-      classInner="grid-cols-4 text-grey border-0"
+      classInner="grid-cols-3 text-grey border-0"
     >
       <BottomNavItem
         btnName="Home"
+        on:click={handle_home_button_click}
         btnClass="text-white btn-hover border-0 border-x-0"
         btnSpan="text-gray-400"
       >
@@ -103,7 +108,7 @@
       </BottomNavItem>
       <BottomNavItem
               on:click={handle_logout_button_click}
-        btnName="Profile"
+        btnName="Logout"
         btnClass="text-white btn-hover border-0 border-x-0"
       >
         <UserCircleSolid
@@ -145,6 +150,7 @@
     color: #fff;
     font-size: 28px;
     text-transform: uppercase;
+    background: white;
     /*padding: 0 20px;*/
   }
   header nav {
