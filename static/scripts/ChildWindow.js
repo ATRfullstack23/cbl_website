@@ -101,6 +101,8 @@ ChildWindow.prototype = {
 
         self.isOpen = true;
 
+        self.erp.current_active_child_window = self; // need to take care of multiple level child windows
+
         return self;
     },
     removeQuickViewMode: function(){
@@ -207,6 +209,8 @@ ChildWindow.prototype = {
             self.container.hide();
         }
 
+        self.erp.current_active_child_window = null; // multiple level, pls take care later
+
         return self;
     },
     createElements: function () {
@@ -289,15 +293,16 @@ ChildWindow.prototype = {
             var table = $(document.createElement('table')).addClass('hundred-percent');
             var tr = document.createElement('tr');
             var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
+            // var td2 = document.createElement('td');
             var divReferenceMessage =  $(document.createElement('div')).attr({id: 'reference_message', "class": 'reference-message'})
                 .text('Reference Message');
             divReferenceMessage.appendTo(td1);
             var divWindowButtons =  $(document.createElement('div')).attr({id: 'window_buttons', "class": 'window-buttons'});
-            var closeButton = $(document.createElement('button')).attr({title: 'close'}).html('X').appendTo(divWindowButtons);
-            divWindowButtons.appendTo(td2);
+            var closeButton = $(document.createElement('button')).attr({title: 'close'})
+                .html('<span class="fa fa-icon fa-arrow-left"></span>').appendTo(divWindowButtons);
+            divWindowButtons.prependTo(td1);
             tr.appendChild(td1);
-            tr.appendChild(td2);
+            // tr.appendChild(td2);
             table.append(tr);
             header.append(table);
 

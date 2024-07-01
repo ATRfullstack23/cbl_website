@@ -12,6 +12,7 @@
 
 .defaultButtonsContainer {
     float: right;
+    padding-right: 40px;
 }
 
 .searchButtonsContainer {
@@ -19,7 +20,7 @@
 }
 
 td.searchButtonsContainerParent {
-    width: 50px;
+    width: 38px;
     /*display: none;*/
 }
 
@@ -49,13 +50,14 @@ td.searchButtonsContainerParent {
 
 
 body.pc .defaultButtonsContainer .icon, body.pc .searchButtonsContainer .icon {
-    height: 24px;
-    width: 24px;
+    height: 32px;
+    width: 30px;
     padding-bottom: 4px;
     margin: 5px;
     display: inline-block;
     cursor: pointer;
     opacity: .5;
+    background-position: center;
 }
 
 body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer .icon {
@@ -81,6 +83,10 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
 
 
 
+.gridViewButtonsContainer:not(:empty){
+    min-height: 45px;
+}
+
 
 
 .hundred-percent {
@@ -90,4 +96,7 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
 
 .hundred-percent-x {
     width: 100%;
+}
+#viewsContainer{
+    vertical-align: top;
 }

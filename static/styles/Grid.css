@@ -7,7 +7,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     margin: 10px;
     margin: 5px auto;
-    max-width: 80vw;
+    /*max-width: 80vw;*/
     /*padding: 15px;*/
     border-radius: 10px;
     overflow-x: auto;
@@ -15,6 +15,9 @@
     border: 1px solid #dbdbdb;
     min-height: 75%;
     max-height: calc(100vh - 150px);
+    /*max-width: 99%;*/
+    /*width: calc(100% - 100px);*/
+    max-width: calc(100% - 80px);
     transition: all 100ms ease-in-out;
 }
 

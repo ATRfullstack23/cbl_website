@@ -65,6 +65,8 @@
                         navigation_config = n_c;
                         console.log('navigation_config', navigation_config );
                         erp_instance.container.appendTo(erp_content__container_element);
+
+                        erp_instance.setDefaultModule();
                     });
                 })
 
@@ -84,6 +86,11 @@
 
     function handle_navigation_item_selected(evt) {
         console.log('handle_navigation_item_selected', evt.detail)
+
+        if(erp_instance.current_active_child_window){
+            erp_instance.current_active_child_window.close();
+        }
+
         let item_info = evt.detail;
         if(item_info.action_type === 'go_to_module'){
             erp_instance.setSelectedModule(item_info.context_data.module_id);
@@ -91,6 +98,9 @@
         else if(item_info.action_type === 'go_to_dashboard'){
             erp_instance.setSelectedDashboard(item_info.context_data.dashboard_id);
         }
+        window.main_navigation_selected_item_info = item_info;
+
+        window.globalElements.body.trigger('selected_main_navigation_display_name_change');
     }
 
     let module_instances_for_reference = [];

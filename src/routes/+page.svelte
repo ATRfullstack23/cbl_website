@@ -70,7 +70,7 @@
 <section class="main"
          class:pc={device_type !== "mobile"}
          class:mobile={device_type === "mobile"}
-         style="--main_navigation_width:250px;"
+         style=""
          data-sveltekit-preload-data="off">
     <div class="main_navigation_container">
         <div class="navigation_header">

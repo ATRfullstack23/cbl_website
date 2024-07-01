@@ -22,7 +22,6 @@
   let is_mounted = false;
 
   async function loadIcon(item) {
-    console.log("item", item);
     try {
       // Import the icon dynamically
       const iconModule = await import(
@@ -50,7 +49,12 @@
 
   onMount(async function () {
     is_mounted = true;
+    window.globalElements.body.on('selected_main_navigation_display_name_change', (evt)=>{
+      console.log(window.main_navigation_selected_item_info);
+      selected_main_navigation_display_name = main_navigation_selected_item_info?.display_name || '';
+    })
   });
+  let selected_main_navigation_display_name = '';
 </script>
 
 {#if is_mounted}
@@ -59,6 +63,9 @@
     class:mobile={device_type === "mobile"}
     class=""
   >
+
+    <div class="selected_main_navigation_display_name">{selected_main_navigation_display_name}</div>
+
 <!--  -->
 <!--    <NavBrand href="/">-->
 <!--&lt;!&ndash;      <img&ndash;&gt;-->
@@ -214,4 +221,10 @@
     color: #000;
   }
 
+  .selected_main_navigation_display_name{
+    color: black;
+    position: absolute;
+    left: calc(var(--main_navigation_width) + 35px);
+    top: 15px;
+  }
 </style>

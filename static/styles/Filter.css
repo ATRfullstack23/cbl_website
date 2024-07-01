@@ -83,6 +83,7 @@
 }
 .filter-container.pc .filter-form-elements{
     position: relative;
+    margin-left: 35px;
 }
 .filter-container.pc .filter-form-elements::before {
     transition: all 300ms ease;

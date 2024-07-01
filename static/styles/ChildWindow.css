@@ -7,15 +7,27 @@
     right: 0;
     top: 0;
     z-index: 99999;
+    left: var(--main_navigation_width);
 }
 .window-container.defaultMode .window-content{
     height: calc(100% - 35px);
 }
 .window-container.defaultMode .window-buttons{
     text-align: right;
+    display: inline-block;
 }
-.window-container.defaultMode .defaultMode .reference-message{
-    color: #fff;
+.window-container.defaultMode .window-buttons button{
+    background: transparent;
+    color: black;
+    font-size: 2rem;
+}
+/*.window-container.defaultMode .defaultMode .reference-message{*/
+/*    color: #fff;*/
+/*}*/
+.window-container.defaultMode .reference-message{
+    display: inline-block;
+    color: black;
+    font-size: 2rem;
 }
 .window-container.quickViewMode{
     background: rgb(255, 255, 255);
