@@ -63,6 +63,7 @@
         window._report_item_instances = report_item_instances;
         window._dashboard_items = dashboard_configuration.dashboard_items;
         console.log('getting report items data : ', report_item_instances, latest_filter_values_map);
+        await refresh_data_of_all_report_items();
     }
 
 
@@ -135,25 +136,7 @@
 {/if}
 
 <style>
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: #9c9b9b;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #6d6c6c;
-
-    }
 
     .single_dashboard_container.hidden{
         display: none;

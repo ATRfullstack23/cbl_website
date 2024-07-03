@@ -100,3 +100,36 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
 #viewsContainer{
     vertical-align: top;
 }
+
+
+::-webkit-scrollbar {
+    width: 3px;
+    height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #9c9b9b;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #6d6c6c;
+}
+
+
+.subModule-container{
+    position: relative;
+    height: 100%;
+    min-height: 70vh;
+}
+
+
+.window-container .subModule-container{
+    min-height: auto;
+}

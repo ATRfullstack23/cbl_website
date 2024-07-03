@@ -55,7 +55,7 @@
     .single_dashboard_report_item{
         background-color: #fff;
         border-radius: 15px;
-        border: 1px solid crimson;
+        border: 1px solid #2623383b;
         display: flex;
         justify-content: center;
         align-items: center;

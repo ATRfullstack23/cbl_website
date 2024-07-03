@@ -2538,7 +2538,7 @@ FormView.prototype = {
             var div = document.createElement('div');
             div.id = 'formview_close';
             div.className = 'formview-close-button';
-            div.innerHTML = 'X';
+            div.innerHTML = '<span class="fa fa-icon fa-close"></span>';
             formView.elements.closeButton = $(div);
             return div;
         },

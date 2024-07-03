@@ -2,7 +2,8 @@
 /*------------------------------PC------------------------------*/
 
 .formview-container.pc .table-main td{
-    padding: 5px;
+    /*padding: 5px;*/
+    padding: 2px 5px;
 }
 .chosen-container a{
     height: auto !important;
@@ -21,21 +22,21 @@
     background-color: rgb(249 250 251 / var(--tw-bg-opacity));
     --tw-border-opacity: 1;
     border-color: rgb(209 213 219 / var(--tw-border-opacity));
-  
+
     outline: 2px solid transparent;
     outline-offset: 2px;
 }
 .formview-container.pc .table-main :is( select:focus, input:focus, input:focus, .chosen-container a:focus) {
-    border-color: #1c64f2;
     --tw-border-opacity: 1;
     border-color: rgb(63 131 248 / var(--tw-border-opacity));
+    border-color: #30405193;
     --tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
     --tw-ring-offset-width: 0px;
     --tw-ring-offset-color: #fff;
     --tw-ring-color: #1c64f2;
     --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-   
+
     box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .formview-container.pc.formViewInline{
@@ -86,9 +87,11 @@
 }
 .formview-container.pc .formview-draggable-header{
     /*background: #5DABDF;*/
+    background: #304051;
+    color: #ffff;
     border-bottom: 1px solid #eeeeee;
     cursor: move;
-    border-radius: 0px;
+    border-radius: 10px 10px 0 0;
     padding: 10px;
 }
 .formview-container.pc .formview-draggable-header .button-panel{
@@ -105,12 +108,13 @@
     position: relative;
     display: inline-block;
     margin: auto;
-    top: 5px;
     padding-bottom: 5px;
-    border-radius: 0px;
+    border-radius: 10px;
+    top: 96px;
+    left: 96px;
     text-align: center;
     background-color: #FFFFFF;
-    border: 1px solid #9B9797;
+    /* border: 1px solid #9B9797; */
     /*box-shadow: 1px 1px 12px 4px #A2A2A2;*/
     /*overflow: hidden;*/
     transform-style: preserve-3d;
@@ -261,8 +265,9 @@
     text-align: left;
     padding-left: 10px;
     vertical-align: middle;
-    font-weight: bold;
-    color: rgb(106, 108, 129);
+    font-weight: 300;
+    color: rgb(0 0 0);
+    font-size: 15px;
 }
 
 .formview-container.pc .formview-column-display-name{
@@ -277,7 +282,7 @@
     left: 100px;
 }
 .formview-container.pc .formview-column-display-name > div{
-    padding-bottom: 8px;
+    /* padding-bottom: 8px; */
 }
 .formview-container.pc .formview-column-form-elements{
     display: block;
@@ -291,7 +296,7 @@
 
 .formview-container.pc .formview-column-elements-holder{
     width: 98%;
-    padding-left: 45px;
+    padding-left: 10px;
     text-align: left;
     vertical-align: middle;
 }
@@ -395,17 +400,19 @@
     width: 20px;
 }
 .formview-container.pc .formview-close-button:hover{
-    background: #F0F0F0;
-    color: #333;
+    /* background: #F0F0F0; */
+    /* color: #333; */
 }
 .formview-container.pc .formview-header-text-panel-in-direct-create{
     font-size: 27px !important;
     color: #585555 !important;
 }
 .formview-container.pc .formview-header-text-panel{
-    font-size: 30px;
-    color: #000;
+    font-size: 25px;
+    color: #ffffff;
+    font-weight: 500;
     padding-left: 10px;
+    text-align: left;
 }
 .formview-container.pc .formView-main .formView-subForm_create{
     min-height: 20px;

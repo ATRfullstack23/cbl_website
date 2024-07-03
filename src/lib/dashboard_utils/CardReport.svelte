@@ -7,6 +7,7 @@
 
 
     export function on_new_data_received(new_data) {
+        console.log('on_new_data_received', new_data)
         report_data = new_data;
     }
 

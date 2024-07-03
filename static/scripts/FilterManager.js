@@ -332,6 +332,10 @@ FilterManager.prototype = {
             .attr(self.constants.tabFilterPanel)
             .attr('id', self.id);
 
+        let icon = $('<span class="show-icon"><i class="fa-regular fa-circle-left"></i></span>')
+        let heading = $('<div class="filter-heading"><i class="fa-solid fa-filter"></i><span>Filters</span></div>')
+        div.append(icon).append(heading)
+
         var reArrangeButton = $(document.createElement('div'))
             .attr(self.constants.reArrangeButton)
             .appendTo(div);

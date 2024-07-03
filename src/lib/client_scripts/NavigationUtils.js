@@ -70,11 +70,12 @@ export async function generate_main_navigation_configuration(erp_instance) {
 
     for(const group_key in nav_config_by_user.groups){
         let group_items = nav_config_by_user.groups[group_key];
+        let group_obj = nav_config_by_user.groups[group_key];
         let group_config_obj = {
             "id": group_key,
             "display_name": group_key,
             "custom_icon": {
-                "url": "M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8",
+                "url": group_obj.icon_url || "M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8",
                 "color": "#fff"
             },
             "item_type": "group",
@@ -85,13 +86,16 @@ export async function generate_main_navigation_configuration(erp_instance) {
             if(item_key === 'id'){
                 continue;
             }
+            if(item_key === 'icon_url'){
+                continue;
+            }
 
-            if(item_key === 'providerTransactions'){
-                group_config_obj.items.push(provider_dashboard_item_config);
-            }
-            else if(item_key === 'kioskTransactions'){
-                group_config_obj.items.push(kiosk_dashboard_item_config);
-            }
+            // if(item_key === 'providerTransactions'){
+            //     group_config_obj.items.push(provider_dashboard_item_config);
+            // }
+            // else if(item_key === 'kioskTransactions'){
+            //     group_config_obj.items.push(kiosk_dashboard_item_config);
+            // }
 
             let actual_module = erp.modules[item_key];
             let item_config_obj = {
