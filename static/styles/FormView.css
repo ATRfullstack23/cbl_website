@@ -59,7 +59,7 @@
     display: none;
     left: 0px;
     top: 0px;
-    background-color: rgba(25, 25, 25, 0.74);
+    background-color: rgba(25, 25, 25, 0.55);
     overflow: auto;
     height: 100%;
     width: 100%;
@@ -68,6 +68,7 @@
     -moz-perspective: 1400px;
     -ms-perspective: 1400px;
     perspective: 1400px;
+    cursor: auto;
 }
 .formview-container.pc.form-view-in-direct-create{
     top: 0px;
@@ -87,11 +88,11 @@
 }
 .formview-container.pc .formview-draggable-header{
     /*background: #5DABDF;*/
-    background: #304051;
-    color: #ffff;
-    border-bottom: 1px solid #eeeeee;
+    /*background: #304051;*/
+    /*color: #ffff;*/
+    /*border-bottom: 1px solid #eeeeee;*/
     cursor: move;
-    border-radius: 10px 10px 0 0;
+    /*border-radius: 10px 10px 0 0;*/
     padding: 10px;
 }
 .formview-container.pc .formview-draggable-header .button-panel{
@@ -110,8 +111,8 @@
     margin: auto;
     padding-bottom: 5px;
     border-radius: 10px;
-    top: 96px;
-    left: 96px;
+    top: 50px;
+    /*left: 96px;*/
     text-align: center;
     background-color: #FFFFFF;
     /* border: 1px solid #9B9797; */
@@ -267,7 +268,7 @@
     vertical-align: middle;
     font-weight: 300;
     color: rgb(0 0 0);
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .formview-container.pc .formview-column-display-name{
@@ -409,7 +410,7 @@
 }
 .formview-container.pc .formview-header-text-panel{
     font-size: 25px;
-    color: #ffffff;
+    /*color: #ffffff;*/
     font-weight: 500;
     padding-left: 10px;
     text-align: left;
@@ -1041,6 +1042,105 @@ ul.multipleSelectionDisplayValueList[data-items-count]:before {
 
 
 
+/* ----- aki v2 with new ui hybrid */
+
+
+.table-main {
+    display: block;
+}
+
+.table-main td.form_view_table_cell{
+    display: inline-block;
+    position: relative;
+    border: 1px solid transparent;
+}
 
 
 
+.styling_mode .table-main .form_view_table_cell .formview-column-display-name {
+    cursor: move;
+}
+.styling_mode .table-main .form_view_table_cell{
+    overflow: visible;
+    user-select: none;
+}
+.styling_mode .table-main td.form_view_table_cell {
+    border: 1px dotted #3333331a;
+    min-width: 50px;
+    min-height: 50px;
+    /*position: relative;*/
+}
+
+.table-main td.form_view_table_cell:empty:after {
+    content: '-';
+    display: block;
+    min-height: 80px;
+    min-width: 100px;
+    opacity: 0;
+}
+
+.styling_mode .table-main tr {
+    display: block;
+    text-align: left;
+}
+
+.formview-container.pc.full_size .formview-main {
+    left: 0;
+    top: 0;
+    width: calc(100vw - var(--main_navigation_width)) !important;
+    border-radius: 0;
+    height: 100vh;
+}
+
+.formview-container.pc #div_main {
+    overflow: hidden;
+}
+
+.formview-container.pc.full_size {
+    padding-left: var(--main_navigation_width);
+    overflow: hidden;
+}
+
+.formview-container.pc .formview-main tr {
+    text-align: left;
+    white-space: nowrap;
+}
+
+
+.formview-container.pc .formview-save-panel .styling_mode_button_panel{
+    text-align: center;
+    display: none;
+}
+
+
+.styling_mode .formview-save-panel > button {
+    display: none;
+}
+
+.styling_mode .formview-draggable-header #formview_close {
+    display: none;
+}
+
+.formview-container.pc.styling_mode .formview-save-panel > .styling_mode_button_panel {
+    display: block;
+}
+
+.formview-container.pc .formview-main tr.without_children_column {
+    display: none;
+}
+.formview-container.pc.styling_mode .formview-main tr.without_children_column {
+    display: block;
+}
+
+.formview-container.pc.full_size .formview-save-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: left;
+    padding: 15px;
+}
+
+.formview-container.pc .formview-column-holder{
+    min-height: 80px;
+}

@@ -37,6 +37,44 @@ const provider_dashboard_item_config = {
     }
 };
 
+const icici_ledger_item_config = {
+    "icon": "MailBoxSolid",
+    "id": "d_icici_ledger",
+    "custom_icon": {
+        "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        "color": "#fff"
+    },
+    "display_name": "ICICI Bank Ledger",
+    "item_type": "item",
+    "action_type": "go_to_module",
+    "context_data": {
+        "module_id" : 'iciciBankLedger',
+        "submodule_id" : 'iciciBankLedger',
+        "filter_config" : {
+            "bank" : 1000002
+        }
+    }
+};
+
+const axis_ledger_item_config = {
+    "icon": "MailBoxSolid",
+    "id": "d_axis_ledger",
+    "custom_icon": {
+        "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        "color": "#fff"
+    },
+    "display_name": "AXIS Bank Ledger",
+    "item_type": "item",
+    "action_type": "go_to_module",
+    "context_data": {
+        "module_id" : 'iciciBankLedger',
+        "submodule_id" : 'iciciBankLedger',
+        "filter_config" : {
+            "bank" : 1000003
+        }
+    }
+};
+
 export async function generate_main_navigation_configuration(erp_instance) {
     let nav_config_by_user = erp_instance.get_user_setting_value('modulesNavigationArrangementHorizontal');
     const nav_config = {
@@ -87,6 +125,21 @@ export async function generate_main_navigation_configuration(erp_instance) {
                 continue;
             }
             if(item_key === 'icon_url'){
+                continue;
+            }
+
+            if(item_key === 'iciciBankLedger'){
+                let actual_module = erp.modules[item_key];
+                added_main_modules_map[actual_module.id] = true;
+                group_config_obj.items.push(icici_ledger_item_config);
+                group_config_obj.items.push(axis_ledger_item_config);
+                continue;
+            }
+            if(item_key === 'axisBankLedger'){
+                let actual_module = erp.modules[item_key];
+                added_main_modules_map[actual_module.id] = true;
+                // group_config_obj.items.push(icici_ledger_item_config);
+                // group_config_obj.items.push(axis_ledger_item_config);
                 continue;
             }
 

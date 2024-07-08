@@ -51,7 +51,7 @@
 
             window.erp = erp_instance;
             erp_instance.initialize().then(()=>{
-                dashboard_configurations_for_reference = erp_instance.user.userDetails.dashboards;
+                dashboard_configurations_for_reference = erp_instance.user.userDetails.dashboards || [];
                 tick().then(()=>{
                     for(const d_svelte_item of erp_instance.dashboards_arr){
                         console.log('d_svelte_item', d_svelte_item)
@@ -88,12 +88,15 @@
         console.log('handle_navigation_item_selected', evt.detail)
 
         if(erp_instance.current_active_child_window){
-            erp_instance.current_active_child_window.close();
+            erp_instance.current_active_child_window.close(); // might need to check multiple levels
         }
 
         let item_info = evt.detail;
         if(item_info.action_type === 'go_to_module'){
-            erp_instance.setSelectedModule(item_info.context_data.module_id);
+            erp_instance.setSelectedModule(item_info.context_data.module_id, {
+                submodule_id: item_info.context_data.submodule_id || undefined,
+                filter_config: item_info.context_data.filter_config || undefined
+            });
         }
         else if(item_info.action_type === 'go_to_dashboard'){
             erp_instance.setSelectedDashboard(item_info.context_data.dashboard_id);
@@ -132,12 +135,13 @@
                 <!--        class="mr-3 h-6 sm:h-9"-->
                 <!--        alt=" Binary Technologies Logo"-->
                 <!--      />-->
-                <span class="navigation_header_name_text">{erp_instance?.display_name || 'Mbme Pay'}</span>
+                <span class="navigation_header_name_text">{erp_instance?.displayName || 'Accounts'}</span>
             </a>
         </div>
 
 
         {#if navigation_config}
+<!--            <pre>{JSON.stringify(navigation_config, null, 2)}</pre>-->
             {#if navigation_config && navigation_config.items && navigation_config.items.length}
                 <Sidebar navigation_config={navigation_config}
                          on:navigation_item_selected={handle_navigation_item_selected}/>
@@ -192,6 +196,7 @@
         left: 0;
         top: 0;
         bottom: 0;
+        overflow-y: auto;
     }
 
     .navigation_header{

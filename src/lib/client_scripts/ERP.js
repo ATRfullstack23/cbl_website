@@ -1706,13 +1706,25 @@ export class ERP{
         var self = this;
 
         var data = {
-            config: JSON.stringify(settingValue),
-            settingName: settingName
+            config: {
+                config: JSON.stringify(settingValue),
+                settingName: settingName
+            }
         };
-        self.socket.emit('save_role_setting', data);
-        self.socket.once('save_role_setting_done', function(data){
-            saveRoleSettingCallBack && saveRoleSettingCallBack(data);
-        });
+        self.do_ajax_request('save_role_setting', data, (a_err, response_obj)=>{
+
+            if(localStorage.user_login_result){
+                let temp_config = JSON.parse(localStorage.user_login_result);
+                temp_config.roleSettings[settingName] = data.config.config;
+                localStorage.user_login_result = JSON.stringify(temp_config);
+            }
+
+            saveRoleSettingCallBack && saveRoleSettingCallBack(a_err, response_obj);
+        } );
+        // self.socket.emit('save_role_setting', data);
+        // self.socket.once('save_role_setting_done', function(data){
+        //     saveRoleSettingCallBack && saveRoleSettingCallBack(data);
+        // });
         return self;
     }
     saveRoleSettingForSpecificRole(roleId, settingName, settingValue, saveRoleSettingForSpecificRoleCallBack){
@@ -3198,6 +3210,20 @@ export class ERP{
         return str_value;
     }
 
+    get_role_setting_value(key){
+        const str_value = this.user.userDetails?.roleSettings[key];
+        if(str_value !== undefined && str_value.length){
+            // not efficient, update later
+            try{
+                return JSON.parse(str_value)
+            }
+            catch(errr){
+                return str_value;
+            }
+        }
+        return str_value;
+    }
+
     async handle_action_button_click_go_to_module(button_info, report_item_instance, latest_report_item_data){
         let target_module_id = button_info.context_data.module_id;
         let target_submodule_id = button_info.context_data.submodule_id;
@@ -3216,6 +3242,34 @@ export class ERP{
                 await this.handle_action_button_click_go_to_module(button_info, report_item_instance, evt_info.latest_report_item_data);
                 break;
         }
+    }
+    do_ajax_request (queryType, data_with_config_inside, do_ajax_request_callback) {
+        const self = this;
+        // const ajax_url = self.getAjaxUrl(queryType);
+        var ajax_url = window.ERP_API_AJAX_ROOT_URL + '/' + queryType;
+
+        let data_to_pass;
+
+        if(data_with_config_inside.config){
+            data_to_pass = {_source : JSON.stringify(data_with_config_inside)};
+        }
+        else{
+            data_to_pass = {_source : JSON.stringify({config: data_with_config_inside})};
+        }
+
+        $.ajax({
+            type: 'POST',
+            data: data_to_pass,
+            url: ajax_url,
+        }).always(function (responseObj, status) {
+            if(responseObj.error || responseObj.errorMessage){
+                do_ajax_request_callback && do_ajax_request_callback(responseObj, responseObj); // shall return result only?
+                return;
+            }
+            do_ajax_request_callback && do_ajax_request_callback(null, responseObj);
+            // console.log(grid.socketEvents.insertRowDone + '_Done', responseObj, status);
+
+        });
     }
 }
 

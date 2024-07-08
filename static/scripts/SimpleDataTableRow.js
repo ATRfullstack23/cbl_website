@@ -1648,6 +1648,7 @@ SimpleDataTableRow.prototype = {
                     var td = document.createElement('td');
 
                     td.setAttribute('data-column-id', column.id);
+                    td.classList.add('simple_data_table_table_cell');
 
                     td.appendChild(divHolder.get(0))
                     arr[pos.position.row][pos.position.col] = td;

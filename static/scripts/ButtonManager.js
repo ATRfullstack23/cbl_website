@@ -303,6 +303,60 @@ ButtonManager.prototype = {
                             return options;
                         }
                     },
+                    {
+                        selector: ".formview-header-table",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.formView.is_in_styling_mode){
+                                options.go_to_styling_mode = {
+                                    id: 'go_to_styling_mode',
+                                    displayName: 'Edit Styling',
+                                    onClick: ()=>{
+                                        self.subModule.formView.go_to_styling_mode();
+                                    }
+                                }
+                            }
+                            else{
+                                if(self.subModule.formView.display_styling_mode === 'custom_size'){
+                                    options.set_to_full_size_mode = {
+                                        id: 'set_to_full_size_mode',
+                                        displayName: 'Use Full Size',
+                                        onClick: ()=>{
+                                            self.subModule.formView.set_to_full_size_mode();
+                                        }
+                                    }
+                                }
+                                else{
+                                    options.set_to_custom_size_mode = {
+                                        id: 'set_to_custom_size_mode',
+                                        displayName: 'Use Custom Size',
+                                        onClick: ()=>{
+                                            self.subModule.formView.set_to_custom_size_mode();
+                                        }
+                                    }
+                                }
+
+
+                                options.save_styling_settings = {
+                                    id: 'save_styling_settings',
+                                    displayName: 'Save New Styling',
+                                    onClick: ()=>{
+                                        self.subModule.formView.exit_styling_mode(true);
+                                    }
+                                }
+                                options.cancel_styling_settings = {
+                                    id: 'cancel_styling_settings',
+                                    displayName: 'Cancel Styling',
+                                    onClick: ()=>{
+                                        self.subModule.formView.exit_styling_mode(false);
+                                    }
+                                }
+                            }
+
+                            return options;
+                        }
+                    },
 
                     {
                         selector: ".single_data_row_of_submodule",
