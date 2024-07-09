@@ -38,7 +38,7 @@
             }
         });
         selected_navigation_item = selected_item_new;
-        console.log('selected_navigation_item', selected_navigation_item)
+        // console.log('selected_navigation_item', selected_navigation_item)
         // if(selected_item_new){
         // }
     }

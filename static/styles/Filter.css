@@ -158,6 +158,8 @@ table.filter-table-main {
    
     box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
+
+
 body.pc .filter-tabPanel{
     /* background: #F5F5F5; */
     --tw-bg-opacity: 1;
@@ -350,9 +352,6 @@ body.mobile .filter-tabPanel{
     display: table-row;
 }
 
-.filter-inlineTabFilterPanel .filter-display-name{
-    display: none;
-}
 .filter-tabOptions {
     display: inline-block;
     border: 1px solid #EEE;
@@ -374,3 +373,36 @@ body.mobile .filter-tabPanel{
 .filter-tabOptions input:checked+label {
     border-bottom: 1px solid crimson;
 }
+
+
+body.pc .filter-tabPanel.no_filters_to_show{
+    display: none !important;
+}
+
+.filter-inlineTabFilterPanel{
+    margin-left: 35px;
+    margin-top: 20px;
+}
+
+.filter-inlineTabFilterPanel .filter-container{
+    display: inline-block;
+    position: relative;
+}
+
+.filter-inlineTabFilterPanel .filter-display-name{
+    position: absolute;
+    top: -20px;
+    left: 0;
+    font-size: 12px;
+    /*display: none;*/
+}
+
+.filter-inlineTabFilterPanel .filter_type_tabFilter .filter-display-name{
+    display: none;
+}
+
+.filter-inlineTabFilterPanel .filter-container .filter-form-elements{
+    margin-left: 0;
+}
+
+

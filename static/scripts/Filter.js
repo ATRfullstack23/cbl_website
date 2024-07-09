@@ -392,6 +392,7 @@ Filter.prototype = {
         },
         createContainer: function(filter){
             var div = $(document.createElement('div')).attr({id: filter.id, class: filter.constants.container.class});
+            div.addClass('filter_type_'+filter.type);
             div.data('help', filter.helpMessage);
             return div;
         },

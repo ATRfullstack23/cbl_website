@@ -76,7 +76,7 @@ const axis_ledger_item_config = {
 };
 
 export async function generate_main_navigation_configuration(erp_instance) {
-    let nav_config_by_user = erp_instance.get_user_setting_value('modulesNavigationArrangementHorizontal');
+    let nav_config_by_user = erp_instance.get_user_setting_value('modulesNavigationArrangementHorizontal') || {groups: {}};
     const nav_config = {
         "version": "1.0",
         "display_name": erp_instance.displayName,
