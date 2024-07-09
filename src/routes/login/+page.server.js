@@ -1,5 +1,5 @@
 import { redirect } from "@sveltejs/kit";
-import { get_user_info_from_cookies } from "$lib/server/AuthenticationManager.js";
+// import { get_user_info_from_cookies } from "$lib/server/AuthenticationManager.js";
 
 
 export const load = async({locals, cookies, parent, url})=>{

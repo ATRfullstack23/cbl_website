@@ -346,7 +346,7 @@ FilterManager.prototype = {
             external_filter_order : []
         };
         let show_all_filters_as_inline = false;
-        if(self.get_filter_count() < 5){
+        if(self.get_filter_count() < 3){
             show_all_filters_as_inline = true;
         }
 
