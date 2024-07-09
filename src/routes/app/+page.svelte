@@ -79,13 +79,17 @@
 
     let erp_content__container_element;
     let navigation_config;
+    let sidebar_instance;
     onMount(async()=>{
         window._add_module_instance_for_reference = add_module_instance_for_reference;
+        window.globalElements.body.on('selected_main_navigation_display_name_change', (evt)=>{
+            sidebar_instance.handle_selected_main_navigation_item_change(window.main_navigation_selected_item_info);
+        });
         initialize_erp();
     });
 
     function handle_navigation_item_selected(evt) {
-        console.log('handle_navigation_item_selected', evt.detail)
+        // console.log('handle_navigation_item_selected', evt.detail)
 
         if(erp_instance.current_active_child_window){
             erp_instance.current_active_child_window.close(); // might need to check multiple levels
@@ -144,6 +148,7 @@
 <!--            <pre>{JSON.stringify(navigation_config, null, 2)}</pre>-->
             {#if navigation_config && navigation_config.items && navigation_config.items.length}
                 <Sidebar navigation_config={navigation_config}
+                         bind:this={sidebar_instance}
                          on:navigation_item_selected={handle_navigation_item_selected}/>
             {/if}
         {/if}

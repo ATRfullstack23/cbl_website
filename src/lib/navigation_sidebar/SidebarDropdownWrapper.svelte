@@ -4,10 +4,13 @@
     import { sineInOut } from "svelte/easing";
 
     import {createEventDispatcher, onMount} from 'svelte';
+    import SidebarItem from "$lib/navigation_sidebar/SidebarItem.svelte";
 
     const dispatch_event = createEventDispatcher();
 
     export let array, label, icon;
+    export let selected_navigation_item;
+
     let show = false;
     const show_hide_slide = () => {
         show = !show;
@@ -75,8 +78,9 @@
         }}
     >
         {#each array as item (item.id)}
-            <SidebarDropdownItem label={item.display_name}
-                on:click={()=>{handle_sidebar_dropdown_item_click(item);}}></SidebarDropdownItem>
+            <SidebarDropdownItem item={item}
+                                 selected_navigation_item="{selected_navigation_item}"
+                                 on:click={()=>{handle_sidebar_dropdown_item_click(item);}}></SidebarDropdownItem>
         {/each}
     </ul>
 {/if}

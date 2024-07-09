@@ -50,9 +50,8 @@
   onMount(async function () {
     is_mounted = true;
     window.globalElements.body.on('selected_main_navigation_display_name_change', (evt)=>{
-      console.log(window.main_navigation_selected_item_info);
       selected_main_navigation_display_name = main_navigation_selected_item_info?.display_name || '';
-    })
+    });
   });
   let selected_main_navigation_display_name = '';
 </script>
