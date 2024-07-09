@@ -7,36 +7,6 @@ export function get_main_navigation_configuration() {
 }
 
 
-const kiosk_dashboard_item_config = {
-    "icon": "MailBoxSolid",
-    "id": "d_1000002",
-    "custom_icon": {
-        "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-        "color": "#fff"
-    },
-    "display_name": "Kiosk Dashboard",
-    "item_type": "item",
-    "action_type": "go_to_dashboard",
-    "context_data": {
-        "dashboard_id" : 1000002
-    }
-};
-
-const provider_dashboard_item_config = {
-    "icon": "MailBoxSolid",
-    "id": "d_1000003",
-    "custom_icon": {
-        "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-        "color": "#fff"
-    },
-    "display_name": "Provider Dashboard",
-    "item_type": "item",
-    "action_type": "go_to_dashboard",
-    "context_data": {
-        "dashboard_id" : 1000003
-    }
-};
-
 const icici_ledger_item_config = {
     "icon": "MailBoxSolid",
     "id": "d_icici_ledger",
@@ -75,6 +45,106 @@ const axis_ledger_item_config = {
     }
 };
 
+
+
+
+
+let dashboard_group_obj = {
+    "id": "dashboard_group",
+    "display_name": "Dashboards",
+    "custom_icon": {
+        "url": "M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8",
+        "color": "#fff"
+    },
+    "item_type": "group",
+    items: [
+        {
+            "icon": "MailBoxSolid",
+            "id": "d_1000001",
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": "Main Dashboard",
+            "item_type": "item",
+            "action_type": "go_to_dashboard",
+            "context_data": {
+                "dashboard_id" : 1000001
+            }
+        },
+        {
+            "icon": "MailBoxSolid",
+            "id": "d_1000002",
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": "Vendor Dashboard",
+            "item_type": "item",
+            "action_type": "go_to_dashboard",
+            "context_data": {
+                "dashboard_id" : 1000002
+            }
+        },
+        {
+            "icon": "MailBoxSolid",
+            "id": "d_1000003",
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": "Sales Dashboard",
+            "item_type": "item",
+            "action_type": "go_to_dashboard",
+            "context_data": {
+                "dashboard_id" : 1000003
+            }
+        },
+        {
+            "icon": "MailBoxSolid",
+            "id": "d_1000004",
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": "Customer Dashboard",
+            "item_type": "item",
+            "action_type": "go_to_dashboard",
+            "context_data": {
+                "dashboard_id" : 1000004
+            }
+        },
+        {
+            "icon": "MailBoxSolid",
+            "id": "Other_Dashboard_1",
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": "Other Dashboard 1",
+            "item_type": "item",
+            "action_type": "go_to_dashboard",
+            "context_data": {
+                "dashboard_id" : 1000005
+            }
+        },
+        {
+            "icon": "MailBoxSolid",
+            "id": "Other_Dashboard_2",
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": "Other Dashboard 2",
+            "item_type": "item",
+            "action_type": "go_to_dashboard",
+            "context_data": {
+                "dashboard_id" : 1000006
+            }
+        },
+    ]
+}
+
 export async function generate_main_navigation_configuration(erp_instance) {
     let nav_config_by_user = erp_instance.get_user_setting_value('modulesNavigationArrangementHorizontal') || {groups: {}};
     const nav_config = {
@@ -90,21 +160,8 @@ export async function generate_main_navigation_configuration(erp_instance) {
     // }
 
 
-    const main_dashboard_item_config = {
-        "icon": "MailBoxSolid",
-        "id": "d_1000001",
-        "custom_icon": {
-            "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-            "color": "#fff"
-        },
-        "display_name": "Main Dashboard",
-        "item_type": "item",
-        "action_type": "go_to_dashboard",
-        "context_data": {
-            "dashboard_id" : 1000001
-        }
-    };
-    nav_config.items.push(main_dashboard_item_config);
+
+    nav_config.items.push(dashboard_group_obj);
 
     for(const group_key in nav_config_by_user.groups){
         let group_items = nav_config_by_user.groups[group_key];

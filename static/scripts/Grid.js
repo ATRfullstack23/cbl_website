@@ -49,8 +49,8 @@ Grid.prototype = {
         self.bindEvents();
         if(!self.defaultSort){
             self.defaultSort = {
-                sortColumn: 'id',
-                sortType: ''
+                sortColumn: self.defaultSortByColumnDatabaseName ||  'id',
+                sortType: self.defaultSortByOrder || ''
             }
         }
         self.boxUpAnimation = new GridDataAnimation();
@@ -193,6 +193,9 @@ Grid.prototype = {
 
         });
         grid.find('thead').on('click', '.grid-header-text-sortable', function(eve){
+            if(self.disableSorting){
+                return;
+            }
             var element = $(this);
             // if(element.closest('.inlineViewMode').length){ // must be inside inline child window
             //     if(element.closest('.inlineViewMode').attr('data-child-sub-module-id') != self.subModule.id){
@@ -703,6 +706,23 @@ Grid.prototype = {
                         grid.data[dataRow.id] = dataRow;
                     });
                     grid.dataArr = data.result.data;
+                }
+                if(grid.dataArr && grid.dataArr.length){
+                    if(grid.gridViewFrontEndDisplaySortByOrder){
+                        // currently forcing id only (need to select based on database_name)
+                        switch (grid.gridViewFrontEndDisplaySortByOrder){
+                            case 'asc':
+                                grid.dataArr.sort((a, b) => {
+                                    return a.id - b.id;
+                                });
+                                break;
+                            case 'desc':
+                                grid.dataArr.sort((a, b) => {
+                                    return b.id - a.id;
+                                });
+                                break;
+                        }
+                    }
                 }
 
                 grid.subModule.set_latest_display_data(grid.dataArr, grid.data);
