@@ -4,9 +4,17 @@
     export let item;
     export let selected_navigation_item;
     // function dispatch_event(params) {
-        
+
     // }
 
+    function get_icon_color(icon) {
+        let theme_name = localStorage.getItem("theme_name");
+        console.log("theme_name from icon", theme_name);
+        if (theme_name === "light_theme") {
+            return "#333";
+        }
+        return icon.color;
+    }
 </script>
 
 <div class="label-container"
@@ -14,11 +22,11 @@
      on:click>
     <span class="icon">
         <svg width=18 height=18
-        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <path
-                stroke="{icon.color}"
-                stroke-width="2px"
-                 d="{icon.url}"
+                    stroke="{get_icon_color(icon)}"
+                    stroke-width="2px"
+                    d="{icon.url}"
             />
         </svg>
     </span>
@@ -32,7 +40,7 @@
         margin: 0 4px;
     }
     .label-container {
-        gap: .5rem;
+        gap: 0.5rem;
         display: flex;
         justify-content: flex-start;
         align-items: center;

@@ -28,7 +28,7 @@
 
         canvas_initial_width_to_use = container_element.clientWidth - 50;
         // canvas_initial_width_to_use = 500
-        console.log('canvas_initial_width_to_use', canvas_initial_width_to_use)
+        // console.log('canvas_initial_width_to_use', canvas_initial_width_to_use)
 
 
         new Chart(item.canvas_element_instance,{

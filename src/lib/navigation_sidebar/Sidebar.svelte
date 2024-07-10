@@ -1,7 +1,7 @@
 <script>
     export let navigation_config;
     import SidebarItem from './SidebarItem.svelte'
-    import SidebarDropdownWrapper from './SidebarDropdownWrapper.svelte' 
+    import SidebarDropdownWrapper from './SidebarDropdownWrapper.svelte'
     import { createEventDispatcher } from 'svelte';
 
     const dispatch_event = createEventDispatcher();
@@ -68,9 +68,32 @@
 </ul>
 
 <style>
+    :global(.dark_theme li) {
+        color: var(--dark_theme_color);
+    }
+    :global(.light_theme li) {
+        color: var(--white_theme_color);
+    }
 
-    li,ul{
-        color: white;
+    :global(.dark_theme :is(li.selected_navigation_item)) {
+        color: var(--white_theme_color);
+        background-color: var(--white_theme_bg_color);
+        border-radius: 8px;
+        padding: .5rem .6rem;
+        padding-left: 32px;
+    }
+
+    :global(.light_theme :is(li.selected_navigation_item)) {
+        color: #fff;
+        background-color: var(--light_theme_btn_bg_color);
+        border-radius: 8px;
+        padding: .5rem .6rem;
+        padding-left: 32px;
+    }
+
+
+    li,
+    ul {
         cursor: pointer;
     }
 
@@ -84,11 +107,14 @@
         width: 100%;
     }
 
+    :global(.selected_navigation_item){
+        border-radius: 8px;
+    }
     .sidebar{
         padding: 2rem;
         padding-left: 1.5rem;
-        padding-right: 1.5rem;  
-        
+        padding-right: 1.5rem;
+
         display: flex;
         justify-content: center;
         align-items: flex-start;

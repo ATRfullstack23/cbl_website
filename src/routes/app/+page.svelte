@@ -11,9 +11,19 @@
     import PrintPopupDialog from "$lib/ui_elements/PrintPopupDialog.svelte";
 
     export let data;
+    export let is_dark_theme;
     let device_type = $page.data.device_type;
+    console.log("is_dark_theme from page", is_dark_theme);
     const backend_root_url = env.PUBLIC_ERP_ROOT_URL;
 
+    // let dark_theme_color = {
+    //     bg_color: "#262338",
+    //     color: "#fff",
+    // };
+    // let white_theme_color = {
+    //     bg_color: "#f1f1f1",
+    //     color: "#333",
+    // };
     let erp_instance;
     let dashboard_configurations_for_reference = [];
     let dashboards_container_element;
@@ -134,55 +144,55 @@
 <section class="main"
          class:pc={device_type !== "mobile"}
          class:mobile={device_type === "mobile"}
-         style="--main_navigation_width:250px;"
-         data-sveltekit-preload-data="off">
-    <div class="main_navigation_container">
-        <div class="navigation_header">
-            <a class="navigation_header_name" href="/">
-                <!--      <img-->
-                <!--        src="https://binarytechs.in/images/b2.png"-->
-                <!--        class="mr-3 h-6 sm:h-9"-->
-                <!--        alt=" Binary Technologies Logo"-->
-                <!--      />-->
-                <span class="navigation_header_name_text">{erp_instance?.displayName || 'Accounts'}</span>
-            </a>
-        </div>
+         style=""
+data-sveltekit-preload-data="off">
+<div class="main_navigation_container">
+    <div class="navigation_header">
+        <a class="navigation_header_name" href="/">
+            <!--      <img-->
+            <!--        src="https://binarytechs.in/images/b2.png"-->
+            <!--        class="mr-3 h-6 sm:h-9"-->
+            <!--        alt=" Binary Technologies Logo"-->
+            <!--      />-->
+            <span class="navigation_header_name_text">{erp_instance?.displayName || 'Accounts'}</span>
+        </a>
+    </div>
 
 
-        {#if navigation_config}
-<!--            <pre>{JSON.stringify(navigation_config, null, 2)}</pre>-->
-            {#if navigation_config && navigation_config.items && navigation_config.items.length}
-                <Sidebar navigation_config={navigation_config}
-                         bind:this={sidebar_instance}
-                         on:navigation_item_selected={handle_navigation_item_selected}/>
-            {/if}
+    {#if navigation_config}
+        <!--            <pre>{JSON.stringify(navigation_config, null, 2)}</pre>-->
+        {#if navigation_config && navigation_config.items && navigation_config.items.length}
+            <Sidebar navigation_config={navigation_config}
+                     bind:this={sidebar_instance}
+                     on:navigation_item_selected={handle_navigation_item_selected}/>
         {/if}
-    </div>
+    {/if}
+</div>
 
 
-    <div bind:this={erp_content__container_element} class="erp_content__container">
-
-
-
-    </div>
-
-
-    <div class="dashboards_container hidden" bind:this={dashboards_container_element}>
-
-        {#each dashboard_configurations_for_reference as dashboard_config, index}
-            <!--        <pre class="mineee">{dashboard_config.id}</pre>-->
-            <Dashboard dashboard_configuration="{dashboard_config}"
-                       bind:this={erp_instance.dashboards_arr[index]}/>
-        {/each}
-    </div>
+<div bind:this={erp_content__container_element} class="erp_content__container">
 
 
 
-    {#each module_instances_for_reference as module_info, index}
-<!--        <pre class="mineee">{module_info.id}</pre>-->
-        <Module module="{module_info}"
-                   bind:this={module_svelte_elements_for_reference[index]}/>
+</div>
+
+
+<div class="dashboards_container hidden" bind:this={dashboards_container_element}>
+
+    {#each dashboard_configurations_for_reference as dashboard_config, index}
+        <!--        <pre class="mineee">{dashboard_config.id}</pre>-->
+        <Dashboard dashboard_configuration="{dashboard_config}"
+                   bind:this={erp_instance.dashboards_arr[index]}/>
     {/each}
+</div>
+
+
+
+{#each module_instances_for_reference as module_info, index}
+    <!--        <pre class="mineee">{module_info.id}</pre>-->
+    <Module module="{module_info}"
+            bind:this={module_svelte_elements_for_reference[index]}/>
+{/each}
 
 
 
@@ -193,6 +203,8 @@
 
 
 <style>
+
+
     .main{
         display: block;
         height: calc(100vh - 100px);
@@ -210,7 +222,7 @@
     }
 
     .navigation_header{
-        color: white;
+        /* color: white; */
     }
     .navigation_header_name{
         justify-content: center;
