@@ -8,6 +8,7 @@
     import Module from "$lib/submodule/Module.svelte";
     import Dashboard from "$lib/dashboard_utils/Dashboard.svelte";
     import {env} from "$env/dynamic/public";
+    import PrintPopupDialog from "$lib/ui_elements/PrintPopupDialog.svelte";
 
     export let data;
     let device_type = $page.data.device_type;
@@ -122,8 +123,12 @@
         return module_info.svelte_element_instance;
     }
 
+    let print_popup_dialog_instance;
+
+
 </script>
 
+<PrintPopupDialog bind:this={print_popup_dialog_instance}/>
 
 
 <section class="main"

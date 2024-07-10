@@ -82,7 +82,12 @@ Filter.prototype = {
         if(self.showAsInlineElement){
             if(formElement){
                 formElement.on('change', function(){
-                   self.filterManager.doSearch();
+                    switch (self.type) {
+                        case Filter.FILTER_TYPES.LOOKUP:
+                            self.selectedValue = self.getFilterFormElement().val();
+                            break;
+                    }
+                    self.filterManager.doSearch();
                 });
             }
         }
@@ -154,7 +159,10 @@ Filter.prototype = {
                     value = self.getFilterFormElement().val();
                 }
                 else{
-                    value = self.getFilterFormElement().val();
+                    value = self.selectedValue;
+                    // console.log('filter lookup selectedValue 1 : ', self.selectedValue)
+                    // console.log('filter lookup selectedValue 2 : ', self.getFilterFormElement().val())
+                    // value = self.getFilterFormElement().val();
                 }
                 break;
             case Filter.FILTER_TYPES.TAB_FILTER:
@@ -171,8 +179,11 @@ Filter.prototype = {
             case Filter.FILTER_TYPES.FREE_SEARCH:
             case Filter.FILTER_TYPES.CHECKBOX:
             case Filter.FILTER_TYPES.DATE:
+                self.getFilterFormElement().val(value);
+                break;
             case Filter.FILTER_TYPES.LOOKUP:
                 self.getFilterFormElement().val(value);
+                self.selectedValue = value;
                 break;
             case Filter.FILTER_TYPES.TAB_FILTER:
                 if(self.typeSpecific.allowMultipleSelection){
@@ -358,6 +369,10 @@ Filter.prototype = {
     setLookUpDataForLookUpFilter: function(){
         var self = this;
         self.elements.formElements.element.setSelectOptions(self.filterData, !self.typeSpecific.allowMultipleSelection, '');
+        // console.log('setLookUpDataForLookUpFilter selectedValue', self.selectedValue);
+        if(self.selectedValue){
+            self.elements.formElements.element.val(self.selectedValue);
+        }
         if(!self.isChosenInitialized){
             self.initializeChosen();
         }

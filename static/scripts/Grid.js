@@ -1277,7 +1277,8 @@ Grid.prototype = {
                 var div = document.createElement('div');
                 div.setAttribute('data-column-id', column.id);
                 if(column.typeSpecific && column.typeSpecific.showTotal){
-                    div.innerHTML = '...';
+                    // div.innerHTML = '...';
+                    div.innerHTML = ' ';
                 }
                 th.appendChild(div);
                 tr.appendChild(th);
