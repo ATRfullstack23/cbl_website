@@ -280,7 +280,8 @@
     position: absolute;
     z-index: 2;
     top: 15px;
-    left: 100px;
+    left: 30px;
+    font-weight: bold;
 }
 .formview-container.pc .formview-column-display-name > div{
     /* padding-bottom: 8px; */
@@ -438,6 +439,7 @@
     vertical-align: middle;
     /*width: 50%;*/
     /*border: 1px solid #eee;*/
+    vertical-align: top;
 }
 
 .formview-container.pc .formViewImageContainer{
@@ -1090,6 +1092,7 @@ ul.multipleSelectionDisplayValueList[data-items-count]:before {
     width: calc(100vw - var(--main_navigation_width)) !important;
     border-radius: 0;
     height: 100vh;
+    overflow-y: auto !important;
 }
 
 .formview-container.pc #div_main {
@@ -1143,4 +1146,7 @@ ul.multipleSelectionDisplayValueList[data-items-count]:before {
 
 .formview-container.pc .formview-column-holder{
     min-height: 80px;
+}
+.formview-container.pc *{
+    font-family: Inter, sans-serif;
 }

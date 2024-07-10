@@ -1422,7 +1422,7 @@ Column.prototype = {
                     element.append(ul);
                 }
                 else{
-                    element.text( value );
+                    element.html( value );
                 }
 
                 break;

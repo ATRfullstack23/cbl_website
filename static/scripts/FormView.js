@@ -1146,10 +1146,10 @@ FormView.prototype = {
             //formView.container.css({opacity: .1});
             formView.elements.divMain.find('#table_main_container_edit')
                 .css({scale: 1, rotateX: '0deg', rotateY: '0deg', translate:'+10%'});
-            formView.elements.divMain.css('overflow', 'hidden')
+            formView.elements.divMain //.css('overflow', 'hidden')
                 .find('#table_main_container_edit')
                 .transition({scale: 1, rotateX: '0deg', rotateY: '0deg', translate:'0%'}, function(){
-                    formView.elements.divMain.css('overflow', 'visible')
+                    // formView.elements.divMain.css('overflow', 'visible')
                     if(callback){
                         callback();
                     }
@@ -1161,10 +1161,10 @@ FormView.prototype = {
             //formView.container.css({opacity: .1});
             formView.elements.divMain.find('#table_main_container_view')
                 .css({scale: 1, rotateX: '0deg', rotateY: '0deg', translate:'-10%'});
-            formView.elements.divMain.css('overflow', 'hidden')
+            formView.elements.divMain //.css('overflow', 'hidden')
                 .find('#table_main_container_view')
                 .transition({scale: 1, rotateX: '0deg', rotateY: '0deg', translate:'0%'}, function(){
-                    formView.elements.divMain.css('overflow', 'visible')
+                    // formView.elements.divMain.css('overflow', 'visible')
                     if(callback){
                         callback();
                     }
@@ -2090,7 +2090,12 @@ FormView.prototype = {
                 smartText.config.forEach(function(item){
                     if(item.type == 'column'){
                         var column = formView.subModule.columnManager.columns[item.value];
-                        str += column.parseDisplayValue(dataRow);
+                        if(column){
+                            str += column.parseDisplayValue(dataRow);
+                        }
+                        else{
+                            console.log('smart text issue colum : ', item);
+                        }
                     }
                     else{
                         str += item.value;
@@ -2995,6 +3000,7 @@ FormView.prototype = {
             var self = this;
             var div = $(document.createElement('div'))
                 .attr({id: 'holder_'+ type+'_'+ column.id})
+                .attr('data-column_id', column.id)
                 .addClass('formview-column-holder');
             div.data('column', column);
             var table = document.createElement('table');
@@ -3775,7 +3781,7 @@ FormView.prototype = {
 
         formview_column_holder_elements.each(function () {
             let element = $(this);
-            let column_id = element.find('.editable').attr('data-column-id');
+            let column_id = element.attr('data-column_id');
             let pos_string  = element.parent().attr('data-position');
             let obj = {
                 column_id,
@@ -3808,6 +3814,7 @@ FormView.prototype = {
         const self = this;
 
         // formView.elements.tableMains[type] need to use this
+
         let formview_column_holder_elements = self.container.find('.table-main:visible .formview-column-holder');
 
         if(styling_config.display_styling_mode){
@@ -3829,7 +3836,8 @@ FormView.prototype = {
 
         formview_column_holder_elements.each(function () {
            const element = $(this);
-            let column_id = element.find('.editable').attr('data-column-id');
+            // let column_id = element.find('.editable').attr('data-column-id');
+            let column_id = element.attr('data-column_id');
             let column_style_info = styling_config.column_structure[column_id];
 
 

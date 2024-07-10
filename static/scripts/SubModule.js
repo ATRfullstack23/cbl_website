@@ -1866,7 +1866,10 @@ SubModule.prototype = {
                 setTimeout( function(){
                     console.log('async 1 start');
 
-                    var absorbContainer2 = self.grid.elements.rows[dataRow['id']].tr.find('[data-id="'+column.id+'"]');
+                    var absorbContainer2;
+                    if(self.grid.elements.rows){
+                        absorbContainer2 = self.grid.elements.rows[dataRow['id']].tr.find('[data-id="'+column.id+'"]');
+                    }
                     self.createChildWindowForColumn(column, result.randomId, dataRow, childWindowDisplayMode, (c_err, childWindow)=>{
                         if(!options.createOnly){
                             childWindow.show({
@@ -1890,8 +1893,10 @@ SubModule.prototype = {
         var dataSource = column.typeSpecific.dataSource;
         var moduleConfig = self.erp.allModules[dataSource.moduleId].config;
 //        moduleConfig = JSON.parse(JSON.stringify(moduleConfig));
-        var absorbContainer = self.grid.elements.rows[dataRow['id']].tr.find('[data-id="'+column.id+'"]');
-
+        var absorbContainer;
+        if(self.grid.elements.rows){
+            absorbContainer = self.grid.elements.rows[dataRow['id']].tr.find('[data-id="'+column.id+'"]');
+        }
         var setAsViewOnlyMode = false;
 
         moduleConfig.randomId = randomId;

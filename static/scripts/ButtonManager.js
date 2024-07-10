@@ -755,18 +755,24 @@ ButtonManager.prototype = {
             self.subModule.cardViewHelper.container.find('.single_card_view_data_row.selected').removeClass('selected');
         }
 
-        self.selectedRowsCount = self.selectedRowSelectors.each(function(){
-            var element = $(this);
-            element.closest('tr[id]').addClass('selected');
-            element.closest('.single_card_view_data_row').addClass('selected');
-            self.selectedRows.push(element.data('id'));
-        }).length;
+        if(self.selectedRowSelectors){
+            self.selectedRowsCount = self.selectedRowSelectors.each(function(){
+                var element = $(this);
+                element.closest('tr[id]').addClass('selected');
+                element.closest('.single_card_view_data_row').addClass('selected');
+                self.selectedRows.push(element.data('id'));
+            }).length;
+        }
+        else{
+            self.selectedRowsCount = 0;
+        }
+
         self.disableCondition.none = (self.selectedRowsCount == 0);
         self.disableCondition.single = (self.selectedRowsCount == 1);
         self.disableCondition.multiple = (self.selectedRowsCount > 1);
 
         var noOfRowsSelectors = self.subModule.grid.elements.table.find('.grid-row-selector').length;
-        if(noOfRowsSelectors && (self.selectedRowsCount == noOfRowsSelectors)){
+        if(self.selectedRowsCount > 0 && noOfRowsSelectors && (self.selectedRowsCount === noOfRowsSelectors)){
             self.subModule.grid.elements.rowSelectorAll.prop('checked', true);
         }
         self.enableDisableButtons();
