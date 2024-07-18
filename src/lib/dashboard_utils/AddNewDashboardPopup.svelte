@@ -1,5 +1,9 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+    import {
+        add_new_dashboard_item_in_server,
+        get_all_dashboards_of_user
+    } from "$lib/dashboard_utils/DashboardHelper.js";
   let dispatch = createEventDispatcher();
   let config_json = {
     modules:[
@@ -101,7 +105,30 @@
         selected_dashboard_type = dashboard_type
     }
 
-    function handle_confirm() {
+
+
+
+    async function handle_confirm() {
+
+      //   test hardcoded insert by aki
+
+        const dashboard_item_to_insert = {
+            "type": "report_item",
+            "report_item_type": "card",
+            "title": "Credit Notes",
+            "data_config": {
+                "sql": "select total_amount as value, 'Approved' as sub_text\nfrom sales_credit_note scn where scn.credit_note_status = 'approved'" },
+            "width": "26%",
+            "height": "250"
+        };
+
+        await add_new_dashboard_item_in_server(1000003, dashboard_item_to_insert);
+
+        await get_all_dashboards_of_user();
+        location.href = location.href + '';
+        location.reload();
+
+
       handle_cancel()
     }
 

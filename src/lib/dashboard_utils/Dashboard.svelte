@@ -99,7 +99,8 @@
 </script>
 
 <div class="chart_container single_dashboard_container"  class:hidden={is_hidden}>
-    <div class="add_new_dashboard" style="display: none;">
+    <div class="add_new_dashboard">
+<!--        style="display: none;"-->
         <button on:click={() => show_add_new_popup = true}>Add New Dashboard</button>
         <button class="filter_button"><i class="fa-solid fa-filter"></i>Add Filter</button>
     </div>

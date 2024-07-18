@@ -467,7 +467,7 @@
 
 /*------------------------------PC Small Quick Add View------------------------------*/
 .formview-container.pc.smallQuickAddView{
-    z-index: 100002 !important;
+    /*z-index: 100002 !important;*/
     background-color: rgba(25, 25, 25, 0.1);
 }
 .formview-container.pc.smallQuickAddView .formview-main{

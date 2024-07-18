@@ -1113,6 +1113,12 @@ SimpleDataTableRow.prototype = {
             var self = this;
 
             var formData = simpleDataTableRow.getFormDataWithParsedValues();
+            formData.__context = {
+                form_view: simpleDataTableRow,
+                parent_data_row : simpleDataTableRow.subModule.parentDataRow,
+                parent_child_window : simpleDataTableRow.subModule.parentChildWindow,
+                parent_submodule : simpleDataTableRow.subModule.parentSubModule,
+            }
             var childColumn = options.childColumn;
             if(simpleDataTableRow.mode === SimpleDataTableRow.CREATE_MODE){
                 if(childColumn.calculatedValueFunctions && childColumn.calculatedValueFunctions.create){

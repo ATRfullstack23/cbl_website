@@ -58,34 +58,34 @@ let dashboard_group_obj = {
     },
     "item_type": "group",
     items: [
-        {
-            "icon": "MailBoxSolid",
-            "id": "d_1000001",
-            "custom_icon": {
-                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-                "color": "#fff"
-            },
-            "display_name": "Main Dashboard",
-            "item_type": "item",
-            "action_type": "go_to_dashboard",
-            "context_data": {
-                "dashboard_id" : 1000001
-            }
-        },
-        {
-            "icon": "MailBoxSolid",
-            "id": "d_1000002",
-            "custom_icon": {
-                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-                "color": "#fff"
-            },
-            "display_name": "Vendor Dashboard",
-            "item_type": "item",
-            "action_type": "go_to_dashboard",
-            "context_data": {
-                "dashboard_id" : 1000002
-            }
-        },
+        // {
+        //     "icon": "MailBoxSolid",
+        //     "id": "d_1000001",
+        //     "custom_icon": {
+        //         "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        //         "color": "#fff"
+        //     },
+        //     "display_name": "Main Dashboard",
+        //     "item_type": "item",
+        //     "action_type": "go_to_dashboard",
+        //     "context_data": {
+        //         "dashboard_id" : 1000001
+        //     }
+        // },
+        // {
+        //     "icon": "MailBoxSolid",
+        //     "id": "d_1000002",
+        //     "custom_icon": {
+        //         "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        //         "color": "#fff"
+        //     },
+        //     "display_name": "Vendor Dashboard",
+        //     "item_type": "item",
+        //     "action_type": "go_to_dashboard",
+        //     "context_data": {
+        //         "dashboard_id" : 1000002
+        //     }
+        // },
         {
             "icon": "MailBoxSolid",
             "id": "d_1000003",
@@ -121,27 +121,27 @@ let dashboard_group_obj = {
                 "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
                 "color": "#fff"
             },
-            "display_name": "Other Dashboard 1",
+            "display_name": "Accounts Dashboard",
             "item_type": "item",
             "action_type": "go_to_dashboard",
             "context_data": {
                 "dashboard_id" : 1000005
             }
         },
-        {
-            "icon": "MailBoxSolid",
-            "id": "Other_Dashboard_2",
-            "custom_icon": {
-                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-                "color": "#fff"
-            },
-            "display_name": "Other Dashboard 2",
-            "item_type": "item",
-            "action_type": "go_to_dashboard",
-            "context_data": {
-                "dashboard_id" : 1000006
-            }
-        },
+        // {
+        //     "icon": "MailBoxSolid",
+        //     "id": "Other_Dashboard_2",
+        //     "custom_icon": {
+        //         "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        //         "color": "#fff"
+        //     },
+        //     "display_name": "Other Dashboard 2",
+        //     "item_type": "item",
+        //     "action_type": "go_to_dashboard",
+        //     "context_data": {
+        //         "dashboard_id" : 1000006
+        //     }
+        // },
     ]
 }
 
@@ -199,6 +199,13 @@ export async function generate_main_navigation_configuration(erp_instance) {
                 // group_config_obj.items.push(axis_ledger_item_config);
                 continue;
             }
+            if(item_key === 'dashboards'){
+                let actual_module = erp.modules[item_key];
+                added_main_modules_map[actual_module.id] = true;
+                // group_config_obj.items.push(icici_ledger_item_config);
+                // group_config_obj.items.push(axis_ledger_item_config);
+                continue;
+            }
 
             // if(item_key === 'providerTransactions'){
             //     group_config_obj.items.push(provider_dashboard_item_config);
@@ -208,6 +215,9 @@ export async function generate_main_navigation_configuration(erp_instance) {
             // }
 
             let actual_module = erp.modules[item_key];
+            if(!actual_module){
+                continue;
+            }
             let item_config_obj = {
                 "icon": "ChartPieSolid",
                 "id": actual_module.id,

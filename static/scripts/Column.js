@@ -1475,7 +1475,7 @@ Column.prototype = {
                         if(finalValue){
                             var dataRow = {};
                             dataRow[self.typeSpecific.dataSource.columnId] = value;
-                            var url = self.erp.modules[self.typeSpecific.dataSource.moduleId]
+                            var url = self.erp.allModules[self.typeSpecific.dataSource.moduleId]
                                 .subModules[self.typeSpecific.dataSource.subModuleId]
                                 .columnManager.columns[self.typeSpecific.dataSource.columnId]
                                 .getImageColumnPublicURL(value.text, value.value);
@@ -2351,7 +2351,7 @@ Column.prototype = {
     quickAdd: function(searchValue, parentColumnElement, formData){
         var self = this;
         var dataSource = self.typeSpecific.dataSource;
-        var targetSubModule = self.erp.modules[dataSource.moduleId]
+        var targetSubModule = self.erp.allModules[dataSource.moduleId]
             .subModules[dataSource.subModuleId];
         var targetColumn = targetSubModule.columnManager.columns[dataSource.columnId];
         var customCreateModeValues = {};
@@ -2371,7 +2371,7 @@ Column.prototype = {
 
                 if(parentColumn.type == Column.COLUMN_TYPES.LOOKUP_DROPDOWNLIST){
                     var parentColumnDataSource = parentColumn.typeSpecific.dataSource;
-                    var parentColumnDataSourceSubModule = self.erp.modules[parentColumnDataSource.moduleId]
+                    var parentColumnDataSourceSubModule = self.erp.allModules[parentColumnDataSource.moduleId]
                         .subModules[parentColumnDataSource.subModuleId];
                     var parentColumnDataSourceOriginalColumn = parentColumnDataSourceSubModule
                         .columns[parentColumnDataSource.columnId];
@@ -2396,7 +2396,7 @@ Column.prototype = {
 
 
                     //var currentColumnDataSource = parentColumn.typeSpecific.dataSource;
-                    //var currentColumnDataSourceOriginalColumn = self.erp.modules[currentColumnDataSource.moduleId]
+                    //var currentColumnDataSourceOriginalColumn = self.erp.allModules[currentColumnDataSource.moduleId]
                     //    .subModules[currentColumnDataSource.subModuleId]
                     //    .columns[currentColumnDataSource.columnId];
                     //
@@ -2448,7 +2448,7 @@ Column.prototype = {
     simpleDataTableRowQuickAdd: function(searchValue, parentColumnElement, formData, simpleDataTableRow, isChosen){
         var self = this;
         var dataSource = self.typeSpecific.dataSource;
-        var targetSubModule = self.erp.modules[dataSource.moduleId]
+        var targetSubModule = self.erp.allModules[dataSource.moduleId]
             .subModules[dataSource.subModuleId];
         var targetColumn = targetSubModule.columnManager.columns[dataSource.columnId];
         var customCreateModeValues = {};
@@ -2469,7 +2469,7 @@ Column.prototype = {
 
                 if(parentColumn.type == Column.COLUMN_TYPES.LOOKUP_DROPDOWNLIST){
                     var parentColumnDataSource = parentColumn.typeSpecific.dataSource;
-                    var parentColumnDataSourceSubModule = self.erp.modules[parentColumnDataSource.moduleId]
+                    var parentColumnDataSourceSubModule = self.erp.allModules[parentColumnDataSource.moduleId]
                         .subModules[parentColumnDataSource.subModuleId];
                     var parentColumnDataSourceOriginalColumn = parentColumnDataSourceSubModule
                         .columns[parentColumnDataSource.columnId];
@@ -2494,7 +2494,7 @@ Column.prototype = {
 
 
                     //var currentColumnDataSource = parentColumn.typeSpecific.dataSource;
-                    //var currentColumnDataSourceOriginalColumn = self.erp.modules[currentColumnDataSource.moduleId]
+                    //var currentColumnDataSourceOriginalColumn = self.erp.allModules[currentColumnDataSource.moduleId]
                     //    .subModules[currentColumnDataSource.subModuleId]
                     //    .columns[currentColumnDataSource.columnId];
                     //
@@ -3022,7 +3022,7 @@ Column.prototype = {
                 .data('id', column.id);
             setTimeout(function(){
                 var dataSource = column.typeSpecific.dataSource;
-                var targetSubModule = column.erp.modules[dataSource.moduleId].subModules[dataSource.subModuleId];
+                var targetSubModule = column.erp.allModules[dataSource.moduleId].subModules[dataSource.subModuleId];
                 var config = {columns: {}};
                 targetSubModule.forEachColumn(function(column){
                     config.columns[column.id] = column;
@@ -3518,9 +3518,9 @@ Column.prototype = {
         createLookUpLabel: function(column, type){
             var element;
             var isImage = false;
-            console.log(column.subModule.erp.modules[column.typeSpecific.dataSource.moduleId]
+            console.log(column.subModule.erp.allModules[column.typeSpecific.dataSource.moduleId]
                 .subModules[column.typeSpecific.dataSource.subModuleId].columnManager.columns[column.typeSpecific.dataSource.columnId])
-            if( column.subModule.erp.modules[column.typeSpecific.dataSource.moduleId]
+            if( column.subModule.erp.allModules[column.typeSpecific.dataSource.moduleId]
                 .subModules[column.typeSpecific.dataSource.subModuleId].columnManager.columns[column.typeSpecific.dataSource.columnId]){
             }
             if(isImage){
@@ -3860,7 +3860,7 @@ Column.prototype = {
         if(!self.typeSpecific.dataSource){
             return;
         }
-        var targetModule = self.erp.modules[self.typeSpecific.dataSource.moduleId];
+        var targetModule = self.erp.allModules[self.typeSpecific.dataSource.moduleId];
         if(!targetModule){
             return;
         }
@@ -4451,7 +4451,7 @@ Column.prototype = {
                         if(value){
                             var dataRow = {};
                             dataRow[self.typeSpecific.dataSource.columnId] = { value: value.value};
-                            var url = self.erp.modules[self.typeSpecific.dataSource.moduleId]
+                            var url = self.erp.allModules[self.typeSpecific.dataSource.moduleId]
                                 .subModules[self.typeSpecific.dataSource.subModuleId]
                                 .columnManager.columns[self.typeSpecific.dataSource.columnId]
                                 .getImageColumnPublicURL(value);
@@ -4683,7 +4683,7 @@ Column.prototype = {
         if(!currentParentCondition){
             return self;
         }
-        var column = self.erp.modules[currentParentCondition.moduleId].subModules[currentParentCondition.subModuleId].columnManager.columns[currentParentCondition.columnId];
+        var column = self.erp.allModules[currentParentCondition.moduleId].subModules[currentParentCondition.subModuleId].columnManager.columns[currentParentCondition.columnId];
         var element = column.getFormViewElement(simpleDataTableRow.mode);
         element.on('change.'+ simpleDataTableRow.id, function(){
             eventHandler && eventHandler();
@@ -4696,7 +4696,7 @@ Column.prototype = {
     unBindSimpleDataTableRowGetDataFromParentEvents: function(simpleDataTableRow, eventHandler){
         var self = this;
         var currentParentCondition = self.getCurrentSimpleDataTableRowGetDataFromParentCondition(simpleDataTableRow);
-        var column = self.erp.modules[currentParentCondition.moduleId].subModules[currentParentCondition.subModuleId].columnManager.columns[currentParentCondition.columnId];
+        var column = self.erp.allModules[currentParentCondition.moduleId].subModules[currentParentCondition.subModuleId].columnManager.columns[currentParentCondition.columnId];
         var element = column.getFormViewElement(simpleDataTableRow.mode);
         element.off('change.'+ simpleDataTableRow.id);
         return self;

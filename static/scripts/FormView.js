@@ -1962,6 +1962,12 @@ FormView.prototype = {
             var self = this;
 
             var formData = formView.getFormDataWithParsedValues();
+            formData.__context = {
+                form_view: formView,
+                parent_data_row : formView.subModule.parentDataRow,
+                parent_child_window : formView.subModule.parentChildWindow,
+                parent_submodule : formView.subModule.parentSubModule,
+            }
             var childColumn = options.childColumn;
             if(formView.mode === FormView.CREATE_MODE){
                 if(childColumn.calculatedValueFunctions && childColumn.calculatedValueFunctions.create){
@@ -3373,7 +3379,19 @@ FormView.prototype = {
     },
     setZIndex: function(zIndex){
         var self = this;
-        self.container.css({zIndex: zIndex || ''});
+        // self.container.css({zIndex: zIndex || ''});
+        if(!zIndex){
+            // self.container.css({zIndex: ''});
+        }
+        else{
+            if(zIndex > 99999){
+                zIndex = 9999;
+            }
+            window.global_formview_z_index = window.global_formview_z_index || 1000001;
+            window.global_formview_z_index++;
+            console.trace();
+            self.container.css({zIndex: window.global_formview_z_index || ''});
+        }
         return self;
     },
     enableDisableHeaderButtons: function(){
