@@ -861,14 +861,21 @@ export class ERP{
             }
         }
 
-        if(defaultModule){
-            self.defaultModule = self.modules[defaultModule];
+        if(defaultModule.startsWith('d_')){
+            self.defaultDashboard = self.dashboards[defaultModule];
         }
         else{
-            if(self.modules){
-                self.defaultModule = self.modules[Object.keys(self.modules)[0]];
+            if(defaultModule){
+                self.defaultModule = self.modules[defaultModule];
+            }
+            else{
+                if(self.modules){
+                    self.defaultModule = self.modules[Object.keys(self.modules)[0]];
+                }
             }
         }
+
+
         return self;
     }
     initializeDeviceType(){
