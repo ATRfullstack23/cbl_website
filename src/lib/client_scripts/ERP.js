@@ -520,6 +520,47 @@ export class ERP{
         self.dashboards_arr = [];
         self.dashboards = {};
 
+        if(self.deviceType != ERP.DEVICE_TYPES.MOBILE){
+            self.dashboard_context_menu = new ContextMenu({
+                targetContainer: $(document.body),
+                targetAreas: [
+                    {
+                        selector: ".single_dashboard_report_item",
+                        getOptions: function(actualElement, contextMenu, targetElement){
+                            var options = {};
+                            var option = {};
+                            option.displayName = 'Edit';
+                            option.id = 'edit_single_dashboard_report_item';
+                            option.onClick = function(){
+                                let dashboard_id = actualElement.closest('.single_dashboard_container').attr('data-dashboard_id');
+                                let dashboard_item_id = actualElement.attr('data-dashboard_item_id');
+                                console.log('edit_single_dashboard_report_item', dashboard_id, dashboard_item_id)
+                                self.dashboards[dashboard_id].show_edit_dashboard_item_popup(dashboard_item_id);
+                            }
+                            options[option.id] = option;
+                            return options;
+                        }
+                    },
+                    {
+                        selector: ".single_dashboard_container",
+                        getOptions: function(actualElement, contextMenu, targetElement){
+                            var options = {};
+                            var option = {};
+                            option.displayName = 'Add Dashboard Item';
+                            option.id = 'add_single_dashboard_item';
+                            option.onClick = function(){
+                                let dashboard_id = actualElement.attr('data-dashboard_id');
+                                console.log('add_single_dashboard_item', dashboard_id)
+                                self.dashboards[dashboard_id].show_add_new_dashboard_item_popup();
+                            }
+                            options[option.id] = option;
+                            return options;
+                        }
+                    },
+                ]
+            }, self);
+        }
+
 
         // config.container = self.elements.dashboardContainer;
         // self.dashboardManager = new DashboardManager(config, self);

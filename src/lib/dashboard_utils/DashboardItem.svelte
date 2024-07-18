@@ -8,6 +8,7 @@
 
     export let dashboard_item_config;
     let config = dashboard_item_config.config;
+    let dashboard_item_id = dashboard_item_config.id;
     const dispatch_event = createEventDispatcher();
 
 
@@ -32,7 +33,9 @@
 
 </script>
 
-<div class="single_dashboard_report_item" class:with_action_button={!!config.primary_action_button} style="width:{config.width};min-height:{config.height}px;">
+<div class="single_dashboard_report_item"
+     data-dashboard_item_id="{dashboard_item_id}"
+     class:with_action_button={!!config.primary_action_button} style="width:{config.width};min-height:{config.height}px;">
     {#if config.report_item_type == "card"}
         <CardReport bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" item={config}/>
     {:else if config.report_item_type == "chart"}

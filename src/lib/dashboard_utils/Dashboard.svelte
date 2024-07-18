@@ -95,10 +95,20 @@
         await window.erp.handle_action_button_click_of_dashboard_item(dashboard_id, report_item_instances[single_report_item_id], evt_info);
     }
 
+    export function show_add_new_dashboard_item_popup() {
+        show_add_new_popup = true;
+    }
+
+    export function show_edit_dashboard_item_popup(dashboard_item_id) {
+        console.log('show_edit_dashboard_item_popup', dashboard_item_id);
+    }
+
 
 </script>
 
-<div class="chart_container single_dashboard_container"  class:hidden={is_hidden}>
+<div class="chart_container single_dashboard_container"
+     data-dashboard_id="{dashboard_id}"
+     class:hidden={is_hidden}>
     <div class="add_new_dashboard">
 <!--        style="display: none;"-->
         <button on:click={() => show_add_new_popup = true}>Add New Dashboard</button>
