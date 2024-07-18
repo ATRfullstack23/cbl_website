@@ -210,25 +210,28 @@
 
 <style>
   :global(
+      header.light_theme,
       header.dark_theme,
-      .dark_theme :is(.selected_main_navigation_display_name, .grid)
+      :is(.dark_theme, .light_theme) :is(
+          .selected_main_navigation_display_name,
+          .grid
+        )
     ) {
     background-color: var(--dark_theme_bg_color) !important;
     color: var(--dark_theme_color) !important;
   }
-  :global(
-      header.light_theme,
+
+  /* :global(
       .light_theme :is(.selected_main_navigation_display_name, .grid)
     ) {
     background-color: var(--white_theme_bg_color) !important;
     color: var(--white_theme_color) !important;
-  }
+  } */
 
-
-  :global(button){
+  :global(button) {
     border-radius: 4px;
   }
-  :global(.dark_theme :is(div.main_navigation_container)) {
+  :global(.dark_theme :is(div.main_navigation_container, .navigation_header)) {
     background-color: var(--dark_theme_bg_color);
     color: var(--dark_theme_color);
   }
@@ -237,35 +240,42 @@
     color: var(--white_theme_color);
   }
 
-  :global(:is(.dark_theme) :is(.formview-container, .erp_content__container) :is(button)) {
+  :global(
+      :is(.dark_theme)
+        :is(.formview-container, .erp_content__container)
+        :is(button)
+    ) {
     /* background-color: #408dfb !important;
     border-color: #408dfb !important; */
     background-color: var(--dark_theme_bg_color);
     color: var(--dark_theme_color);
   }
 
-  :global(:is(.light_theme) :is(.formview-container, .erp_content__container) :is(button)) {
+  :global(
+      :is(.light_theme)
+        :is(.formview-container, .erp_content__container)
+        :is(button)
+    ) {
     /* background-color: #408dfb !important;
     border-color: #408dfb !important; */
     background-color: var(--light_theme_btn_bg_color);
     color: #fff;
     background-image: none;
-    padding: .5rem .6rem;
+    padding: 0.5rem 0.6rem;
   }
-
-
 
   header {
     display: flex;
     flex-direction: row;
     justify-content: end;
-    /*align-items: center;*/
+  /*align-items: center;*/
     /* color: #fff; */
-    font-size: 28px;
+  font-size: 28px;
     text-transform: uppercase;
     /* background: white; */
-    /*padding: 0 20px;*/
-    padding-bottom: 6px;
+  /*/padding: 0 20px;/*/
+  padding-bottom: 6px;
+    height:62px;
   }
   header nav {
     background-color: transparent;

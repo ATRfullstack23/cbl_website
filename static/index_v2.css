@@ -386,3 +386,8 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
 @supports (font-variation-settings: normal) {
     :root { font-family: InterVariable, sans-serif; }
 }
+
+
+i.fa.fa-close {
+    font-family: 'Font Awesome 6 Free' !important;
+}

@@ -16,7 +16,7 @@
 
 <div class="item_container" style="background-color:{report_data.backgroundColor}; color:{report_data.color};">
     <p>{item.title}</p>
-    <h5>{report_data.value} <span>{report_data.sub_note}</span></h5>
+    <h5>{report_data.value} <span>{report_data.sub_note || ''}</span></h5>
 </div>
 
 <style>

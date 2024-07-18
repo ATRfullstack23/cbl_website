@@ -116,10 +116,12 @@
         padding-right: 1.5rem;
 
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: flex-start;
         gap: 1rem;
         flex-direction: column;
+        max-height: 95%;
+        overflow-y:auto;
     }
 
 </style>

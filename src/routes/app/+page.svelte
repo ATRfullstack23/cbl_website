@@ -204,6 +204,12 @@ data-sveltekit-preload-data="off">
 
 <style>
 
+    .navigation_header {
+        height: 62px;
+        line-height: 54px;
+        background-color: var(--dark_theme_bg_color);
+        color: var(--dark_theme_color);
+    }
 
     .main{
         display: block;
@@ -218,7 +224,7 @@ data-sveltekit-preload-data="off">
         left: 0;
         top: 0;
         bottom: 0;
-        overflow-y: auto;
+        /*overflow-y: auto;*/
     }
 
     .navigation_header{
