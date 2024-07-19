@@ -126,7 +126,7 @@
             {/each}
         </div>
 
-        <div class="dashboard_report_items">
+        <!-- <div class="dashboard_report_items"> -->
 
             {#each report_items as single_report_item_config}
                 <DashboardItem dashboard_id="{dashboard_id}"
@@ -135,7 +135,7 @@
                                dashboard_item_config="{single_report_item_config}"/>
             {/each}
 
-        </div>
+        <!-- </div> -->
 
 
     {/if}
@@ -179,10 +179,20 @@
         padding-right: 5px;
     }
 
-    .dashboard_report_items{
+    /* .dashboard_report_items{
         padding: 20px;
         display: flex;
         flex-wrap: wrap;
         gap: 30px;
+    } */
+
+    .chart_container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        background-color: #f9fafb;
+        padding: 10px;
     }
 </style>

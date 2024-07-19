@@ -35,7 +35,7 @@
 
 <div class="single_dashboard_report_item"
      data-dashboard_item_id="{dashboard_item_id}"
-     class:with_action_button={!!config.primary_action_button} style="width:{config.width};min-height:{config.height}px;">
+     class:with_action_button={!!config.primary_action_button}>  <!-- style="width:{config.width};min-height:{config.height}px;" -->
     {#if config.report_item_type == "card"}
         <CardReport bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" item={config}/>
     {:else if config.report_item_type == "chart"}
@@ -56,13 +56,14 @@
 
 <style>
     .single_dashboard_report_item{
-        background-color: #fff;
+        /* width: 100%; */
+        /* background-color: #fff;
         border-radius: 15px;
         border: 1px solid #2623383b;
         display: flex;
         justify-content: center;
         align-items: center;
-        position: relative;
+        position: relative; */
     }
     .single_dashboard_report_item.with_action_button {
         padding-bottom: 30px;

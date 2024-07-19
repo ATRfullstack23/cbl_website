@@ -9,6 +9,7 @@
 
     async function create_item_reports() {
         console.log('report_data', report_data)
+        console.log(item);
         // item.chart_type = 'pie';
         // report_data = {
         //     "labels":["US","UK","EU"],
@@ -53,16 +54,16 @@
 
 </script>
 
-<div class="inner" bind:this={container_element}>
+<div class="inner" bind:this={container_element} style="width:350px;">    <!-- height={item.height}px; -->
     <div class="header">
         <p>{report_data?.chart_title_value || ''}</p>
         <p>{item.title}</p>
     </div>
-    <canvas width="{canvas_initial_width_to_use}" height={item.height} bind:this={item.canvas_element_instance}/>
+    <canvas width="500" bind:this={item.canvas_element_instance}/>
 </div>
 
 <style>
-    .inner{
+    /* .inner{
         display: block;
         width: 90%;
         padding: 8px;
@@ -77,5 +78,24 @@
     .inner .header p:nth-child(2){
         font-size: 15px;
         color: #6e6e6e;
+    } */
+
+    .inner{
+        background-color: #fff;
+        padding: 8px;
+        border-radius: 15px;
+
     }
+    .inner .header p{
+        margin: 0;
+        padding: 0;
+        font-size: 18px;
+        font-weight: 800;
+        color: #3f3f3f;
+    }
+    .inner .header p:nth-child(2){
+        font-size: 15px;
+        color: #6e6e6e;
+    }
+
 </style>
