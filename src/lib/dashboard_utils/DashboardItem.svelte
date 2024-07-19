@@ -18,8 +18,14 @@
 
     let latest_report_item_data;
     export async function refresh_data(latest_filter_values_map){
-        latest_report_item_data = await get_dashboard_report_item_data_from_server(dashboard_item_config, latest_filter_values_map);
-        await report_item_instance.on_new_data_received(latest_report_item_data);
+        try{
+            latest_report_item_data = await get_dashboard_report_item_data_from_server(dashboard_item_config, latest_filter_values_map);
+            await report_item_instance.on_new_data_received(latest_report_item_data);
+        }
+        catch(erer){
+            console.log('refresh_data erer', erer)
+        }
+        
     }
 
     export async function handle_primacy_action_button_click(){

@@ -46,7 +46,9 @@
             create_chart_reports();
 
             tick().then(()=>{
-                refresh_data_of_all_report_items().then(()=>{});
+                refresh_data_of_all_report_items()
+                .then(()=>{})
+                .catch((eee)=>{console.log('eeeee', eee);});
                 // create_chart_reports()
             });
 

@@ -6,16 +6,20 @@
     let report_data = {};
     let module_name
 
+    console.log(item); 
+
 
     export async function on_new_data_received(new_data) {
         console.log('on_new_data_received', new_data)
         report_data = new_data;
         console.log(report_data)
-        const module_path = `./icons_lib/fa/${item.icon}.svelte`;
-        module_name = (await import(module_path)).default;
+        if(item.icon){
+            const module_path = `./icons_lib/fa/${item.icon}.svelte`;       
+            module_name = (await import(module_path)).default;  
+        }
     }
 
-
+                                                        
 </script>
 
 <div class="item_container" class:icon_present={item.icon} style="min-width:{item.width}; min-height:{item.height}px; background-color:{report_data.background_color}; color:{report_data.color};">
@@ -24,15 +28,17 @@
             <p>{item.title}</p>
             <h5>{report_data.value_1} <span>{report_data.sub_note_1 || ''}</span></h5>
         </div>
-        <div class="icons_box">
-            <span style="background-color:{report_data.icon_background_color}; color:{report_data.icon_color}"> <svelte:component this={module_name}></svelte:component> </span>
-        </div>
+        {#if item.icon}
+            <div class="icons_box">
+                <span style="background-color:{report_data.icon_background_color}; color:{report_data.icon_color}"> <svelte:component this={module_name}></svelte:component> </span>
+            </div>
+        {/if}
     </div>
-    <div class="bottom_portion">
+    <!-- <div class="bottom_portion">
         {#if report_data.value_2}
             <p>{report_data.value_2} {report_data.sub_note_2}</p>
         {/if}
-    </div>
+    </div> -->
 </div>
 
 <style>
