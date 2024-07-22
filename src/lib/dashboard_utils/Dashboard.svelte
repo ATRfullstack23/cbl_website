@@ -103,6 +103,9 @@
 
     export function show_edit_dashboard_item_popup(dashboard_item_id) {
         console.log('show_edit_dashboard_item_popup', dashboard_item_id);
+        show_add_new_popup = true;
+        let single_report_item_config = report_items.find(item => item.id == dashboard_item_id);
+        console.log('single_report_item_config', single_report_item_config);
     }
 
 
