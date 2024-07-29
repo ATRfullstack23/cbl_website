@@ -96,6 +96,11 @@
             "type":"card",
             "image": "assets/images/cardWithHeadingText.png",
             "label": "Card"
+        },
+        {
+            "type":"custom_table",
+            "image": "assets/images/cardWithHeadingText.png",
+            "label": "Custom Table"
         }
     ]
 
@@ -143,6 +148,7 @@
   let card_dashboard_config = {
     "type": "report_item",
     "report_item_type": "card",
+    "dashboard_type": "card",
     "title": "",
     "icon":"",
     "data_config": {
@@ -165,6 +171,7 @@
         dashboard_item_to_insert = {
           "type": "report_item",
           "report_item_type": "card",
+          "dashboard_type": "card",
           "title": "Credit Notes",
           "icon":"FaAd",
           "data_config": {
@@ -189,7 +196,7 @@
   }
 
 
-  let dashboard_type = 'card';
+  let dashboard_type = 'custom_table';
   let selected_module
   let selected_sub_module
   let show_data_sql_popup = false
@@ -220,15 +227,16 @@
       case 'doughnut':
           return '-- Sample doughnut chart sql'
       case 'card':
-          return '-- Sample card sql'
+          return `select total_amount as value_1,'#f5f5dc' as background_color,'#000' as color,'#fff' as icon_background_color,'#ce1331' as icon_color, 'Approved V2' as sub_note_1, '22' as value_2, 'Total Sales V2' as sub_note_2  from sales_credit_note scn where scn.credit_note_status = 'approved'`
       default:
-          return '-- Sample card sql'
+          return `select total_amount as value_1,'#f5f5dc' as background_color,'#000' as color,'#fff' as icon_background_color,'#ce1331' as icon_color, 'Approved V2' as sub_note_1, '22' as value_2, 'Total Sales V2' as sub_note_2  from sales_credit_note scn where scn.credit_note_status = 'approved'`
     }
   }
 
   async function handle_copy_sample_sql(event){
     let button_text = event.target.innerText
     try{
+      sample_sql_code = get_sample_sql_code(dashboard_type)
       await navigator.clipboard.writeText(sample_sql_code)
       event.target.innerText = 'Code Copied ✅'
       setTimeout(() => {
@@ -243,6 +251,35 @@
       }, 2000);
     }
     
+  }
+
+  function handle_store_data(){
+    console.log(window.erp.allModules)
+  }
+
+  let goto_action_module = ''
+  let goto_action_submodule = ''
+  let added_columns_array = []
+  let column_data_obj = {}
+  let show_add_column_popup = false
+  function handle_show_add_new_column_dialogue_box(){
+    show_add_column_popup = true
+  }
+  function handle_add_column(){
+    if(column_data_obj.action_type != 'null'){
+      let context_data = {
+        module_id : goto_action_module,
+        submodule_id : goto_action_submodule
+      }
+      column_data_obj.context_data = context_data
+      added_columns_array = [...added_columns_array,column_data_obj]
+      return
+    }
+
+    added_columns_array = [...added_columns_array,column_data_obj]
+  }
+  function handle_cancel_add_column(){
+    show_add_column_popup = false
   }
 
   
@@ -273,7 +310,7 @@
               <input type="text" id="dashboard_title" bind:value={dashboard_title}>  
           </div>
       </div>
-      {#if dashboard_type == "table"}
+      {#if dashboard_type == "table" || dashboard_type == "custom_table"}
         <div class="select_container">
             <div class="select_options_container">
                 <label for="dashboard_description">Description</label>
@@ -281,7 +318,7 @@
             </div>
         </div>
       {/if}
-      {#if dashboard_type != 'card' && dashboard_type != 'list' && dashboard_type != 'table'}  
+      {#if dashboard_type != 'card' && dashboard_type != 'list' && dashboard_type != 'table' && dashboard_type != 'custom_table'}  
         <div class="select_container">
             <div class="select_options_container">
                 <label for="dashboard_title_sql">Title SQL</label>
@@ -289,27 +326,29 @@
             </div>
         </div>
       {/if}
-      <div class="select_container">
-        <div class="select_options_container icons_container">
-          <label for="icon">Choose_icon</label>
-          <div class="icon_search">
-            <input type="text" id="icon" disabled={!is_icon_needed} bind:value={dashboard_icon} placeholder="Search Icon" on:input={handle_icon_search}>
-            <span class="icon_decision"><input type="checkbox" name="" id="icon_decision" bind:checked={is_icon_needed}> <label for="icon_decision">Uncheck if you dont want icon</label></span>
-            {#if show_icon_suggestions}
-              <div class="search_results">
-                  {#each temp_imported_icons as module_icons,index}
-                  <div class="individual_icons" on:click={()=>handle_select_icon(module_icons)}>
-                    <span style="display: inline-block; width: 25px;">
-                      <svelte:component this={module_icons} />
-                    </span>
-                    <p>{module_icons.name.match(/<(.*?)>/)[1]}</p>
-                  </div>
-                  {/each}
-              </div>
-            {/if}
+      {#if dashboard_type !='custom_table'}
+        <div class="select_container">
+          <div class="select_options_container icons_container">
+            <label for="icon">Choose_icon</label>
+            <div class="icon_search">
+              <input type="text" id="icon" disabled={!is_icon_needed} bind:value={dashboard_icon} placeholder="Search Icon" on:input={handle_icon_search}>
+              <span class="icon_decision"><input type="checkbox" name="" id="icon_decision" bind:checked={is_icon_needed}> <label for="icon_decision">Uncheck if you dont want icon</label></span>
+              {#if show_icon_suggestions}
+                <div class="search_results">
+                    {#each temp_imported_icons as module_icons,index}
+                    <div class="individual_icons" on:click={()=>handle_select_icon(module_icons)}>
+                      <span style="display: inline-block; width: 25px;">
+                        <svelte:component this={module_icons} />
+                      </span>
+                      <p>{module_icons.name.match(/<(.*?)>/)[1]}</p>
+                    </div>
+                    {/each}
+                </div>
+              {/if}
+            </div>
           </div>
         </div>
-      </div>
+      {/if}
       <div class="select_container">
         <div class="select_options_container">
             <label for="dashboard_width">Width (in %)</label>
@@ -322,6 +361,31 @@
             <input type="text" id="dashboard_height" bind:value={dashboard_height}/>
         </div>
       </div>
+      {#if dashboard_type == 'custom_table'}
+        <div class="custom_table_container_outer">
+          <div class="custom_table_container">
+              <label for="dashboard_height">Add Columns</label>
+              <button class="custom_table_button" on:click={handle_show_add_new_column_dialogue_box}>Add </button>
+          </div>
+          <div class="" style="min-height: 150px;" >
+            {#if added_columns_array.length}
+              <div class="added_columns_container">
+                {#each added_columns_array as added_column}
+                  <div class="added_column">
+                    <p>{added_column.display_name}</p>
+                    <button>Delete</button>
+                  </div>
+                {/each}
+              </div>
+            {:else}
+              <div class="no_items">
+                <p>No column added</p>
+              </div>
+            {/if}
+          </div>
+        
+        </div>
+      {/if}
       <div class="select_container">
         <div class="select_options_container">
             <label for="dashboard_data_sqll">Dashboard Data SQL</label>
@@ -361,6 +425,71 @@
     <SqlEditorPopup bind:dashboard_data_sql on:close_popup={handle_close_data_sql_editor} on:get_sql={handle_get_data_sql}/>
   {/if}
 </div>
+{#if show_add_column_popup}
+  <div class="add_new_column_popup">
+    <div class="add_new_column_container">
+      <div class="header_container">
+        <h1>Add New Column</h1>
+      </div>
+      <div class="input_elements_container">
+          <div class="single_input_container">
+              <label for="display_name">Display Name</label>
+              <input type="text" id="display_name" bind:value={column_data_obj.display_name}>
+          </div>
+          <div class="single_input_container">
+              <label for="column_id">ID</label>
+              <input type="text" id="column_id" bind:value={column_data_obj.id_value_column}>
+          </div>
+          <div class="single_input_container">
+              <label for="column_display_text">Display_text</label>
+              <input type="text" id="column_display_text" bind:value={column_data_obj.display_text_column}>
+          </div>
+          <div class="single_input_container">
+            <label for="item_display_type">Item Display Type</label>
+              <select name="" id="item_display_type" bind:value={column_data_obj.display_data_type}>
+                <option value="null">Text</option>
+                <option value="goto_module">Decimal</option>
+              </select>
+          </div>
+          <div class="single_input_container">
+            <label for="action_type">Action Type</label>
+              <select name="" id="action_type" bind:value={column_data_obj.action_type}>
+                <option value="null">No Action</option>
+                <option value="goto_module">Goto Module</option>
+              </select>
+          </div>
+          <div class="select_container action_button_container">
+            <div class="select_options_container" style="width: 80%;margin:0 auto; justify-content: center;">
+                <label for="dashboard_action_button">Action Destination</label>
+                <div class="selection_blocks" style="min-width: 60%;">
+                  <div class="single_block">
+                    <h3>Module</h3>
+                    <select name="" id="" bind:value={goto_action_module} style="min-width: 150px;">
+                      {#each config_json.modules as module}
+                        <option value="{module.id}">{module.title}</option>  
+                      {/each}
+                    </select>
+                  </div>
+                  <div class="single_block">
+                    <h3>Sub Module</h3>
+                    <select name="" id="" bind:value={goto_action_submodule} style="min-width: 150px;">
+                      {#each config_json.submodules.filter(item=>item.module == goto_action_module) as sub_module}
+                        <option value="{sub_module.id}">{sub_module.title}</option>  
+                      {/each}
+                    </select>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="add_new_column_button_container">
+            <button class="add_column_button" on:click={handle_add_column}>Add Column</button>
+            <button class="cancel_button" on:click={handle_cancel_add_column}>Cancel</button>
+          </div>
+      </div>
+    </div>
+    
+  </div>
+{/if}
 
 <style>
 .popup_overlay {
@@ -533,4 +662,61 @@ input:disabled{
   transform: scale(1.02) translateY(-0.6px);
   color: #1d4ed8;
 }
+
+.custom_table_container{
+  border-bottom: 1px solid #ded3d3;
+}
+.custom_table_container button{
+  width: 85px;
+  padding: 3px;
+  margin-left: 20px;
+  border-radius: 10px;
+  font-size: 12px;
+  background-color: rgb(120, 187, 53);
+  margin-top: 12px;
+}
+.custom_table_container button:hover{
+  background-color: rgb(101, 161, 41);
+}
+.no_items{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  font-size: 20px;
+  color: #6c757d
+}
+.add_new_column_popup{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  inset: 0;
+  background-color: #0000007a;
+  z-index: 9999;
+}
+.add_new_column_container{
+  width: 50%;
+  margin:auto;
+  height: 700px;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+.add_new_column_container .header_container h1{
+  font-size: 28px;
+  text-align: center;
+  padding-block: 15px;
+}
+.single_input_container{
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 </style>

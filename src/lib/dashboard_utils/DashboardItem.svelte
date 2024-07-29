@@ -3,6 +3,7 @@
     import ChartReport from "./ChartReport.svelte";
     import ListReport from "./ListReport.svelte";
     import TableReport from "./TableReport.svelte";
+    import CustomTable from "./CustomTable.svelte";
     import {get_dashboard_report_item_data_from_server} from "$lib/dashboard_utils/DashboardHelper.js";
     import {createEventDispatcher, getContext} from "svelte";
 
@@ -50,6 +51,8 @@
         <ListReport bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" list={config}/>
     {:else if config.report_item_type == "table"}
         <TableReport bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" table={config}/>
+    {:else if config.report_item_type == "custom_table"}
+        <CustomTable bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" item={config}/>
     {/if}
 
     {#if config.primary_action_button}

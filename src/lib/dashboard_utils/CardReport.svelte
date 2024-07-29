@@ -22,11 +22,11 @@
                                                         
 </script>
 
-<div class="item_container" class:icon_present={item.icon} style="min-width:{item.width}; min-height:{item.height}px; background-color:{report_data.background_color}; color:{report_data.color};">
+<div class="item_container" class:icon_present={item.icon} style="min-width:{item.width}px; min-height:{item.height}px; background-color:{report_data.background_color}; color:{report_data.color};">
     <div class="top_portion" class:icon_present={item.icon}>
         <div class="card_main_contents">
-            <p>{item.title}</p>
-            <h5>{report_data.value_1} <span>{report_data.sub_note_1 || ''}</span></h5>
+            <p style="color: {report_data.color};">{item.title}</p>
+            <h5 style="color: {report_data.color};">{report_data.value_1} <span>{report_data.sub_note_1 || ''}</span></h5>
         </div>
         {#if item.icon}
             <div class="icons_box">
@@ -34,11 +34,11 @@
             </div>
         {/if}
     </div>
-    <!-- <div class="bottom_portion">
+    <div class="bottom_portion">
         {#if report_data.value_2}
-            <p>{report_data.value_2} {report_data.sub_note_2}</p>
+            <p style="color: {report_data.color};">{report_data.value_2} {report_data.sub_note_2}</p>
         {/if}
-    </div> -->
+    </div>
 </div>
 
 <style>
@@ -52,6 +52,8 @@
         align-items: center;
         flex-direction: column ;
         cursor: pointer;
+        background-color: beige; 
+        
     }
     .item_container.icon_present{
         align-items: flex-start;

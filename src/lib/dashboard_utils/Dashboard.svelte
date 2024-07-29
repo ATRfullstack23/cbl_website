@@ -2,6 +2,7 @@
 
 <script>
     import AddNewDashboardPopup from '$lib/dashboard_utils/AddNewDashboardPopup.svelte';
+    import EditDashboardPopup from '$lib/dashboard_utils/EditDashboardPopup.svelte';
     import Chart from 'chart.js/auto'
     import {onMount, setContext, tick} from 'svelte'
     // import chart_data from '$lib/dashboard_utils/chart_data.json'
@@ -100,11 +101,12 @@
     export function show_add_new_dashboard_item_popup() {
         show_add_new_popup = true;
     }
-
+    let single_report_item_config = {};
+    let show_edit_item_popup = false
     export function show_edit_dashboard_item_popup(dashboard_item_id) {
         console.log('show_edit_dashboard_item_popup', dashboard_item_id);
-        show_add_new_popup = true;
-        let single_report_item_config = report_items.find(item => item.id == dashboard_item_id);
+        show_edit_item_popup = true;
+        single_report_item_config = report_items.find(item => item.id == dashboard_item_id);
         console.log('single_report_item_config', single_report_item_config);
     }
 
@@ -149,6 +151,9 @@
 </div>
 {#if show_add_new_popup}
     <AddNewDashboardPopup on:cancel={() => show_add_new_popup = false}/>
+{/if}
+{#if show_edit_item_popup}
+    <EditDashboardPopup dashboard_item_config={single_report_item_config} on:cancel={() => show_edit_item_popup = false}/>
 {/if}
 
 <style>
