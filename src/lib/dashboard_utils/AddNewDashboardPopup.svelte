@@ -238,7 +238,20 @@
       case 'doughnut':
           return '-- Sample doughnut chart sql'
       case 'card':
-          return `select total_amount as value_1,'#f5f5dc' as background_color,'#000' as color,'#fff' as icon_background_color,'#ce1331' as icon_color, 'Approved V2' as sub_note_1, '22' as value_2, 'Total Sales V2' as sub_note_2  from sales_credit_note scn where scn.credit_note_status = 'approved'`
+          return `
+select
+\ttotal_amount as value_1,
+\t'#f5f5dc' as background_color,
+\t'Approved V2' as sub_note_1,
+\t'22' as value_2,
+\t'Total Sales V2' as sub_note_2,
+\t'#000' as color,'#fff' as icon_background_color,
+\t'#ce1331' as icon_color
+from
+\tsales_credit_note scn
+where
+\tscn.credit_note_status = 'approved'
+          `
       default:
           return `select total_amount as value_1,'#f5f5dc' as background_color,'#000' as color,'#fff' as icon_background_color,'#ce1331' as icon_color, 'Approved V2' as sub_note_1, '22' as value_2, 'Total Sales V2' as sub_note_2  from sales_credit_note scn where scn.credit_note_status = 'approved'`
     }
