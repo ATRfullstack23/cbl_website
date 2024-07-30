@@ -32,6 +32,29 @@ export async function get_all_dashboards_of_user() {
     });
 }
 
+export async function update_dashboard_item_in_server(dashboard_row_id, dashboard_item_row_id, dashboard_item_config) {
+    // console.log('get_dashboard_report_item_data_from_server', dashboard_item_config, filter_config);
+    let api_url = window.erp.backend_root_url + `/ajax/dashboard_v2/${dashboard_row_id}/${dashboard_item_row_id}/update_dashboard_item`;
+
+    return new Promise((resolve, reject)=>{
+        jQuery.ajax({
+            type: 'POST',
+            url: api_url,
+            data: {
+                _source: JSON.stringify({config: {dashboard_item_config}})
+            }
+        }).always((responseObj, status)=>{
+            if(responseObj.error || responseObj.errorMessage){
+                reject(responseObj);
+                return;
+            }
+            resolve(responseObj.result);
+            // console.log('get_dashboard_filter_data_from_server done', status, responseObj)
+        });
+    });
+}
+
+
 export async function add_new_dashboard_item_in_server(dashboard_row_id, dashboard_item_config) {
     // console.log('get_dashboard_report_item_data_from_server', dashboard_item_config, filter_config);
     let api_url = window.erp.backend_root_url + `/ajax/dashboard_v2/${dashboard_row_id}/add_new_dashboard_item`;

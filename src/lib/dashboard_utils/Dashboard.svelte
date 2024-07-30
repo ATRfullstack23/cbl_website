@@ -150,7 +150,7 @@
 
 </div>
 {#if show_add_new_popup}
-    <AddNewDashboardPopup on:cancel={() => show_add_new_popup = false}/>
+    <AddNewDashboardPopup dashboard_id="{dashboard_id}" on:cancel={() => show_add_new_popup = false}/>
 {/if}
 {#if show_edit_item_popup}
     <EditDashboardPopup dashboard_item_config={single_report_item_config} on:cancel={() => show_edit_item_popup = false}/>
