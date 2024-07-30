@@ -4,7 +4,7 @@
     import icons from '$lib/svelte_icons/icons.json'
     import SqlEditorPopup from '$lib/editor_utils/SqlEditorPopup.svelte';
     import {
-        add_new_dashboard_item_in_server,
+        update_dashboard_item_in_server,
         get_all_dashboards_of_user
     } from "$lib/dashboard_utils/DashboardHelper.js";
     export let dashboard_item_config
@@ -158,26 +158,26 @@
   
       //   test hardcoded insert by aki
   
-        let dashboard_item_to_insert = {};
-        if(dashboard_type == "card"){
-          card_dashboard_config.title = dashboard_title
-          card_dashboard_config.icon = dashboard_icon
-          card_dashboard_config.data_config.sql = dashboard_data_sql
-          dashboard_item_to_insert = card_dashboard_config
-        }else{
-          dashboard_item_to_insert = {
-            "type": "report_item",
-            "report_item_type": "card",
-            "title": "Credit Notes",
-            "icon":"FaAd",
-            "data_config": {
-                "sql": "select total_amount as value_1, 'Approved' as sub_note_1, '22' as value_2, 'Total Sales' as sub_note_2\nfrom sales_credit_note scn where scn.credit_note_status = 'approved'" },
-            "width": "25%",
-            "height": "150"
-          }
-        }
-        console.log('dashboard_item_to_insert', dashboard_item_to_insert);
-        await add_new_dashboard_item_in_server(1000003, dashboard_item_to_insert);
+        // let dashboard_item_to_insert = {};
+        // if(dashboard_type == "card"){
+        //   card_dashboard_config.title = dashboard_title
+        //   card_dashboard_config.icon = dashboard_icon
+        //   card_dashboard_config.data_config.sql = dashboard_data_sql
+        //   dashboard_item_to_insert = card_dashboard_config
+        // }else{
+        //   dashboard_item_to_insert = {
+        //     "type": "report_item",
+        //     "report_item_type": "card",
+        //     "title": "Credit Notes",
+        //     "icon":"FaAd",
+        //     "data_config": {
+        //         "sql": "select total_amount as value_1, 'Approved' as sub_note_1, '22' as value_2, 'Total Sales' as sub_note_2\nfrom sales_credit_note scn where scn.credit_note_status = 'approved'" },
+        //     "width": "25%",
+        //     "height": "150"
+        //   }
+        // }
+        console.log('dashboard_item_config', dashboard_item_config);
+        await update_dashboard_item_in_server(1000003, dashboard_item_config.id, dashboard_item_config);
   
         await get_all_dashboards_of_user();
         location.href = location.href + '';
@@ -357,7 +357,7 @@
           </div>
         </div>
         <div class="button_group">
-          <button on:click={handle_confirm}>Add Dashboard</button>
+          <button on:click={handle_confirm}>Update Item</button>
           <button class="cancel" on:click={handle_cancel}>Cancel</button>
         </div>
     </div>
