@@ -8,6 +8,8 @@
       add_new_dashboard_item_in_server,
       get_all_dashboards_of_user
   } from "$lib/dashboard_utils/DashboardHelper.js";
+  export let dashboard_id;
+
   let dashboard_height = '200'
   let dashboard_width = '40'
   let dashboard_title = ''
@@ -190,7 +192,7 @@
         dashboard_item_to_insert.table_column_data = added_columns_array
       }
       console.log('dashboard_item_to_insert', dashboard_item_to_insert);
-      await add_new_dashboard_item_in_server(1000003, dashboard_item_to_insert);
+      await add_new_dashboard_item_in_server(dashboard_id, dashboard_item_to_insert);
 
       await get_all_dashboards_of_user();
       location.href = location.href + '';
