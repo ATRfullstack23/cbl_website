@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+  import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte'
   import icons from '$lib/svelte_icons/icons.json'
   import SqlEditorPopup from '$lib/editor_utils/SqlEditorPopup.svelte';
   import {
@@ -166,19 +167,27 @@
         card_dashboard_config.title = dashboard_title
         card_dashboard_config.icon = dashboard_icon
         card_dashboard_config.data_config.sql = dashboard_data_sql
+        card_dashboard_config.height = dashboard_height
+        card_dashboard_config.width = dashboard_width
         dashboard_item_to_insert = card_dashboard_config
-      }else{
+      }else if(dashboard_type == "custom_table"){
         dashboard_item_to_insert = {
           "type": "report_item",
-          "report_item_type": "card",
-          "dashboard_type": "card",
+          "report_item_type": "custom_table",
+          "dashboard_type": "custom_table",
           "title": "Credit Notes",
-          "icon":"FaAd",
+          "description": "",
           "data_config": {
-              "sql": "select total_amount as value_1, 'Approved' as sub_note_1, '22' as value_2, 'Total Sales' as sub_note_2\nfrom sales_credit_note scn where scn.credit_note_status = 'approved'" },
+              "sql": "" },
           "width": "25%",
           "height": "150"
         }
+        dashboard_item_to_insert.title = dashboard_title
+        dashboard_item_to_insert.description = dashboard_description
+        dashboard_item_to_insert.data_config.sql = dashboard_data_sql
+        dashboard_item_to_insert.height = dashboard_height
+        dashboard_item_to_insert.width = dashboard_width
+        dashboard_item_to_insert.table_column_data = added_columns_array
       }
       console.log('dashboard_item_to_insert', dashboard_item_to_insert);
       await add_new_dashboard_item_in_server(1000003, dashboard_item_to_insert);
@@ -196,7 +205,7 @@
   }
 
 
-  let dashboard_type = 'custom_table';
+  let dashboard_type = 'card';
   let selected_module
   let selected_sub_module
   let show_data_sql_popup = false
@@ -224,6 +233,8 @@
           return '-- Sample table sql'
       case 'list':
           return '-- Sample list sql'
+      case 'custom_table':
+          return `select customer_profile_id, ( select customer_name from customer_profile cp where cp.id = i.customer_profile_id) as customer_name, id as invoice_id, invoice_number, total_amount from invoice i`
       case 'doughnut':
           return '-- Sample doughnut chart sql'
       case 'card':
@@ -273,10 +284,14 @@
       }
       column_data_obj.context_data = context_data
       added_columns_array = [...added_columns_array,column_data_obj]
+      column_data_obj = {}
+      show_add_column_popup = false
       return
     }
 
     added_columns_array = [...added_columns_array,column_data_obj]
+    column_data_obj = {}
+    show_add_column_popup = false
   }
   function handle_cancel_add_column(){
     show_add_column_popup = false
@@ -351,7 +366,7 @@
       {/if}
       <div class="select_container">
         <div class="select_options_container">
-            <label for="dashboard_width">Width (in %)</label>
+            <label for="dashboard_width">Width (in px)</label>
             <input type="text" id="dashboard_width" bind:value={dashboard_width}>
         </div>
       </div>
@@ -373,7 +388,11 @@
                 {#each added_columns_array as added_column}
                   <div class="added_column">
                     <p>{added_column.display_name}</p>
-                    <button>Delete</button>
+                    <button>
+                      <span style="width: 12px;display:inline-block;">
+                        <FaTrashAlt />
+                      </span>
+                    </button>
                   </div>
                 {/each}
               </div>
@@ -667,12 +686,12 @@ input:disabled{
   border-bottom: 1px solid #ded3d3;
 }
 .custom_table_container button{
-  width: 85px;
-  padding: 3px;
+  width: 88px;
+  padding: 5px;
   margin-left: 20px;
-  border-radius: 10px;
-  font-size: 12px;
-  background-color: rgb(120, 187, 53);
+  border-radius: 6px;
+  font-size: 13px;
+  background-color: rgb(81 131 32);
   margin-top: 12px;
 }
 .custom_table_container button:hover{
@@ -700,7 +719,7 @@ input:disabled{
 .add_new_column_container{
   width: 50%;
   margin:auto;
-  height: 700px;
+  height: 500px;
   background-color: #fff;
   border-radius: 10px;
   overflow-y: auto;
@@ -717,6 +736,38 @@ input:disabled{
   justify-content: center;
   align-items: center;
   margin-bottom: 15px;
+}
+.add_new_column_button_container{
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 25px;
+  gap: 25px;
+}
+.add_new_column_container .cancel_button{
+  background-color: #6c757d;
+}
+.added_columns_container{
+  padding-top: 20px;
+  padding-left: 15px;
+}
+.added_columns_container .added_column{
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.added_columns_container .added_column p{
+  font-size: 20px;
+  font-weight: 500;
+}
+.added_columns_container .added_column button{
+  width: 35px;
+  padding: 8px;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
+  background-color: red;
 }
 
 </style>
