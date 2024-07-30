@@ -3,12 +3,12 @@
     export let dashboard_item_config;
 
     // console.log("item report", item)
-    let report_data = {};
+    let report_data = [];
     let module_name
 
     export async function on_new_data_received(new_data) {
         console.log('on_new_data_received', new_data)
-        report_data = new_data;
+        report_data = new_data[0];
         console.log(report_data)     
         console.log(item); 
     }
