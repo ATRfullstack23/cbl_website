@@ -1,6 +1,8 @@
 <script>
     import { createEventDispatcher } from 'svelte';
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte'
+    import SqlEditorPopup from '$lib/editor_utils/SqlEditorPopup.svelte';
+
     let dispatch = createEventDispatcher();
     let fitler_types = [
         {
@@ -17,14 +19,11 @@
         }
     ]
     let choice_filter_array = [
-        {
-            display_name:"",
-            value:""
-        }
+        
     ]
     function handle_add_choice(){
         choice_filter_array = [...choice_filter_array,{
-            display_name:"",
+            text:"",
             value:""
         }]
     }
@@ -32,91 +31,129 @@
         choice_filter_array = choice_filter_array.filter((item,i) => i != index)
     }
     let selected_filter_type = 'lookup_dropdown';
+    let filter_item_data = {
+        type:"filter",
+        data_config:{
+          sql:"",
+          items:[]
+        }
+    }
+    let show_filter_item_popup = false
+    export async function show_add_new_filter_item_dialogue(data,show_add_filter_popup){
+      console.log('show_add_new_filter_item_dialogue', show_add_filter_popup);
+        show_filter_item_popup = show_add_filter_popup
+        filter_item_data = data
+        filter_item_data.filter_type = 'lookup_dropdown'
+    }
+    let show_data_sql_popup = false
+    function handle_open_data_sql_editor(){
+        show_data_sql_popup = true
+    }
+    function handle_close_data_sql_editor(){
+      show_data_sql_popup = false
+    }
+    function handle_get_data_sql(e){
+      filter_item_data.data_config.sql = e.detail
+      handle_close_data_sql_editor()
+    }
+
     
     function handle_confirm() {
+      filter_item_data.data_config.items = choice_filter_array
+      console.log('filter_item_data', filter_item_data);
       handle_cancel()
     }
 
     function handle_cancel() {
+      show_filter_item_popup = false
       dispatch('cancel');
     }
 </script>
 
-<div class="popup_overlay">
+<div class="popup_overlay" class:show={show_filter_item_popup}>
     <div class="popup_container">
-        <div class="select_outer">
-            <div class="select_container">
+      <div class="select_outer">
+        <div class="select_container">
+          <div class="select_options_container">
+            <label for="filter_type">Filter Type</label>
+            <select name="" id="filter_type" bind:value={filter_item_data.filter_type}>
+                {#each fitler_types as single_filter}
+                    <option value="{single_filter.type}">{single_filter.label}</option>
+                {/each}
+            </select> 
+          </div>
+      </div>
+      <div class="select_container">
+        <div class="select_options_container">
+          <label for="filter_type">Display Name</label>
+          <input type="text" id="filter_display_name" bind:value={filter_item_data.title}>
+        </div>
+      </div>
+      {#if filter_item_data.filter_type == 'lookup_dropdown'}
+          <div class="select_container">
               <div class="select_options_container">
-                <label for="filter_type">Display Name</label>
-                <input type="text" id="filter_display_name">
+                  <label for="data_sql">SQL Data</label>
+                  <textarea name="" id="data_sql" bind:value={filter_item_data.data_config.sql} on:click={handle_open_data_sql_editor}></textarea>
               </div>
-            </div>
-            <div class="select_container">
-                <div class="select_options_container">
-                    <label for="filter_type">Filter Type</label>
-                    <select name="" id="filter_type" bind:value={selected_filter_type}>
-                        {#each fitler_types as single_filter}
-                            <option value="{single_filter.type}">{single_filter.label}</option>
-                        {/each}
-                    </select> 
-                </div>
-            </div>
-            {#if selected_filter_type == 'lookup_dropdown'}
-                <div class="select_container">
-                    <div class="select_options_container">
-                        <label for="data_sql">SQL Data</label>
-                        <input type="text" id="data_sql">
-                    </div>
-                </div> 
-            {:else if selected_filter_type == 'date'}
-                <div class="select_container">
-                    <div class="select_options_container">
-                        <label for="filter_date">Date</label>
-                        <input type="date" id="filter_date">
-                    </div>
-                </div>
-                {:else if selected_filter_type == 'choice'} 
-                <div class="choice_container">
-                    <div class="choice_container_inner">
-                        <label for="filter_date">Choice Values</label>
-                        <div class="add_choice_button">
-                            <button on:click={handle_add_choice}><i class="fa fa-plus"></i> add</button>
-                        </div>
-                    </div>
-                    <div class="choice_array_container">
-                        {#each choice_filter_array as single_choice,index}
-                            <div class="single_choice_outer">
-                                <div class="single_choice">
-                                    <label for="">Name</label>
-                                    <input type="text" bind:value={single_choice.display_name}>
-                                </div>
-                                <div class="single_choice">
-                                    <label for="">Value</label>
-                                    <input type="text" bind:value={single_choice.value}>
-                                </div>
-                                <div class="choice_item_delete_container">
-                                    <button
-                                        on:click={() =>
-                                            handle_delete_choice(
-                                                single_choice,
-                                                index,
-                                            )}
-                                        ><span
-                                            style="width: 15px; display:inline-block;"
-                                            ><FaTrashAlt /></span
-                                        ></button>
-                                </div>
+          </div> 
+      {:else if filter_item_data.filter_type == 'date'}
+          <div class="select_container">
+              <div class="select_options_container">
+                  <label for="filter_date">Date</label>
+                  <input type="date" id="filter_date">
+              </div>
+          </div>
+          {:else if filter_item_data.filter_type == 'choice'} 
+          <div class="choice_container">
+              <div class="choice_container_inner">
+                  <label for="filter_date">Choice Values</label>
+                  <div class="add_choice_button">
+                      <button on:click={handle_add_choice}><i class="fa fa-plus"></i> add</button>
+                  </div>
+              </div>
+              <div class="choice_array_container">
+                  {#if choice_filter_array.length}
+                    {#each choice_filter_array as single_choice,index}
+                        <div class="single_choice_outer">
+                            <div class="single_choice">
+                                <label for="">Name</label>
+                                <input type="text" bind:value={single_choice.text}>
                             </div>
-                        {/each}
-                    </div>
-                </div>
-            {/if}
-        </div>
-        <div class="button_group">
-            <button on:click={handle_confirm}>Add Filter</button>
-            <button class="cancel" on:click={handle_cancel}>Cancel</button>
-        </div>
+                            <div class="single_choice">
+                                <label for="">Value</label>
+                                <input type="text" bind:value={single_choice.value}>
+                            </div>
+                            <div class="choice_item_delete_container">
+                                <button
+                                    on:click={() =>
+                                        handle_delete_choice(
+                                            single_choice,
+                                            index,
+                                        )}
+                                    ><span
+                                        style="width: 15px; display:inline-block;"
+                                        ><FaTrashAlt /></span
+                                    ></button>
+                            </div>
+                        </div>
+                    {/each}
+                    {:else}
+                      <div class="no_choices_container" style="height: 100px; display: flex; justify-content: center; align-items: center;">
+                          <p>No choices added</p>
+                      </div>
+                  {/if}
+              </div>
+          </div>
+      {/if}
     </div>
+    <div class="button_group">
+        <button on:click={handle_confirm}>Add Filter</button>
+        <button class="cancel" on:click={handle_cancel}>Cancel</button>
+    </div>
+  </div>
+  {#if show_data_sql_popup}
+    <SqlEditorPopup bind:dashboard_data_sql={filter_item_data.data_config.sql} on:close_popup={handle_close_data_sql_editor} on:get_sql={handle_get_data_sql}/>
+  {/if}
 </div>
 
 <style>
@@ -127,6 +164,9 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+  }
+  .popup_overlay.show{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -202,6 +242,7 @@
     display: flex;
     justify-content: center;
     padding-bottom: 10px;
+    align-items: center;
   }
   .single_choice_outer label{
     font-size: 13px;
@@ -212,7 +253,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 15px;
     }
 
 .choice_item_delete_container button {

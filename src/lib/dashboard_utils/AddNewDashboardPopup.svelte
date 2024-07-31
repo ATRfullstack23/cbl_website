@@ -6,6 +6,7 @@
   import SqlEditorPopup from '$lib/editor_utils/SqlEditorPopup.svelte';
   import {
       add_new_dashboard_item_in_server,
+      update_dashboard_item_in_server,
       get_all_dashboards_of_user
   } from "$lib/dashboard_utils/DashboardHelper.js";
   export let dashboard_id;
@@ -121,7 +122,7 @@
   let is_icon_needed = true
   function handle_icon_search(){
     show_icon_suggestions = true
-    if(dashboard_icon.length){
+    if(dashboard_item_data.config.icon.length){
       temp_imported_icons = imported_icons.filter(item=>item.name.toLowerCase().includes(dashboard_icon.toLowerCase()))
     }else{
       temp_imported_icons = temp_imported_icons
@@ -130,7 +131,8 @@
   }
   function handle_select_icon(icon_data){
     show_icon_suggestions = false
-    dashboard_icon = icon_data.name.match(/<(.*?)>/)[1]
+    dashboard_item_data.config.icon = icon_data.name.match(/<(.*?)>/)[1]
+    console.log("dashboard_item_data.config.icon",dashboard_item_data.config.icon);
   }
   
 
@@ -203,11 +205,12 @@
   }
 
   function handle_cancel() {
+    show_add_new_popup = false
     dispatch('cancel');
   }
 
 
-  let dashboard_type = 'card';
+  
   let selected_module
   let selected_sub_module
   let show_data_sql_popup = false
@@ -219,7 +222,7 @@
       show_data_sql_popup = false
   }
   function handle_get_data_sql(e){
-    dashboard_data_sql = e.detail
+    dashboard_item_data.config.data_config.sql = e.detail
     handle_close_data_sql_editor()
   }
 
@@ -262,7 +265,7 @@ where
   async function handle_copy_sample_sql(event){
     let button_text = event.target.innerText
     try{
-      sample_sql_code = get_sample_sql_code(dashboard_type)
+      sample_sql_code = get_sample_sql_code(dashboard_item_data.config.dashboard_type)
       await navigator.clipboard.writeText(sample_sql_code)
       event.target.innerText = 'Code Copied ✅'
       setTimeout(() => {
@@ -279,9 +282,6 @@ where
     
   }
 
-  function handle_store_data(){
-    console.log(window.erp.allModules)
-  }
 
   let goto_action_module = ''
   let goto_action_submodule = ''
@@ -311,58 +311,71 @@ where
   function handle_cancel_add_column(){
     show_add_column_popup = false
   }
+  let dashboard_item_data = {
+    config:{
+      data_config:{
+        sql:""
+      }
+    }
+  }
+  let show_add_new_popup = false
+  export async function show_add_new_dashboard_item_dialogue(data_config,show_popup){
+    dashboard_item_data = data_config
+    console.log('dashboard_item_data', dashboard_item_data);
+    dashboard_item_data.config.dashboard_type = 'card'
+    show_add_new_popup = show_popup
+    console.log('dashboard_item_data', dashboard_item_data);
+  }
 
-  
+  let dashboard_type = 'card'
   onMount(async () => {
     await import_icons();
     temp_imported_icons = imported_icons
   })
 </script>
-
-<div class="popup_overlay">
+<div class="popup_overlay" class:show_popup={show_add_new_popup}>
   <div class="popup_container">
       <div class="select_container">
           <div class="select_options_container">
             <label for="dashboard_type">Dashboard Type:</label>
-            <select id="dashboard_type" bind:value={dashboard_type} on:change={handle_change_dashboard_type}>
+            <select id="dashboard_type" bind:value={dashboard_item_data.config.dashboard_type} on:change={handle_change_dashboard_type}>
               {#each dashboard_types as layout}
                 <option value={layout.type}>{layout.label}</option>
               {/each}
             </select>
           </div>
           <div class="selected_option_image_container">
-            <img class="layout_image" src={get_image_for_dashboard_type(dashboard_type)} alt={dashboard_type} />
+            <img class="layout_image" src={get_image_for_dashboard_type(dashboard_item_data.config.dashboard_type)} alt={dashboard_item_data.config.dashboard_type} />
           </div>
       </div>
       <div class="select_container">
           <div class="select_options_container">
               <label for="dashboard_title">Dashboard Title</label>
-              <input type="text" id="dashboard_title" bind:value={dashboard_title}>  
+              <input type="text" id="dashboard_title" bind:value={dashboard_item_data.config.title}>  
           </div>
       </div>
-      {#if dashboard_type == "table" || dashboard_type == "custom_table"}
+      {#if dashboard_item_data.config.dashboard_type == "table" || dashboard_item_data.config.dashboard_type == "custom_table"}
         <div class="select_container">
             <div class="select_options_container">
                 <label for="dashboard_description">Description</label>
-                <input type="text" id="dashboard_description" bind:value={dashboard_description}> 
+                <input type="text" id="dashboard_description" bind:value={dashboard_item_data.config.description}> 
             </div>
         </div>
       {/if}
-      {#if dashboard_type != 'card' && dashboard_type != 'list' && dashboard_type != 'table' && dashboard_type != 'custom_table'}  
+      <!-- {#if dashboard_item_data.config.dashboard_type != 'card' && dashboard_item_data.config.dashboard_type != 'list' && dashboard_item_data.config.dashboard_type != 'table' && dashboard_item_data.config.dashboard_type != 'custom_table'}  
         <div class="select_container">
             <div class="select_options_container">
                 <label for="dashboard_title_sql">Title SQL</label>
                 <textarea name="" id="dashboard_title_sql" bind:value={dashboard_title_sql}></textarea>
             </div>
         </div>
-      {/if}
-      {#if dashboard_type !='custom_table'}
+      {/if} -->
+      {#if dashboard_item_data.config.dashboard_type =='card'}
         <div class="select_container">
           <div class="select_options_container icons_container">
             <label for="icon">Choose_icon</label>
             <div class="icon_search">
-              <input type="text" id="icon" disabled={!is_icon_needed} bind:value={dashboard_icon} placeholder="Search Icon" on:input={handle_icon_search}>
-              <span class="icon_decision"><input type="checkbox" name="" id="icon_decision" bind:checked={is_icon_needed}> <label for="icon_decision">Uncheck if you dont want icon</label></span>
+              <input type="text" id="icon" bind:value={dashboard_item_data.config.icon} placeholder="Search Icon" on:input={handle_icon_search}>
               {#if show_icon_suggestions}
                 <div class="search_results">
                     {#each temp_imported_icons as module_icons,index}
@@ -382,16 +395,16 @@ where
       <div class="select_container">
         <div class="select_options_container">
             <label for="dashboard_width">Width (in px)</label>
-            <input type="text" id="dashboard_width" bind:value={dashboard_width}>
+            <input type="text" id="dashboard_width" bind:value={dashboard_item_data.config.width}>
         </div>
       </div>
       <div class="select_container">
         <div class="select_options_container">
             <label for="dashboard_height">Height (in px)</label>
-            <input type="text" id="dashboard_height" bind:value={dashboard_height}/>
+            <input type="text" id="dashboard_height" bind:value={dashboard_item_data.config.height}/>
         </div>
       </div>
-      {#if dashboard_type == 'custom_table'}
+      {#if dashboard_item_data.config.dashboard_type == 'custom_table'}
         <div class="custom_table_container_outer">
           <div class="custom_table_container">
               <label for="dashboard_height">Add Columns</label>
@@ -423,7 +436,7 @@ where
       <div class="select_container">
         <div class="select_options_container">
             <label for="dashboard_data_sqll">Dashboard Data SQL</label>
-            <textarea name="" id="dashboard_data_sql" bind:value={dashboard_data_sql} on:click={handle_open_data_sql_editor}></textarea> 
+            <textarea name="" id="dashboard_data_sql" bind:value={dashboard_item_data.config.data_config.sql} on:click={handle_open_data_sql_editor}></textarea> 
             <span class="copy_sample_sql" on:click={handle_copy_sample_sql}> Copy Sample SQL</span>
         </div>
       </div>
@@ -456,9 +469,10 @@ where
       </div>
   </div>
   {#if show_data_sql_popup}
-    <SqlEditorPopup bind:dashboard_data_sql on:close_popup={handle_close_data_sql_editor} on:get_sql={handle_get_data_sql}/>
+    <SqlEditorPopup bind:dashboard_data_sql={dashboard_item_data.config.data_config.sql} on:close_popup={handle_close_data_sql_editor} on:get_sql={handle_get_data_sql}/>
   {/if}
 </div>
+
 {#if show_add_column_popup}
   <div class="add_new_column_popup">
     <div class="add_new_column_container">
@@ -533,10 +547,13 @@ where
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+.popup_overlay.show_popup {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
 }
 
 .popup_container {

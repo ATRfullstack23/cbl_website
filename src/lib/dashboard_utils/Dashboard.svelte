@@ -2,6 +2,7 @@
 
 <script>
     import AddNewDashboardPopup from '$lib/dashboard_utils/AddNewDashboardPopup.svelte';
+    import AddNewFilterPopup from '$lib/dashboard_utils/AddNewFilterPopup.svelte';
     import EditDashboardPopup from '$lib/dashboard_utils/EditDashboardPopup.svelte';
     import Chart from 'chart.js/auto'
     import {onMount, setContext, tick} from 'svelte'
@@ -14,6 +15,7 @@
     export let dashboard_id = dashboard_configuration.id;
     export let unique_id = dashboard_configuration.unique_id;
     export let display_name = dashboard_configuration.display_name;
+    let dashboard_popup_instance
 
     // let chart_data = dashboard_configuration.dashboard_items.filter(item => item.config.type !== "filter");
 
@@ -97,9 +99,16 @@
     async function handle_primacy_action_button_click(single_report_item_id, evt_info) {
         await window.erp.handle_action_button_click_of_dashboard_item(dashboard_id, report_item_instances[single_report_item_id], evt_info);
     }
-
-    export function show_add_new_dashboard_item_popup() {
+    let dashboard_item_data = {
+        config:{
+            data_config:{
+                sql:''
+            }
+        }
+    }
+    export async function show_add_new_dashboard_item_popup() {
         show_add_new_popup = true;
+        await dashboard_popup_instance.show_add_new_dashboard_item_dialogue(dashboard_item_data,show_add_new_popup);
     }
     let single_report_item_config = {};
     let show_edit_item_popup = false
@@ -108,6 +117,19 @@
         show_edit_item_popup = true;
         single_report_item_config = report_items.find(item => item.id == dashboard_item_id);
         console.log('single_report_item_config', single_report_item_config);
+    }
+    let show_filter_item_popup = false;
+    let filter_item_popup_instance
+    async function show_add_new_filter_item_popup(){
+        let filter_item_data = {
+            type:"filter",
+            data_config:{
+            sql:"",
+            items:[]
+            }
+        }
+        show_filter_item_popup = true;
+        await filter_item_popup_instance.show_add_new_filter_item_dialogue(filter_item_data,show_filter_item_popup);
     }
 
 
@@ -118,8 +140,8 @@
      class:hidden={is_hidden}>
     <div class="add_new_dashboard">
 <!--        style="display: none;"-->
-        <button on:click={() => show_add_new_popup = true}>Add New Dashboard</button>
-        <button class="filter_button"><i class="fa-solid fa-filter"></i>Add Filter</button>
+        <button on:click={() =>show_add_new_dashboard_item_popup()}>Add New Dashboard</button>
+        <button class="filter_button" on:click={() =>show_add_new_filter_item_popup()}><i class="fa-solid fa-filter"></i>Add Filter</button>
     </div>
 
     {#if shall_initialize}
@@ -149,9 +171,10 @@
 
 
 </div>
-{#if show_add_new_popup}
-    <AddNewDashboardPopup dashboard_id="{dashboard_id}" on:cancel={() => show_add_new_popup = false}/>
-{/if}
+<!-- {#if show_add_new_popup} -->
+    <AddNewDashboardPopup bind:this={dashboard_popup_instance} dashboard_id="{dashboard_id}" on:cancel={() => show_add_new_popup = false}/>
+    <AddNewFilterPopup bind:this={filter_item_popup_instance}/>
+<!-- {/if} -->
 {#if show_edit_item_popup}
     <EditDashboardPopup dashboard_item_config={single_report_item_config} on:cancel={() => show_edit_item_popup = false}/>
 {/if}
