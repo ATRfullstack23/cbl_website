@@ -86,48 +86,48 @@ let dashboard_group_obj = {
         //         "dashboard_id" : 1000002
         //     }
         // },
-        {
-            "icon": "MailBoxSolid",
-            "id": "d_1000003",
-            "custom_icon": {
-                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-                "color": "#fff"
-            },
-            "display_name": "Sales Dashboard",
-            "item_type": "item",
-            "action_type": "go_to_dashboard",
-            "context_data": {
-                "dashboard_id" : 1000003
-            }
-        },
-        {
-            "icon": "MailBoxSolid",
-            "id": "d_1000004",
-            "custom_icon": {
-                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-                "color": "#fff"
-            },
-            "display_name": "Customer Dashboard",
-            "item_type": "item",
-            "action_type": "go_to_dashboard",
-            "context_data": {
-                "dashboard_id" : 1000004
-            }
-        },
-        {
-            "icon": "MailBoxSolid",
-            "id": "Other_Dashboard_1",
-            "custom_icon": {
-                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-                "color": "#fff"
-            },
-            "display_name": "Accounts Dashboard",
-            "item_type": "item",
-            "action_type": "go_to_dashboard",
-            "context_data": {
-                "dashboard_id" : 1000005
-            }
-        },
+        // {
+        //     "icon": "MailBoxSolid",
+        //     "id": "d_1000003",
+        //     "custom_icon": {
+        //         "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        //         "color": "#fff"
+        //     },
+        //     "display_name": "Sales Dashboard",
+        //     "item_type": "item",
+        //     "action_type": "go_to_dashboard",
+        //     "context_data": {
+        //         "dashboard_id" : 1000003
+        //     }
+        // },
+        // {
+        //     "icon": "MailBoxSolid",
+        //     "id": "d_1000004",
+        //     "custom_icon": {
+        //         "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        //         "color": "#fff"
+        //     },
+        //     "display_name": "Customer Dashboard",
+        //     "item_type": "item",
+        //     "action_type": "go_to_dashboard",
+        //     "context_data": {
+        //         "dashboard_id" : 1000004
+        //     }
+        // },
+        // {
+        //     "icon": "MailBoxSolid",
+        //     "id": "Other_Dashboard_1",
+        //     "custom_icon": {
+        //         "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+        //         "color": "#fff"
+        //     },
+        //     "display_name": "Accounts Dashboard",
+        //     "item_type": "item",
+        //     "action_type": "go_to_dashboard",
+        //     "context_data": {
+        //         "dashboard_id" : 1000005
+        //     }
+        // },
         // {
         //     "icon": "MailBoxSolid",
         //     "id": "Other_Dashboard_2",
@@ -160,6 +160,23 @@ export async function generate_main_navigation_configuration(erp_instance) {
     // }
 
 
+    for(const dashboard_id in erp_instance.dashboards || {}){
+        let dashboard_instance = erp_instance.dashboards[dashboard_id];
+        dashboard_group_obj.items.push({
+            "icon": "MailBoxSolid",
+            "id": "d_" + dashboard_instance.dashboard_id,
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": dashboard_instance.display_name,
+            "item_type": "item",
+            "action_type": "go_to_dashboard",
+            "context_data": {
+                "dashboard_id" : dashboard_instance.dashboard_id
+            }
+        });
+    }
 
     nav_config.items.push(dashboard_group_obj);
 

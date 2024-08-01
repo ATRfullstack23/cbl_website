@@ -190,9 +190,9 @@
 
   async function handle_update(){
     console.log(dashboard_item_data);
-    let updated_dashboard_item_config = dashboard_item_data.config
+    // let updated_dashboard_item_config = dashboard_item_data.config
     let dashboard_item_id_to_update = dashboard_item_data.id
-    await update_dashboard_item_in_server(dashboard_id, dashboard_item_id_to_update, updated_dashboard_item_config);
+    await update_dashboard_item_in_server(dashboard_id, dashboard_item_id_to_update, dashboard_item_data);
     await get_all_dashboards_of_user();
     location.href = location.href + '';
     location.reload();
