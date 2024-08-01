@@ -33,7 +33,7 @@
 
 
         new Chart(item.canvas_element_instance,{
-            type: item.chart_type,
+            type: item.dashboard_type,
             data: report_data,
             options: item.options
         })
@@ -43,6 +43,7 @@
     let is_chart_initialized = false;
     export async function on_new_data_received(new_data) {
         report_data = new_data;
+        console.log('report_data', report_data);
         if(!is_chart_initialized){
             is_chart_initialized = true;
             await create_item_reports();
@@ -56,8 +57,10 @@
 
 <div class="inner" bind:this={container_element} style="width:350px;">    <!-- height={item.height}px; -->
     <div class="header">
-        <p>{report_data?.chart_title_value || ''}</p>
-        <p>{item.title}</p>
+        <!-- <p>{report_data?.chart_title_value || ''}</p> -->
+        {#if item.title}
+            <p>{item.title}</p>
+        {/if}
     </div>
     <canvas width="500" bind:this={item.canvas_element_instance}/>
 </div>

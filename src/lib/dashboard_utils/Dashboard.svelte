@@ -114,9 +114,12 @@
     let show_edit_item_popup = false
     export function show_edit_dashboard_item_popup(dashboard_item_id) {
         console.log('show_edit_dashboard_item_popup', dashboard_item_id);
-        show_edit_item_popup = true;
+        // show_edit_item_popup = true;
         single_report_item_config = report_items.find(item => item.id == dashboard_item_id);
         console.log('single_report_item_config', single_report_item_config);
+
+        show_add_new_popup = true
+        dashboard_popup_instance.show_edit_dashboard_item_dialogue(single_report_item_config,show_add_new_popup)
     }
     let show_filter_item_popup = false;
     let filter_item_popup_instance
@@ -175,9 +178,9 @@
     <AddNewDashboardPopup bind:this={dashboard_popup_instance} dashboard_id="{dashboard_id}" on:cancel={() => show_add_new_popup = false}/>
     <AddNewFilterPopup bind:this={filter_item_popup_instance}/>
 <!-- {/if} -->
-{#if show_edit_item_popup}
+<!-- {#if show_edit_item_popup}
     <EditDashboardPopup dashboard_item_config={single_report_item_config} on:cancel={() => show_edit_item_popup = false}/>
-{/if}
+{/if} -->
 
 <style>
 

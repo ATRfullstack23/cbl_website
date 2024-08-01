@@ -24,7 +24,31 @@
           horizontal: 'none'
         }
       });
+      editor.focus();
+      const line_count = editor.getModel().getLineCount();
+      editor.setPosition({ lineNumber: line_count, column: editor.getModel().getLineMaxColumn(line_count) });
+
+
+
+    // *........................To Focus Cursor to the New line after the code..........................*
+        // const model = editor.getModel();
+        // const lineCount = model.getLineCount();
+
+        // // Check if the last line is not empty, then add a new line
+        // if (model.getLineContent(lineCount).trim() !== '') {
+        //   model.applyEdits([{
+        //     range: new monaco.Range(lineCount + 1, 1, lineCount + 1, 1),
+        //     text: '\n',
+        //     forceMoveMarkers: true
+        //   }]);
+        // }
+
+        // // Move the cursor to the new last line
+        // editor.setPosition({ lineNumber: lineCount + 1, column: 1 });
   
+    // *......................To Focus Cursor to the New line after the code............................*
+
+
       return () => editor.dispose();
     });
     function get_sql(){

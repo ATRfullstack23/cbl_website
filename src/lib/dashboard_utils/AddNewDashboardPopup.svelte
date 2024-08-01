@@ -123,7 +123,7 @@
   function handle_icon_search(){
     show_icon_suggestions = true
     if(dashboard_item_data.config.icon.length){
-      temp_imported_icons = imported_icons.filter(item=>item.name.toLowerCase().includes(dashboard_icon.toLowerCase()))
+      temp_imported_icons = imported_icons.filter(item=>item.name.toLowerCase().includes(dashboard_item_data.config.icon.toLowerCase()))
     }else{
       temp_imported_icons = temp_imported_icons
       show_icon_suggestions = false
@@ -163,50 +163,39 @@
   }
 
   async function handle_confirm() {
-
-    //   test hardcoded insert by aki
-
-      let dashboard_item_to_insert = {};
-      if(dashboard_type == "card"){
-        card_dashboard_config.title = dashboard_title
-        card_dashboard_config.icon = dashboard_icon
-        card_dashboard_config.data_config.sql = dashboard_data_sql
-        card_dashboard_config.height = dashboard_height
-        card_dashboard_config.width = dashboard_width
-        dashboard_item_to_insert = card_dashboard_config
-      }else if(dashboard_type == "custom_table"){
-        dashboard_item_to_insert = {
-          "type": "report_item",
-          "report_item_type": "custom_table",
-          "dashboard_type": "custom_table",
-          "title": "Credit Notes",
-          "description": "",
-          "data_config": {
-              "sql": "" },
-          "width": "25%",
-          "height": "150"
-        }
-        dashboard_item_to_insert.title = dashboard_title
-        dashboard_item_to_insert.description = dashboard_description
-        dashboard_item_to_insert.data_config.sql = dashboard_data_sql
-        dashboard_item_to_insert.height = dashboard_height
-        dashboard_item_to_insert.width = dashboard_width
-        dashboard_item_to_insert.table_column_data = added_columns_array
-      }
-      console.log('dashboard_item_to_insert', dashboard_item_to_insert);
-      await add_new_dashboard_item_in_server(dashboard_id, dashboard_item_to_insert);
-
-      await get_all_dashboards_of_user();
-      location.href = location.href + '';
-      location.reload();
-
-
-    handle_cancel()
+    let type_of_dashboard = dashboard_item_data.config.dashboard_type
+    if(type_of_dashboard == "line" || type_of_dashboard == "bar" || type_of_dashboard == "pie" || type_of_dashboard == "doughnut"){
+      dashboard_item_data.config.report_item_type = "chart"
+    }else{
+      dashboard_item_data.config.report_item_type = dashboard_item_data.config.dashboard_type 
+    }
+    dashboard_item_data.config.type = "report_item" 
+    let dashboard_item_to_insert = dashboard_item_data.config
+    if(dashboard_item_to_insert.dashboard_type == "custom_table"){
+      dashboard_item_to_insert.table_column_data = added_columns_array
+    }
+    console.log("dashboard_item_to_insert", dashboard_item_to_insert);
+    await add_new_dashboard_item_in_server(dashboard_id, dashboard_item_to_insert);
+    await get_all_dashboards_of_user();
+    location.href = location.href + '';
+    location.reload();
+    // handle_cancel()
   }
 
   function handle_cancel() {
     show_add_new_popup = false
+    edit_mode = false
     dispatch('cancel');
+  }
+
+  async function handle_update(){
+    console.log(dashboard_item_data);
+    let updated_dashboard_item_config = dashboard_item_data.config
+    let dashboard_item_id_to_update = dashboard_item_data.id
+    await update_dashboard_item_in_server(dashboard_id, dashboard_item_id_to_update, updated_dashboard_item_config);
+    await get_all_dashboards_of_user();
+    location.href = location.href + '';
+    location.reload();
   }
 
 
@@ -231,7 +220,7 @@
       case 'line':
           return '-- Sample line chart sql'
       case 'bar':
-          return '-- Sample bar chart sql'
+          return `-- Write Your SQL Code declare @sundry_debtors table  (customer varchar (255),total_invoice_amount dec(10,2),amount_received dec(10,2)) insert into @sundry_debtors select distinct cp.customer_name customer_name  ,(select sum(sales_ledger_debit) from ledger_transactions llt where llt.customer_profile_id = lt.customer_profile_id and llt.invoice_id is not null) accounts_payable  ,(select sum(sales_ledger_credit) from ledger_transactions llt where llt.customer_profile_id = lt.customer_profile_id and llt.invoice_id is not null) accounts_payable from  ledger_transactions lt inner join   customer_profile cp on cp.id = lt.customer_profile_id where  lt.customer_profile_id is not null and  lt.invoice_id is not null    select sum(total_invoice_amount) - sum(amount_received) as chart_title_value from @sundry_debtors  select customer as label from @sundry_debtors  select 'Outstanding Total' as label, 3 as borderWidth, '#1b53d4' as backgroundColor, '#1b53d4' as borderColor, 0.2 as tension, 5 as radius   select customer as label, (total_invoice_amount-amount_received) as value from @sundry_debtors  `
       case 'pie':
           return '-- Sample pie chart sql'
       case 'table':
@@ -319,12 +308,25 @@ where
     }
   }
   let show_add_new_popup = false
+  let edit_mode = false
   export async function show_add_new_dashboard_item_dialogue(data_config,show_popup){
     dashboard_item_data = data_config
     console.log('dashboard_item_data', dashboard_item_data);
     dashboard_item_data.config.dashboard_type = 'card'
     show_add_new_popup = show_popup
     console.log('dashboard_item_data', dashboard_item_data);
+  }
+
+  export async function show_edit_dashboard_item_dialogue(data_config,show_popup){
+    console.log('dashboard_item_data', data_config)
+    dashboard_item_data = data_config
+    edit_mode = true
+    show_add_new_popup = show_popup
+
+    if(dashboard_item_data.config.table_column_data){
+      console.log('dashboard_item_data.config.table_column_data', dashboard_item_data.config.table_column_data);
+      added_columns_array = dashboard_item_data.config.table_column_data
+    }
   }
 
   let dashboard_type = 'card'
@@ -415,7 +417,7 @@ where
               <div class="added_columns_container">
                 {#each added_columns_array as added_column}
                   <div class="added_column">
-                    <p>{added_column.display_name}</p>
+                    <p style="min-width: 150px;">{added_column.display_name}</p>
                     <button>
                       <span style="width: 12px;display:inline-block;">
                         <FaTrashAlt />
@@ -464,7 +466,11 @@ where
         </div>
       </div>
       <div class="button_group">
-        <button on:click={handle_confirm}>Add Dashboard</button>
+        {#if edit_mode}
+          <button on:click={handle_update}>Update Dashboard</button>
+        {:else}
+          <button on:click={handle_confirm}>Add Dashboard</button>
+        {/if}
         <button class="cancel" on:click={handle_cancel}>Cancel</button>
       </div>
   </div>
@@ -783,21 +789,28 @@ input:disabled{
 .added_columns_container{
   padding-top: 20px;
   padding-left: 15px;
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 30px;
 }
 .added_columns_container .added_column{
   display: flex;
   align-items: center;
   gap: 30px;
+  border: 1px solid #dcd6d6;
+  padding: 8px;
+  border-radius: 10px;
 }
 .added_columns_container .added_column p{
   font-size: 20px;
   font-weight: 500;
+  margin: 0;
 }
 .added_columns_container .added_column button{
   width: 35px;
   padding: 8px;
-  margin-bottom: 15px;
-  margin-right: 15px;
+  margin-bottom: 0 !important;
+  margin-right: 0 !important;
   border-radius: 10px;
   background-color: red;
 }
