@@ -190,6 +190,7 @@
 
   async function handle_update(){
     console.log(dashboard_item_data);
+    dashboard_item_data.config.table_column_data = added_columns_array
     // let updated_dashboard_item_config = dashboard_item_data.config
     let dashboard_item_id_to_update = dashboard_item_data.id
     await update_dashboard_item_in_server(dashboard_id, dashboard_item_id_to_update, dashboard_item_data);
