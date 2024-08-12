@@ -4,6 +4,8 @@
     import ListReport from "./ListReport.svelte";
     import TableReport from "./TableReport.svelte";
     import CustomTable from "./CustomTable.svelte";
+    import NewCard from "./NewCard.svelte";
+    import ProfitAndLoss from "./ProfitAndLoss.svelte";
     import {get_dashboard_report_item_data_from_server} from "$lib/dashboard_utils/DashboardHelper.js";
     import {createEventDispatcher, getContext} from "svelte";
 
@@ -55,7 +57,10 @@
         <TableReport bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" table={config}/>
     {:else if config.report_item_type == "custom_table"}
         <CustomTable bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" item={config}/>
+    {:else if config.report_item_type == "new_card"}
+        <NewCard bind:this={report_item_instance} dashboard_item_config="{dashboard_item_config}" item={config}/>
     {/if}
+    <!-- <ProfitAndLoss/> -->
 
     {#if config.primary_action_button}
         <button class="action_button" on:click={handle_primacy_action_button_click}>

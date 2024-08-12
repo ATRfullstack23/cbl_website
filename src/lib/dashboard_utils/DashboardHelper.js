@@ -68,9 +68,13 @@ export async function add_new_dashboard_item_in_server(dashboard_row_id, dashboa
             }
         }).always((responseObj, status)=>{
             if(responseObj.error || responseObj.errorMessage){
+                console.log(responseObj);
+                
                 reject(responseObj);
                 return;
             }
+            console.log(responseObj);
+            
             resolve(responseObj.result);
             // console.log('get_dashboard_filter_data_from_server done', status, responseObj)
         });

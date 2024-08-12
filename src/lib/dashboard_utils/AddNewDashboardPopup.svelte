@@ -68,43 +68,48 @@
     let dashboard_types =[
         {
             "type": "line",
-            "image": "assets/images/cardWithImage.png",
+            "image": "images/dashboard_images/line.jpg",
             "label": "Line Chart"
         },
         {
             "type": "bar",
-            "image": "assets/images/cardWithHeadingText.png",
+            "image": "images/dashboard_images/bar.jpg",
             "label": "Bar Chart"
         },
         {
             "type": "pie",
-            "image": "assets/images/cardWithHeadingText.png",
+            "image": "images/dashboard_images/pie.jpg",
             "label": "Pie Chart"
         },
         {
             "type": "table",
-            "image": "assets/images/cardWithHeadingText.png",
+            "image": "images/dashboard_images/tablee.jpg",
             "label": "Table"
         },
         {
             "type": "list",
-            "image": "assets/images/cardWithHeadingText.png",
+            "image": "images/dashboard_images/list_with_images.jpg",
             "label": "List" 
         },
         {
             "type":"doughnut",
-            "image": "assets/images/cardWithHeadingText.png",
+            "image": "images/dashboard_images/doughnut.jpg",
             "label": "Doughnut Chart"
         },
         {
             "type":"card",
-            "image": "assets/images/cardWithHeadingText.png",
+            "image": "images/dashboard_images/card.jpg",
             "label": "Card"
         },
         {
             "type":"custom_table",
-            "image": "assets/images/cardWithHeadingText.png",
+            "image": "images/dashboard_images/table.png",
             "label": "Custom Table"
+        },
+        {
+            "type":"new_card",
+            "image": "assets/images/cardWithHeadingText.png",
+            "label": "Card New"
         }
     ]
 
@@ -170,7 +175,7 @@
       dashboard_item_data.config.report_item_type = dashboard_item_data.config.dashboard_type 
     }
     dashboard_item_data.config.type = "report_item" 
-    let dashboard_item_to_insert = dashboard_item_data.config
+    let dashboard_item_to_insert = dashboard_item_data.config 
     if(dashboard_item_to_insert.dashboard_type == "custom_table"){
       dashboard_item_to_insert.table_column_data = added_columns_array
     }
@@ -232,21 +237,10 @@
           return `select customer_profile_id, ( select customer_name from customer_profile cp where cp.id = i.customer_profile_id) as customer_name, id as invoice_id, invoice_number, total_amount from invoice i`
       case 'doughnut':
           return '-- Sample doughnut chart sql'
+      case 'new_card':
+          return '-- Sample New Card sql'
       case 'card':
-          return `
-select
-\ttotal_amount as value_1,
-\t'#f5f5dc' as background_color,
-\t'Approved V2' as sub_note_1,
-\t'22' as value_2,
-\t'Total Sales V2' as sub_note_2,
-\t'#000' as color,'#fff' as icon_background_color,
-\t'#ce1331' as icon_color
-from
-\tsales_credit_note scn
-where
-\tscn.credit_note_status = 'approved'
-          `
+        return `select total_amount as value_1,'#f5f5dc' as background_color,'#000' as color,'#fff' as icon_background_color,'#ce1331' as icon_color, 'Approved V2' as sub_note_1, '22' as value_2, 'Total Sales V2' as sub_note_2  from sales_credit_note scn where scn.credit_note_status = 'approved'`
       default:
           return `select total_amount as value_1,'#f5f5dc' as background_color,'#000' as color,'#fff' as icon_background_color,'#ce1331' as icon_color, 'Approved V2' as sub_note_1, '22' as value_2, 'Total Sales V2' as sub_note_2  from sales_credit_note scn where scn.credit_note_status = 'approved'`
     }
@@ -357,7 +351,7 @@ where
               <input type="text" id="dashboard_title" bind:value={dashboard_item_data.config.title}>  
           </div>
       </div>
-      {#if dashboard_item_data.config.dashboard_type == "table" || dashboard_item_data.config.dashboard_type == "custom_table"}
+      {#if dashboard_item_data.config.dashboard_type == "table" || dashboard_item_data.config.dashboard_type == "custom_table" || dashboard_item_data.config.dashboard_type == "new_card"}
         <div class="select_container">
             <div class="select_options_container">
                 <label for="dashboard_description">Description</label>
@@ -395,18 +389,20 @@ where
           </div>
         </div>
       {/if}
-      <div class="select_container">
-        <div class="select_options_container">
-            <label for="dashboard_width">Width (in px)</label>
-            <input type="text" id="dashboard_width" bind:value={dashboard_item_data.config.width}>
+      {#if dashboard_item_data.config.dashboard_type != "new_card"}
+        <div class="select_container">
+          <div class="select_options_container">
+              <label for="dashboard_width">Width (in px)</label>
+              <input type="text" id="dashboard_width" bind:value={dashboard_item_data.config.width}>
+          </div>
         </div>
-      </div>
-      <div class="select_container">
-        <div class="select_options_container">
-            <label for="dashboard_height">Height (in px)</label>
-            <input type="text" id="dashboard_height" bind:value={dashboard_item_data.config.height}/>
+        <div class="select_container">
+          <div class="select_options_container">
+              <label for="dashboard_height">Height (in px)</label>
+              <input type="text" id="dashboard_height" bind:value={dashboard_item_data.config.height}/>
+          </div>
         </div>
-      </div>
+      {/if}
       {#if dashboard_item_data.config.dashboard_type == 'custom_table'}
         <div class="custom_table_container_outer">
           <div class="custom_table_container">
