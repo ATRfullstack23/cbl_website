@@ -94,6 +94,12 @@
             await report_item_instance.refresh_data(latest_filter_values_map);
         }
         report_items = report_items;
+        report_items.sort((first, second) => {
+            const first_order = first.config?.order_number ?? Infinity;
+            const second_order = second.config?.order_number ?? Infinity;
+            return first_order - second_order;
+        });
+        console.log("report_items==================", report_items);
     }
 
     async function handle_primacy_action_button_click(single_report_item_id, evt_info) {
@@ -143,20 +149,21 @@
      class:hidden={is_hidden}>
     <div class="add_new_dashboard">
 <!--        style="display: none;"-->
-        <button on:click={() =>show_add_new_dashboard_item_popup()}>Add New Dashboard</button>
         <button class="filter_button" on:click={() =>show_add_new_filter_item_popup()}><i class="fa-solid fa-filter"></i>Add Filter</button>
+        <button on:click={() =>show_add_new_dashboard_item_popup()}>Add New Dashboard</button>
     </div>
 
     {#if shall_initialize}
-
-        <div class="dashboard_filters">
-            {#each filter_items as single_filter_config}
-                <DashboardFilterItem dashboard_id="{dashboard_id}"
-                                     dashboard_item_config="{single_filter_config}"
-                                     on:filter_value_changed={async (evt)=>{await handle_filter_value_changed(single_filter_config, evt.detail);}}
-                    bind:this={filter_instances[single_filter_config.id]}/>
-            {/each}
-        </div>
+        {#if filter_items.length}
+            <div class="dashboard_filters">
+                {#each filter_items as single_filter_config}
+                    <DashboardFilterItem dashboard_id="{dashboard_id}"
+                                         dashboard_item_config="{single_filter_config}"
+                                         on:filter_value_changed={async (evt)=>{await handle_filter_value_changed(single_filter_config, evt.detail);}}
+                        bind:this={filter_instances[single_filter_config.id]}/>
+                {/each}
+            </div>
+        {/if}
 
         <!-- <div class="dashboard_report_items"> -->
 
@@ -194,15 +201,18 @@
         width: 100%;
         justify-content: flex-end;
         align-items: center;
-        padding: 15px 20px 15px 0;
+        padding: 3px 8px 10px 0;
     }
     .add_new_dashboard button{
-        background-color: #fff;
-        border: 1px solid #6e6e6e;
+        /*background-color: #fff;*/
+        /*border: 1px solid #6e6e6e;*/
         padding: 10px 20px;
         border-radius: 10px;
         font-size: 15px;
         transition: all 0.3s ease;
+    }
+    .add_new_dashboard button:last-child{
+        background-color: #bf7e06;
     }
     .add_new_dashboard button:hover{
         color: #fff;
@@ -230,5 +240,15 @@
         gap: 10px;
         background-color: #f9fafb;
         padding: 10px;
+    }
+    .dashboard_filters{
+        flex-basis: 100%;
+        border: 1px solid rgba(174, 172, 172, 0.2);
+        padding: 8px 5px;
+        border-radius: 12px;
+        /*color: #fff;*/
+        background-color: #f2f2f2;
+        display: flex;
+        gap: 20px;
     }
 </style>

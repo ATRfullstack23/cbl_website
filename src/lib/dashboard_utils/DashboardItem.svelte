@@ -69,6 +69,9 @@
         </button>
     {/if}
 </div>
+{#if config.break_after}
+    <div class="line_break"></div>
+{/if}
 
 <style>
     .single_dashboard_report_item{
@@ -80,6 +83,7 @@
         justify-content: center;
         align-items: center;
         position: relative; */
+        /*flex-basis: 100%;*/
     }
     .single_dashboard_report_item.with_action_button {
         padding-bottom: 30px;
@@ -97,6 +101,10 @@
         background: transparent;
         color: black;
         font-weight: bold;
+    }
+    .line_break {
+        flex-basis: 100%;
+        height: 0;
     }
 
 </style>

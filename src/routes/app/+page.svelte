@@ -2,6 +2,7 @@
 <script>
     import {onMount, tick} from "svelte";
     import {ERP} from '$lib/client_scripts/ERP.js'
+    import {temp} from '$lib/client_scripts/ExtenstionsTemp.js'
     import {time_sleep} from '$lib/client_scripts/BrowserUtils.js'
     import {page} from "$app/stores";
     import Sidebar from "$lib/navigation_sidebar/Sidebar.svelte";
@@ -57,6 +58,16 @@
             console.log('new erp', erp_instance)
             erp_config.backend_root_url = backend_root_url;
             erp_config.socket_io_url = backend_root_url + '/socket.io/socket.io.js?_=1719394543097';
+
+            // temp abn to make dev faster, ignoring some modules
+
+            // erp_config.old_modules = erp_config.modules;
+            // erp_config.modules = {
+            //     "employeeProfile": erp_config.modules["employeeProfile"],
+            //     "iciciBankLedger": erp_config.modules["iciciBankLedger"],
+            //     "axisBankLedger": erp_config.modules["axisBankLedger"],
+            // };
+
             erp_instance = new ERP(erp_config, {user: user_obj});
             console.log('new erp', erp_instance)
 

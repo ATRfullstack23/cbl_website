@@ -34,7 +34,7 @@
             </div>
         {/if}
     </div>
-    <div class="bottom_portion">
+    <div class="bottom_portion" class:icon_present={item.icon}>
         {#if report_data.value_2}
             <p style="color: {report_data.color};">{report_data.value_2} {report_data.sub_note_2}</p>
         {/if}
@@ -98,7 +98,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-bottom: 15px;
+        /*margin-bottom: 15px;*/
     }
     .card_main_contents.icon_present {
         align-items: flex-start;
@@ -115,13 +115,14 @@
     .bottom_portion {
         padding-inline: 15px;
         width: 100%;
-        text-align: left;
-        display: flex;
+        /*text-align: left;*/
+        /*display: flex;*/
+        text-align: center;
         align-items: center;
         gap: 5px;
     }
     .bottom_portion.icon_present {
-        text-align: center;
+        text-align: left;
         justify-content: center;
     }
     .bottom_portion p {

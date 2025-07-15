@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import Chart from 'chart.js/auto'
+    import Chart, { plugins } from 'chart.js/auto'
     export let item;
     export let dashboard_item_config;
     export let container_element;
@@ -10,6 +10,30 @@
     async function create_item_reports() {
         console.log('report_data', report_data)
         console.log(item);
+        item.options = {
+                            datasets: {
+                            bar: {
+                                barThickness: report_data.barThickness || 20
+                            }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: item.legend_position,
+                                    title: {
+                                        display: true,
+                                        text: ' ',
+                                        padding: {
+                                            top: 5,
+                                            bottom: 5,
+                                            left:5,
+                                            right:5
+                                        }
+                                    }
+                                }
+                            }
+                        }
+        
         // item.chart_type = 'pie';
         // report_data = {
         //     "labels":["US","UK","EU"],
@@ -55,7 +79,7 @@
 
 </script>
 
-<div class="inner" bind:this={container_element} style="width:350px;">    <!-- height={item.height}px; -->
+<div class="inner" bind:this={container_element} style="width:{item.width}px;min-height:{item.height}px;">    <!-- height={item.height}px; -->
     <div class="header">
         <!-- <p>{report_data?.chart_title_value || ''}</p> -->
         {#if item.title}
@@ -66,6 +90,7 @@
 </div>
 
 <style>
+    @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
     /* .inner{
         display: block;
         width: 90%;
@@ -93,12 +118,17 @@
         margin: 0;
         padding: 0;
         font-size: 18px;
-        font-weight: 800;
-        color: #3f3f3f;
+        font-family: 'Montserrat', sans-serif;
+        color: #3e3c3c;
+        font-weight: 600;
     }
     .inner .header p:nth-child(2){
         font-size: 15px;
         color: #6e6e6e;
+    }
+    .header{
+        padding: 10px 0 12px 10px;
+        
     }
 
 </style>

@@ -63,7 +63,34 @@
         id:"sub_mod_5",
         module:"mod_1"
       }
-    ]
+    ],
+    filters:[
+        {
+            title: "Filter 1",
+            id: "filter_1",
+            submodule: "sub_mod_1"
+        },
+        {
+            title: "Filter 2",
+            id: "filter_2",
+            submodule: "sub_mod_2"
+        },
+        {
+            title: "Filter 3",
+            id: "filter_3",
+            submodule: "sub_mod_3"
+        },
+        {
+            title: "Filter 4",
+            id: "filter_4",
+            submodule: "sub_mod_4"
+        },
+        {
+            title: "Filter 5",
+            id: "filter_5",
+            submodule: "sub_mod_5"
+        }
+      ]
   }
     let dashboard_types =[
         {
@@ -194,7 +221,6 @@
   }
 
   async function handle_update(){
-    console.log(dashboard_item_data);
     dashboard_item_data.config.table_column_data = added_columns_array
     // let updated_dashboard_item_config = dashboard_item_data.config
     let dashboard_item_id_to_update = dashboard_item_data.id
@@ -272,14 +298,32 @@
   let added_columns_array = []
   let column_data_obj = {}
   let show_add_column_popup = false
+  function reset_filter_options(){
+      selected_module = ''
+      selected_sub_module = ''
+      // selected_filters = []
+      newModule = {
+          filter: '',
+          filter_type: '',
+          filter_value: '',
+
+      }
+      newFilter = {
+          filter_id: '',
+          filter_title: ''
+      }
+  }
   function handle_show_add_new_column_dialogue_box(){
     show_add_column_popup = true
+    selected_filters = []
+    reset_filter_options()
+
   }
   function handle_add_column(){
     if(column_data_obj.action_type != 'null'){
       let context_data = {
-        module_id : goto_action_module,
-        submodule_id : goto_action_submodule
+        module_id : selected_module,
+        submodule_id : selected_sub_module
       }
       column_data_obj.context_data = context_data
       added_columns_array = [...added_columns_array,column_data_obj]
@@ -324,6 +368,50 @@
     }
   }
 
+  let selected_filters = []
+
+  function open_filter_configuration_popup(){
+      popup_visible = true
+  }
+  function close_filter_configuration_popup(){
+      popup_visible = false
+      reset_filter_options()
+  }
+  function delete_filter_data(index){
+      selected_filters.splice(index, 1);
+      selected_filters = [...selected_filters];
+  }
+  function add_new_filter_config(){
+      const selected_filter = config_json.filters.find(f => f.id === newFilter.filter_id);
+      if (selected_filter && newModule.filter_type && newModule.filter_value) {
+          const newEntry = {
+              filter: selected_filter.title,
+              filter_type: newModule.filter_type,
+              filter_value: newModule.filter_value || '',
+
+          };
+
+          selected_filters = [...selected_filters, newEntry];
+
+          close_filter_configuration_popup();
+          reset_filter_options()
+      } else {
+          alert('Please select a filter.');
+      }
+  }
+  let popup_visible = false;
+  let newModule = {
+      filter: '',
+      filter_type: '',
+      filter_value: '',
+
+  };
+  let newFilter = {
+      filter_id: '',
+      filter_title: ''
+  };
+
+
   let dashboard_type = 'card'
   onMount(async () => {
     await import_icons();
@@ -347,8 +435,20 @@
       </div>
       <div class="select_container">
           <div class="select_options_container">
+              <label for="dashboard_title">Order</label>
+              <input type="number" id="dashboard_title" bind:value={dashboard_item_data.config.order_number}>
+          </div>
+      </div>
+      <div class="select_container">
+          <div class="select_options_container">
+              <label for="dashboard_line_break">Line Break</label>
+              <input type="checkbox" id="dashboard_line_break" bind:checked={dashboard_item_data.config.break_after}>
+          </div>
+      </div>
+      <div class="select_container">
+          <div class="select_options_container">
               <label for="dashboard_title">Dashboard Title</label>
-              <input type="text" id="dashboard_title" bind:value={dashboard_item_data.config.title}>  
+              <input type="text" id="dashboard_title" bind:value={dashboard_item_data.config.title}>
           </div>
       </div>
       {#if dashboard_item_data.config.dashboard_type == "table" || dashboard_item_data.config.dashboard_type == "custom_table" || dashboard_item_data.config.dashboard_type == "new_card"}
@@ -439,29 +539,66 @@
             <span class="copy_sample_sql" on:click={handle_copy_sample_sql}> Copy Sample SQL</span>
         </div>
       </div>
-      <div class="select_container action_button_container">
-        <div class="select_options_container">
-            <label for="dashboard_action_button">Action Button</label>
-            <div class="selection_blocks">
-              <div class="single_block">
-                <h3>Module</h3>
-                <select name="" id="" bind:value={selected_module}>
-                  {#each config_json.modules as module}
-                    <option value="{module.id}">{module.title}</option>  
-                  {/each}
-                </select>
-              </div>
-              <div class="single_block">
-                <h3>Sub Module</h3>
-                <select name="" id="" bind:value={selected_sub_module}>
-                  {#each config_json.submodules.filter(item=>item.module == selected_module) as sub_module}
-                    <option value="{sub_module.id}">{sub_module.title}</option>  
-                  {/each}
-                </select>
-              </div>
-            </div>
+      {#if dashboard_item_data.config.dashboard_type == "line" || dashboard_item_data.config.dashboard_type == "bar" || dashboard_item_data.config.dashboard_type == "pie" || dashboard_item_data.config.dashboard_type == "doughnut"}
+        <div class="select_container">
+          <div class="select_options_container">
+            <label for="dashboard_type">Legends Position:</label>
+            <select id="dashboard_type" bind:value={dashboard_item_data.config.legend_position}>
+              <option value="">Select Any</option>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
         </div>
-      </div>
+      {/if}
+      {#if dashboard_item_data.config.dashboard_type !== 'custom_table'}
+          <div class="select_container action_button_container">
+            <div class="select_options_container">
+                <label for="dashboard_action_button">Action Button</label>
+                <div class="selection_blocks">
+                  <div class="single_block">
+                    <h3>Module</h3>
+                    <select name="" id="" bind:value={selected_module}>
+                      {#each config_json.modules as module}
+                        <option value="{module.id}">{module.title}</option>
+                      {/each}
+                    </select>
+                  </div>
+                  <div class="single_block">
+                    <h3>Sub Module</h3>
+                    <select name="" id="" bind:value={selected_sub_module}>
+                      {#each config_json.submodules.filter(item=>item.module == selected_module) as sub_module}
+                        <option value="{sub_module.id}">{sub_module.title}</option>
+                      {/each}
+                    </select>
+                  </div>
+                </div>
+            </div>
+          </div>
+
+          <div class="filter-control-container">
+              <div class="insert-container">
+                  <h6>Filter Configuration</h6>
+                  {#if selected_sub_module}
+                      <button on:click={open_filter_configuration_popup}>Add</button>
+                  {/if}
+              </div>
+              {#if selected_filters.length}
+                  <div class="filter-container">
+                      <ul>
+                          {#each selected_filters as mod, index}
+                              <li>
+                                  {mod.filter}
+                                  <div class="delete-btn"  on:click={() => delete_filter_data(index)}><i class="fa-solid fa-trash"></i></div>
+                              </li>
+                          {/each}
+                      </ul>
+                  </div>
+              {/if}
+          </div>
+      {/if}
       <div class="button_group">
         {#if edit_mode}
           <button on:click={handle_update}>Update Dashboard</button>
@@ -471,18 +608,111 @@
         <button class="cancel" on:click={handle_cancel}>Cancel</button>
       </div>
   </div>
+    <!--{#if popup_visible}-->
+    <!--    <div class="filter-popup-overlay">-->
+    <!--        <div class="filter-popup-wrapper">-->
+    <!--            <div class="filter-header-section">-->
+    <!--                <button class="filter-close-button" on:click={close_filter_configuration_popup} aria-label="Close">✕</button>-->
+    <!--            </div>-->
+    <!--            {#if !selected_sub_module}-->
+    <!--                <div class="filter-input-section">-->
+    <!--                    <p style="color: orange; font-weight: bold;">Please select a sub module first.</p>-->
+    <!--                </div>-->
+    <!--            {:else if config_json.filters.filter(item=>item.submodule == selected_sub_module).length > 0}-->
+    <!--                <div class="filter-input-section">-->
+    <!--                    <label>Select Filter</label>-->
+    <!--                        <select bind:value={newFilter.filter_id}>-->
+    <!--                            <option value="">Select Filter</option>-->
+    <!--                            {#each config_json.filters.filter(item=>item.submodule == selected_sub_module) as f}-->
+    <!--                                <option value={f.id}>{f.title}</option>-->
+    <!--                            {/each}-->
+    <!--                        </select>-->
+    <!--                </div>-->
+    <!--                <div class="filter-input-section">-->
+    <!--                    <label>Filter Type</label>-->
+    <!--                    <label><input type="radio" value="dynamic" bind:group={newModule.filter_type}> Dynamic</label>-->
+    <!--                    <label><input type="radio" value="static" bind:group={newModule.filter_type}> Static</label>-->
+    <!--                </div>-->
+    <!--                {#if newModule.filter_type}-->
+    <!--                    <div class="filter-input-section_dynamic">-->
+    <!--                        <label>Filter Value</label>-->
+    <!--                        <input type="text" bind:value={newModule.filter_value} placeholder="Enter filter value" />-->
+    <!--                    </div>-->
+    <!--                {/if}-->
+
+
+    <!--                <div class="filter-popup-buttons">-->
+    <!--                    <button class="add_filter" on:click={add_new_filter_config}>Add</button>-->
+    <!--                    <button class="cancel" on:click={close_filter_configuration_popup}>Cancel</button>-->
+
+    <!--                </div>-->
+    <!--            {:else}-->
+    <!--                <div class="filter-input-section">-->
+    <!--                    <p style="color: red; font-weight: bold;">No filters available for this sub module.</p>-->
+    <!--                </div>-->
+    <!--            {/if}-->
+
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--{/if}-->
   {#if show_data_sql_popup}
     <SqlEditorPopup bind:dashboard_data_sql={dashboard_item_data.config.data_config.sql} on:close_popup={handle_close_data_sql_editor} on:get_sql={handle_get_data_sql}/>
   {/if}
 </div>
+{#if popup_visible}
+    <div class="filter-popup-overlay">
+        <div class="filter-popup-wrapper">
+            <div class="filter-header-section">
+                <button class="filter-close-button" on:click={close_filter_configuration_popup} aria-label="Close">✕</button>
+            </div>
+            {#if !selected_sub_module}
+                <div class="filter-input-section">
+                    <p style="color: orange; font-weight: bold;">Please select a sub module first.</p>
+                </div>
+            {:else if config_json.filters.filter(item=>item.submodule == selected_sub_module).length > 0}
+                <div class="filter-input-section">
+                    <label>Select Filter</label>
+                    <select bind:value={newFilter.filter_id}>
+                        <option value="">Select Filter</option>
+                        {#each config_json.filters.filter(item=>item.submodule == selected_sub_module) as f}
+                            <option value={f.id}>{f.title}</option>
+                        {/each}
+                    </select>
+                </div>
+                <div class="filter-input-section">
+                    <label>Filter Type</label>
+                    <label><input type="radio" value="dynamic" bind:group={newModule.filter_type}> Dynamic</label>
+                    <label><input type="radio" value="static" bind:group={newModule.filter_type}> Static</label>
+                </div>
+                {#if newModule.filter_type}
+                    <div class="filter-input-section_dynamic">
+                        <label>Filter Value</label>
+                        <input type="text" bind:value={newModule.filter_value} placeholder="Enter filter value" />
+                    </div>
+                {/if}
 
+
+                <div class="filter-popup-buttons">
+                    <button class="add_filter" on:click={add_new_filter_config}>Add</button>
+                    <button class="cancel" on:click={close_filter_configuration_popup}>Cancel</button>
+
+                </div>
+            {:else}
+                <div class="filter-input-section">
+                    <p style="color: red; font-weight: bold;">No filters available for this sub module.</p>
+                </div>
+            {/if}
+
+        </div>
+    </div>
+{/if}
 {#if show_add_column_popup}
   <div class="add_new_column_popup">
     <div class="add_new_column_container">
       <div class="header_container">
         <h1>Add New Column</h1>
       </div>
-      <div class="input_elements_container">
+      <div class="input_elements_container input_elements_container_outer">
           <div class="single_input_container">
               <label for="display_name">Display Name</label>
               <input type="text" id="display_name" bind:value={column_data_obj.display_name}>
@@ -509,28 +739,48 @@
                 <option value="goto_module">Goto Module</option>
               </select>
           </div>
-          <div class="select_container action_button_container">
-            <div class="select_options_container" style="width: 80%;margin:0 auto; justify-content: center;">
+          <div class="select_container action_button_container single_input_container_select">
+            <div class="select_options_container single_input_container_select">
                 <label for="dashboard_action_button">Action Destination</label>
                 <div class="selection_blocks" style="min-width: 60%;">
                   <div class="single_block">
                     <h3>Module</h3>
-                    <select name="" id="" bind:value={goto_action_module} style="min-width: 150px;">
-                      {#each config_json.modules as module}
-                        <option value="{module.id}">{module.title}</option>  
-                      {/each}
-                    </select>
+                      <select name="" id="" bind:value={selected_module}>
+                          {#each config_json.modules as module}
+                              <option value="{module.id}">{module.title}</option>
+                          {/each}
+                      </select>
                   </div>
                   <div class="single_block">
                     <h3>Sub Module</h3>
-                    <select name="" id="" bind:value={goto_action_submodule} style="min-width: 150px;">
-                      {#each config_json.submodules.filter(item=>item.module == goto_action_module) as sub_module}
-                        <option value="{sub_module.id}">{sub_module.title}</option>  
-                      {/each}
-                    </select>
+                      <select name="" id="" bind:value={selected_sub_module}>
+                          {#each config_json.submodules.filter(item=>item.module == selected_module) as sub_module}
+                              <option value="{sub_module.id}">{sub_module.title}</option>
+                          {/each}
+                      </select>
                   </div>
                 </div>
             </div>
+          </div>
+          <div class="filter-control-container">
+              <div class="insert-container">
+                  <h6>Filter Configuration</h6>
+                  {#if selected_sub_module}
+                      <button on:click={open_filter_configuration_popup}>Add</button>
+                  {/if}
+              </div>
+              {#if selected_filters.length}
+                  <div class="filter-container">
+                      <ul>
+                          {#each selected_filters as mod, index}
+                              <li>
+                                  {mod.filter}
+                                  <div class="delete-btn"  on:click={() => delete_filter_data(index)}><i class="fa-solid fa-trash"></i></div>
+                              </li>
+                          {/each}
+                      </ul>
+                  </div>
+              {/if}
           </div>
           <div class="add_new_column_button_container">
             <button class="add_column_button" on:click={handle_add_column}>Add Column</button>
@@ -574,7 +824,7 @@
 label{
   min-width: 130px;
 }
-select,input,textarea{
+.select_container select, .select_container input,.select_container textarea{
   width: 60%;
 }
 .icon_search{
@@ -764,13 +1014,20 @@ input:disabled{
   text-align: center;
   padding-block: 15px;
 }
+.input_elements_container_outer{
+    padding-left: 25px;
+}
 .single_input_container{
-  width: 80%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /*width: 80%;*/
+  /*margin: 0 auto;*/
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
   margin-bottom: 15px;
+}
+.single_input_container_select{
+    margin: 0;
+    width: unset;
 }
 .add_new_column_button_container{
   width: 80%;
@@ -810,6 +1067,121 @@ input:disabled{
   margin-right: 0 !important;
   border-radius: 10px;
   background-color: red;
+}
+
+/*CSS for Integration of Filter Configuration from ATR */
+.filter-control-container{
+    border: 1px solid rgb(128 128 128 / 22%);
+    padding: 10px 5px 5px 10px;
+    border-radius: 10px;
+    /*pa*/
+}
+.insert-container{
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+.insert-container button{
+    width: 60px;
+    padding: 2px 3px;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+.filter-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000000;
+}
+.filter-popup-wrapper {
+    background: white;
+    padding: 2rem;
+    padding-top: 0;
+    padding-right: 10px;
+    border-radius: 10px;
+    width: 400px;
+    height: 370px;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+.filter-input-section {
+    margin-bottom: 1rem;
+}
+.filter-input-section_dynamic input{
+    width: 100%;
+}
+.filter-input-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+.delete-btn{
+    background: none;
+}
+.filter-input-section select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.filter-popup-buttons {
+    position: absolute;
+    bottom: 7px;
+    right: 7px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+.filter-popup-buttons button {
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.filter-popup-buttons .cancel {
+    background: #888;
+    color: white;
+}
+.filter-popup-buttons .add_filter {
+    background: #28a745;
+    color: white;
+}
+.filter-header-section{
+    display: flex;
+    justify-content: right;
+}
+.filter-close-button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #c61b1b;
+    font-weight: 800;
+}
+.filter-container ul{
+    max-height: 100px;
+    overflow: scroll;
+    border: 1px solid grey;
+    padding: 10px;
+}
+.filter-container ul li{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    padding-block: 2px;
+}
+.filter-container ul li:hover{
+    background-color: #007bff;
+    color: #fff;
 }
 
 </style>

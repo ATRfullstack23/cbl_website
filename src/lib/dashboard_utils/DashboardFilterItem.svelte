@@ -58,9 +58,11 @@
 <style>
 
     .dashboard_filter{
-        display: inline-block;
+        display: flex;
         margin: 5px;
         margin-left: 15px;
+        align-items: center;
+        gap: 15px;
     }
 
 </style>
