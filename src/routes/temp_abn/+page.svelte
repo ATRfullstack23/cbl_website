@@ -459,10 +459,10 @@
         }
     }
 
-    let invoice_data_array = api_grid_data.data
+    let main_data_array = api_grid_data.data
     let pagination_data = api_grid_data.pager
 
-    let selected_item = invoice_data_array[0]
+    let selected_item = main_data_array[0];
 
     function handle_selected_preview_item(event,invoice){
             selected_item = invoice
@@ -548,12 +548,74 @@
         // You can call your API here to fetch data for new page
     }
 
+
+    export let card_view_style = 'default';  // other styles can be small_list,
+
+    // module, submodule, columnManager, buttonManger, filterManager
+
+    const side_cards_nav_config = {
+        data_mapping : {
+            main_header_text : {
+                column_id : "customer_profile_id"
+            },
+            main_caption_text_left : {
+                column_id : "invoice_number"
+            },
+            main_caption_text_right : {
+                column_id : "invoice_date"
+            },
+            primary_status_badge : {
+                column_id : "payment_status"
+            },
+            primary_amount_value : {
+                column_id : "total_amount"
+            }
+        }
+    };
+
+    const data_mapping = side_cards_nav_config.data_mapping;
+
+    function get_column_instance(column_id){
+        const column_obj = {
+            column_id
+        };
+
+        if(column_id === 'customer_profile_id'){
+            column_obj.data_type = 'lookup_dropdownlist'
+        }
+
+        if(column_id === 'invoice_date'){
+            column_obj.data_type = 'date'
+        }
+
+
+        column_obj.parseDisplayValue = (data_row) => {
+            if(column_obj.data_type === 'lookup_dropdownlist'){
+                return data_row[column_id]?.text;
+            }
+            else if(column_obj.data_type === 'date'){
+                let value = data_row[column_id]?.text;
+                return moment(value).format('dd MMMM YYYY');
+            }
+            return data_row[column_id]?.value;
+        };
+
+        return column_obj;
+        // return subModule.columnManager.getColumnById(column_id);
+    }
+
+    function get_column_display_value(column_id, data_row){
+        const column_instance = get_column_instance(column_id);
+        let display_value = column_instance.parseDisplayValue(data_row);
+        return display_value;
+    }
+
 </script>
 
-{#if invoice}
+{#if api_grid_data}
     <div class="invoice_detail_container">
         <!-- Left Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" class:default_style={card_view_style === 'default'}>
             <button class="back_btn">← All Invoices</button>
             <PaginationUI
                     totalRows={pagination_data.totalRows}
@@ -562,20 +624,22 @@
                     on:pageChange={handle_page_change}
             />
             <div class="invoice_cards_container_outer">
-                {#each invoice_data_array as invoice}
-                    <div class="invoice_summary" class:selected={selected_item.id==invoice.id} on:click={(e)=>handle_selected_preview_item(e,invoice)}>
+                {#each main_data_array as invoice}
+
+                    <div class="invoice_summary" class:selected={selected_item.id === invoice.id} on:click={(e)=>handle_selected_preview_item(e,invoice)}>
                         <div class="customer_info">
-                            <h3>{invoice.customer_profile_id__text}</h3>
-                            <p class="invoice_meta">{invoice.invoice_number.value}-{invoice.id} • {formatDate(invoice.invoice_date.value)}</p>
-                            <span class="status_badge status_{invoice.payment_status.value.toLowerCase()}">
-                                {invoice.payment_status.value}
+                            <h3 class="main_header_text">{get_column_display_value(data_mapping.main_header_text.column_id, invoice)}</h3>
+                            <p class="invoice_meta"> <span class="main_caption_text_left">{get_column_display_value(data_mapping.main_caption_text_left.column_id, invoice)}</span> • <span class="main_caption_text_right">{get_column_display_value(data_mapping.main_caption_text_right.column_id, invoice)}</span></p>
+                            <span class="status_badge status_{get_column_display_value(data_mapping.primary_status_badge.column_id, invoice)} primary_status_badge">
+                                {get_column_display_value(data_mapping.primary_status_badge.column_id, invoice)}
                             </span>
                         </div>
 
                         <div class="amount_display">
-                            <div class="amount_large">{formatCurrency(invoice.total_amount.value)}</div>
+                            <div class="amount_large primary_amount_value">{get_column_display_value(data_mapping.primary_amount_value.column_id, invoice)}</div>
                         </div>
                     </div>
+
                 {/each}
             </div>
         </div>
