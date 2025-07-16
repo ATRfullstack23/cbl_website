@@ -462,17 +462,12 @@
 }
 
 .simpleDataTableRow-main input[type=number], 
-
 .simpleDataTableRow-main input[type="text"].setNumericElement{
-
+    text-align: right;
     font-size: 100%;
-
     padding: 3px 0px;
-
     width: 91.37%;
-
     font-family: inherit;
-
 }
 
 
@@ -491,6 +486,11 @@
 
 
 
+.simpleDataTable-container tfoot th{
+    position: relative;
+    text-align: right;
+    padding-right: 15px;
+}
 
 
 

@@ -7,10 +7,15 @@
     let module_name
 
     export async function on_new_data_received(new_data) {
-        console.log('on_new_data_received', new_data)
-        report_data = new_data[0];
-        console.log(report_data)     
-        console.log(item); 
+        if(new_data.length){
+            report_data = new_data[0];
+        }
+        else{
+            report_data = [];
+        }
+        console.log('on_new_data_received', report_data, item)
+        // console.log(report_data)
+        // console.log(item);
     }
 </script>
 
@@ -22,15 +27,15 @@
         {#if item.description}
             <p>{item.description}</p>
         {/if}
+
+
     </div>
     <div class="outer_table_container" style="width: 100%; max-height: {item.height}px; overflow: auto;">
         <table>
             <thead>
                 <tr>
                     {#each item.table_column_data as table_column}
-                        <th class="table_column_name"
-                            >{table_column.display_name}</th
-                        >
+                        <th class="table_column_name">{table_column.display_name}</th>
                     {/each}
                 </tr>
             </thead>
