@@ -15,7 +15,8 @@
     export let dashboard_id = dashboard_configuration.id;
     export let unique_id = dashboard_configuration.unique_id;
     export let display_name = dashboard_configuration.display_name;
-    let dashboard_popup_instance
+    export let type = dashboard_configuration.type;
+    let dashboard_popup_instance;
 
     // let chart_data = dashboard_configuration.dashboard_items.filter(item => item.config.type !== "filter");
 
@@ -30,6 +31,12 @@
         filter_items = dashboard_configuration.dashboard_items.filter(item => item.config.type === "filter");
 
         report_items = dashboard_configuration.dashboard_items.filter(item => item.config.type === "report_item");
+        for(const single_filter_config of filter_items){
+            latest_filter_values_map[single_filter_config.config.unique_id] = {
+                value: null,
+                data_type: single_filter_config.config.data_type || get_filter_data_type(single_filter_config.config)
+            };
+        }
         // for(let chart of report_items.filter(data => data.type == "chart")){
         //     new Chart(chart.chart_instance,{
         //         type: chart.chart_type,
@@ -50,8 +57,8 @@
 
             tick().then(()=>{
                 refresh_data_of_all_report_items()
-                .then(()=>{})
-                .catch((eee)=>{console.log('eeeee', eee);});
+                    .then(()=>{})
+                    .catch((eee)=>{console.log('eeeee', eee);});
                 // create_chart_reports()
             });
 
@@ -68,6 +75,7 @@
         window._report_item_instances = report_item_instances;
         window._dashboard_items = dashboard_configuration.dashboard_items;
         console.log('getting report items data : ', report_item_instances, latest_filter_values_map);
+        await refresh_data_of_all_filters();
         await refresh_data_of_all_report_items();
     }
 
@@ -81,10 +89,24 @@
         // console.log('dashboard_configuration', dashboard_configuration);
     });
 
+    function get_filter_data_type(filter_inner_config) {
+        let data_type = 'nvarchar(255)';
+        switch (filter_inner_config.filter_type) {
+            case "lookup_dropdownlist":
+                data_type = 'int';
+                break;
+            case "date":
+                data_type = 'date';
+                break;
+        }
+        return data_type;
+    }
 
     async function handle_filter_value_changed(single_filter_config, new_value_obj) {
-        console.log('filter changed', single_filter_config)
+        // console.log('filter changed', single_filter_config.display_name, new_value_obj)
         latest_filter_values_map[single_filter_config.config.unique_id] = new_value_obj;
+        new_value_obj.data_type = single_filter_config.config.data_type || get_filter_data_type(single_filter_config.config);
+        // latest_filter_values_map[single_filter_config.config.unique_id] = new_value_obj;
         await refresh_data_of_all_report_items();
     }
 
@@ -93,13 +115,19 @@
             let report_item_instance = report_item_instances[item_id];
             await report_item_instance.refresh_data(latest_filter_values_map);
         }
-        report_items = report_items;
         report_items.sort((first, second) => {
             const first_order = first.config?.order_number ?? Infinity;
             const second_order = second.config?.order_number ?? Infinity;
             return first_order - second_order;
         });
-        console.log("report_items==================", report_items);
+        report_items = report_items;
+    }
+    async function refresh_data_of_all_filters(){
+        for(let item_id of Object.keys(filter_instances)){
+            let filter_instance = filter_instances[item_id];
+            await filter_instance.refresh_data();
+        }
+        report_items = report_items;
     }
 
     async function handle_primacy_action_button_click(single_report_item_id, evt_info) {
@@ -129,16 +157,18 @@
     }
     let show_filter_item_popup = false;
     let filter_item_popup_instance
-    async function show_add_new_filter_item_popup(){
+    export async function show_add_new_filter_item_popup(){
         let filter_item_data = {
             type:"filter",
+            unique_id:"",
+            filter_type: 'lookup_dropdownlist',
             data_config:{
-            sql:"",
-            items:[]
+                sql:"",
+                items:[]
             }
         }
         show_filter_item_popup = true;
-        await filter_item_popup_instance.show_add_new_filter_item_dialogue(filter_item_data,show_filter_item_popup);
+        await filter_item_popup_instance.show_add_new_filter_item_dialog(filter_item_data,show_filter_item_popup);
     }
 
 
@@ -148,7 +178,7 @@
      data-dashboard_id="{dashboard_id}"
      class:hidden={is_hidden}>
     <div class="add_new_dashboard">
-<!--        style="display: none;"-->
+        <!--        style="display: none;"-->
         <button class="filter_button" on:click={() =>show_add_new_filter_item_popup()}><i class="fa-solid fa-filter"></i>Add Filter</button>
         <button on:click={() =>show_add_new_dashboard_item_popup()}>Add New Item</button>
     </div>
@@ -160,19 +190,19 @@
                     <DashboardFilterItem dashboard_id="{dashboard_id}"
                                          dashboard_item_config="{single_filter_config}"
                                          on:filter_value_changed={async (evt)=>{await handle_filter_value_changed(single_filter_config, evt.detail);}}
-                        bind:this={filter_instances[single_filter_config.id]}/>
+                                         bind:this={filter_instances[single_filter_config.id]}/>
                 {/each}
             </div>
         {/if}
 
         <!-- <div class="dashboard_report_items"> -->
 
-            {#each report_items as single_report_item_config}
-                <DashboardItem dashboard_id="{dashboard_id}"
-                               on:primacy_action_button_click={async (evt)=>{await handle_primacy_action_button_click(single_report_item_config.id, evt.detail);}}
-                               bind:this={report_item_instances[single_report_item_config.id]}
-                               dashboard_item_config="{single_report_item_config}"/>
-            {/each}
+        {#each report_items as single_report_item_config}
+            <DashboardItem dashboard_id="{dashboard_id}"
+                           on:primacy_action_button_click={async (evt)=>{await handle_primacy_action_button_click(single_report_item_config.id, evt.detail);}}
+                           bind:this={report_item_instances[single_report_item_config.id]}
+                           dashboard_item_config="{single_report_item_config}"/>
+        {/each}
 
         <!-- </div> -->
 
@@ -182,8 +212,14 @@
 
 </div>
 <!-- {#if show_add_new_popup} -->
-    <AddNewDashboardPopup bind:this={dashboard_popup_instance} dashboard_id="{dashboard_id}" on:cancel={() => show_add_new_popup = false}/>
-    <AddNewFilterPopup bind:this={filter_item_popup_instance}/>
+<AddNewDashboardPopup
+        bind:this={dashboard_popup_instance}
+        dashboard_id="{dashboard_id}"
+        on:cancel={() => show_add_new_popup = false}/>
+<AddNewFilterPopup
+        bind:this={filter_item_popup_instance}
+        dashboard_id="{dashboard_id}" />
+
 <!-- {/if} -->
 <!-- {#if show_edit_item_popup}
     <EditDashboardPopup dashboard_item_config={single_report_item_config} on:cancel={() => show_edit_item_popup = false}/>

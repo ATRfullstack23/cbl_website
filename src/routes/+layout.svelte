@@ -10,7 +10,7 @@
     HomeSolid,
     WalletSolid,
     AdjustmentsVerticalOutline,
-    UserCircleSolid,
+    UserCircleSolid, ChartPieSolid,
 
   } from "flowbite-svelte-icons";
 
@@ -64,6 +64,10 @@
     window.erp.setDefaultModule();
   }
 
+  function handle_show_reports_button_click() {
+    window.erp.go_to_reports_view();
+  }
+
   function handle_logout_button_click() {
     window.erp.logOut(()=>{
       location.href = '/login';
@@ -106,9 +110,12 @@
   }
   onMount(async function () {
     is_mounted = true;
-    window.globalElements.body.on('selected_main_navigation_display_name_change', (evt)=>{
-      selected_main_navigation_display_name = main_navigation_selected_item_info?.display_name || '';
-    });
+    setTimeout(()=>{
+      window.globalElements.body.on('selected_main_navigation_display_name_change', (evt)=>{
+        selected_main_navigation_display_name = main_navigation_selected_item_info?.display_name || '';
+      });
+    }, 2000);
+
   });
   let selected_main_navigation_display_name = '';
 </script>
@@ -142,7 +149,7 @@
             navType="border"
             class=" border-none"
             classOuter="w-fit border-0"
-            classInner="grid-cols-4 text-grey border-0"
+            classInner="grid-cols-5 text-grey border-0"
     >
       <BottomNavItem
               btnName="Home"
@@ -151,6 +158,16 @@
               btnSpan="text-gray-400"
       >
         <HomeSolid
+                class="w-5 h-5 mb-1 text-gray-400 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-grey-500"
+        />
+      </BottomNavItem>
+      <BottomNavItem
+              btnName="Reports"
+              on:click={handle_show_reports_button_click}
+              btnClass="text-white btn-hover border-0 border-x-0"
+              btnSpan="text-gray-400"
+      >
+        <ChartPieSolid
                 class="w-5 h-5 mb-1 text-gray-400 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-grey-500"
         />
       </BottomNavItem>

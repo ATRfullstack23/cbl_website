@@ -49,6 +49,17 @@ const axis_ledger_item_config = {
 
 
 
+let report_group_obj = {
+    "id": "reports_group",
+    "display_name": "Reports",
+    "custom_icon": {
+        "url": "M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8",
+        "color": "#fff"
+    },
+    "item_type": "group",
+    items: []
+}
+
 let dashboard_group_obj = {
     "id": "dashboard_group",
     "display_name": "Dashboards",
@@ -162,7 +173,7 @@ export async function generate_main_navigation_configuration(erp_instance) {
 
     for(const dashboard_id in erp_instance.dashboards || {}){
         let dashboard_instance = erp_instance.dashboards[dashboard_id];
-        dashboard_group_obj.items.push({
+        let nav_item = {
             "icon": "MailBoxSolid",
             "id": "d_" + dashboard_instance.dashboard_id,
             "custom_icon": {
@@ -175,10 +186,17 @@ export async function generate_main_navigation_configuration(erp_instance) {
             "context_data": {
                 "dashboard_id" : dashboard_instance.dashboard_id
             }
-        });
+        };
+        if(dashboard_instance.type === 'report'){
+            report_group_obj.items.push(nav_item);
+        }
+        else{
+            dashboard_group_obj.items.push(nav_item);
+        }
     }
 
     nav_config.items.push(dashboard_group_obj);
+    nav_config.items.push(report_group_obj);
 
     for(const group_key in nav_config_by_user.groups){
         let group_items = nav_config_by_user.groups[group_key];

@@ -11,9 +11,9 @@
 
     export let dashboard_item_config;
     let config = dashboard_item_config.config;
-    let dashboard_item_id = dashboard_item_config.id;
+    export let dashboard_item_id = dashboard_item_config.id;
     const dispatch_event = createEventDispatcher();
-
+    export let display_name = config.title;
 
     let report_item_instance;
 

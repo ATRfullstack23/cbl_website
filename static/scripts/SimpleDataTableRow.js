@@ -48,6 +48,7 @@ SimpleDataTableRow.prototype = {
         self.setDeviceTypeDisplayMode();
 
         self.bindGetDataFromParentEvents();
+        window._simple_data_row_table_row = this;
 
         return self;
     },
@@ -571,6 +572,26 @@ SimpleDataTableRow.prototype = {
         self._lookUp.lookUpParentChanged(self, column, options);
         return self;
     },
+
+    get lookUpColumnsWithoutParentColumns(){
+        var self = this;
+        var arr = [];
+        self.subModule.columnManager.forEachColumn(function(column){
+            arr.push(column);
+        }, function(column){
+//            console.log(column.id, column.typeSpecific)
+            if(column.type == Column.COLUMN_TYPES.LOOKUP_DROPDOWNLIST){
+                if(column.typeSpecific.parentColumns == null){
+                    return true;
+                }
+                if(column.typeSpecific.parentColumns.length == 0){
+                    return true;
+                }
+            }
+            return false;
+        });
+        return arr;
+    },
     _lookUp:{
         initialize: function(simpleDataTableRow, destroy){
             var self = this;
@@ -764,21 +785,117 @@ SimpleDataTableRow.prototype = {
                 }
             }
         },
+        // getLookUpDataForCreateMode: function(simpleDataTableRow, fromCode){
+        //     var self = this;
+        //     var columns = [];
+        //     simpleDataTableRow.subModule.columnManager.forEachColumnType( Column.COLUMN_TYPES.LOOKUP_DROPDOWNLIST, function(column){
+        //         columns.push(self.toLookUpRequest(simpleDataTableRow, column));
+        //     });
+        //     var data = {};
+        //     data.formView = {};
+        //     data.formView.mode = simpleDataTableRow.mode;
+        //     data.columns = columns;
+        //     data.simpleDataTableRowId = simpleDataTableRow.id;
+        //
+        //     var socket = simpleDataTableRow.getSocket();
+        //     socket.emit(simpleDataTableRow.socketEvents.getLookUpDataForCreateMode, data);
+        //     return self;
+        // },
         getLookUpDataForCreateMode: function(simpleDataTableRow, fromCode){
             var self = this;
             var columns = [];
-            simpleDataTableRow.subModule.columnManager.forEachColumnType( Column.COLUMN_TYPES.LOOKUP_DROPDOWNLIST, function(column){
-                columns.push(self.toLookUpRequest(simpleDataTableRow, column));
-            });
-            var data = {};
-            data.formView = {};
-            data.formView.mode = simpleDataTableRow.mode;
-            data.columns = columns;
-            data.simpleDataTableRowId = simpleDataTableRow.id;
 
-            var socket = simpleDataTableRow.getSocket();
-            socket.emit(simpleDataTableRow.socketEvents.getLookUpDataForCreateMode, data);
-            return self;
+            var lookUpColumns = simpleDataTableRow.lookUpColumnsWithoutParentColumns;
+            var formViewObj = {};
+            formViewObj.mode = simpleDataTableRow.mode;
+            if(simpleDataTableRow.dynamicCallBacks.customCreateModeValues){
+                for(var key in simpleDataTableRow.dynamicCallBacks.customCreateModeValues){
+                    var column = simpleDataTableRow.subModule.columnManager.columns[key];
+                    column.setSimpleDataTableRowEditValue(simpleDataTableRow.dynamicCallBacks.customCreateModeValues, simpleDataTableRow, simpleDataTableRow.mode);
+                }
+            }
+            formViewObj.data = simpleDataTableRow.getFormData();
+            formViewObj.simpleDataTableRowId = simpleDataTableRow.id;
+
+            console.log('lookUpColumns',  lookUpColumns)
+
+            window.async_lib.mapLimit(lookUpColumns, 3, function(column, next){
+
+
+                if(column.disableCondition && column.disableCondition.disabled){
+                    // console.log('ignoring get lookup form server since column is disabled');
+                    next();
+                    return;
+                }
+
+                column.getLookUpDataFromServerViaAjax(formViewObj, function(result){
+                    if(!result.success){
+                        console.log(column.id, result);
+                        next();
+                        return;
+                    }
+                    if(!result.result.isClientDataLatest){
+//                         var column = simpleDataTableRow.subModule.columnManager.columns[key];
+                        var mode = SimpleDataTableRow.CREATE_MODE;
+                        if(simpleDataTableRow.mode === SimpleDataTableRow.VIEW_MODE){
+                            mode = SimpleDataTableRow.EDIT_MODE;
+                        }
+                        column.setSimpleDataTableRowLookupData(result.result, simpleDataTableRow);
+                        // if(callback){
+                        //     callback(simpleDataTableRow, data);
+                        // }
+
+                        // column.setFormViewLookupData(result.result, formView.mode, {});
+                    }
+                    else{
+                        //--- This is kind of thattikootu, move this as a function to Column.js and call it from here
+                        //--- like column.setFirstItemAsSelected();
+                        if( column.lookUpDataBackUp ){
+
+                            var element = column.getSimpleDataTableRowElement(simpleDataTableRow);
+
+                            if(column.typeSpecific.setFirstItemAsSelected){
+                                if(column.lookUpDataBackUp && column.lookUpDataBackUp[0]){
+                                    element.val(column.lookUpDataBackUp[0].value);
+                                    element.data('value', column.lookUpDataBackUp[0].value);
+                                }
+                            }
+                            else{
+                                var defaultValueIndex = column.lookUpDataBackUp && column.lookUpDataBackUp.findIndex(function(item){
+                                    return item.isDefault;
+                                });
+                                if(defaultValueIndex != -1){
+                                    element.val(column.lookUpDataBackUp[defaultValueIndex].value);
+                                    element.data('value', column.lookUpDataBackUp[defaultValueIndex].value);
+                                }
+                            }
+
+                            if(column.hasChosen && column.hasChosen[simpleDataTableRow.mode]){
+                                element.trigger('chosen:updated');
+                            }
+                            // column.triggerSimpleDataTableRowElementChange(formView.mode);
+                        }
+                    }
+
+                    if(simpleDataTableRow.dynamicCallBacks.customCreateModeValues && simpleDataTableRow.dynamicCallBacks.customCreateModeValues[column.id]){
+                        column.setSimpleDataTableRowEditValue(simpleDataTableRow.dynamicCallBacks.customCreateModeValues, simpleDataTableRow, simpleDataTableRow.mode);
+                    }
+                    column.triggerSimpleDataTableRowElementChange(simpleDataTableRow, simpleDataTableRow.mode);
+                    next();
+                });
+            }, function(err, result){
+                simpleDataTableRow._getSet.setDefaultValues(simpleDataTableRow);
+
+                if(simpleDataTableRow.subModule.parentObject.parentItem && simpleDataTableRow.subModule.parentObject.parentItem.typeSpecific.targetColumnsValue){
+                    var button = simpleDataTableRow.subModule.parentObject.parentItem;
+                    button.typeSpecific.targetColumnsValue.forEach(function(columnValueObject){
+                        simpleDataTableRow.subModule.columnManager.columns[columnValueObject.text]
+                            .setFormViewEditValue(null, button.typeSpecific.formViewMode, columnValueObject.value, {triggerChange: true});
+                    });
+                }
+
+            });
+
         },
         getLookUpDataForEditMode: function(simpleDataTableRow, fromCode){
             var self = this;

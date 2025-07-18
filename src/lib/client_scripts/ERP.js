@@ -545,15 +545,29 @@ export class ERP{
                         selector: ".single_dashboard_container",
                         getOptions: function(actualElement, contextMenu, targetElement){
                             var options = {};
-                            var option = {};
-                            option.displayName = 'Add Dashboard Item';
-                            option.id = 'add_single_dashboard_item';
-                            option.onClick = function(){
+
+
+                            var add_dashboard_filter_option = {};
+                            add_dashboard_filter_option.displayName = 'Add Filter';
+                            add_dashboard_filter_option.id = 'add_single_dashboard_filter_item';
+                            add_dashboard_filter_option.onClick = function(){
                                 let dashboard_id = actualElement.attr('data-dashboard_id');
-                                console.log('add_single_dashboard_item', dashboard_id)
+                                // console.log('add_single_dashboard_item', dashboard_id)
+                                self.dashboards[dashboard_id].show_add_new_filter_item_popup();
+                            }
+                            options[add_dashboard_filter_option.id] = add_dashboard_filter_option;
+
+                            var add_dashboard_item_option = {};
+                            add_dashboard_item_option.displayName = 'Add Report Item';
+                            add_dashboard_item_option.id = 'add_single_dashboard_item';
+                            add_dashboard_item_option.onClick = function(){
+                                let dashboard_id = actualElement.attr('data-dashboard_id');
+                                // console.log('add_single_dashboard_item', dashboard_id)
                                 self.dashboards[dashboard_id].show_add_new_dashboard_item_popup();
                             }
-                            options[option.id] = option;
+                            options[add_dashboard_item_option.id] = add_dashboard_item_option;
+
+
                             return options;
                         }
                     },

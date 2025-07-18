@@ -2,11 +2,17 @@
     import { createEventDispatcher } from 'svelte';
     import FaTrashAlt from 'svelte-icons/fa/FaTrashAlt.svelte'
     import SqlEditorPopup from '$lib/editor_utils/SqlEditorPopup.svelte';
+    import {
+        add_new_dashboard_item_in_server,
+        get_all_dashboards_of_user
+    } from "$lib/dashboard_utils/DashboardHelper.js";
+
+    export let dashboard_id;
 
     let dispatch = createEventDispatcher();
     let fitler_types = [
         {
-            "type":"lookup_dropdown",
+            "type":"lookup_dropdownlist",
             "label":"Lookup Dropdown"
         },
         {
@@ -30,7 +36,7 @@
     function handle_delete_choice(choice,index){
         choice_filter_array = choice_filter_array.filter((item,i) => i != index)
     }
-    let selected_filter_type = 'lookup_dropdown';
+    let selected_filter_type = 'lookup_dropdownlist';
     let filter_item_data = {
         type:"filter",
         data_config:{
@@ -39,11 +45,10 @@
         }
     }
     let show_filter_item_popup = false
-    export async function show_add_new_filter_item_dialogue(data,show_add_filter_popup){
-      console.log('show_add_new_filter_item_dialogue', show_add_filter_popup);
+    export async function show_add_new_filter_item_dialog(data,show_add_filter_popup){
+      console.log('show_add_new_filter_item_dialog', show_add_filter_popup);
         show_filter_item_popup = show_add_filter_popup
-        filter_item_data = data
-        filter_item_data.filter_type = 'lookup_dropdown'
+        filter_item_data = data;
     }
     let show_data_sql_popup = false
     function handle_open_data_sql_editor(){
@@ -58,10 +63,14 @@
     }
 
     
-    function handle_confirm() {
-      filter_item_data.data_config.items = choice_filter_array
-      console.log('filter_item_data', filter_item_data);
-      handle_cancel()
+    async function handle_confirm() {
+        filter_item_data.data_config.items = choice_filter_array
+        console.log("filter_item_data_to_insert", filter_item_data);
+        await add_new_dashboard_item_in_server(dashboard_id, filter_item_data);
+        await get_all_dashboards_of_user();
+        location.href = location.href + '';
+        location.reload();
+        handle_cancel()
     }
 
     function handle_cancel() {
@@ -89,7 +98,13 @@
           <input type="text" id="filter_display_name" bind:value={filter_item_data.title}>
         </div>
       </div>
-      {#if filter_item_data.filter_type == 'lookup_dropdown'}
+      <div class="select_container">
+        <div class="select_options_container">
+          <label for="filter_type">Unique ID</label>
+          <input type="text" id="filter_display_name" bind:value={filter_item_data.unique_id}>
+        </div>
+      </div>
+      {#if filter_item_data.filter_type == 'lookup_dropdownlist'}
           <div class="select_container">
               <div class="select_options_container">
                   <label for="data_sql">SQL Data</label>

@@ -25,12 +25,13 @@
 
     outline: 2px solid transparent;
     outline-offset: 2px;
+    background-color: white;
 }
 .formview-container.pc .table-main :is( select:focus, input:focus, input:focus, .chosen-container a:focus) {
     --tw-border-opacity: 1;
     border-color: rgb(63 131 248 / var(--tw-border-opacity));
     border-color: #30405193;
-    --tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
+    /*--tw-ring-inset: var(--tw-empty, !*!*! !*!*!);*/
     --tw-ring-offset-width: 0px;
     --tw-ring-offset-color: #fff;
     --tw-ring-color: #1c64f2;
@@ -298,7 +299,7 @@
 
 .formview-container.pc .formview-column-elements-holder{
     width: 98%;
-    padding-left: 10px;
+    padding-left: 0px;
     text-align: left;
     vertical-align: middle;
 }
@@ -430,7 +431,7 @@
     /*border: 1px solid #F2F2F2;*/
 }
 .formview-container.pc .table-main > tr:nth-child(even){
-    background: #FAFAFA;
+    /*background: #FAFAFA;*/
 }
 .formview-container.pc .table-main-in-direct-create> tr:nth-child(even){
     /*background: rgba(177, 177, 177, 0.98) !important;*/
@@ -1096,7 +1097,7 @@ ul.multipleSelectionDisplayValueList[data-items-count]:before {
 }
 
 .formview-container.pc #div_main {
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .formview-container.pc.full_size {

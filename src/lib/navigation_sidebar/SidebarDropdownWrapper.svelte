@@ -114,7 +114,7 @@
         width: 100%;
         padding-bottom: 10px;
     }
-    span {
+    .label-container span {
         font-weight: 700;
     }
 

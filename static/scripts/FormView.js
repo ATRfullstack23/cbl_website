@@ -1435,30 +1435,23 @@ FormView.prototype = {
             var lookUpColumns = formView.lookUpColumnsWithoutParentColumns;
             var formViewObj = {};
             formViewObj.mode = formView.mode;
-            formViewObj.data = formView.getFormData();
             if(formView.dynamicCallBacks.customCreateModeValues){
                 for(var key in formView.dynamicCallBacks.customCreateModeValues){
                     var column = formView.subModule.columnManager.columns[key];
                     column.setFormViewEditValue(formView.dynamicCallBacks.customCreateModeValues, formView.mode);
                 }
             }
+            formViewObj.data = formView.getFormData();
 
 
             window.async_lib.mapLimit(lookUpColumns, 3, function(column, next){
 
 
                 if(column.disableCondition && column.disableCondition.disabled){
-
-
                     // console.log('ignoing get lookup form server since column is disabled');
                     next();
-
                     return;
-
                 }
-
-
-
 
                 column.getLookUpDataFromServerViaAjax(formViewObj, function(result){
                     if(!result.success){
@@ -1499,7 +1492,6 @@ FormView.prototype = {
 
                         }
                     }
-
 
                     if(formView.dynamicCallBacks.customCreateModeValues && formView.dynamicCallBacks.customCreateModeValues[column.id]){
                         column.setFormViewEditValue(formView.dynamicCallBacks.customCreateModeValues, formView.mode);
@@ -3620,6 +3612,7 @@ FormView.prototype = {
 
         // formView.elements.tableMains[type] need to use this
         const formview_column_holder_elements = self.container.find('.table-main:visible .formview-column-holder');
+        const column_resizable_factor = 20;
 
         $(document.body).on('keydown.formview', function(eve){
             if(eve.keyCode == ERP.KEY_CODES.CTRL){
@@ -3627,7 +3620,7 @@ FormView.prototype = {
 
                 formview_column_holder_elements.resizable({
                     // handles: "n, e, s, w, ne, se, sw, nw",
-                    grid: [10, 20],
+                    grid: [column_resizable_factor, column_resizable_factor],
                     minHeight: 80,
                     minWidth: 100,
                     // containment: "parent", // Contain resizing within the parent element
@@ -3646,7 +3639,33 @@ FormView.prototype = {
                         //     top: 0,
                         //     position: 'relative'
                         // });
-                        console.log('found : ', resized_element.find('#simpleDataTable').get(0))
+                        console.log('found : ', resized_element.find('#simpleDataTable').get(0));
+
+                        let new_width = parseInt(resized_element.css('width'));
+                        let new_height = parseInt(resized_element.css('height'));
+                        console.log(`new_size 1 : ${new_width},${new_height}`)
+                        if(new_width % column_resizable_factor !== 0){
+                            let diff = new_width % column_resizable_factor;
+                            if(diff >= (column_resizable_factor / 2)){
+                                new_width += column_resizable_factor - diff;
+                            }
+                            else{
+                                new_width -= diff;
+                            }
+                        }
+                        if(new_height % column_resizable_factor !== 0){
+                            let diff = new_height % column_resizable_factor;
+                            if(diff >= (column_resizable_factor / 2)){
+                                new_height += column_resizable_factor - diff;
+                            }
+                            else{
+                                new_height -= diff;
+                            }
+                        }
+                        console.log(`new_size 2 : ${new_width},${new_height}`)
+                        resized_element.css('width', new_width);
+                        resized_element.css('height', new_height);
+                        resized_element.attr('title', `size : ${new_width},${new_height}`);
 
                         resized_element.data('data-size_info', {
                             width: resized_element.css('width'),

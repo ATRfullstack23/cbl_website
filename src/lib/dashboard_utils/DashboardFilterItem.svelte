@@ -2,7 +2,10 @@
 
 <script>
     import {createEventDispatcher, onMount} from "svelte";
-    import {get_dashboard_filter_data_from_server} from './DashboardHelper.js'
+    import {
+        get_dashboard_filter_data_from_server,
+        get_dashboard_report_item_data_from_server
+    } from './DashboardHelper.js'
 
     export let container_element;
     export let container;
@@ -22,14 +25,33 @@
         });
     }
 
+    export async function refresh_data(){
+        console.log('refresh_data', config)
+        if(config.filter_type !== 'lookup_dropdownlist'){
+            return;
+        }
+
+        try{
+            let api_result = await get_dashboard_filter_data_from_server(dashboard_item_config);
+            console.log('filter data :', api_result)
+            select_options_data = api_result;
+            // await report_item_instance.on_new_data_received(latest_report_item_data);
+        }
+        catch(erer){
+            console.log('refresh_data erer', erer)
+        }
+
+    }
+
     async function do_initialize() {
         if(config.filter_type === 'choice'){
             select_options_data = config.data_config.items || [];
         }
         else if(config.filter_type === 'lookup_dropdownlist'){
-            let api_result = await get_dashboard_filter_data_from_server(dashboard_item_config);
-            console.log('filter data :', api_result)
-            select_options_data = api_result;
+            await refresh_data();
+            // let api_result = await get_dashboard_filter_data_from_server(dashboard_item_config);
+            // console.log('filter data :', api_result)
+            // select_options_data = api_result;
         }
     }
 
@@ -43,14 +65,18 @@
 
 <div bind:this={container_element} class="dashboard_filter">
     <div class="display_name">{config.title}</div>
-<!--    <pre>{JSON.stringify(config)}</pre>-->
+    <!--    <pre>{JSON.stringify(config)}</pre>-->
 
     {#if config.filter_type === 'choice' ||  config.filter_type === 'lookup_dropdownlist'}
         <select class="filter_ddl" bind:value={filter_value} on:change={handle_filter_value_changed}>
+            <option value="">Please Select</option>
             {#each select_options_data as single_option}
                 <option value="{single_option.value}">{single_option.text}</option>
             {/each}
         </select>
+    {/if}
+    {#if config.filter_type === 'date'}
+        <input type="date" class="filter_date" bind:value={filter_value} on:change={handle_filter_value_changed}>
     {/if}
 </div>
 
