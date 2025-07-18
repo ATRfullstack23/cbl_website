@@ -1,6 +1,7 @@
 <script>
 
     import PaginationUI from "$lib/ui_elements/PaginationUI.svelte";
+    import InvoiceUI from "$lib/ui_elements/InvoiceUI.svelte";
 
     let api_grid_data = {
         "data": [
@@ -469,35 +470,6 @@
         let selected_element = event.target.parentElement
         selected_element.scrollIntoView({behavior: "smooth", block: "center"})
     }
-    let invoice = {
-        id: 'INV-000001',
-        date: '2025-01-09',
-        orderNumber: '1',
-        customerName: 'Mr. John',
-        customerEmail: 'john@example.com',
-        status: 'PAID',
-        dueDate: '2025-01-09',
-        amount: 2500.00,
-        balanceDue: 0.00,
-        items: [
-            {
-                id: 1,
-                description: 'Web Development Services',
-                quantity: 1,
-                rate: 2500.00,
-                amount: 2500.00
-            }
-        ],
-        subtotal: 2500.00,
-        total: 2500.00,
-        notes: 'Thanks for your business.',
-        terms: 'Net 30',
-        companyName: 'Your Company',
-        companyAddress: 'Your Address',
-        companyCity: 'Your City',
-        companyEmail: 'your-email@company.com'
-    }
-
 
     function handleEdit() {
         alert('Edit functionality would be implemented here');
@@ -588,14 +560,22 @@
             column_obj.data_type = 'date'
         }
 
+        if(column_id === 'total_amount'){
+            column_obj.data_type = 'amount'
+        }
+
 
         column_obj.parseDisplayValue = (data_row) => {
             if(column_obj.data_type === 'lookup_dropdownlist'){
                 return data_row[column_id]?.text;
             }
             else if(column_obj.data_type === 'date'){
-                let value = data_row[column_id]?.text;
+                let value = data_row[column_id]?.value;
                 return moment(value).format('dd MMMM YYYY');
+            }
+            else if(column_obj.data_type === 'amount'){
+                let value = data_row[column_id]?.value;
+                return formatCurrency(value);
             }
             return data_row[column_id]?.value;
         };
@@ -673,112 +653,14 @@
                 <div class="banner_content">
                     <span class="star_icon">⭐</span>
                     <span class="banner_text">
-            <strong>WHAT'S NEXT?</strong> Send this invoice to your customer or mark it as Sent.
-          </span>
+                        <strong>WHAT'S NEXT?</strong> Send this invoice to your customer or mark it as Sent.
+                    </span>
                     <button class="banner_btn primary" on:click={handleSendInvoice}>Send Invoice</button>
                     <button class="banner_btn secondary" on:click={handleMarkAsSent}>Mark As Sent</button>
                 </div>
             </div>
+            <InvoiceUI bind:selected_item/>
 
-            <!-- Invoice Document -->
-            <div class="invoice_document">
-                <div class="invoice_header">
-                    <div class="invoice_title">
-                        <h1>TAX INVOICE</h1>
-                    </div>
-                </div>
-                <div class="bill_to_section">
-                    <h3 class="section_title">Bill To</h3>
-                    <p class="customer_name">{selected_item.customer_profile_id__text}</p>
-                </div>
-
-
-                <div class="invoice_meta_section">
-                    <div class="invoice_details">
-                        <div class="detail_row_outer">
-                            <div class="detail_row">
-                                <span class="label">#</span>
-                                <span class="value">{selected_item.invoice_number.value}-{selected_item.id}</span>
-                            </div>
-                            <div class="detail_row">
-                                <span class="label">Invoice Date</span>
-                                <span class="value">{formatDate(selected_item.invoice_date.value)}</span>
-                            </div>
-                        </div>
-                        <div class="detail_row_outer">
-<!--                            <div class="detail_row">-->
-<!--                                <span class="label">Terms</span>-->
-<!--                                <span class="value">{invoice.terms}</span>-->
-<!--                            </div>-->
-                            <div class="detail_row">
-                                <span class="label">Due Date</span>
-                                <span class="value">{formatDate(selected_item.due_date.value)}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-<!--                <div class="bill-to-section">-->
-<!--                    <h3 class="section-title">Bill To</h3>-->
-<!--                    <p class="customer-name">{invoice.customerName}</p>-->
-<!--                </div>-->
-
-                <div class="items_section">
-                    <table class="items_table">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Item & Description</th>
-                            <th>Qty</th>
-                            <th>Rate</th>
-                            <th>Amount</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {#each invoice.items as item, index}
-                            <tr>
-                                <td>{index + 1}</td>
-                                <td>{item.description}</td>
-                                <td>{item.quantity} pcs</td>
-                                <td>{formatCurrency(item.rate)}</td>
-                                <td>{formatCurrency(item.amount)}</td>
-                            </tr>
-                        {/each}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="totals_section">
-                    <div class="total_in_words">
-                        <div class="words_label">Total In Words</div>
-                        <div class="words_value">{convertToWords(invoice.total)}</div>
-                    </div>
-
-                    <div class="totals_table">
-                        <div class="total_row">
-                            <span class="total_label">Sub Total</span>
-                            <span class="total_value">{formatCurrency(invoice.subtotal)}</span>
-                        </div>
-                        <div class="total_row">
-                            <span class="total_label">Total</span>
-                            <span class="total_value">{formatCurrency(invoice.total)}</span>
-                        </div>
-                        <div class="total_row balance_row">
-                            <span class="total_label">Balance Due</span>
-                            <span class="total_value">{formatCurrency(invoice.balanceDue)}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="notes_section">
-                    <div class="notes_label">Notes</div>
-                    <div class="notes_content">{invoice.notes}</div>
-                </div>
-
-                <div class="signature_section">
-                    <div class="signature_label">Authorized Signature</div>
-                </div>
-            </div>
         </div>
     </div>
 {:else}

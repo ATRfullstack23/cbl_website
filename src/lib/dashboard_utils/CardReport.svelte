@@ -26,7 +26,7 @@
     <div class="top_portion" class:icon_present={item.icon}>
         <div class="card_main_contents" class:icon_present={item.icon}>
             <p style="color: {report_data.color};">{item.title}</p>
-            <h5 style="color: {report_data.color};">{report_data.value_1} <span>{report_data.sub_note_1 || ''}</span></h5>
+            <h5 style="color: {report_data.color};">{report_data.value_1} <span>{report_data.sub_note_1 || report_data.subnote_1 || ''}</span></h5>
         </div>
         {#if item.icon}
             <div class="icons_box">
@@ -36,7 +36,7 @@
     </div>
     <div class="bottom_portion" class:icon_present={item.icon}>
         {#if report_data.value_2}
-            <p style="color: {report_data.color};">{report_data.value_2} {report_data.sub_note_2}</p>
+            <p style="color: {report_data.color};">{report_data.value_2} {report_data.sub_note_2 || report_data.subnote_2 || ''}</p>
         {/if}
     </div>
 </div>
@@ -60,6 +60,8 @@
         font-family: "Open Sans", sans-serif;
         margin: 10px;
         background-color: blueviolet;
+        width: 300px;
+        height: 150px;
     }
     .item_container:hover {
         transform: translateY(-5px);

@@ -150,7 +150,7 @@
     <div class="add_new_dashboard">
 <!--        style="display: none;"-->
         <button class="filter_button" on:click={() =>show_add_new_filter_item_popup()}><i class="fa-solid fa-filter"></i>Add Filter</button>
-        <button on:click={() =>show_add_new_dashboard_item_popup()}>Add New Dashboard</button>
+        <button on:click={() =>show_add_new_dashboard_item_popup()}>Add New Item</button>
     </div>
 
     {#if shall_initialize}

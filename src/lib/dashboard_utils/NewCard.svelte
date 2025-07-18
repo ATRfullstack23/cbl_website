@@ -10,8 +10,8 @@
 
 
     export async function on_new_data_received(new_data) {
-        console.log('on_new_data_received', new_data)
-        report_data = new_data;
+        console.log('on_new_data_received by abn ======================================', new_data)
+        report_data = new_data[0][0];
         console.log(report_data)
        
     }
