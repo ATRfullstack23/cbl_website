@@ -15,9 +15,10 @@
     max-height: calc(100vh - 150px);
     /* max-width: 99%; */
     /* width: calc(100% - 100px); */
-    max-width: calc(100% - 30px);
+    max-width: calc(var(--submodule_container_width) - 30px);
     transition: all 100ms ease-in-out;
     margin-left: 2px;
+
 }
 
 .expand .grid-container.pc{
@@ -39,22 +40,11 @@
 }
 
 .grid-container.pc .grid-main{
-    /* padding: 4px 0px; */
-    /*border-radius: 5px;*/
-    /*  border: 1px solid rgba(195, 195, 195, 0.65);
-      background-color: rgb(234, 247, 255);
-      -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-      -ms-box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-      -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, .5);*/
+    padding: 4px 0px;
+    /* border-radius: 5px; */
     /* margin: 5px; */
-    /*
-    background: -moz-linear-gradient(top, #cae9f4 0%, #cae9f4 40%,rgba(48, 138, 200, 0.39) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #cae9f4), color-stop(40%, #cae9f4), color-stop(100%, rgba(48, 138, 200, 0.39)));
-    background: -webkit-linear-gradient(top, #cae9f4 0%, #cae9f4 40%, rgba(48, 138, 200, 0.39) 100%);
-    background: -o-linear-gradient(top, #cae9f4 0%, #cae9f4 40%, rgba(48, 138, 200, 0.39) 100%);
-    background: -ms-linear-gradient(top, #cae9f4 0%, #cae9f4 40%, rgba(48, 138, 200, 0.39) 100%);
-    background: linear-gradient(to bottom, rgba(175, 184, 189, 0.88) 0%, rgba(188, 197, 202, 0.54) 40%, #acb5ba 100%);*/
+    width: 100%;
+    overflow-x: auto;
 }
 .grid-container.pc #grid{
     border-top: 1px solid rgb(195 195 195 / 21%);

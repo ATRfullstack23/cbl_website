@@ -319,6 +319,12 @@
     reset_filter_options()
 
   }
+  function handle_delete_custom_table_column_click(added_column, added_column_index){
+      added_columns_array = added_columns_array.filter((col)=>{
+          return col.display_name !== added_column.display_name;
+      });
+  }
+
   function handle_add_column(){
     if(column_data_obj.action_type != 'null'){
       let context_data = {
@@ -512,10 +518,10 @@
           <div class="" style="min-height: 150px;" >
             {#if added_columns_array.length}
               <div class="added_columns_container">
-                {#each added_columns_array as added_column}
+                {#each added_columns_array as added_column, added_column_index}
                   <div class="added_column">
                     <p style="min-width: 150px;">{added_column.display_name}</p>
-                    <button>
+                    <button on:click={()=>{handle_delete_custom_table_column_click(added_column, added_column_index)}}>
                       <span style="width: 12px;display:inline-block;">
                         <FaTrashAlt />
                       </span>

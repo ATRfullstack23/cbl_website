@@ -287,6 +287,10 @@ td.searchButtonsContainerParent {
     background: url("/pic/table.png")no-repeat;
 }
 
+.defaultButtonsContainer .set_display_mode_to_master_detail_view {
+    background: url("/pic/ic_master_detail.png")no-repeat;
+}
+
 .defaultButtonsContainer .setDisplayModeToDirectCreateView {
     background: url("/pic/addDetails.png")no-repeat;
 }
@@ -342,6 +346,7 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
 }
 #viewsContainer{
     vertical-align: top;
+    padding: 5px;
 }
 
 

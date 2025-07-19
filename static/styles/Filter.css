@@ -176,7 +176,7 @@ body.pc .filter-tabPanel{
     flex-direction: column;
     height: 100%;
     width: 320px;
-    transform: translateX(92%);
+    transform: translateX(96%);
     transition: all 300ms ease-in-out;
     transition-delay: 500ms;
     overflow-y: auto;

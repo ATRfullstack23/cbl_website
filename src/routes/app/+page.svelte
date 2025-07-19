@@ -36,6 +36,11 @@
             window.__default_user_config = JSON.parse(localStorage.user_login_result);
         }
 
+        if(!window.__default_user_config){
+            location.href = '/login';
+            return;
+        }
+
         const user_obj = {
             config: {
                 user: window.__default_user_config
@@ -53,8 +58,9 @@
             url: backend_root_url + '/configuration.json',
             cache: false,
             type: 'GET'
-        }).success(function(erp_config){
+        }).always(function(erp_config){
             window.ERP = ERP;
+            console.log('new user_obj', user_obj)
             console.log('new erp', erp_instance)
             erp_config.backend_root_url = backend_root_url;
             erp_config.socket_io_url = backend_root_url + '/socket.io/socket.io.js?_=1719394543097';
@@ -220,6 +226,7 @@ data-sveltekit-preload-data="off">
         line-height: 54px;
         background-color: var(--dark_theme_bg_color);
         color: var(--dark_theme_color);
+        overflow: hidden;
     }
 
     .main{
