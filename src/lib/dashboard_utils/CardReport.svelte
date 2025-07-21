@@ -1,18 +1,20 @@
 <script>
+    import DashboardItemSingleActionButton from "$lib/dashboard_utils/DashboardItemSingleActionButton.svelte";
+
     export let item;
     export let dashboard_item_config;
 
     // console.log("item report", item)
     let report_data = {};
-    let module_name
+    let module_name;
 
-    console.log(item); 
 
+    let action_button_config = item.action_button || null;
+    let dashboard_item_single_action_button_instance;
 
     export async function on_new_data_received(new_data) {
-        console.log('on_new_data_received', new_data)
+        // console.log('on_new_data_received card', new_data, item)
         report_data = new_data;
-        console.log(report_data)
         if(item.icon){
             const module_path = `./icons_lib/fa/${item.icon}.svelte`;       
             module_name = (await import(module_path)).default;  
@@ -39,6 +41,11 @@
             <p style="color: {report_data.color};">{report_data.value_2} {report_data.sub_note_2 || report_data.subnote_2 || ''}</p>
         {/if}
     </div>
+
+    {#if action_button_config?.is_enabled}
+        <DashboardItemSingleActionButton bind:this={dashboard_item_single_action_button_instance} action_button_config="{action_button_config}"/>
+    {/if}
+
 </div>
 
 <style>

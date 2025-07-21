@@ -9,6 +9,8 @@
       update_dashboard_item_in_server,
       get_all_dashboards_of_user
   } from "$lib/dashboard_utils/DashboardHelper.js";
+  import SubModulePicker from "$lib/dashboard_utils/SubModulePicker.svelte";
+  import FilterConfigMakerForSubModuleLinking from "$lib/dashboard_utils/FilterConfigMakerForSubModuleLinking.svelte";
   export let dashboard_id;
 
   let dashboard_height = '200'
@@ -222,6 +224,8 @@
 
   async function handle_update(){
     dashboard_item_data.config.table_column_data = added_columns_array
+
+      dashboard_item_data.config.action_button = get_action_button_config();
     // let updated_dashboard_item_config = dashboard_item_data.config
     let dashboard_item_id_to_update = dashboard_item_data.id
     await update_dashboard_item_in_server(dashboard_id, dashboard_item_id_to_update, dashboard_item_data);
@@ -232,8 +236,48 @@
 
 
   
-  let selected_module
-  let selected_sub_module
+  let is_action_button_enabled = false;
+  let action_button_display_name = '';
+  let action_button_target_module_id;
+  let action_button_target_sub_module_id;
+
+  let action_button_config;
+  let action_button_target_sub_module_picker_instance;
+  let action_button_target_module;
+  let action_button_target_sub_module;
+  let action_button_filters;
+
+  function handle_action_button_target_sub_module_changed(evt) {
+      action_button_target_module = evt.detail.module;
+      action_button_target_sub_module = evt.detail.sub_module;
+      console.log('action_button_target_sub_module', action_button_target_sub_module)
+
+      filter_config_maker_for_sub_module_linking.handle_sub_module_changed(action_button_target_sub_module);
+  }
+
+  function get_action_button_config() {
+      action_button_config = {
+          is_enabled: false,
+          filters: []
+      };
+
+      action_button_config.is_enabled = is_action_button_enabled;
+      action_button_config.display_name = action_button_display_name;
+
+      action_button_config.module_id = action_button_target_module_id;
+      action_button_config.sub_module_id = action_button_target_sub_module_id;
+      action_button_config.filters = action_button_filters;
+
+      // need filters here
+
+
+      return action_button_config;
+  }
+
+
+  let filter_config_maker_for_sub_module_linking;
+
+
   let show_data_sql_popup = false
   let sample_sql_code = '-- Sample card sql'
   function handle_open_data_sql_editor(){
@@ -298,26 +342,11 @@
   let added_columns_array = []
   let column_data_obj = {}
   let show_add_column_popup = false
-  function reset_filter_options(){
-      selected_module = ''
-      selected_sub_module = ''
-      // selected_filters = []
-      newModule = {
-          filter: '',
-          filter_type: '',
-          filter_value: '',
 
-      }
-      newFilter = {
-          filter_id: '',
-          filter_title: ''
-      }
-  }
   function handle_show_add_new_column_dialogue_box(){
     show_add_column_popup = true
-    selected_filters = []
+    // selected_filters = []
     reset_filter_options()
-
   }
   function handle_delete_custom_table_column_click(added_column, added_column_index){
       added_columns_array = added_columns_array.filter((col)=>{
@@ -328,8 +357,8 @@
   function handle_add_column(){
     if(column_data_obj.action_type != 'null'){
       let context_data = {
-        module_id : selected_module,
-        submodule_id : selected_sub_module
+        module_id : action_button_target_module_id,
+        submodule_id : action_button_target_sub_module_id
       }
       column_data_obj.context_data = context_data
       added_columns_array = [...added_columns_array,column_data_obj]
@@ -372,50 +401,29 @@
       console.log('dashboard_item_data.config.table_column_data', dashboard_item_data.config.table_column_data);
       added_columns_array = dashboard_item_data.config.table_column_data
     }
-  }
+    action_button_config = data_config.config.action_button || {is_enabled: false};
 
-  let selected_filters = []
 
-  function open_filter_configuration_popup(){
-      popup_visible = true
-  }
-  function close_filter_configuration_popup(){
-      popup_visible = false
-      reset_filter_options()
-  }
-  function delete_filter_data(index){
-      selected_filters.splice(index, 1);
-      selected_filters = [...selected_filters];
-  }
-  function add_new_filter_config(){
-      const selected_filter = config_json.filters.find(f => f.id === newFilter.filter_id);
-      if (selected_filter && newModule.filter_type && newModule.filter_value) {
-          const newEntry = {
-              filter: selected_filter.title,
-              filter_type: newModule.filter_type,
-              filter_value: newModule.filter_value || '',
+      action_button_filters = action_button_config.filters || [];
 
-          };
+    is_action_button_enabled = action_button_config.is_enabled;
+      action_button_display_name = action_button_config.display_name;
+    action_button_target_module_id = action_button_config.module_id;
+    action_button_target_sub_module_id = action_button_config.sub_module_id;
+      console.log('action_button_config', action_button_config)
 
-          selected_filters = [...selected_filters, newEntry];
+      action_button_target_module = window.erp.get_module_from_id(action_button_target_module_id);
+      action_button_target_sub_module = action_button_target_module?.get_sub_module_from_id(action_button_target_sub_module_id);
 
-          close_filter_configuration_popup();
-          reset_filter_options()
-      } else {
-          alert('Please select a filter.');
+      if(action_button_target_sub_module_id){
+          await action_button_target_sub_module_picker_instance.set_edit_value({
+              module_id: action_button_target_module_id,
+              sub_module_id: action_button_target_sub_module_id,
+          });
       }
-  }
-  let popup_visible = false;
-  let newModule = {
-      filter: '',
-      filter_type: '',
-      filter_value: '',
 
-  };
-  let newFilter = {
-      filter_id: '',
-      filter_title: ''
-  };
+  }
+
 
 
   let dashboard_type = 'card'
@@ -563,47 +571,47 @@
           <div class="select_container action_button_container">
             <div class="select_options_container">
                 <label for="dashboard_action_button">Action Button</label>
-                <div class="selection_blocks">
-                  <div class="single_block">
-                    <h3>Module</h3>
-                    <select name="" id="" bind:value={selected_module}>
-                      {#each config_json.modules as module}
-                        <option value="{module.id}">{module.title}</option>
-                      {/each}
-                    </select>
-                  </div>
-                  <div class="single_block">
-                    <h3>Sub Module</h3>
-                    <select name="" id="" bind:value={selected_sub_module}>
-                      {#each config_json.submodules.filter(item=>item.module == selected_module) as sub_module}
-                        <option value="{sub_module.id}">{sub_module.title}</option>
-                      {/each}
-                    </select>
-                  </div>
+                <div class="">
+
+                    <div class="action_button_basic_settings">
+                        <label class="action_button_is_enabled"><input type="checkbox" title="Enabled" bind:checked={is_action_button_enabled}/><span>Enabled</span></label>
+                        <label class="action_button_display_name"><input type="text" title="Text" placeholder="display name" bind:value={action_button_display_name}/></label>
+                    </div>
+
+
+                    <SubModulePicker erp_instance="{window.erp}"
+                                     bind:this={action_button_target_sub_module_picker_instance}
+                                     on:selected_sub_module_changed={handle_action_button_target_sub_module_changed}
+                                     bind:selected_module_id={action_button_target_module_id}
+                                     bind:selected_sub_module_id={action_button_target_sub_module_id}/>
+
+<!--                  <div class="single_block">-->
+<!--                    <h3>Module</h3>-->
+<!--                    <select name="" id="" bind:value={selected_module}>-->
+<!--                      {#each config_json.modules as module}-->
+<!--                        <option value="{module.id}">{module.title}</option>-->
+<!--                      {/each}-->
+<!--                    </select>-->
+<!--                  </div>-->
+<!--                  <div class="single_block">-->
+<!--                    <h3>Sub Module</h3>-->
+<!--                    <select name="" id="" bind:value={selected_sub_module}>-->
+<!--                      {#each config_json.submodules.filter(item=>item.module == selected_module) as sub_module}-->
+<!--                        <option value="{sub_module.id}">{sub_module.title}</option>-->
+<!--                      {/each}-->
+<!--                    </select>-->
+<!--                  </div>-->
                 </div>
             </div>
           </div>
 
-          <div class="filter-control-container">
-              <div class="insert-container">
-                  <h6>Filter Configuration</h6>
-                  {#if selected_sub_module}
-                      <button on:click={open_filter_configuration_popup}>Add</button>
-                  {/if}
-              </div>
-              {#if selected_filters.length}
-                  <div class="filter-container">
-                      <ul>
-                          {#each selected_filters as mod, index}
-                              <li>
-                                  {mod.filter}
-                                  <div class="delete-btn"  on:click={() => delete_filter_data(index)}><i class="fa-solid fa-trash"></i></div>
-                              </li>
-                          {/each}
-                      </ul>
-                  </div>
-              {/if}
-          </div>
+          {#if action_button_target_sub_module}
+              <FilterConfigMakerForSubModuleLinking bind:this={filter_config_maker_for_sub_module_linking}
+                                                    bind:selected_filters="{action_button_filters}"
+                                                    sub_module="{action_button_target_sub_module}"/>
+          {/if}
+
+
       {/if}
       <div class="button_group">
         {#if edit_mode}
@@ -665,53 +673,6 @@
     <SqlEditorPopup bind:dashboard_data_sql={dashboard_item_data.config.data_config.sql} on:close_popup={handle_close_data_sql_editor} on:get_sql={handle_get_data_sql}/>
   {/if}
 </div>
-{#if popup_visible}
-    <div class="filter-popup-overlay">
-        <div class="filter-popup-wrapper">
-            <div class="filter-header-section">
-                <button class="filter-close-button" on:click={close_filter_configuration_popup} aria-label="Close">✕</button>
-            </div>
-            {#if !selected_sub_module}
-                <div class="filter-input-section">
-                    <p style="color: orange; font-weight: bold;">Please select a sub module first.</p>
-                </div>
-            {:else if config_json.filters.filter(item=>item.submodule == selected_sub_module).length > 0}
-                <div class="filter-input-section">
-                    <label>Select Filter</label>
-                    <select bind:value={newFilter.filter_id}>
-                        <option value="">Select Filter</option>
-                        {#each config_json.filters.filter(item=>item.submodule == selected_sub_module) as f}
-                            <option value={f.id}>{f.title}</option>
-                        {/each}
-                    </select>
-                </div>
-                <div class="filter-input-section">
-                    <label>Filter Type</label>
-                    <label><input type="radio" value="dynamic" bind:group={newModule.filter_type}> Dynamic</label>
-                    <label><input type="radio" value="static" bind:group={newModule.filter_type}> Static</label>
-                </div>
-                {#if newModule.filter_type}
-                    <div class="filter-input-section_dynamic">
-                        <label>Filter Value</label>
-                        <input type="text" bind:value={newModule.filter_value} placeholder="Enter filter value" />
-                    </div>
-                {/if}
-
-
-                <div class="filter-popup-buttons">
-                    <button class="add_filter" on:click={add_new_filter_config}>Add</button>
-                    <button class="cancel" on:click={close_filter_configuration_popup}>Cancel</button>
-
-                </div>
-            {:else}
-                <div class="filter-input-section">
-                    <p style="color: red; font-weight: bold;">No filters available for this sub module.</p>
-                </div>
-            {/if}
-
-        </div>
-    </div>
-{/if}
 {#if show_add_column_popup}
   <div class="add_new_column_popup">
     <div class="add_new_column_container">
@@ -751,7 +712,7 @@
                 <div class="selection_blocks" style="min-width: 60%;">
                   <div class="single_block">
                     <h3>Module</h3>
-                      <select name="" id="" bind:value={selected_module}>
+                      <select name="" id="" bind:value={action_button_target_module_id}>
                           {#each config_json.modules as module}
                               <option value="{module.id}">{module.title}</option>
                           {/each}
@@ -759,8 +720,8 @@
                   </div>
                   <div class="single_block">
                     <h3>Sub Module</h3>
-                      <select name="" id="" bind:value={selected_sub_module}>
-                          {#each config_json.submodules.filter(item=>item.module == selected_module) as sub_module}
+                      <select name="" id="" bind:value={action_button_target_sub_module_id}>
+                          {#each config_json.submodules.filter(item=>item.module == action_button_target_module_id) as sub_module}
                               <option value="{sub_module.id}">{sub_module.title}</option>
                           {/each}
                       </select>
@@ -771,7 +732,7 @@
           <div class="filter-control-container">
               <div class="insert-container">
                   <h6>Filter Configuration</h6>
-                  {#if selected_sub_module}
+                  {#if action_button_target_sub_module_id}
                       <button on:click={open_filter_configuration_popup}>Add</button>
                   {/if}
               </div>
@@ -1075,119 +1036,8 @@ input:disabled{
   background-color: red;
 }
 
-/*CSS for Integration of Filter Configuration from ATR */
-.filter-control-container{
-    border: 1px solid rgb(128 128 128 / 22%);
-    padding: 10px 5px 5px 10px;
-    border-radius: 10px;
-    /*pa*/
-}
-.insert-container{
-    display: flex;
-    align-items: center;
-    gap: 25px;
-}
-.insert-container button{
-    width: 60px;
-    padding: 2px 3px;
-    margin-top: 6px;
-    font-size: 12px;
-}
 
-.filter-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000000;
-}
-.filter-popup-wrapper {
-    background: white;
-    padding: 2rem;
-    padding-top: 0;
-    padding-right: 10px;
-    border-radius: 10px;
-    width: 400px;
-    height: 370px;
-    position: relative;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-.filter-input-section {
-    margin-bottom: 1rem;
-}
-.filter-input-section_dynamic input{
-    width: 100%;
-}
-.filter-input-section label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-}
-.delete-btn{
-    background: none;
-}
-.filter-input-section select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-.filter-popup-buttons {
-    position: absolute;
-    bottom: 7px;
-    right: 7px;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1.5rem;
-}
-.filter-popup-buttons button {
-    padding: 0.5rem 1.2rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-.filter-popup-buttons .cancel {
-    background: #888;
-    color: white;
-}
-.filter-popup-buttons .add_filter {
-    background: #28a745;
-    color: white;
-}
-.filter-header-section{
-    display: flex;
-    justify-content: right;
-}
-.filter-close-button {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: #c61b1b;
-    font-weight: 800;
-}
-.filter-container ul{
-    max-height: 100px;
-    overflow: scroll;
-    border: 1px solid grey;
-    padding: 10px;
-}
-.filter-container ul li{
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    cursor: pointer;
-    margin-bottom: 5px;
-    padding-block: 2px;
-}
-.filter-container ul li:hover{
-    background-color: #007bff;
-    color: #fff;
-}
+
+
 
 </style>

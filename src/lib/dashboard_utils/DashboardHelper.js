@@ -120,7 +120,7 @@ export async function get_dashboard_report_item_data_from_server(dashboard_item_
                 reject(responseObj);
                 return;
             }
-            console.log('get_dashboard_filter_data_from_server done', status, responseObj)
+            // console.log('get_dashboard_filter_data_from_server done', status, responseObj)
             resolve(responseObj.result);
         });
     });

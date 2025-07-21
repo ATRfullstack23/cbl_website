@@ -535,6 +535,20 @@ FilterManager.prototype = {
     get_filter_count: function (){
         return Object.keys(this.filters).length;
     },
+
+    get_all_filters_arr(){
+        const self = this;
+        const arr = [];
+        for(const key in self.filters){
+            const filter = self.filters[key];
+            arr.push(filter);
+        }
+        return arr;
+    },
+    get_filter_from_id(sub_module_id){
+        return this.filters[sub_module_id];
+    },
+
     forEachFilter: function(eachFunction, filterFunction){
         var self = this;
         var count = 0;

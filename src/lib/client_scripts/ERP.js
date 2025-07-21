@@ -3016,6 +3016,15 @@ export class ERP{
         }
         return self;
     }
+    get_all_modules_arr(){
+        const self = this;
+        const arr = [];
+        for(const key in self.allModules){
+            const module = self.allModules[key];
+            arr.push(module);
+        }
+        return arr;
+    }
     forEachModule(eachFunction, filterFunction){
         var self = this;
         for(var key in self.modules){

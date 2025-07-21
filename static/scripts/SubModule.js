@@ -830,6 +830,14 @@ SubModule.prototype = {
         }
         return self;
     },
+    get_all_filters_arr: function(){
+        const self = this;
+        return self.filterManager.get_all_filters_arr();
+    },
+    get_filter_from_id: function(filter_id){
+        const self = this;
+        return self.filterManager.get_filter_from_id(filter_id);
+    },
     forEachButton: function(eachFunction, filterFunction){
         var self = this;
         self.buttonManager.forEachButton(eachFunction, filterFunction);
