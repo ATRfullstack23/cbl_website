@@ -27,6 +27,7 @@ SubModule.prototype = {
         if(self.formViewOnlyMode){
             self.hasGridViewMode = false;
             self.hasThumbnailViewMode = false;
+            self.hasMasterDetailViewMode = false;
             self.hasCalenderViewMode = false;
         }
         self.dynamicCallBacks = {};
@@ -34,6 +35,9 @@ SubModule.prototype = {
         if(!self.defaultDisplayMode){
             if(self.hasGridViewMode){
                 self.defaultDisplayMode = SubModule.DISPLAY_MODES.GRID_VIEW;
+            }
+            else if(self.hasMasterDetailViewMode){
+                self.defaultDisplayMode = SubModule.DISPLAY_MODES.MASTER_DETAIL_VIEW;
             }
             else if(self.hasThumbnailViewMode){
                 self.defaultDisplayMode = SubModule.DISPLAY_MODES.THUMBNAIL_VIEW;
@@ -73,10 +77,17 @@ SubModule.prototype = {
             self.common_pager = self.grid.pager;
         }
 
+        if(self.hasMasterDetailViewMode){
+            // hasMasterDetailViewMode
+            self.config.master_detail_view_config = self.master_detail_view_config = {
+                "display_type": "invoice",
+            };
+        }
+
         if(self.hasThumbnailViewMode){
             // self.hasThumbnailViewMode = false;
             self.hasCardViewMode = true;
-            self.defaultDisplayMode = SubModule.DISPLAY_MODES.CARD_VIEW;
+            // self.defaultDisplayMode = SubModule.DISPLAY_MODES.CARD_VIEW;
             // aki temp remove later
             self.cardViewConfig  = self.config.cardViewConfig = {
                 "display_type": "card With Image",
@@ -756,6 +767,7 @@ SubModule.prototype = {
     show      : function () {
         var self = this;
         self.container.removeClass('hidden');
+        self.container.css('--submodule_container_width', self.container.width() + 'px');
         return self;
     },
     hide      : function () {
@@ -817,6 +829,14 @@ SubModule.prototype = {
             self.formView.refreshCurrentFormData(responseData.data)
         }
         return self;
+    },
+    get_all_filters_arr: function(){
+        const self = this;
+        return self.filterManager.get_all_filters_arr();
+    },
+    get_filter_from_id: function(filter_id){
+        const self = this;
+        return self.filterManager.get_filter_from_id(filter_id);
     },
     forEachButton: function(eachFunction, filterFunction){
         var self = this;
@@ -2463,6 +2483,7 @@ SubModule.DISPLAY_MODES = {
     GRID_VIEW: "gridView",
     CARD_VIEW: "thumbnailView",
     THUMBNAIL_VIEW: "thumbnailView",
+    MASTER_DETAIL_VIEW: "master_detail_view",
     FORM_VIEW: "formView",
     CALENDAR_VIEW: "calendarView",
     DIRECTCREATE_VIEW: "directCreate"

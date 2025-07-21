@@ -26,6 +26,10 @@ ButtonManager.prototype = {
             "class":"setDisplayModeToThumbnailView icon",
             title: "Thumbnail View"
         },
+        set_display_mode_to_master_detail_view:{
+            "class":"set_display_mode_to_master_detail_view icon",
+            title: "Master Detail View"
+        },
         setDisplayModeToCalendarView:{
             "class":"setDisplayModeToCalendarView icon",
             title: "Calendar View"
@@ -499,6 +503,11 @@ ButtonManager.prototype = {
         if(self.subModule.hasThumbnailViewMode){
             self.defaultButtons.setDisplayModeToThumbnailView.on('click',function(){
                 self.subModule.setDisplayMode(SubModule.DISPLAY_MODES.THUMBNAIL_VIEW);
+            });
+        }
+        if(self.subModule.hasMasterDetailViewMode){
+            self.defaultButtons.set_display_mode_to_master_detail_view.on('click',function(){
+                self.subModule.setDisplayMode(SubModule.DISPLAY_MODES.MASTER_DETAIL_VIEW);
             });
         }
         if(self.subModule.hasCalendarViewMode){
@@ -1027,6 +1036,11 @@ ButtonManager.prototype = {
                     .attr(buttonManager.constants.setDisplayModeToThumbnailView)/*.text('Card')*/
                     .appendTo(setDisplayModeButtonsContainer);
             }
+            if(buttonManager.subModule.hasMasterDetailViewMode){
+                var setDisplayModeToMasterDetailView = $(document.createElement('div'))
+                    .attr(buttonManager.constants.set_display_mode_to_master_detail_view)/*.text('Card')*/
+                    .appendTo(setDisplayModeButtonsContainer);
+            }
             //need to change the attr from constants
             if(buttonManager.subModule.hasCalendarViewMode){
                 var setDisplayModeToCalendarView = $(document.createElement('div'))
@@ -1040,6 +1054,7 @@ ButtonManager.prototype = {
             buttonManager.defaultButtons.setDisplayModeToGridView = setDisplayModeToGridView;
             buttonManager.defaultButtons.setDisplayModeButtonsContainer = setDisplayModeButtonsContainer;
             buttonManager.defaultButtons.setDisplayModeToCalendarView = setDisplayModeToCalendarView;
+            buttonManager.defaultButtons.set_display_mode_to_master_detail_view = setDisplayModeToMasterDetailView;
             buttonManager.elements.searchButtonsContainer = searchButtonsContainer;
 
             return div;

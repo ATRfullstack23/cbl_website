@@ -152,6 +152,20 @@ Module.prototype = {
         }
         return self;
     },
+
+    get_all_sub_modules_arr(){
+        const self = this;
+        const arr = [];
+        for(const key in self.subModules){
+            const subModule = self.subModules[key];
+            arr.push(subModule);
+        }
+        return arr;
+    },
+    get_sub_module_from_id(sub_module_id){
+        return this.subModules[sub_module_id];
+    },
+
     forEachSubModule: function(eachFunction, filterFunction){
         var self = this;
         for(var key in self.subModules){
