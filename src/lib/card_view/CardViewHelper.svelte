@@ -175,7 +175,7 @@
                 <div class="card single_card_view_data_row single_data_row_of_submodule">
                     <input type="checkbox" class="card-row-selector" data-id="{item.id}">
                     <div class="card-header">
-                        {item.employee_profile_id.text} - {item.leave_type_id.text}
+                        {item.fullName.value} - {item.leave_type_id?.text}
                     </div>
                     <div class="card-content">
                         {#if card_config.columns.length>0}
