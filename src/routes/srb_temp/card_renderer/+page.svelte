@@ -1,6 +1,9 @@
 <script>
 
     import HorizontalCard from "./horizontal_card.svelte";
+    import BasicCard from "./basic_card.svelte";
+    import BasicDetailed from "./basic_detailed_card.svelte";
+    import ClassicCard from "./classic_card.svelte";
 
     export const user_data_json = [
         {
@@ -321,27 +324,27 @@
 
     ];
 
-    export const card_configuration_json = [
-        {
-            label: "Name",
-            column_id: "employee_name"
-        },
-        {
-            label: "Designation",
-            column_id: "employee_designation"
-        },
-        {
-            label: "Email",
-            column_id: "employee_email_id"
-        },
-        {
-            label: "Department",
-            column_id: "employee_department"
-        }
-    ];
+    // export const card_configuration_json = [
+    //     {
+    //         label: "Name",
+    //         column_id: "employee_name"
+    //     },
+    //     {
+    //         label: "Designation",
+    //         column_id: "employee_designation"
+    //     },
+    //     {
+    //         label: "Email",
+    //         column_id: "employee_email_id"
+    //     },
+    //     {
+    //         label: "Department",
+    //         column_id: "employee_department"
+    //     }
+    // ];
 
     const horizontal_card_configuration = {
-        card_view_style : 'basic',
+        card_view_style : 'classic_card',
         data_mapping : {
             main_header_text : {
                 column_id : "fullName"
@@ -352,35 +355,45 @@
             main_detail_items : [
                 {column_id : "nationality"},
                 {column_id : "phone_number"},
-                { column_id : "registered_email_id"}
+                {column_id : "registered_email_id"}
             ]
         }
     };
+    //
+    // const horizontal_card_configuration = {
+    //     card_view_style : 'basic',
+    //     data_mapping : {
+    //         main_header_text : {
+    //             column_id : "fullName"
+    //         },
+    //         main_header_caption : {
+    //             column_id : "designation_profile_row_id"
+    //         },
+    //         main_detail_items : [
+    //             {column_id : "nationality"},
+    //             {column_id : "phone_number"},
+    //             { column_id : "registered_email_id"}
+    //         ]
+    //     }
+    // };
 
-    const horizontal_card_configuration = {
-        card_view_style : 'basic',
-        data_mapping : {
-            main_header_text : {
-                column_id : "fullName"
-            },
-            main_header_caption : {
-                column_id : "designation_profile_row_id"
-            },
-            main_detail_items : [
-                {column_id : "nationality"},
-                {column_id : "phone_number"},
-                { column_id : "registered_email_id"}
-            ]
-        }
-    };
-
-    export let layout = 'horizontal';
 </script>
 
 <div class="card_list">
+
     {#each user_data_json as data_item}
-        <HorizontalCard data_row={data_item} config={horizontal_card_configuration} />
+        {#if horizontal_card_configuration.card_view_style === 'basic'}
+            <BasicCard data_row={data_item} config={horizontal_card_configuration} />
+        {:else if horizontal_card_configuration.card_view_style === 'basic_detailed'}
+            <BasicDetailed data_row={data_item} config={horizontal_card_configuration} />
+        {:else if horizontal_card_configuration.card_view_style === 'classic_card'}
+            <ClassicCard data_row={data_item} config={horizontal_card_configuration} />
+        {:else if horizontal_card_configuration.card_view_style === 'nationality'}
+            <HorizontalCard data_row={data_item} config={horizontal_card_configuration} />
+        {/if}
+
     {/each}
+
 </div>
 
 <style>

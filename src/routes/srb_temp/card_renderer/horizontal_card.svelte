@@ -24,8 +24,6 @@
         return column_id.toUpperCase();
     }
 
-
-
 </script>
 
 <div class="card_container">
