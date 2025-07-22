@@ -4,6 +4,7 @@
     import BasicCard from "./basic_card.svelte";
     import BasicDetailed from "./basic_detailed_card.svelte";
     import ClassicCard from "./classic_card.svelte";
+    import ModernCard from "./modern_card.svelte";
 
     export const user_data_json = [
         {
@@ -344,7 +345,7 @@
     // ];
 
     const horizontal_card_configuration = {
-        card_view_style : 'classic_card',
+        card_view_style : 'modern_card',
         data_mapping : {
             main_header_text : {
                 column_id : "fullName"
@@ -388,6 +389,8 @@
             <BasicDetailed data_row={data_item} config={horizontal_card_configuration} />
         {:else if horizontal_card_configuration.card_view_style === 'classic_card'}
             <ClassicCard data_row={data_item} config={horizontal_card_configuration} />
+        {:else if horizontal_card_configuration.card_view_style === 'modern_card'}
+            <ModernCard data_row={data_item} config={horizontal_card_configuration} />
         {:else if horizontal_card_configuration.card_view_style === 'nationality'}
             <HorizontalCard data_row={data_item} config={horizontal_card_configuration} />
         {/if}
