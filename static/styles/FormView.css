@@ -196,6 +196,7 @@
     position: absolute;
     margin-left: 3px;
 }
+
 .formview-container.pc .formview-column-holder{
     position: relative;
     padding: 7px;
@@ -206,6 +207,8 @@
     -ms-transition: opacity 300ms ease;
     transition: opacity 300ms ease;
     opacity: 1;
+    display: flex;
+    align-items: center;
 }
 
 
@@ -270,13 +273,27 @@
     font-weight: 300;
     color: rgb(0 0 0);
     font-size: 14px;
-}
-
-.formview-container.pc .formview-column-display-name{
     display: block;
     width: auto;
     max-width: 500px;
 }
+
+.formview-container.pc .form_element_only .formview-column-display-name{
+    display: none;
+}
+
+.formview-container.pc .horizontal_stack_display_name_100px .formview-column-display-name, .formview-container.pc .horizontal_stack_display_name_200px .formview-column-display-name{
+    position: relative;
+    width: 100px;
+    text-align: left;
+    padding-left: 10px;
+    font-weight: 300;
+    display: inline-block;
+}
+.formview-container.pc .horizontal_stack_display_name_200px .formview-column-display-name{
+    width: 200px;
+}
+
 .formview-container.pc .formview-column-display-name.hyperlinkColumn{
     position: absolute;
     z-index: 2;
@@ -287,6 +304,23 @@
 .formview-container.pc .formview-column-display-name > div{
     /* padding-bottom: 8px; */
 }
+
+.formview-container.pc .form_element_only .formview-column-form-elements {
+    display: block;
+    width: 100%;
+    /*width: calc(100% - 100px - 20px);*/
+}
+
+.formview-container.pc .horizontal_stack_display_name_100px .formview-column-form-elements {
+    display: inline-block;
+    width: calc(100% - 100px - 20px);
+}
+
+.formview-container.pc .horizontal_stack_display_name_200px .formview-column-form-elements {
+    display: inline-block;
+    width: calc(100% - 200px - 20px);
+}
+
 .formview-container.pc .formview-column-form-elements{
     display: block;
 }
@@ -375,9 +409,16 @@
 }
 
 
+.formview-container.pc .formview-save-panel button{
+    min-width: 100px;
+    margin-left: 10px;
+}
+
 .formview-container.pc .formview-save-panel{
-    text-align: right;
+    text-align: center;
     padding-right: 50px;
+    padding-top: 30px;
+    padding-bottom: 5px;
 }
 .formview-container.pc .formview-save-panel .removeSmallQuickAddView{
     float: left;
@@ -410,8 +451,15 @@
     font-size: 27px !important;
     color: #585555 !important;
 }
+.formview-container.pc .formview-header-text-panel.formview_not_configured:after{
+    background-color: white;
+    content : 'Not configured. Please edit styling';
+    position: absolute;
+    inset: 0;
+}
 .formview-container.pc .formview-header-text-panel{
     font-size: 25px;
+    position: relative;
     /*color: #ffffff;*/
     font-weight: 500;
     padding-left: 10px;
@@ -441,6 +489,9 @@
     /*width: 50%;*/
     /*border: 1px solid #eee;*/
     vertical-align: top;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
 }
 
 .formview-container.pc .formViewImageContainer{
@@ -1071,6 +1122,7 @@ ul.multipleSelectionDisplayValueList[data-items-count]:before {
     border: 1px dotted #3333331a;
     min-width: 50px;
     min-height: 50px;
+    box-shadow: #00000017 1px 1px;
     /*position: relative;*/
 }
 
