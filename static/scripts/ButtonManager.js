@@ -68,6 +68,9 @@ ButtonManager.prototype = {
         },
         "groupButtonContainer":{
             "class":"groupButtonContainer"
+        },
+        showFiltersPopupButton:{
+            "class":"show_filters_popup_button"
         }
     },
     initialize: function () {
@@ -642,6 +645,12 @@ ButtonManager.prototype = {
             });
         }
 
+        if(self.subModule.filterManager.get_filter_count()){
+            self.defaultButtons.showFiltersPopupButton.on('click',function(){
+                self.subModule.filterManager.show_as_side_popup();
+            });
+        }
+
         self.defaultButtons.showSearchContainer.on('click',function(){
             self.parentObject.filterManager.show();
         });
@@ -1167,6 +1176,15 @@ ButtonManager.prototype = {
                 var setDisplayModeToCalendarView = $(document.createElement('div'))
                     .attr(buttonManager.constants.setDisplayModeToCalendarView)/*.text('Card')*/.appendTo(setDisplayModeButtonsContainer);
             }
+
+
+            if(buttonManager.subModule.filterManager.get_filter_count()){
+                var showFiltersPopupButton = $(document.createElement('div'))
+                    .attr(buttonManager.constants.showFiltersPopupButton)
+                    .html('<span class="fa-solid fa-filter"></span><span class="show_filter_side_popup_button_text">Filters</span>')
+                    .prependTo(setDisplayModeButtonsContainer);
+            }
+
             buttonManager.defaultButtons = {};
             buttonManager.defaultButtons.showSearchContainer = showSearchContainer;
             buttonManager.defaultButtons.clearSearch = clearSearch;
@@ -1176,6 +1194,7 @@ ButtonManager.prototype = {
             buttonManager.defaultButtons.setDisplayModeButtonsContainer = setDisplayModeButtonsContainer;
             buttonManager.defaultButtons.setDisplayModeToCalendarView = setDisplayModeToCalendarView;
             buttonManager.defaultButtons.set_display_mode_to_master_detail_view = setDisplayModeToMasterDetailView;
+            buttonManager.defaultButtons.showFiltersPopupButton = showFiltersPopupButton;
             buttonManager.elements.searchButtonsContainer = searchButtonsContainer;
 
             return div;
