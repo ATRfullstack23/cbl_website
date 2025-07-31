@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="stock_indicator warning">
-            <div class="stock_value">{get_column_display_value(data_mapping.stock_badge.column_id) || ''}</div>
+            <div class="stock_value">{get_column_display_value(data_mapping.stock_badge.column_id) || '0'}</div>
             <div class="stock_unit">Pieces</div>
 <!--            <div class="stock_status">Low Stock</div>-->
         </div>

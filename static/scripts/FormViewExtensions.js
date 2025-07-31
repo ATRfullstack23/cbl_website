@@ -137,7 +137,7 @@ FormView.prototype.load_customization_to_custom_column_element = function (custo
         div_holder_element.find('.primary_display_name_inner_span').text(new_config.display_name);
     }
 
-    const css_to_set = this.parse_customizations_css(new_config, div_holder_element);
+    const css_to_set = this.parse_customizations_css(new_config);
 
     if(Object.keys(css_to_set).length){
         div_holder_element.css(css_to_set);
@@ -301,12 +301,20 @@ FormView.prototype.mount_custom_element = function (item_id, item_type, target_e
     }
 
     let mounted_svelte_instance;
+    let current_custom_element_type;
     switch (item_type){
         case 'title_with_caption':
+            current_custom_element_type = 'title_with_caption';
             mounted_svelte_instance = this.styling_helper.mount_custom_element__title_with_caption(this, item_id, existing_config, target_element);
             break;
         case 'caption_only':
             mounted_svelte_instance = this.styling_helper.mount_custom_element__caption_only(this, item_id, existing_config, target_element);
+            break;
+        case 'label_with_value':
+            mounted_svelte_instance = this.styling_helper.mount_custom_element__label_with_value(this, item_id, existing_config, target_element);
+            break;
+        case 'stat_card_with_value':
+            mounted_svelte_instance = this.styling_helper.mount_custom_element__stat_card_with_value(this, item_id, existing_config, target_element);
             break;
     }
 
@@ -348,6 +356,33 @@ FormView.prototype.styling_helper = {
         unique_id: item_id,
         config: item_config
     });
+
+      return svelte_instance;
+  },
+
+    mount_custom_element__label_with_value : function (form_view, item_id, item_config, target_element) {
+        if(!item_config){
+            item_config = {label_text: '', value_text: ''};
+        }
+
+        const svelte_instance = window.mount_form_view_custom_element(target_element, 'label_with_value', {
+            unique_id: item_id,
+            config: item_config
+        });
+
+        return svelte_instance;
+    },
+
+
+    mount_custom_element__stat_card_with_value : function (form_view, item_id, item_config, target_element) {
+        if(!item_config){
+            item_config = {label_text: '', value_text: ''};
+        }
+
+        const svelte_instance = window.mount_form_view_custom_element(target_element, 'stat_card_with_value', {
+            unique_id: item_id,
+            config: item_config
+        });
 
     return svelte_instance;
   }
