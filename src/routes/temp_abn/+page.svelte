@@ -2,6 +2,11 @@
 
     import PaginationUI from "$lib/ui_elements/PaginationUI.svelte";
     import InvoiceUI from "$lib/ui_elements/InvoiceUI.svelte";
+    import dayjs from "dayjs";
+    import erp_config from "./erp_config_accounts_demo.json"
+    import {onMount, tick} from "svelte";
+    import {ERP} from "$lib/client_scripts/ERP.js";
+    import Module from "$lib/submodule/Module.svelte";
 
     let api_grid_data = {
         "data": [
@@ -465,6 +470,121 @@
 
     let selected_item = main_data_array[0];
 
+    const TEMP_USER_OBJ = {
+        "config": {
+            "user": {
+                "permissions": {
+                    "leave_management_admin": {
+                        "row_id": 1000002,
+                        "unique_id": "leave_management_admin"
+                    },
+                    "view_all_leaves": {
+                        "row_id": 1000001,
+                        "unique_id": "view_all_leaves"
+                    }
+                },
+                "settings": {
+                    "customer_sales_quotation_amount_report_gridster_pc": "{\"cards\":{},\"graphs\":{},\"lists\":{\"customer_sales_quotation_amount_report\":{\"top\":5,\"left\":0,\"width\":1218.4,\"height\":310.4,\"data-row\":\"1\",\"data-col\":\"1\",\"data-sizex\":\"1\",\"data-sizey\":\"1\"}},\"reportFilters\":{\"company_name\":{\"top\":89.58749389648438,\"left\":826.7249755859375,\"width\":210.4,\"height\":49.4,\"index\":3},\"customer_name\":{\"top\":89.58749389648438,\"left\":575.125,\"width\":200.4,\"height\":49.4,\"index\":2},\"to_date\":{\"top\":91.72500610351562,\"left\":401.4000244140625,\"width\":122.4,\"height\":45.4,\"index\":1},\"from_date\":{\"top\":91.72500610351562,\"left\":227.67501831054688,\"width\":122.4,\"height\":45.4,\"index\":0}}}",
+                    "sales_quotation_edit_formViewConfiguration": "{\"size\":{\"width\":1498}}",
+                    "module_navigation_mode": "\"dock\"",
+                    "purchase_order_create_formViewConfiguration": "{\"size\":{\"width\":1377}}",
+                    "customer_profile_inlineFiltersOrder": "[\"unique_id\",\"customer_company_name\",\"whats_app_number\",\"email_id\",\"gst_number\",\"phone_number\"]",
+                    "_users_edit_formViewConfiguration": "{\"size\":{\"width\":1260}}"
+                },
+                "roleSettings": {
+                    "columnButtonFilterVisibility": "{\"purchase_order\":{\"id\":\"purchase_order\",\"subModules\":{\"purchase_order\":{\"id\":\"purchase_order\",\"columns\":{},\"buttons\":{\"submitted_for_approval\":{\"id\":\"submitted_for_approval\",\"displayName\":\"Set as Submitted For Approval\",\"isVisible\":false},\"edit\":{\"id\":\"edit\",\"displayName\":\"Edit\",\"isVisible\":false}},\"filters\":{}}}},\"sales_quotation\":{\"id\":\"sales_quotation\",\"subModules\":{\"sales_quotation\":{\"id\":\"sales_quotation\",\"columns\":{},\"buttons\":{\"submitted_for_approval\":{\"id\":\"submitted_for_approval\",\"displayName\":\"Set as Submitted For Approval\",\"isVisible\":false},\"edit\":{\"id\":\"edit\",\"displayName\":\"Edit\",\"isVisible\":false}},\"filters\":{}}}},\"packing_slip\":{\"id\":\"packing_slip\",\"subModules\":{\"packing_slip\":{\"id\":\"packing_slip\",\"columns\":{},\"buttons\":{\"generate_pdf\":{\"id\":\"generate_pdf\",\"displayName\":\"Generate Pdf\",\"isVisible\":false}},\"filters\":{}}}}}",
+                    "moduleVisibility": "{\"financial_year\":{\"id\":\"financial_year\",\"displayName\":\"Financial Year\",\"isVisible\":false}}",
+                    "formview_styling_config__leave_requests__create": "{\"column_structure\":{\"start_date\":{\"column_id\":\"start_date\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"start_date\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"start_half_day_type\":{\"column_id\":\"start_half_day_type\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"start_half_day_type\",\"pos_string\":\"0,1\",\"position\":{\"row_index\":0,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"end_date\":{\"column_id\":\"end_date\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"end_date\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"end_half_day_type\":{\"column_id\":\"end_half_day_type\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"end_half_day_type\",\"pos_string\":\"1,1\",\"position\":{\"row_index\":1,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"2,0\",\"position\":{\"row_index\":2,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":270.906,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"2,1\",\"position\":{\"row_index\":2,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":273.984,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"leave_types_row_id\":{\"column_id\":\"leave_types_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"leave_types_row_id\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"available_leave\":{\"column_id\":\"available_leave\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"available_leave\",\"pos_string\":\"4,2\",\"position\":{\"row_index\":4,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":234.875,\"height\":80}},\"leave_reason\":{\"column_id\":\"leave_reason\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"leave_reason\",\"pos_string\":\"6,0\",\"position\":{\"row_index\":6,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":102}}},\"custom_elements\":{},\"last_updated_at_utc\":1753511529926,\"div_main_width\":1151.19,\"display_styling_mode\":\"custom_size\"}",
+                    "formview_styling_config__letter_requests__create": "{\"column_structure\":{\"ce_create_title_with_caption__1753512189002\":{\"custom_element_id\":\"ce_create_title_with_caption__1753512189002\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"ce_create_title_with_caption__1753512189002\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":0,\"width\":300,\"height\":70}},\"letter_types_row_id\":{\"column_id\":\"letter_types_row_id\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"letter_types_row_id\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":350,\"height\":80}},\"urgency\":{\"column_id\":\"urgency\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"urgency\",\"pos_string\":\"2,0\",\"position\":{\"row_index\":2,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":350,\"height\":80}},\"purpose\":{\"column_id\":\"purpose\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"purpose\",\"pos_string\":\"3,0\",\"position\":{\"row_index\":3,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":600,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"4,2\",\"position\":{\"row_index\":4,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"description\":{\"column_id\":\"description\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"description\",\"pos_string\":\"5,0\",\"position\":{\"row_index\":5,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":600,\"height\":147.188}}},\"custom_elements\":{\"ce_create_title_with_caption__1753512189002\":{\"id\":\"ce_create_title_with_caption__1753512189002\",\"type\":\"title_with_caption\",\"_created_at_utc\":1753512189002,\"unique_id\":\"ce_create_title_with_caption__1753512189002\",\"config\":{\"title_text\":\"New Letter Request\",\"caption_text\":\"Please fill up the form for requesting letters\"}}},\"last_updated_at_utc\":1753514322202,\"div_main_width\":867.797,\"display_styling_mode\":\"custom_size\"}",
+                    "formview_styling_config__employee_documents__create": "{\"column_structure\":{\"ce_create_title_with_caption__1753931890689\":{\"custom_element_id\":\"ce_create_title_with_caption__1753931890689\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"ce_create_title_with_caption__1753931890689\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":0,\"width\":242.891,\"height\":85.375},\"customizations\":{\"background_color\":\"rgba(0, 0, 0, 0.2)\",\"margin_bottom\":50}},\"document_name\":{\"column_id\":\"document_name\",\"column_stack_style\":\"horizontal_stack_display_name_200px\",\"context_item_id\":\"document_name\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":450,\"height\":80},\"customizations\":{\"background_color\":\"rgb(233, 196, 106)\"}},\"employee_document_type_row_id\":{\"column_id\":\"employee_document_type_row_id\",\"column_stack_style\":\"horizontal_stack_display_name_200px\",\"context_item_id\":\"employee_document_type_row_id\",\"pos_string\":\"1,1\",\"position\":{\"row_index\":1,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":414.047,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"3,0\",\"position\":{\"row_index\":3,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"3,1\",\"position\":{\"row_index\":3,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"3,2\",\"position\":{\"row_index\":3,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"document\":{\"column_id\":\"document\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"document\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":325,\"height\":119.875}},\"expiry_date\":{\"column_id\":\"expiry_date\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"expiry_date\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":252.125,\"height\":80}},\"description\":{\"column_id\":\"description\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"description\",\"pos_string\":\"5,0\",\"position\":{\"row_index\":5,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":450,\"height\":174.516},\"customizations\":{\"display_name\":\"Desccc 2\",\"padding_left\":20,\"margin_top\":50,\"border_color\":\"rgba(0, 0, 0, 0.35)\",\"border_thickness\":1,\"border_radius\":10,\"background_color\":\"rgba(0, 0, 0, 0.13)\"}}},\"custom_elements\":{\"ce_create_title_with_caption__1753931890689\":{\"id\":\"ce_create_title_with_caption__1753931890689\",\"type\":\"title_with_caption\",\"_created_at_utc\":1753931890689,\"unique_id\":\"ce_create_title_with_caption__1753931890689\",\"config\":{\"title_text\":\"Upload new document\",\"caption_text\":\"Add a new document of an employee\"}}},\"last_updated_at_utc\":1753932860602,\"div_main_width\":1048,\"display_styling_mode\":\"custom_size\"}"
+                },
+                "userId": 1000027,
+                "roleId": 1000004,
+                "userName": "aki",
+                "roleName": "System Admin",
+                "user": "aki",
+                "role": "System Admin",
+                "employee_row_id": null,
+                "id": 1000027,
+                "sessionId": "l8wW5DDdSVEZ_E8WyJ0zs_CPQgCVIJGR"
+            }
+        },
+        "userDetails": {
+            "permissions": {
+                "leave_management_admin": {
+                    "row_id": 1000002,
+                    "unique_id": "leave_management_admin"
+                },
+                "view_all_leaves": {
+                    "row_id": 1000001,
+                    "unique_id": "view_all_leaves"
+                }
+            },
+            "settings": {
+                "customer_sales_quotation_amount_report_gridster_pc": "{\"cards\":{},\"graphs\":{},\"lists\":{\"customer_sales_quotation_amount_report\":{\"top\":5,\"left\":0,\"width\":1218.4,\"height\":310.4,\"data-row\":\"1\",\"data-col\":\"1\",\"data-sizex\":\"1\",\"data-sizey\":\"1\"}},\"reportFilters\":{\"company_name\":{\"top\":89.58749389648438,\"left\":826.7249755859375,\"width\":210.4,\"height\":49.4,\"index\":3},\"customer_name\":{\"top\":89.58749389648438,\"left\":575.125,\"width\":200.4,\"height\":49.4,\"index\":2},\"to_date\":{\"top\":91.72500610351562,\"left\":401.4000244140625,\"width\":122.4,\"height\":45.4,\"index\":1},\"from_date\":{\"top\":91.72500610351562,\"left\":227.67501831054688,\"width\":122.4,\"height\":45.4,\"index\":0}}}",
+                "sales_quotation_edit_formViewConfiguration": "{\"size\":{\"width\":1498}}",
+                "module_navigation_mode": "\"dock\"",
+                "purchase_order_create_formViewConfiguration": "{\"size\":{\"width\":1377}}",
+                "customer_profile_inlineFiltersOrder": "[\"unique_id\",\"customer_company_name\",\"whats_app_number\",\"email_id\",\"gst_number\",\"phone_number\"]",
+                "_users_edit_formViewConfiguration": "{\"size\":{\"width\":1260}}"
+            },
+            "roleSettings": {
+                "columnButtonFilterVisibility": "{\"purchase_order\":{\"id\":\"purchase_order\",\"subModules\":{\"purchase_order\":{\"id\":\"purchase_order\",\"columns\":{},\"buttons\":{\"submitted_for_approval\":{\"id\":\"submitted_for_approval\",\"displayName\":\"Set as Submitted For Approval\",\"isVisible\":false},\"edit\":{\"id\":\"edit\",\"displayName\":\"Edit\",\"isVisible\":false}},\"filters\":{}}}},\"sales_quotation\":{\"id\":\"sales_quotation\",\"subModules\":{\"sales_quotation\":{\"id\":\"sales_quotation\",\"columns\":{},\"buttons\":{\"submitted_for_approval\":{\"id\":\"submitted_for_approval\",\"displayName\":\"Set as Submitted For Approval\",\"isVisible\":false},\"edit\":{\"id\":\"edit\",\"displayName\":\"Edit\",\"isVisible\":false}},\"filters\":{}}}},\"packing_slip\":{\"id\":\"packing_slip\",\"subModules\":{\"packing_slip\":{\"id\":\"packing_slip\",\"columns\":{},\"buttons\":{\"generate_pdf\":{\"id\":\"generate_pdf\",\"displayName\":\"Generate Pdf\",\"isVisible\":false}},\"filters\":{}}}}}",
+                "moduleVisibility": "{\"financial_year\":{\"id\":\"financial_year\",\"displayName\":\"Financial Year\",\"isVisible\":false}}",
+                "formview_styling_config__leave_requests__create": "{\"column_structure\":{\"start_date\":{\"column_id\":\"start_date\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"start_date\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"start_half_day_type\":{\"column_id\":\"start_half_day_type\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"start_half_day_type\",\"pos_string\":\"0,1\",\"position\":{\"row_index\":0,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"end_date\":{\"column_id\":\"end_date\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"end_date\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"end_half_day_type\":{\"column_id\":\"end_half_day_type\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"end_half_day_type\",\"pos_string\":\"1,1\",\"position\":{\"row_index\":1,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"2,0\",\"position\":{\"row_index\":2,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":270.906,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"2,1\",\"position\":{\"row_index\":2,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":273.984,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"leave_types_row_id\":{\"column_id\":\"leave_types_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"leave_types_row_id\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"available_leave\":{\"column_id\":\"available_leave\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"available_leave\",\"pos_string\":\"4,2\",\"position\":{\"row_index\":4,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":234.875,\"height\":80}},\"leave_reason\":{\"column_id\":\"leave_reason\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"leave_reason\",\"pos_string\":\"6,0\",\"position\":{\"row_index\":6,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":102}}},\"custom_elements\":{},\"last_updated_at_utc\":1753511529926,\"div_main_width\":1151.19,\"display_styling_mode\":\"custom_size\"}",
+                "formview_styling_config__letter_requests__create": "{\"column_structure\":{\"ce_create_title_with_caption__1753512189002\":{\"custom_element_id\":\"ce_create_title_with_caption__1753512189002\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"ce_create_title_with_caption__1753512189002\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":0,\"width\":300,\"height\":70}},\"letter_types_row_id\":{\"column_id\":\"letter_types_row_id\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"letter_types_row_id\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":350,\"height\":80}},\"urgency\":{\"column_id\":\"urgency\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"urgency\",\"pos_string\":\"2,0\",\"position\":{\"row_index\":2,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":350,\"height\":80}},\"purpose\":{\"column_id\":\"purpose\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"purpose\",\"pos_string\":\"3,0\",\"position\":{\"row_index\":3,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":600,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"4,2\",\"position\":{\"row_index\":4,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"description\":{\"column_id\":\"description\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"description\",\"pos_string\":\"5,0\",\"position\":{\"row_index\":5,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":600,\"height\":147.188}}},\"custom_elements\":{\"ce_create_title_with_caption__1753512189002\":{\"id\":\"ce_create_title_with_caption__1753512189002\",\"type\":\"title_with_caption\",\"_created_at_utc\":1753512189002,\"unique_id\":\"ce_create_title_with_caption__1753512189002\",\"config\":{\"title_text\":\"New Letter Request\",\"caption_text\":\"Please fill up the form for requesting letters\"}}},\"last_updated_at_utc\":1753514322202,\"div_main_width\":867.797,\"display_styling_mode\":\"custom_size\"}",
+                "formview_styling_config__employee_documents__create": "{\"column_structure\":{\"ce_create_title_with_caption__1753931890689\":{\"custom_element_id\":\"ce_create_title_with_caption__1753931890689\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"ce_create_title_with_caption__1753931890689\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":0,\"width\":242.891,\"height\":85.375},\"customizations\":{\"background_color\":\"rgba(0, 0, 0, 0.2)\",\"margin_bottom\":50}},\"document_name\":{\"column_id\":\"document_name\",\"column_stack_style\":\"horizontal_stack_display_name_200px\",\"context_item_id\":\"document_name\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":450,\"height\":80},\"customizations\":{\"background_color\":\"rgb(233, 196, 106)\"}},\"employee_document_type_row_id\":{\"column_id\":\"employee_document_type_row_id\",\"column_stack_style\":\"horizontal_stack_display_name_200px\",\"context_item_id\":\"employee_document_type_row_id\",\"pos_string\":\"1,1\",\"position\":{\"row_index\":1,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":414.047,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"3,0\",\"position\":{\"row_index\":3,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"3,1\",\"position\":{\"row_index\":3,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"3,2\",\"position\":{\"row_index\":3,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"document\":{\"column_id\":\"document\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"document\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":325,\"height\":119.875}},\"expiry_date\":{\"column_id\":\"expiry_date\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"expiry_date\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":252.125,\"height\":80}},\"description\":{\"column_id\":\"description\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"description\",\"pos_string\":\"5,0\",\"position\":{\"row_index\":5,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":450,\"height\":174.516},\"customizations\":{\"display_name\":\"Desccc 2\",\"padding_left\":20,\"margin_top\":50,\"border_color\":\"rgba(0, 0, 0, 0.35)\",\"border_thickness\":1,\"border_radius\":10,\"background_color\":\"rgba(0, 0, 0, 0.13)\"}}},\"custom_elements\":{\"ce_create_title_with_caption__1753931890689\":{\"id\":\"ce_create_title_with_caption__1753931890689\",\"type\":\"title_with_caption\",\"_created_at_utc\":1753931890689,\"unique_id\":\"ce_create_title_with_caption__1753931890689\",\"config\":{\"title_text\":\"Upload new document\",\"caption_text\":\"Add a new document of an employee\"}}},\"last_updated_at_utc\":1753932860602,\"div_main_width\":1048,\"display_styling_mode\":\"custom_size\"}"
+            },
+            "userId": 1000027,
+            "roleId": 1000004,
+            "userName": "aki",
+            "roleName": "System Admin",
+            "user": "aki",
+            "role": "System Admin",
+            "employee_row_id": null,
+            "id": 1000027,
+            "sessionId": "l8wW5DDdSVEZ_E8WyJ0zs_CPQgCVIJGR"
+        },
+        "users": {
+            "1000001": {
+                "permissions": {
+                    "leave_management_admin": {
+                        "row_id": 1000002,
+                        "unique_id": "leave_management_admin"
+                    },
+                    "view_all_leaves": {
+                        "row_id": 1000001,
+                        "unique_id": "view_all_leaves"
+                    }
+                },
+                "settings": {
+                    "customer_sales_quotation_amount_report_gridster_pc": "{\"cards\":{},\"graphs\":{},\"lists\":{\"customer_sales_quotation_amount_report\":{\"top\":5,\"left\":0,\"width\":1218.4,\"height\":310.4,\"data-row\":\"1\",\"data-col\":\"1\",\"data-sizex\":\"1\",\"data-sizey\":\"1\"}},\"reportFilters\":{\"company_name\":{\"top\":89.58749389648438,\"left\":826.7249755859375,\"width\":210.4,\"height\":49.4,\"index\":3},\"customer_name\":{\"top\":89.58749389648438,\"left\":575.125,\"width\":200.4,\"height\":49.4,\"index\":2},\"to_date\":{\"top\":91.72500610351562,\"left\":401.4000244140625,\"width\":122.4,\"height\":45.4,\"index\":1},\"from_date\":{\"top\":91.72500610351562,\"left\":227.67501831054688,\"width\":122.4,\"height\":45.4,\"index\":0}}}",
+                    "sales_quotation_edit_formViewConfiguration": "{\"size\":{\"width\":1498}}",
+                    "module_navigation_mode": "\"dock\"",
+                    "purchase_order_create_formViewConfiguration": "{\"size\":{\"width\":1377}}",
+                    "customer_profile_inlineFiltersOrder": "[\"unique_id\",\"customer_company_name\",\"whats_app_number\",\"email_id\",\"gst_number\",\"phone_number\"]",
+                    "_users_edit_formViewConfiguration": "{\"size\":{\"width\":1260}}"
+                },
+                "roleSettings": {
+                    "columnButtonFilterVisibility": "{\"purchase_order\":{\"id\":\"purchase_order\",\"subModules\":{\"purchase_order\":{\"id\":\"purchase_order\",\"columns\":{},\"buttons\":{\"submitted_for_approval\":{\"id\":\"submitted_for_approval\",\"displayName\":\"Set as Submitted For Approval\",\"isVisible\":false},\"edit\":{\"id\":\"edit\",\"displayName\":\"Edit\",\"isVisible\":false}},\"filters\":{}}}},\"sales_quotation\":{\"id\":\"sales_quotation\",\"subModules\":{\"sales_quotation\":{\"id\":\"sales_quotation\",\"columns\":{},\"buttons\":{\"submitted_for_approval\":{\"id\":\"submitted_for_approval\",\"displayName\":\"Set as Submitted For Approval\",\"isVisible\":false},\"edit\":{\"id\":\"edit\",\"displayName\":\"Edit\",\"isVisible\":false}},\"filters\":{}}}},\"packing_slip\":{\"id\":\"packing_slip\",\"subModules\":{\"packing_slip\":{\"id\":\"packing_slip\",\"columns\":{},\"buttons\":{\"generate_pdf\":{\"id\":\"generate_pdf\",\"displayName\":\"Generate Pdf\",\"isVisible\":false}},\"filters\":{}}}}}",
+                    "moduleVisibility": "{\"financial_year\":{\"id\":\"financial_year\",\"displayName\":\"Financial Year\",\"isVisible\":false}}",
+                    "formview_styling_config__leave_requests__create": "{\"column_structure\":{\"start_date\":{\"column_id\":\"start_date\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"start_date\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"start_half_day_type\":{\"column_id\":\"start_half_day_type\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"start_half_day_type\",\"pos_string\":\"0,1\",\"position\":{\"row_index\":0,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"end_date\":{\"column_id\":\"end_date\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"end_date\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"end_half_day_type\":{\"column_id\":\"end_half_day_type\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"end_half_day_type\",\"pos_string\":\"1,1\",\"position\":{\"row_index\":1,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"2,0\",\"position\":{\"row_index\":2,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":270.906,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"2,1\",\"position\":{\"row_index\":2,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":273.984,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"leave_types_row_id\":{\"column_id\":\"leave_types_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"leave_types_row_id\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"available_leave\":{\"column_id\":\"available_leave\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"available_leave\",\"pos_string\":\"4,2\",\"position\":{\"row_index\":4,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":234.875,\"height\":80}},\"leave_reason\":{\"column_id\":\"leave_reason\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"leave_reason\",\"pos_string\":\"6,0\",\"position\":{\"row_index\":6,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":102}}},\"custom_elements\":{},\"last_updated_at_utc\":1753511529926,\"div_main_width\":1151.19,\"display_styling_mode\":\"custom_size\"}",
+                    "formview_styling_config__letter_requests__create": "{\"column_structure\":{\"ce_create_title_with_caption__1753512189002\":{\"custom_element_id\":\"ce_create_title_with_caption__1753512189002\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"ce_create_title_with_caption__1753512189002\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":0,\"width\":300,\"height\":70}},\"letter_types_row_id\":{\"column_id\":\"letter_types_row_id\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"letter_types_row_id\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":350,\"height\":80}},\"urgency\":{\"column_id\":\"urgency\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"urgency\",\"pos_string\":\"2,0\",\"position\":{\"row_index\":2,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":350,\"height\":80}},\"purpose\":{\"column_id\":\"purpose\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"purpose\",\"pos_string\":\"3,0\",\"position\":{\"row_index\":3,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":600,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"4,2\",\"position\":{\"row_index\":4,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"description\":{\"column_id\":\"description\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"description\",\"pos_string\":\"5,0\",\"position\":{\"row_index\":5,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":600,\"height\":147.188}}},\"custom_elements\":{\"ce_create_title_with_caption__1753512189002\":{\"id\":\"ce_create_title_with_caption__1753512189002\",\"type\":\"title_with_caption\",\"_created_at_utc\":1753512189002,\"unique_id\":\"ce_create_title_with_caption__1753512189002\",\"config\":{\"title_text\":\"New Letter Request\",\"caption_text\":\"Please fill up the form for requesting letters\"}}},\"last_updated_at_utc\":1753514322202,\"div_main_width\":867.797,\"display_styling_mode\":\"custom_size\"}",
+                    "formview_styling_config__employee_documents__create": "{\"column_structure\":{\"ce_create_title_with_caption__1753931890689\":{\"custom_element_id\":\"ce_create_title_with_caption__1753931890689\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"ce_create_title_with_caption__1753931890689\",\"pos_string\":\"0,0\",\"position\":{\"row_index\":0,\"column_index\":0},\"size_info\":{\"min_height\":0,\"width\":242.891,\"height\":85.375},\"customizations\":{\"background_color\":\"rgba(0, 0, 0, 0.2)\",\"margin_bottom\":50}},\"document_name\":{\"column_id\":\"document_name\",\"column_stack_style\":\"horizontal_stack_display_name_200px\",\"context_item_id\":\"document_name\",\"pos_string\":\"1,0\",\"position\":{\"row_index\":1,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":450,\"height\":80},\"customizations\":{\"background_color\":\"rgb(233, 196, 106)\"}},\"employee_document_type_row_id\":{\"column_id\":\"employee_document_type_row_id\",\"column_stack_style\":\"horizontal_stack_display_name_200px\",\"context_item_id\":\"employee_document_type_row_id\",\"pos_string\":\"1,1\",\"position\":{\"row_index\":1,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":414.047,\"height\":80}},\"companies_profile_row_id\":{\"column_id\":\"companies_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"companies_profile_row_id\",\"pos_string\":\"3,0\",\"position\":{\"row_index\":3,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"department_profile_row_id\":{\"column_id\":\"department_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"department_profile_row_id\",\"pos_string\":\"3,1\",\"position\":{\"row_index\":3,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"employee_profile_row_id\":{\"column_id\":\"employee_profile_row_id\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"employee_profile_row_id\",\"pos_string\":\"3,2\",\"position\":{\"row_index\":3,\"column_index\":2},\"size_info\":{\"min_height\":80,\"width\":200,\"height\":80}},\"document\":{\"column_id\":\"document\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"document\",\"pos_string\":\"4,0\",\"position\":{\"row_index\":4,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":325,\"height\":119.875}},\"expiry_date\":{\"column_id\":\"expiry_date\",\"column_stack_style\":\"horizontal_stack_display_name_100px\",\"context_item_id\":\"expiry_date\",\"pos_string\":\"4,1\",\"position\":{\"row_index\":4,\"column_index\":1},\"size_info\":{\"min_height\":80,\"width\":252.125,\"height\":80}},\"description\":{\"column_id\":\"description\",\"column_stack_style\":\"vertical_stack_1\",\"context_item_id\":\"description\",\"pos_string\":\"5,0\",\"position\":{\"row_index\":5,\"column_index\":0},\"size_info\":{\"min_height\":80,\"width\":450,\"height\":174.516},\"customizations\":{\"display_name\":\"Desccc 2\",\"padding_left\":20,\"margin_top\":50,\"border_color\":\"rgba(0, 0, 0, 0.35)\",\"border_thickness\":1,\"border_radius\":10,\"background_color\":\"rgba(0, 0, 0, 0.13)\"}}},\"custom_elements\":{\"ce_create_title_with_caption__1753931890689\":{\"id\":\"ce_create_title_with_caption__1753931890689\",\"type\":\"title_with_caption\",\"_created_at_utc\":1753931890689,\"unique_id\":\"ce_create_title_with_caption__1753931890689\",\"config\":{\"title_text\":\"Upload new document\",\"caption_text\":\"Add a new document of an employee\"}}},\"last_updated_at_utc\":1753932860602,\"div_main_width\":1048,\"display_styling_mode\":\"custom_size\"}"
+                },
+                "userId": 1000027,
+                "roleId": 1000004,
+                "userName": "aki",
+                "roleName": "System Admin",
+                "user": "aki",
+                "role": "System Admin",
+                "employee_row_id": null,
+                "id": 1000027,
+                "sessionId": "l8wW5DDdSVEZ_E8WyJ0zs_CPQgCVIJGR"
+            }
+        }
+    }
+
     function handle_selected_preview_item(event,invoice){
             selected_item = invoice
         let selected_element = event.target.parentElement
@@ -526,6 +646,7 @@
     // module, submodule, columnManager, buttonManger, filterManager
 
     const side_cards_nav_config = {
+        card_view_style : 'basic',
         data_mapping : {
             main_header_text : {
                 column_id : "customer_profile_id"
@@ -541,7 +662,10 @@
             },
             primary_amount_value : {
                 column_id : "total_amount"
-            }
+            },
+            main_detail_data_items : [
+                {column_id : "due_date"}, {column_id : "balance_due"}
+            ]
         }
     };
 
@@ -587,10 +711,60 @@
     function get_column_display_value(column_id, data_row){
         const column_instance = get_column_instance(column_id);
         let display_value = column_instance.parseDisplayValue(data_row);
+
+        if(column_id === 'due_date'){
+            display_value = dayjs(display_value).format('DD MMM YYYY')
+        }
         return display_value;
     }
 
+    function get_column_display_name(column_id){
+        return column_id.toUpperCase();
+    }
+
+
+    function get_column_display_value_srb(column_id, employee_data_row){
+        if(employee_data_row[column_id].text){
+            return employee_data_row[column_id].text;
+        }
+        return employee_data_row[column_id].value;
+    }
+
+
+    let module_instances_for_reference = [];
+    let module_svelte_elements_for_reference = [];
+    async function add_module_instance_for_reference(module_info) {
+        module_instances_for_reference.push(module_info);
+        module_instances_for_reference = module_instances_for_reference;
+        module_info.svelte_reference_index = module_instances_for_reference.length - 1;
+        await tick();
+        // await time_sleep(100);
+        module_info.svelte_element_instance = module_svelte_elements_for_reference[module_info.svelte_reference_index];
+        return module_info.svelte_element_instance;
+    }
+
+    let erp_instance;
+    onMount(()=>{
+        console.log('erp_config', erp_config)
+        window.ERP = ERP;
+        erp_instance = new ERP(erp_config, {user: TEMP_USER_OBJ});
+        window.erp = erp_instance;
+        window._add_module_instance_for_reference = add_module_instance_for_reference;
+        erp_instance.initialize().then(()=>{
+
+        });
+
+    })
 </script>
+
+
+{#each module_instances_for_reference as module_info, index}
+    <!--        <pre class="mineee">{module_info.id}</pre>-->
+    <Module module="{module_info}"
+            bind:this={module_svelte_elements_for_reference[index]}/>
+{/each}
+
+
 
 {#if api_grid_data}
     <div class="invoice_detail_container">
@@ -616,6 +790,20 @@
                         </div>
 
                         <div class="amount_display">
+                            <div class="amount_large primary_amount_value">{get_column_display_value(data_mapping.primary_amount_value.column_id, invoice)}</div>
+                        </div>
+
+
+
+                        <div class="main_detail_data_items">
+                            {#each data_mapping.main_detail_data_items as data_item}
+                                <div class="main_detail_item">
+                                    <p class="main_detail_item_display_name">{get_column_display_name(data_item.column_id)}</p>
+                                    <span  class="main_detail_item_value">{get_column_display_value(data_item.column_id, invoice)}</span>
+                                </div>
+
+
+                            {/each}
                             <div class="amount_large primary_amount_value">{get_column_display_value(data_mapping.primary_amount_value.column_id, invoice)}</div>
                         </div>
                     </div>
