@@ -2290,7 +2290,7 @@ Column.prototype = {
         }
         else{
             element.chosen({
-                width: "80%",
+                width: "100%",
                 search_contains: true,
                 allow_single_deselect: !self.validations.mandatory
             });
@@ -4893,6 +4893,8 @@ Column.prototype = {
 
         return qConfig;
     }
+
+
 }
 
 Column.prototype.socketEvents = {

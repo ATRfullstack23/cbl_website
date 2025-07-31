@@ -2,6 +2,163 @@
 
 
 
+
+FormView.prototype.show_edit_formview_normal_element_popup = function (context_id, element_type, element) {
+    console.log('show_edit_formview_normal_element_popup', context_id, element_type, element);
+
+    let column_info;
+    let custom_element_info;
+
+    if(element_type === 'column'){
+        column_info = this.subModule.columnManager.columns[context_id]
+    }
+    else{
+        custom_element_info = this.get_custom_element_info(context_id)
+    }
+
+    const column_styling = this.get_latest_formview_item_style_info(context_id, {column_info, custom_element_info});
+    column_styling.customizations = column_styling.customizations || {};
+    // const existing_config = this.get_custom_element_existing_config(custom_element_id);
+    window.show_form_view_normal_element_customization_popup(this, column_info, custom_element_info, column_styling.customizations);
+}
+
+FormView.prototype.parse_customizations_css = function (new_config) {
+    let css_to_set = {};
+    if(new_config.margin_top !== undefined){
+        css_to_set.marginTop = new_config.margin_top;
+    }
+    if(new_config.margin_bottom !== undefined){
+        css_to_set.marginBottom = new_config.margin_bottom;
+    }
+    if(new_config.margin_left !== undefined){
+        css_to_set.marginLeft = new_config.margin_left;
+    }
+    if(new_config.margin_bottom !== undefined){
+        css_to_set.marginBottom = new_config.margin_bottom;
+    }
+    if(new_config.padding_top !== undefined){
+        css_to_set.paddingTop = new_config.padding_top;
+    }
+    if(new_config.padding_bottom !== undefined){
+        css_to_set.paddingBottom = new_config.padding_bottom;
+    }
+    if(new_config.padding_left !== undefined){
+        css_to_set.paddingLeft = new_config.padding_left;
+    }
+    if(new_config.padding_bottom !== undefined){
+        css_to_set.paddingBottom = new_config.padding_bottom;
+    }
+
+
+    if(new_config.background_color !== undefined){
+        css_to_set.backgroundColor = new_config.background_color;
+    }
+    if(new_config.border_color !== undefined && new_config.border_thickness !== undefined){
+        css_to_set.border = `${new_config.border_thickness}px solid ${new_config.border_color}`;
+    }
+
+    if(new_config.border_radius !== undefined){
+        css_to_set.borderRadius = new_config.border_radius;
+    }
+    return css_to_set;
+}
+
+FormView.prototype.load_customization_to_normal_column_element = function (column_info, new_config) {
+    const div_holder_element = column_info.formViewElements.divHolders[this.mode];
+    // console.log('load_customization_to_normal_column_element new_config', new_config);
+    // console.log('load_customization_to_normal_column_element column_info', column_info);
+    // console.log('load_customization_to_normal_column_element div_holder_element', div_holder_element);
+    if(new_config.display_name){
+        div_holder_element.find('.primary_display_name_inner_span').text(new_config.display_name);
+    }
+
+    const css_to_set = this.parse_customizations_css(new_config);
+
+    if(Object.keys(css_to_set).length){
+        div_holder_element.css(css_to_set);
+    }
+    
+}
+
+FormView.prototype.load_customization_to_custom_column_element = function (custom_element_info, new_config) {
+    const div_holder_element =  this.get_custom_element_svelte_instance(custom_element_info.id).container_element_jquery;
+
+    if(new_config.display_name){
+        // might be optional
+        div_holder_element.find('.primary_display_name_inner_span').text(new_config.display_name);
+    }
+
+    const css_to_set = this.parse_customizations_css(new_config);
+
+    if(Object.keys(css_to_set).length){
+        div_holder_element.css(css_to_set);
+    }
+
+}
+
+FormView.prototype.handle_normal_form_view_element_config_updated = function (column_info, custom_element_info, new_config) {
+    const column_styling = this.get_latest_formview_item_style_info(column_info?.id || custom_element_info?.id, {column_info, custom_element_info});
+    column_styling.customizations = new_config;
+
+    if(column_info){
+        this.load_customization_to_normal_column_element(column_info, new_config);
+    }
+    else if(custom_element_info){
+        this.load_customization_to_custom_column_element(custom_element_info, new_config);
+    }
+
+    // console.log('svelte_instance', svelte_instance);
+    // svelte_instance.handle_config_updated(new_config);
+}
+
+
+FormView.prototype.move_all_form_items_to_next_row = function (column_id, element, direction) {
+    console.log('move_all_form_items_to_next_row', column_id, element.get(0));
+
+    direction = direction || 'down'; // up or down
+
+    const parent_row = element.closest('tr');
+    let target_row;
+    if(direction === 'down'){
+        target_row = parent_row.next();
+    }
+    else{
+        target_row = parent_row.prev();
+    }
+
+    const current_row_number = Number(parent_row.attr('data-position'));
+
+    console.log('current_row_number', current_row_number)
+
+    if(target_row.find('.ui-draggable').length){
+        alert('Next row is not empty')
+        return;
+    }
+
+    let index = 0;
+    parent_row.children('td').each(function(){
+        const td_element = $(this);
+        const child_element = td_element.children('.ui-draggable');
+
+        console.log('moving start -> ', this, index, 'child : ', child_element.get(0));
+
+        if(!child_element.length){
+            index++;
+            return;
+        }
+
+        console.log('moving -> ', child_element.get(0), index);
+        child_element.appendTo(target_row.children().eq(index))
+        index++;
+    });
+
+}
+
+
+
+
+
+
 FormView.COLUMN_STACK_STYLES = {
     vertical_stack_1: {
         id: 'vertical_stack_1',
@@ -40,6 +197,148 @@ FormView.prototype.update_column_stack_style = function (column_id, column_div_h
 
 
 
+FormView.NORMAL_ELEMENTS = {
+    default : {
+        id: 'default',
+        display_name: 'Default',
+        customization_config: {
+            items: [
+                {
+                    "unique_id": "Display name",
+                    "display_name": "display_name",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "background_color",
+                    "display_name": "Background",
+                    "data_type": "text",
+                    "input_type": "color",
+                },
+                {
+                    "group_header": "Padding",
+                    "unique_id": "padding_left",
+                    "display_as_inline": true,
+                    "display_name": "Left",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "padding_right",
+                    "display_as_inline": true,
+                    "display_name": "Right",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "padding_top",
+                    "display_as_inline": true,
+                    "display_name": "Top",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "padding_bottom",
+                    "display_as_inline": true,
+                    "display_name": "Bottom",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "group_header": "Margin",
+                    "unique_id": "margin_left",
+                    "display_as_inline": true,
+                    "display_name": "Left",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "margin_right",
+                    "display_as_inline": true,
+                    "display_name": "Right",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "margin_top",
+                    "display_as_inline": true,
+                    "display_name": "Top",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "margin_bottom",
+                    "display_as_inline": true,
+                    "display_name": "Bottom",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "group_header": "Border",
+                    "unique_id": "border_thickness",
+                    "display_as_inline": true,
+                    "display_name": "Thickness",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "border_color",
+                    "display_as_inline": true,
+                    "display_name": "Color",
+                    "data_type": "text",
+                    "input_type": "color",
+                },
+                {
+                    "unique_id": "border_radius",
+                    "display_as_inline": true,
+                    "display_name": "Radius",
+                    "data_type": "number",
+                    "input_type": "css_unit",
+                    "postfix": "px",
+                },
+                {
+                    "unique_id": "border_area",
+                    "display_as_inline": true,
+                    "display_name": "Type",
+                    "data_type": "text",
+                    "input_type": "dropdownlist",
+                    "options": [
+                        {
+                            "text" : "All",
+                            "value" : "all",
+                        },
+                        {
+                            "text" : "Left",
+                            "value" : "left",
+                        },
+                        {
+                            "text" : "Right",
+                            "value" : "right",
+                        },
+                        {
+                            "text" : "Top",
+                            "value" : "top",
+                        },
+                        {
+                            "text" : "Bottom",
+                            "value" : "bottom",
+                        },
+                    ],
+                },
+            ]
+        }
+    }
+}
+
 FormView.CUSTOM_ELEMENTS = {
     title_only: {
         id: 'title_only',
@@ -75,9 +374,9 @@ FormView.CUSTOM_ELEMENTS = {
             ]
         }
     },
-    count_display: {
-        id: 'count_display',
-        display_name: 'Count Display',
+    number_display: {
+        id: 'number_display',
+        display_name: 'Number Display',
         customization_config: {
             items: [
                 {
@@ -96,6 +395,10 @@ FormView.CUSTOM_ELEMENTS = {
         }
     }
 }
+
+
+
+
 
 
 FormView.prototype.show_edit_custom_element_popup = function (custom_element_id, element) {

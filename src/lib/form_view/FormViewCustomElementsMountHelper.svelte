@@ -4,6 +4,7 @@
     import TitleWithCaptionCustomElement from "$lib/form_view/TitleWithCaptionCustomElement.svelte";
     import {onMount} from "svelte";
     import CustomElementCustomizationPopup from "$lib/form_view/CustomElementCustomizationPopup.svelte";
+    import NormalElementCustomizationPopup from "$lib/form_view/NormalElementCustomizationPopup.svelte";
 
     export function mount_form_view_custom_element(target_container_element, element_type, outer_config) {
         // const target = document.querySelector(target_selector);
@@ -66,10 +67,54 @@
     onMount(()=>{
        window.mount_form_view_custom_element = mount_form_view_custom_element;
        window.show_form_view_custom_element_customization_popup = show_form_view_custom_element_customization_popup;
+
+       window.show_form_view_normal_element_customization_popup = show_form_view_normal_element_customization_popup;
     });
+
+
+
+
+
+
+    let shall_show_normal_element_customization_popup = false;
+    let to_edit__column_info, to_edit__custom_element_info, to_edit__column_existing_config;
+
+    export function show_form_view_normal_element_customization_popup(form_view, column_info, custom_element_info, existing_config) {
+        to_edit__form_view = form_view;
+        to_edit__column_info = column_info;
+        to_edit__custom_element_info = custom_element_info;
+        to_edit__column_existing_config = existing_config;
+
+        shall_show_normal_element_customization_popup = true;
+    }
+
+    function handle_normal_element_customization_popup_confirm(evt) {
+
+        to_edit__form_view.handle_normal_form_view_element_config_updated(to_edit__column_info, to_edit__custom_element_info, evt.detail.new_config);
+
+        to_edit__form_view = null;
+        to_edit__column_info = null;
+        to_edit__custom_element_info = null;
+        shall_show_normal_element_customization_popup = false;
+    }
+
+    function handle_normal_element_customization_popup_cancel() {
+        to_edit__form_view = null;
+        shall_show_normal_element_customization_popup = false;
+        to_edit__column_info = null;
+        to_edit__custom_element_info = null;
+    }
 
 </script>
 
+
+
+{#if shall_show_normal_element_customization_popup}
+    <NormalElementCustomizationPopup
+            column_info="{to_edit__column_info}"
+            column_existing_config="{to_edit__column_existing_config}"
+            on:confirm={handle_normal_element_customization_popup_confirm} on:cancel={handle_normal_element_customization_popup_cancel}/>
+{/if}
 
 
 {#if shall_show_custom_element_customization_popup}

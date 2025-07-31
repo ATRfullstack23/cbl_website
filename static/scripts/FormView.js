@@ -2611,12 +2611,12 @@ FormView.prototype = {
 
             var btnSave = document.createElement('button');
             btnSave.innerHTML='Save';
-            btnSave.className = 'formview-save-button';
+            btnSave.className = 'formview-save-button formview_main_button_item';
             div.appendChild(btnSave);
 
             var btnCancel = document.createElement('button');
             btnCancel.innerHTML='Cancel';
-            btnCancel.className = 'formview-cancel-button';
+            btnCancel.className = 'formview-cancel-button formview_main_button_item';
             div.appendChild(btnCancel);
 
             var btnRemoveSmallQuickAddMode = document.createElement('div');
@@ -2625,9 +2625,15 @@ FormView.prototype = {
             div.appendChild(btnRemoveSmallQuickAddMode);
 
             $(btnSave).on('click', function(){
+                if(formView.is_in_styling_mode){
+                    return;
+                }
                 formView.save();
             });
             $(btnCancel).on('click', function(){
+                if(formView.is_in_styling_mode){
+                    return;
+                }
                 formView.cancel();
             });
             $(btnRemoveSmallQuickAddMode).on('click', function(){
@@ -3053,7 +3059,7 @@ FormView.prototype = {
         createDisplayNameElement: function(column){
             var self = this;
             var div = $(document.createElement('div'));
-            var span = $(document.createElement('span'));
+            var span = $(document.createElement('span')).addClass('primary_display_name_inner_span');
             div.append(span);
             if(column.icon && column.icon.originalName){
                 var imagePath = 'iconsGenerated/' + column.module.id + '/' + column.subModule.id + '/' + column.id + '_' + column.icon.name;
@@ -3111,7 +3117,7 @@ FormView.prototype = {
             table = $(table);
 
             if(formView && formView.erp.deviceType === ERP.DEVICE_TYPES.PC && tabItem) {
-
+                tabItem.mergedCells = {}; // ignoring merged cells in new ui
                 for(var key in tabItem.mergedCells){
                     var cellInfo = tabItem.mergedCells[key];
                     var td = table.find('#cell_'+key)
@@ -3645,7 +3651,7 @@ FormView.prototype = {
                     // handles: "n, e, s, w, ne, se, sw, nw",
                     grid: [column_resizable_factor, column_resizable_factor],
                     minHeight: 55,
-                    minWidth: 100,
+                    minWidth: 80,
                     // containment: "parent", // Contain resizing within the parent element
                     start: function(event, ui) {
                         $(this).css({
@@ -3719,6 +3725,11 @@ FormView.prototype = {
                             resized_element.css('minHeight', resized_element.css('height'));
                             resized_element.css('height', '');
                         }
+
+                        resized_element.css({
+                            '--column_custom_width' : new_width + 'px',
+                            '--column_custom_height' : new_height + 'px',
+                        })
 
 
 
@@ -3872,16 +3883,17 @@ FormView.prototype = {
 
             let column_stack_style  = element.attr('data-column_stack_style') || 'vertical_stack_1';
 
-            let obj = {
+            const obj = self.latest_styling_setting.column_structure[column_id || custom_element_id] || {
                 column_id,
                 custom_element_id,
                 column_stack_style,
                 context_item_id: custom_element_id || column_id,
-                pos_string : pos_string,
-                position: {
-                    row_index : parseInt(pos_string.split(',')[0]),
-                    column_index : parseInt(pos_string.split(',')[1])
-                }
+            };
+
+            obj.pos_string = pos_string;
+            obj.position = {
+                row_index : parseInt(pos_string.split(',')[0]),
+                column_index : parseInt(pos_string.split(',')[1])
             }
 
             let min_height = element.css('minHeight');
@@ -3936,6 +3948,26 @@ FormView.prototype = {
 
     },
 
+    get_latest_formview_item_style_info: function (context_item_id, context_info) {
+        const self = this;
+        let column_style_info = this.latest_styling_setting.column_structure[context_item_id];
+        if(!column_style_info){
+            const column_info = context_info.column_info;
+            const custom_element_info = context_info.custom_element;
+
+
+            column_style_info = {
+                column_id : column_info?.id || undefined,
+                custom_element_id : custom_element_info?.id || undefined,
+                column_stack_style : 'vertical_stack_1',
+                customizations: {}
+            }
+            column_style_info.context_item_id = column_style_info.column_id || column_style_info.custom_element_id;
+            this.latest_styling_setting.column_structure[context_item_id] = column_style_info;
+        }
+        return column_style_info;
+    },
+
     restore_styling_setting_from_config: function (styling_config) {
         const self = this;
 
@@ -3974,29 +4006,59 @@ FormView.prototype = {
         formview_column_holder_elements.each(function () {
            const element = $(this);
             // let column_id = element.find('.editable').attr('data-column-id');
-            let context_item_id = element.attr('data-column_id') || element.attr('data-custom_element_id');
+            const column_id = element.attr('data-column_id');
+            const custom_element_id = element.attr('data-custom_element_id');
+            const context_item_id = column_id || custom_element_id;
             let column_style_info = styling_config.column_structure[context_item_id];
 
+            let column_info;
+            if(column_id){
+                column_info = self.subModule.get_column_from_id(column_id);
+            }
+
+            let custom_element_info;
+            if(custom_element_id){
+                custom_element_info = self.get_custom_element_info(custom_element_id)
+            }
 
             // console.log('restore_styling_setting_from_config', element.get(0), column_id, column_style_info)
             if(column_style_info){
 
-                element.appendTo(self.container.find(`.table-main:visible .form_view_table_cell[data-position="${column_style_info.pos_string}"]`));
-
                 element.addClass(column_style_info.column_stack_style || 'vertical_stack_1');
+                element.attr('data-column_stack_style', column_style_info.column_stack_style || 'vertical_stack_1');
+
+                if(column_style_info.pos_string){
+                    element.appendTo(self.container.find(`.table-main:visible .form_view_table_cell[data-position="${column_style_info.pos_string}"]`));
+                }
+
 
                 let size_info = column_style_info.size_info;
-                let css_obj = {};
-                if(size_info.width){
-                    css_obj.width = size_info.width + 'px';
+                if(size_info){
+                    let css_obj = {};
+                    if(size_info.width){
+                        css_obj.width = size_info.width + 'px';
+                        css_obj['--column_custom_width'] = size_info.width + 'px';
+                    }
+
+                    if(size_info.min_height){
+                        css_obj.minHeight = size_info.min_height + 'px';
+                        css_obj['--column_custom_height'] = size_info.height + 'px';
+                    }
+                    else if(size_info.height){
+                        css_obj.height = size_info.height + 'px';
+                        css_obj['--column_custom_height'] = size_info.height + 'px';
+                    }
+
+                    element.css(css_obj);
                 }
-                if(size_info.min_height){
-                    css_obj.minHeight = size_info.min_height + 'px';
+
+                if(column_style_info.customizations && column_info){
+                    self.load_customization_to_normal_column_element(column_info, column_style_info.customizations);
                 }
-                else if(size_info.height){
-                    css_obj.height = size_info.height + 'px';
+                else if(column_style_info.customizations && custom_element_info){
+                    self.load_customization_to_custom_column_element(custom_element_info, column_style_info.customizations);
                 }
-                element.css(css_obj);
+
             }
 
         });

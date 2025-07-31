@@ -843,6 +843,10 @@ SubModule.prototype = {
         self.buttonManager.forEachButton(eachFunction, filterFunction);
         return self;
     },
+    get_column_from_id: function(column_id){
+        const self = this;
+        return self.columnManager.get_column_from_id(column_id);
+    },
     forEachColumn: function(eachFunction, filterFunction){
         var self = this;
         self.columnManager.forEachColumn(eachFunction, filterFunction);

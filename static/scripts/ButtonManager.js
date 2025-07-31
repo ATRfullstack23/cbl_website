@@ -376,6 +376,14 @@ ButtonManager.prototype = {
                             const column_id = element.attr('data-column_id')
 
 
+                            options.edit_formview_normal_element_settings = {
+                                id: 'edit_formview_normal_element_settings',
+                                displayName: 'Edit Settings',
+                                onClick: ()=>{
+                                    self.subModule.formView.show_edit_formview_normal_element_popup(column_id, 'column', element);
+                                }
+                            }
+
                             // console.log('formview-column-holder contextMenu', contextMenu)
                             // console.log('formview-column-holder targetElement', targetElement)
 
@@ -392,13 +400,23 @@ ButtonManager.prototype = {
                                 }
                             }
 
-                            // options.set_column_style_to_vertical_stack_1 = {
-                            //     id: 'set_column_style_to_vertical_stack_1',
-                            //     displayName: 'Form Element Style -> Vertical',
-                            //     onClick: ()=>{
-                            //         self.subModule.formView.update_column_stack_style(column_id, element, 'vertical_stack_1');
-                            //     }
-                            // }
+                            options.move_all_form_items_to_next_row_upwards = {
+                                id: 'move_all_form_items_to_next_row_upwards',
+                                displayName: 'Move All Row Items -> Up',
+                                onClick: ()=>{
+                                    self.subModule.formView.move_all_form_items_to_next_row(column_id, element, 'up');
+                                }
+                            }
+
+                            options.move_all_form_items_to_next_row_downwards = {
+                                id: 'move_all_form_items_to_next_row_downwards',
+                                displayName: 'Move All Row Items -> Down',
+                                onClick: ()=>{
+                                    self.subModule.formView.move_all_form_items_to_next_row(column_id, element, 'down');
+                                }
+                            }
+
+
                             // options.set_column_style_to_horizontal_stack_display_name_100px = {
                             //     id: 'set_column_style_to_horizontal_stack_display_name_100px',
                             //     displayName: 'Form Element Style -> Horizontal Short Name',
@@ -432,6 +450,15 @@ ButtonManager.prototype = {
 
                             // console.log('formview-column-holder contextMenu', contextMenu)
                             // console.log('formview-column-holder targetElement', targetElement)
+
+                            options.edit_formview_normal_element_settings = {
+                                id: 'edit_formview_normal_element_settings',
+                                displayName: 'Edit Settings',
+                                onClick: ()=>{
+                                    self.subModule.formView.show_edit_formview_normal_element_popup(custom_element_id, 'custom', element);
+                                }
+                            }
+
 
                             options.edit_custom_element_settings = {
                                 id: 'edit_custom_element_settings',
