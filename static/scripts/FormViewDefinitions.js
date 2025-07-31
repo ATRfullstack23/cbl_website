@@ -215,6 +215,46 @@ FormView.CUSTOM_ELEMENTS = {
             ]
         }
     },
+    label_with_value:{
+        id: 'label_with_value',
+        display_name: 'Label With Value',
+        customization_config: {
+            items: [
+                {
+                    "unique_id": "label_text",
+                    "display_name": "label_text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "value_text",
+                    "display_name": "value_text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                }
+            ]
+        }
+    },
+    stat_card_with_value:{
+        id: 'stat_card_with_value',
+        display_name: 'Stat Card With Value',
+        customization_config: {
+            items: [
+                {
+                    "unique_id": "label_text",
+                    "display_name": "label_text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "value_text",
+                    "display_name": "value_text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                }
+            ]
+        }
+    },
     number_display: {
         id: 'number_display',
         display_name: 'Number Display',

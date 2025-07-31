@@ -273,9 +273,17 @@ FormView.prototype.mount_custom_element = function (item_id, item_type, target_e
     }
 
     let mounted_svelte_instance;
+    let current_custom_element_type;
     switch (item_type){
         case 'title_with_caption':
+            current_custom_element_type = 'title_with_caption';
             mounted_svelte_instance = this.styling_helper.mount_custom_element__title_with_caption(this, item_id, existing_config, target_element);
+            break;
+        case 'label_with_value':
+            mounted_svelte_instance = this.styling_helper.mount_custom_element__label_with_value(this, item_id, existing_config, target_element);
+            break;
+        case 'stat_card_with_value':
+            mounted_svelte_instance = this.styling_helper.mount_custom_element__stat_card_with_value(this, item_id, existing_config, target_element);
             break;
     }
 
@@ -307,7 +315,34 @@ FormView.prototype.styling_helper = {
       });
 
       return svelte_instance;
-  }
+  },
+
+    mount_custom_element__label_with_value : function (form_view, item_id, item_config, target_element) {
+        if(!item_config){
+            item_config = {label_text: '', value_text: ''};
+        }
+
+        const svelte_instance = window.mount_form_view_custom_element(target_element, 'label_with_value', {
+            unique_id: item_id,
+            config: item_config
+        });
+
+        return svelte_instance;
+    },
+
+
+    mount_custom_element__stat_card_with_value : function (form_view, item_id, item_config, target_element) {
+        if(!item_config){
+            item_config = {label_text: '', value_text: ''};
+        }
+
+        const svelte_instance = window.mount_form_view_custom_element(target_element, 'stat_card_with_value', {
+            unique_id: item_id,
+            config: item_config
+        });
+
+        return svelte_instance;
+    }
 }
 
 //

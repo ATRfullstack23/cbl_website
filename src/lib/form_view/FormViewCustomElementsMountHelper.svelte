@@ -2,6 +2,8 @@
 <script>
 
     import TitleWithCaptionCustomElement from "$lib/form_view/TitleWithCaptionCustomElement.svelte";
+    import LabelWithValueCustomElement from "$lib/form_view/LabelWithValueCustomElement.svelte";
+    import StatCardDisplayCustomElement from "$lib/form_view/StatCardDisplayCustomElement.svelte";
     import {onMount} from "svelte";
     import CustomElementCustomizationPopup from "$lib/form_view/CustomElementCustomizationPopup.svelte";
     import NormalElementCustomizationPopup from "$lib/form_view/NormalElementCustomizationPopup.svelte";
@@ -23,6 +25,24 @@
         switch (element_type) {
             case FormView.CUSTOM_ELEMENTS.title_with_caption.id:
                 svelte_instance = new TitleWithCaptionCustomElement({
+                    target: target_container_element,
+                    props : {
+                        unique_id: outer_config.unique_id,
+                        config: outer_config.config,
+                    },
+                });
+                break;
+            case FormView.CUSTOM_ELEMENTS.label_with_value.id:
+                svelte_instance = new LabelWithValueCustomElement({
+                    target: target_container_element,
+                    props : {
+                        unique_id: outer_config.unique_id,
+                        config: outer_config.config,
+                    },
+                });
+                break;
+            case FormView.CUSTOM_ELEMENTS.stat_card_with_value.id:
+                svelte_instance = new StatCardDisplayCustomElement({
                     target: target_container_element,
                     props : {
                         unique_id: outer_config.unique_id,
