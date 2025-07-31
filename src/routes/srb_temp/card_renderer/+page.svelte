@@ -1,6 +1,5 @@
 <script>
 
-    import HorizontalCard from "./horizontal_card.svelte";
     import BasicCard from "./basic_card.svelte";
     import BasicDetailed from "./basic_detailed_card.svelte";
     import ClassicCard from "./classic_card.svelte";
@@ -16,7 +15,15 @@
 
     import FinancialCardMinimal from "./financial_year_card_minimal.svelte";
     import FinancialCardCompact from "./financial_year_card_compact.svelte";
-    import FinancialCardDetailed from "./financial_year_card_detailed.svelte";
+
+    import ProductProfileCardDetailed from './product_profile_card_detailed.svelte';
+    import ProductProfileCardCompact from './product_profile_card_compact.svelte';
+
+    import InvoiceDetailedCard from './invoice_detailed_card.svelte';
+    import InvoiceCompactCard from './invoice_compact_card.svelte';
+
+    import ReceiptCompactCard from './receipt_compact_card.svelte';
+    import ReceiptDetailedCard from './receipt_detailed_card.svelte';
 
     export const user_data_json = [
         {
@@ -410,7 +417,7 @@
                 "value": "250630_NTAIDPNT"
             },
             "status": {
-                "value": "active"
+                "value": "inactive"
             },
             "is_paid": {
                 "value": false
@@ -596,27 +603,743 @@
         }
     ]
 
-    // export const card_configuration_json = [
-    //     {
-    //         label: "Name",
-    //         column_id: "employee_name"
-    //     },
-    //     {
-    //         label: "Designation",
-    //         column_id: "employee_designation"
-    //     },
-    //     {
-    //         label: "Email",
-    //         column_id: "employee_email_id"
-    //     },
-    //     {
-    //         label: "Department",
-    //         column_id: "employee_department"
-    //     }
-    // ];
+    export const product_profile_card_json = [
+        {
+            "id": 1000021,
+            "product_name": {
+                "value": "tttt 1"
+            },
+            "hsn_code": {
+                "value": "45874"
+            },
+            "sales_tax": {
+                "value": 1000010,
+                "text": "0% Vat"
+            },
+            "sales_tax__text": "0% Vat",
+            "purchase_tax": {
+                "value": 1000011,
+                "text": "0% Vat"
+            },
+            "purchase_tax__text": "0% Vat",
+            "product_category_id": {
+                "value": 1000002,
+                "text": "Home Essentials"
+            },
+            "product_category_id__text": "Home Essentials",
+            "available_quantity": {
+                "value": 0
+            },
+            "mrp": {
+                "value": 20
+            },
+            "sale_price": {
+                "value": 16
+            },
+            "sac_code": {
+                "value": null
+            },
+            "remarks": {
+                "value": null
+            },
+            "image": {
+                "value": null
+            },
+            "unit_of_measurement_id": {
+                "value": 1000001,
+                "text": "Nos"
+            },
+            "unit_of_measurement_id__text": "Nos",
+            "product_type_id": {
+                "value": null,
+                "text": null
+            },
+            "product_type_id__text": null,
+            "sales_account_row_id": {
+                "value": null,
+                "text": null
+            },
+            "sales_account_row_id__text": null,
+            "purchase_account_row_id": {
+                "value": null,
+                "text": null
+            },
+            "purchase_account_row_id__text": null,
+            "_creation_date": "2024-07-02T18:30:00.000Z",
+            "_creation_time": "1970-01-01T11:04:04.073Z",
+            "_created_at_timestamp_in_utc": "1720004644065",
+            "_creator": 1000001,
+            "_last_edited_date": "2025-04-10T18:30:00.000Z",
+            "_last_edited_time": "1970-01-01T05:22:20.643Z",
+            "_last_edited_at_timestamp_in_utc": "1744348940639",
+            "_last_edited_by": 1000003
+        },
+        {
+            "id": 1000022,
+            "product_name": {
+                "value": "Test Service 1"
+            },
+            "hsn_code": {
+                "value": "72.02. 99.11"
+            },
+            "sales_tax": {
+                "value": 1000014,
+                "text": "0% VAT "
+            },
+            "sales_tax__text": "0% VAT ",
+            "purchase_tax": {
+                "value": 1000012,
+                "text": "0% VAT"
+            },
+            "purchase_tax__text": "0% VAT",
+            "product_category_id": {
+                "value": 1000008,
+                "text": "Test Service Category"
+            },
+            "product_category_id__text": "Test Service Category",
+            "available_quantity": {
+                "value": 1
+            },
+            "mrp": {
+                "value": 150
+            },
+            "sale_price": {
+                "value": 120
+            },
+            "sac_code": {
+                "value": null
+            },
+            "remarks": {
+                "value": null
+            },
+            "image": {
+                "value": null
+            },
+            "unit_of_measurement_id": {
+                "value": 1000001,
+                "text": "Nos"
+            },
+            "unit_of_measurement_id__text": "Nos",
+            "product_type_id": {
+                "value": null,
+                "text": null
+            },
+            "product_type_id__text": null,
+            "sales_account_row_id": {
+                "value": null,
+                "text": null
+            },
+            "sales_account_row_id__text": null,
+            "purchase_account_row_id": {
+                "value": null,
+                "text": null
+            },
+            "purchase_account_row_id__text": null,
+            "_creation_date": "2025-04-10T18:30:00.000Z",
+            "_creation_time": "1970-01-01T05:21:58.183Z",
+            "_created_at_timestamp_in_utc": "1744348918180",
+            "_creator": 1000003,
+            "_last_edited_date": null,
+            "_last_edited_time": null,
+            "_last_edited_at_timestamp_in_utc": null,
+            "_last_edited_by": null
+        },{
+            "id": 1000019,
+            "product_name": {
+                "value": "Test Product"
+            },
+            "hsn_code": {
+                "value": "2356"
+            },
+            "sales_tax": {
+                "value": 1000003,
+                "text": "10% VAT"
+            },
+            "sales_tax__text": "10% VAT",
+            "purchase_tax": {
+                "value": 1000004,
+                "text": "10% VAT"
+            },
+            "purchase_tax__text": "10% VAT",
+            "product_category_id": {
+                "value": 1000006,
+                "text": "Test Category"
+            },
+            "product_category_id__text": "Test Category",
+            "available_quantity": {
+                "value": 2
+            },
+            "mrp": {
+                "value": 1000
+            },
+            "sale_price": {
+                "value": 800
+            },
+            "sac_code": {
+                "value": null
+            },
+            "remarks": {
+                "value": null
+            },
+            "image": {
+                "value": null
+            },
+            "unit_of_measurement_id": {
+                "value": null,
+                "text": null
+            },
+            "unit_of_measurement_id__text": null,
+            "product_type_id": {
+                "value": null,
+                "text": null
+            },
+            "product_type_id__text": null,
+            "sales_account_row_id": {
+                "value": null,
+                "text": null
+            },
+            "sales_account_row_id__text": null,
+            "purchase_account_row_id": {
+                "value": null,
+                "text": null
+            },
+            "purchase_account_row_id__text": null,
+            "_creation_date": "2024-07-02T18:30:00.000Z",
+            "_creation_time": "1970-01-01T10:56:04.720Z",
+            "_created_at_timestamp_in_utc": "1720004164713",
+            "_creator": 1000002,
+            "_last_edited_date": "2025-04-10T18:30:00.000Z",
+            "_last_edited_time": "1970-01-01T05:23:20.433Z",
+            "_last_edited_at_timestamp_in_utc": "1744349000431",
+            "_last_edited_by": 1000003
+        }
+    ]
+
+    export const invoice_card_json = [
+        {
+            "id": 1000068,
+            "invoice_number": {
+                "value": "IN5"
+            },
+            "customer_profile_id": {
+                "value": 1000005,
+                "text": "Silpa"
+            },
+            "customer_profile_id__text": "Silpa",
+            "invoice_date": {
+                "value": "2024-05-27T18:30:00.000Z"
+            },
+            "invoice_items": {
+                "value": 1
+            },
+            "total_amount": {
+                "value": 3960
+            },
+            "invoice_status": {
+                "value": "approved"
+            },
+            "billing_address": {
+                "value": null
+            },
+            "customer_billing_address_id": {
+                "value": null,
+                "text": null
+            },
+            "customer_billing_address_id__text": null,
+            "customer_shipping_address_id": {
+                "value": null,
+                "text": null
+            },
+            "customer_shipping_address_id__text": null,
+            "shipping_address": {
+                "value": null
+            },
+            "balance_due": {
+                "value": 0
+            },
+            "payments": {
+                "value": 1
+            },
+            "due_date": {
+                "value": "2024-05-31T18:30:00.000Z"
+            },
+            "payment_status": {
+                "value": "paid"
+            },
+            "employee_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "employee_profile_id__text": null,
+            "transaction_number_series_id": {
+                "value": 1000009,
+                "text": 1000009
+            },
+            "transaction_number_series_id__text": 1000009,
+            "transaction_number_prefix": {
+                "value": "IN"
+            },
+            "transaction_record_number": {
+                "value": 5
+            },
+            "transaction_number_suffix": {
+                "value": ""
+            },
+            "project_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "project_profile_id__text": null,
+            "due_days": {
+                "value": 4
+            },
+            "amount_excluding_tax": {
+                "value": 3600
+            },
+            "_creation_date": "2025-06-04T18:30:00.000Z",
+            "_creation_time": "1970-01-01T06:57:13.130Z",
+            "_created_at_timestamp_in_utc": "1749106633121",
+            "_creator": 1000001,
+            "_last_edited_date": null,
+            "_last_edited_time": null,
+            "_last_edited_at_timestamp_in_utc": null,
+            "_last_edited_by": null
+        },{
+            "id": 1000066,
+            "invoice_number": {
+                "value": "IN3"
+            },
+            "customer_profile_id": {
+                "value": 1000005,
+                "text": "Silpa"
+            },
+            "customer_profile_id__text": "Silpa",
+            "invoice_date": {
+                "value": "2024-05-24T18:30:00.000Z"
+            },
+            "invoice_items": {
+                "value": 2
+            },
+            "total_amount": {
+                "value": 37950
+            },
+            "invoice_status": {
+                "value": "approved"
+            },
+            "billing_address": {
+                "value": null
+            },
+            "customer_billing_address_id": {
+                "value": null,
+                "text": null
+            },
+            "customer_billing_address_id__text": null,
+            "customer_shipping_address_id": {
+                "value": null,
+                "text": null
+            },
+            "customer_shipping_address_id__text": null,
+            "shipping_address": {
+                "value": null
+            },
+            "balance_due": {
+                "value": 0
+            },
+            "payments": {
+                "value": 1
+            },
+            "due_date": {
+                "value": "2024-05-30T18:30:00.000Z"
+            },
+            "payment_status": {
+                "value": "paid"
+            },
+            "employee_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "employee_profile_id__text": null,
+            "transaction_number_series_id": {
+                "value": 1000009,
+                "text": 1000009
+            },
+            "transaction_number_series_id__text": 1000009,
+            "transaction_number_prefix": {
+                "value": "IN"
+            },
+            "transaction_record_number": {
+                "value": 3
+            },
+            "transaction_number_suffix": {
+                "value": ""
+            },
+            "project_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "project_profile_id__text": null,
+            "due_days": {
+                "value": 6
+            },
+            "amount_excluding_tax": {
+                "value": 34500
+            },
+            "_creation_date": "2025-06-04T18:30:00.000Z",
+            "_creation_time": "1970-01-01T06:54:34.133Z",
+            "_created_at_timestamp_in_utc": "1749106474123",
+            "_creator": 1000001,
+            "_last_edited_date": null,
+            "_last_edited_time": null,
+            "_last_edited_at_timestamp_in_utc": null,
+            "_last_edited_by": null
+        },{
+            "id": 1000064,
+            "invoice_number": {
+                "value": "IN1"
+            },
+            "customer_profile_id": {
+                "value": 1000001,
+                "text": "John"
+            },
+            "customer_profile_id__text": "John",
+            "invoice_date": {
+                "value": "2024-05-20T18:30:00.000Z"
+            },
+            "invoice_items": {
+                "value": 2
+            },
+            "total_amount": {
+                "value": 23100
+            },
+            "invoice_status": {
+                "value": "approved"
+            },
+            "billing_address": {
+                "value": null
+            },
+            "customer_billing_address_id": {
+                "value": null,
+                "text": null
+            },
+            "customer_billing_address_id__text": null,
+            "customer_shipping_address_id": {
+                "value": null,
+                "text": null
+            },
+            "customer_shipping_address_id__text": null,
+            "shipping_address": {
+                "value": null
+            },
+            "balance_due": {
+                "value": 3100
+            },
+            "payments": {
+                "value": 1
+            },
+            "due_date": {
+                "value": "2024-05-25T18:30:00.000Z"
+            },
+            "payment_status": {
+                "value": "partially_paid"
+            },
+            "employee_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "employee_profile_id__text": null,
+            "transaction_number_series_id": {
+                "value": 1000009,
+                "text": 1000009
+            },
+            "transaction_number_series_id__text": 1000009,
+            "transaction_number_prefix": {
+                "value": "IN"
+            },
+            "transaction_record_number": {
+                "value": 1
+            },
+            "transaction_number_suffix": {
+                "value": ""
+            },
+            "project_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "project_profile_id__text": null,
+            "due_days": {
+                "value": 5
+            },
+            "amount_excluding_tax": {
+                "value": 22000
+            },
+            "_creation_date": "2025-06-04T18:30:00.000Z",
+            "_creation_time": "1970-01-01T06:45:02.320Z",
+            "_created_at_timestamp_in_utc": "1749105902310",
+            "_creator": 1000001,
+            "_last_edited_date": null,
+            "_last_edited_time": null,
+            "_last_edited_at_timestamp_in_utc": null,
+            "_last_edited_by": null
+        }
+    ]
+
+    export const receipt_card_json = [
+        {
+            "id": 1000238,
+            "customer_profile_id": {
+                "value": 1000005,
+                "text": "Silpa"
+            },
+            "customer_profile_id__text": "Silpa",
+            "payment_mode": {
+                "value": "bank"
+            },
+            "voucher_number": {
+                "value": "PR11"
+            },
+            "particulars": {
+                "value": null
+            },
+            "transaction_date": {
+                "value": "2024-05-28T18:30:00.000Z"
+            },
+            "remarks": {
+                "value": null
+            },
+            "bank_profile_id": {
+                "value": 1000003,
+                "text": "AXIS"
+            },
+            "bank_profile_id__text": "AXIS",
+            "payment_amount": {
+                "value": 3960
+            },
+            "payment_type": {
+                "value": "sales_income"
+            },
+            "invoice_id": {
+                "value": 1000068,
+                "text": "IN5"
+            },
+            "invoice_id__text": "IN5",
+            "additional_income_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "additional_income_profile_id__text": null,
+            "purchase_debit_note_id": {
+                "value": null,
+                "text": null
+            },
+            "purchase_debit_note_id__text": null,
+            "record_type": {
+                "value": "payment"
+            },
+            "transaction_number_prefix": {
+                "value": "PR"
+            },
+            "transaction_record_number": {
+                "value": 11
+            },
+            "transaction_number_suffix": {
+                "value": ""
+            },
+            "project_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "project_profile_id__text": null,
+            "transaction_number_series_id": {
+                "value": 1000007,
+                "text": 1000007
+            },
+            "transaction_number_series_id__text": 1000007,
+            "redirect_from": {
+                "value": "direct_create"
+            },
+            "_creation_date": "2025-06-11T18:30:00.000Z",
+            "_creation_time": "1970-01-01T10:34:20.070Z",
+            "_created_at_timestamp_in_utc": "1749724460035",
+            "_creator": 1000003,
+            "_last_edited_date": null,
+            "_last_edited_time": null,
+            "_last_edited_at_timestamp_in_utc": null,
+            "_last_edited_by": null,
+            "balance_due": {},
+            "purchase_debit_note_amount": {}
+        },{
+            "id": 1000237,
+            "customer_profile_id": {
+                "value": 1000002,
+                "text": "Sarath"
+            },
+            "customer_profile_id__text": "Sarath",
+            "payment_mode": {
+                "value": "cash"
+            },
+            "voucher_number": {
+                "value": "PR10"
+            },
+            "particulars": {
+                "value": null
+            },
+            "transaction_date": {
+                "value": "2024-05-27T18:30:00.000Z"
+            },
+            "remarks": {
+                "value": null
+            },
+            "bank_profile_id": {
+                "value": 1000001,
+                "text": "Cash"
+            },
+            "bank_profile_id__text": "Cash",
+            "payment_amount": {
+                "value": 5775
+            },
+            "payment_type": {
+                "value": "sales_income"
+            },
+            "invoice_id": {
+                "value": 1000067,
+                "text": "IN4"
+            },
+            "invoice_id__text": "IN4",
+            "additional_income_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "additional_income_profile_id__text": null,
+            "purchase_debit_note_id": {
+                "value": null,
+                "text": null
+            },
+            "purchase_debit_note_id__text": null,
+            "record_type": {
+                "value": "payment"
+            },
+            "transaction_number_prefix": {
+                "value": "PR"
+            },
+            "transaction_record_number": {
+                "value": 10
+            },
+            "transaction_number_suffix": {
+                "value": ""
+            },
+            "project_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "project_profile_id__text": null,
+            "transaction_number_series_id": {
+                "value": 1000007,
+                "text": 1000007
+            },
+            "transaction_number_series_id__text": 1000007,
+            "redirect_from": {
+                "value": "direct_create"
+            },
+            "_creation_date": "2025-06-11T18:30:00.000Z",
+            "_creation_time": "1970-01-01T10:33:48.756Z",
+            "_created_at_timestamp_in_utc": "1749724428723",
+            "_creator": 1000003,
+            "_last_edited_date": null,
+            "_last_edited_time": null,
+            "_last_edited_at_timestamp_in_utc": null,
+            "_last_edited_by": null,
+            "balance_due": {},
+            "purchase_debit_note_amount": {}
+        },
+        {
+            "id": 1000236,
+            "customer_profile_id": {
+                "value": 1000002,
+                "text": "Sarath"
+            },
+            "customer_profile_id__text": "Sarath",
+            "payment_mode": {
+                "value": "bank"
+            },
+            "voucher_number": {
+                "value": "PR9"
+            },
+            "particulars": {
+                "value": null
+            },
+            "transaction_date": {
+                "value": "2024-05-26T18:30:00.000Z"
+            },
+            "remarks": {
+                "value": null
+            },
+            "bank_profile_id": {
+                "value": 1000002,
+                "text": "ICICI"
+            },
+            "bank_profile_id__text": "ICICI",
+            "payment_amount": {
+                "value": 3327
+            },
+            "payment_type": {
+                "value": "sales_income"
+            },
+            "invoice_id": {
+                "value": 1000065,
+                "text": "IN2"
+            },
+            "invoice_id__text": "IN2",
+            "additional_income_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "additional_income_profile_id__text": null,
+            "purchase_debit_note_id": {
+                "value": null,
+                "text": null
+            },
+            "purchase_debit_note_id__text": null,
+            "record_type": {
+                "value": "payment"
+            },
+            "transaction_number_prefix": {
+                "value": "PR"
+            },
+            "transaction_record_number": {
+                "value": 9
+            },
+            "transaction_number_suffix": {
+                "value": ""
+            },
+            "project_profile_id": {
+                "value": null,
+                "text": null
+            },
+            "project_profile_id__text": null,
+            "transaction_number_series_id": {
+                "value": 1000007,
+                "text": 1000007
+            },
+            "transaction_number_series_id__text": 1000007,
+            "redirect_from": {
+                "value": "direct_create"
+            },
+            "_creation_date": "2025-06-11T18:30:00.000Z",
+            "_creation_time": "1970-01-01T10:32:52.836Z",
+            "_created_at_timestamp_in_utc": "1749724372803",
+            "_creator": 1000003,
+            "_last_edited_date": null,
+            "_last_edited_time": null,
+            "_last_edited_at_timestamp_in_utc": null,
+            "_last_edited_by": null,
+            "balance_due": {},
+            "purchase_debit_note_amount": {}
+        }
+    ]
+
 
     const employee_card_configuration = {
-        card_view_style : 'modern_card',
+        card_view_style : 'classic_card',
         data_mapping : {
             main_header_text : {
                 column_id : "fullName"
@@ -633,7 +1356,7 @@
     };
 
     const leave_management_card_configuration = {
-        card_view_style: "leave_minimal_card",
+        card_view_style: "leave_detailed_card",
         data_mapping: {
             main_header_text: {
                 column_id: "leave_type"
@@ -642,7 +1365,22 @@
                 column_id: "unique_id"
             },
             status_badge: {
-                column_id: "status"
+                column_id: "status",
+                condition_color_settings : {
+                    is_enabled: true,
+                    rules : [
+                        {
+                            "condition": "equals",
+                            "condition_value": "active",
+                            "style": "green",
+                        },
+                        {
+                            "condition": "equals",
+                            "condition_value": "inactive",
+                            "style": "red",
+                        }
+                    ]
+                }
             },
             main_detail_items: [
                 {column_id: "max_days",},
@@ -653,7 +1391,7 @@
     };
 
     const customer_card_configuration = {
-        card_view_style: "customer_minimal_card",
+        card_view_style: "leave_compact_card",
         data_mapping: {
             main_header_text: {
                 column_id: "customer_name"
@@ -685,9 +1423,6 @@
             main_header_text: {
                 column_id: "title"
             },
-            main_header_caption: {
-                column_id: "id"
-            },
             date_range: {
                 start: {
                     column_id: "start_date"
@@ -697,62 +1432,161 @@
                 }
             },
             duration_display: {
-                column_id: "duration_in_months"
+                calculated_field: "duration_in_months"
             },
             status_badge: {
-                column_id: "is_current_financial_year"
+                condition: "is_current_financial_year"
             }
         }
     };
 
+    const product_card_configuration = {
+        card_view_style: "product_profile_card_detailed",
+        data_mapping: {
+            main_header_text: {
+                column_id: "product_name"
+            },
+            main_header_caption: {
+                column_id: "hsn_code"
+            },
+            caption: {
+                column_id: "product_category_id"
+            },
+            stock_badge: {
+                column_id: "available_quantity"
+            },
+            main_detail_items: [
+                { column_id: "mrp" },
+                { column_id: "sale_price" },
+                { column_id: "sales_tax" },
+                { column_id: "purchase_tax" }
+            ]
+        }
+    };
+
+    const invoice_card_configuration = {
+        card_view_style: "invoice_card_detailed",
+        data_mapping: {
+            main_header_text: {
+                column_id: "invoice_number"
+            },
+            main_header_caption: {
+                column_id: "customer_profile_id"
+            },
+            caption: {
+                column_id: "invoice_date"
+            },
+            invoice_status: {
+                column_id: "invoice_status"
+            },
+            payment_status: {
+                column_id: "payment_status"
+            },
+            main_detail_items: [
+                { column_id: "amount_excluding_tax" },
+                { column_id: "total_amount" },
+                { column_id: "balance_due" },
+                { column_id: "due_date" },
+                { column_id: "invoice_items" }
+            ]
+        }
+    };
+
+    const payment_card_configuration = {
+        card_view_style: "payment_receipt_card_detailed",
+        data_mapping: {
+            main_header_text: {
+                column_id: "voucher_number"
+            },
+            main_header_caption: {
+                column_id: "customer_profile_id"
+            },
+            payment_mode_badge: {
+                column_id: "payment_mode"
+            },
+            payment_amount_details: {
+                column_id: "payment_amount"
+            },
+            main_detail_items: [
+                { column_id: "customer_profile_id" },
+                { column_id: "transaction_date" },
+                { column_id: "payment_amount" }
+            ],
+            additional_detail_items: [
+                { column_id: "invoice_id" },
+                { column_id: "bank_profile_id" },
+                { column_id: "payment_type" }
+            ]
+        }
+    };
 
 </script>
 
 <div class="card_list">
 
-    <!--{#each user_data_json as data_item}-->
-    <!--    {#if employee_card_configuration.card_view_style === 'basic'}-->
-    <!--        <BasicCard data_row={data_item} config={employee_card_configuration} />-->
-    <!--    {:else if employee_card_configuration.card_view_style === 'basic_detailed'}-->
-    <!--        <BasicDetailed data_row={data_item} config={employee_card_configuration} />-->
-    <!--    {:else if employee_card_configuration.card_view_style === 'classic_card'}-->
-    <!--        <ClassicCard data_row={data_item} config={employee_card_configuration} />-->
-    <!--    {:else if employee_card_configuration.card_view_style === 'modern_card'}-->
-    <!--        <ModernCard data_row={data_item} config={employee_card_configuration} />-->
-    <!--    {:else if employee_card_configuration.card_view_style === 'nationality'}-->
-    <!--        <HorizontalCard data_row={data_item} config={employee_card_configuration} />-->
-    <!--    {/if}-->
-    <!--{/each}-->
+    {#each user_data_json as data_item}
+        {#if employee_card_configuration.card_view_style === 'basic'}
+            <BasicCard data_row={data_item} config={employee_card_configuration} />
+        {:else if employee_card_configuration.card_view_style === 'basic_detailed'}
+            <BasicDetailed data_row={data_item} config={employee_card_configuration} />
+        {:else if employee_card_configuration.card_view_style === 'classic_card'}
+            <ClassicCard data_row={data_item} config={employee_card_configuration} />
+        {:else if employee_card_configuration.card_view_style === 'modern_card'}
+            <ModernCard data_row={data_item} config={employee_card_configuration} />
+        {/if}
+    {/each}
 
-    <!--{#each user_data_json_for_leave_card as data_item}-->
-    <!--    {#if leave_management_card_configuration.card_view_style === 'leave_compact_card'}-->
-    <!--        <LeaveCompactCard data_row={data_item} config={leave_management_card_configuration} />-->
-    <!--    {:else if leave_management_card_configuration.card_view_style === 'leave_detailed_card'}-->
-    <!--        <LeaveDetailedCard data_row={data_item} config={leave_management_card_configuration} />-->
-    <!--    {:else if leave_management_card_configuration.card_view_style === 'leave_minimal_card'}-->
-    <!--        <LeaveMiniCard data_row={data_item} config={leave_management_card_configuration} />-->
-    <!--    {/if}-->
-    <!--{/each}-->
+    {#each user_data_json_for_leave_card as data_item}
+        {#if leave_management_card_configuration.card_view_style === 'leave_compact_card'}
+            <LeaveCompactCard data_row={data_item} config={leave_management_card_configuration} />
+        {:else if leave_management_card_configuration.card_view_style === 'leave_detailed_card'}
+            <LeaveDetailedCard data_row={data_item} config={leave_management_card_configuration} />
+        {:else if leave_management_card_configuration.card_view_style === 'leave_minimal_card'}
+            <LeaveMiniCard data_row={data_item} config={leave_management_card_configuration} />
+        {/if}
+    {/each}
 
-    <!--{#each user_data_json_for_customer_card as data_item}-->
-    <!--    {#if customer_card_configuration.card_view_style === 'customer_compact_card'}-->
-    <!--        <CustomerCompactCard data_row={data_item} config={customer_card_configuration} />-->
-    <!--    {:else if customer_card_configuration.card_view_style === 'customer_detailed_card'}-->
-    <!--        <CustomerDetailedCard data_row={data_item} config={customer_card_configuration} />-->
-    <!--    {:else if customer_card_configuration.card_view_style === 'customer_minimal_card'}-->
-    <!--        <CustomerMinimalCard data_row={data_item} config={customer_card_configuration} />-->
-    <!--    {/if}-->
-    <!--{/each}-->
+    {#each user_data_json_for_customer_card as data_item}
+        {#if customer_card_configuration.card_view_style === 'customer_compact_card'}
+            <CustomerCompactCard data_row={data_item} config={customer_card_configuration} />
+        {:else if customer_card_configuration.card_view_style === 'customer_detailed_card'}
+            <CustomerDetailedCard data_row={data_item} config={customer_card_configuration} />
+        {:else if customer_card_configuration.card_view_style === 'customer_minimal_card'}
+            <CustomerMinimalCard data_row={data_item} config={customer_card_configuration} />
+        {/if}
+    {/each}
 
     {#each user_data_json_for_financial_year_card as data_item}
         {#if financial_year_card_configuration.card_view_style === 'financial_year_minimal_card'}
             <FinancialCardMinimal data_row={data_item} config={financial_year_card_configuration} />
         {:else if financial_year_card_configuration.card_view_style === 'financial_year_compact_card'}
             <FinancialCardCompact data_row={data_item} config={financial_year_card_configuration} />
-        {:else if financial_year_card_configuration.card_view_style === 'financial_year_detailed_card'}
-            <FinancialCardDetailed data_row={data_item} config={financial_year_card_configuration} />
         {/if}
     {/each}
+
+    {#each product_profile_card_json as data_item}
+        {#if product_card_configuration.card_view_style === 'product_profile_card_compact'}
+            <ProductProfileCardCompact data_row={data_item} config={product_card_configuration} />
+        {:else if product_card_configuration.card_view_style === 'product_profile_card_detailed'}
+            <ProductProfileCardDetailed data_row={data_item} config={product_card_configuration} />
+        {/if}
+    {/each}
+
+    <!--{#each invoice_card_json as data_item}-->
+    <!--    {#if invoice_card_configuration.card_view_style === 'invoice_card_compact'}-->
+    <!--        <InvoiceCompactCard data_row={data_item} config={invoice_card_configuration} />-->
+    <!--    {:else if invoice_card_configuration.card_view_style === 'invoice_card_detailed'}-->
+    <!--        <InvoiceDetailedCard data_row={data_item} config={invoice_card_configuration} />-->
+    <!--    {/if}-->
+    <!--{/each}-->
+
+    <!--{#each receipt_card_json as data_item}-->
+    <!--    {#if payment_card_configuration.card_view_style === 'payment_receipt_card_compact'}-->
+    <!--        <ReceiptCompactCard data_row={data_item} config={payment_card_configuration} />-->
+    <!--    {:else if payment_card_configuration.card_view_style === 'payment_receipt_card_detailed'}-->
+    <!--        <ReceiptDetailedCard data_row={data_item} config={payment_card_configuration} />-->
+    <!--    {/if}-->
+    <!--{/each}-->
 
 </div>
 

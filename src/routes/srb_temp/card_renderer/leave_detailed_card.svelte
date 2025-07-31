@@ -23,6 +23,15 @@
     function get_column_display_name(column_id){
         return column_id.toUpperCase();
     }
+
+    let time_now = Date.now();
+    function check_status_badge_condition_green(){
+        return time_now % 2 === 1;
+    }
+    function check_status_badge_condition_red(){
+        return time_now % 2 === 0;
+    }
+
 </script>
 
 <div class="common_card_detailed">
@@ -32,7 +41,7 @@
             <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_text.column_id)}</span>
         </div>
         <div class="status_section">
-            <span class="status_badge status_active">{get_column_display_value(data_mapping.status_badge.column_id)}</span>
+            <span class="status_badge" class:status_inactive={check_status_badge_condition_red()} class:status_active={check_status_badge_condition_green()}>{get_column_display_value(data_mapping.status_badge.column_id)}</span>
         </div>
     </div>
 
