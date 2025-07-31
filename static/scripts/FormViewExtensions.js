@@ -37,7 +37,7 @@ FormView.prototype.show_edit_formview_normal_element_popup = function (context_i
     window.show_form_view_normal_element_customization_popup(this, column_info, custom_element_info, column_styling.customizations);
 }
 
-FormView.prototype.parse_customizations_css = function (new_config) {
+FormView.prototype.parse_customizations_css = function (new_config, div_holder_element) {
     let css_to_set = {};
     if(new_config.margin_top !== undefined){
         css_to_set.marginTop = new_config.margin_top;
@@ -69,9 +69,14 @@ FormView.prototype.parse_customizations_css = function (new_config) {
     if(new_config.background_color !== undefined){
         css_to_set.backgroundColor = new_config.background_color;
     }
+    if(new_config.text_color !== undefined){
+        css_to_set.color = new_config.text_color;
+    }
 
     if(new_config.border_color !== undefined && new_config.border_thickness !== undefined){
+
         let border_key = 'border';
+        console.log("border_area=======================", new_config.border_area);
         if(new_config.border_area && new_config.border_area !== 'all'){
             border_key += new_config.border_area[0].toUpperCase() + new_config.border_area.substring(1);
         }
@@ -82,6 +87,23 @@ FormView.prototype.parse_customizations_css = function (new_config) {
     if(new_config.border_radius !== undefined){
         css_to_set.borderRadius = new_config.border_radius;
     }
+
+    const keys = Object.keys(css_to_set);
+    for (const css_item of keys) {
+        css_to_set[ '--' + to_snake_case(css_item)] = css_to_set[css_item];
+    }
+
+    for (const css_item of FormView.FORM_ITEM_DIV_ELEMENT_PROTECTED_CSS_RULES) {
+        const value = div_holder_element.css(css_item);
+        if(value){
+            css_to_set[css_item] = value;
+        }
+    }
+
+    div_holder_element.attr('style', '');
+
+
+
     return css_to_set;
 }
 
@@ -98,13 +120,14 @@ FormView.prototype.load_customization_to_normal_column_element = function (colum
         inner_span.css('color', new_config.text_color);
     }
 
-    const css_to_set = this.parse_customizations_css(new_config);
+    const css_to_set = this.parse_customizations_css(new_config, div_holder_element);
 
     if(Object.keys(css_to_set).length){
         div_holder_element.css(css_to_set);
     }
     
 }
+
 
 FormView.prototype.load_customization_to_custom_column_element = function (custom_element_info, new_config) {
     const div_holder_element =  this.get_custom_element_svelte_instance(custom_element_info.id).container_element_jquery;
@@ -114,11 +137,16 @@ FormView.prototype.load_customization_to_custom_column_element = function (custo
         div_holder_element.find('.primary_display_name_inner_span').text(new_config.display_name);
     }
 
-    const css_to_set = this.parse_customizations_css(new_config);
+    const css_to_set = this.parse_customizations_css(new_config, div_holder_element);
 
     if(Object.keys(css_to_set).length){
         div_holder_element.css(css_to_set);
     }
+
+
+    const svelte_instance = this.get_custom_element_svelte_instance(custom_element_info.id);
+    svelte_instance.handle_customizations_updated(new_config);
+    // div_holder_element.css('color', new_config.text_color);
 
 }
 
@@ -277,6 +305,9 @@ FormView.prototype.mount_custom_element = function (item_id, item_type, target_e
         case 'title_with_caption':
             mounted_svelte_instance = this.styling_helper.mount_custom_element__title_with_caption(this, item_id, existing_config, target_element);
             break;
+        case 'caption_only':
+            mounted_svelte_instance = this.styling_helper.mount_custom_element__caption_only(this, item_id, existing_config, target_element);
+            break;
     }
 
     this.handle_new_custom_form_view_element_mounted(mounted_svelte_instance);
@@ -307,6 +338,18 @@ FormView.prototype.styling_helper = {
       });
 
       return svelte_instance;
+  },
+  mount_custom_element__caption_only : function (form_view, item_id, item_config, target_element) {
+    if(!item_config){
+        item_config = { caption_text: ''};
+    }
+
+    const svelte_instance = window.mount_form_view_custom_element(target_element, 'caption_only', {
+        unique_id: item_id,
+        config: item_config
+    });
+
+    return svelte_instance;
   }
 }
 

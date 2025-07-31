@@ -8,6 +8,8 @@ FormView.CREATE_MODE = 'create';
 FormView.EDIT_MODE = 'edit';
 FormView.VIEW_MODE = 'view';
 
+FormView.FORM_ITEM_DIV_ELEMENT_PROTECTED_CSS_RULES = ['width', 'height', 'minHeight', '--column_custom_width', '--column_custom_height', 'position'];
+
 
 FormView.COLUMN_STACK_STYLES = {
     vertical_stack_1: {
@@ -211,6 +213,60 @@ FormView.CUSTOM_ELEMENTS = {
                     "display_name": "caption_text",
                     "data_type": "text",
                     "input_type": "single_line",
+                },
+                {
+                    "unique_id": "content_alignment",
+                    "display_name": "Content Position",
+                    "data_type": "text",
+                    "input_type": "dropdownlist",
+                    "options": [
+                        {
+                            "text" : "Left",
+                            "value" : "left",
+                        },
+                        {
+                            "text" : "Right",
+                            "value" : "right",
+                        },
+                        {
+                            "text" : "Center",
+                            "value" : "center",
+                        },
+                    ],
+                }
+            ]
+        }
+    },
+    caption_only: {
+        id: 'caption_only',
+        display_name: 'Caption Only',
+        customization_config: {
+            items: [
+                {
+                    "unique_id": "caption_text",
+                    "display_name": "caption_text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "content_alignment",
+                    "display_name": "Content Position",
+                    "data_type": "text",
+                    "input_type": "dropdownlist",
+                    "options": [
+                        {
+                            "text" : "Left",
+                            "value" : "left",
+                        },
+                        {
+                            "text" : "Right",
+                            "value" : "right",
+                        },
+                        {
+                            "text" : "Center",
+                            "value" : "center",
+                        },
+                    ],
                 }
             ]
         }

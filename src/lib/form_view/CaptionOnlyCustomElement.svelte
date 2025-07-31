@@ -27,7 +27,6 @@
     }
 
     function parse_config(){
-        title_text = config.title_text || 'Title';
         caption_text = config.caption_text || 'Caption';
         content_alignment = config.content_alignment || 'left';
     }
@@ -42,8 +41,6 @@
 
 
 <div bind:this={container_element} data-custom_element_id="{unique_id}" data-unique_id="{unique_id}" data- class="form_view_custom_element title_with_caption {content_alignment}">
-
-    <h4 class="title_text primary_display_name">{title_text}</h4>
     <p class="caption_text">{caption_text}</p>
 
 </div>
@@ -60,10 +57,6 @@
     }
     .title_with_caption{
         padding: 10px;
-        color: var(--color);
-    }
-    .title_text{
-        font-size: 20px;
         color: var(--color);
     }
     .caption_text{

@@ -2,6 +2,7 @@
 <script>
 
     import TitleWithCaptionCustomElement from "$lib/form_view/TitleWithCaptionCustomElement.svelte";
+    import CaptionOnlyCustomElement from "$lib/form_view/CaptionOnlyCustomElement.svelte";
     import {onMount} from "svelte";
     import CustomElementCustomizationPopup from "$lib/form_view/CustomElementCustomizationPopup.svelte";
     import NormalElementCustomizationPopup from "$lib/form_view/NormalElementCustomizationPopup.svelte";
@@ -27,6 +28,17 @@
                     props : {
                         unique_id: outer_config.unique_id,
                         config: outer_config.config,
+                        customizations: outer_config.customizations
+                    },
+                });
+                break;
+            case FormView.CUSTOM_ELEMENTS.caption_only.id:
+                svelte_instance = new CaptionOnlyCustomElement({
+                    target: target_container_element,
+                    props : {
+                        unique_id: outer_config.unique_id,
+                        config: outer_config.config,
+                        customizations: outer_config.customizations
                     },
                 });
                 break;

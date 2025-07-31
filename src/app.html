@@ -69,6 +69,13 @@
 
 <script>
 
+	function to_snake_case(str) {
+		return str
+				.replace(/[\s\-]+/g, '_')             // Replace spaces and hyphens with underscores
+				.replace(/([a-z])([A-Z])/g, '$1_$2')  // Add underscore between camelCase transitions
+				.toLowerCase();                       // Convert to lowercase
+	}
+
 	window.globalElements = {
 		body : $(document.body),
 		documentWrapper : $('#documentWrapper'),
