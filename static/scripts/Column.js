@@ -951,6 +951,11 @@ Column.prototype = {
                 formView.validateUnique(self, element);
             });
         }
+
+        element.on('change.'+formViewMode+'_auto', function(){
+            formView.handle_normal_column_value_changed(self, element);
+        });
+
         switch (formViewMode){
             case FormView.CREATE_MODE:
                 if(self.validations.customSql_Create && self.validations.customSql_Create.isEnabled){

@@ -21,7 +21,7 @@
         let svelte_instance ;
 
         switch (element_type) {
-            case 'title_with_caption':
+            case FormView.CUSTOM_ELEMENTS.title_with_caption.id:
                 svelte_instance = new TitleWithCaptionCustomElement({
                     target: target_container_element,
                     props : {

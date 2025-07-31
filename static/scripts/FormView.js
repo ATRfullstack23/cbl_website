@@ -19,15 +19,7 @@ function FormView(config, parentObject) {
     return self;
 }
 
-FormView.DISPLAY_MODES = {
-    DEFAULT: 'default',
-    INLINE: 'inline'
-}
 
-FormView.HIDDEN_MODE = 'none';
-FormView.CREATE_MODE = 'create';
-FormView.EDIT_MODE = 'edit';
-FormView.VIEW_MODE = 'view';
 
 FormView.prototype = {
     constants:{
