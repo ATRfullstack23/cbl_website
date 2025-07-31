@@ -1,5 +1,6 @@
 <script>
 
+    import HorizontalCard from "./horizontal_card.svelte";
     import BasicCard from "./basic_card.svelte";
     import BasicDetailed from "./basic_detailed_card.svelte";
     import ClassicCard from "./classic_card.svelte";
@@ -1339,7 +1340,7 @@
 
 
     const employee_card_configuration = {
-        card_view_style : 'classic_card',
+        card_view_style : 'modern_card',
         data_mapping : {
             main_header_text : {
                 column_id : "fullName"
@@ -1391,7 +1392,7 @@
     };
 
     const customer_card_configuration = {
-        card_view_style: "leave_compact_card",
+        card_view_style: "customer_detailed_card",
         data_mapping: {
             main_header_text: {
                 column_id: "customer_name"
@@ -1418,7 +1419,7 @@
 
 
     const financial_year_card_configuration = {
-        card_view_style: "financial_year_compact_card",
+        card_view_style: "financial_year_detailed_card",
         data_mapping: {
             main_header_text: {
                 column_id: "title"
@@ -1524,53 +1525,55 @@
 
 <div class="card_list">
 
-    {#each user_data_json as data_item}
-        {#if employee_card_configuration.card_view_style === 'basic'}
-            <BasicCard data_row={data_item} config={employee_card_configuration} />
-        {:else if employee_card_configuration.card_view_style === 'basic_detailed'}
-            <BasicDetailed data_row={data_item} config={employee_card_configuration} />
-        {:else if employee_card_configuration.card_view_style === 'classic_card'}
-            <ClassicCard data_row={data_item} config={employee_card_configuration} />
-        {:else if employee_card_configuration.card_view_style === 'modern_card'}
-            <ModernCard data_row={data_item} config={employee_card_configuration} />
-        {/if}
-    {/each}
+    <!--{#each user_data_json as data_item}-->
+    <!--    {#if employee_card_configuration.card_view_style === 'basic'}-->
+    <!--        <BasicCard data_row={data_item} config={employee_card_configuration} />-->
+    <!--    {:else if employee_card_configuration.card_view_style === 'basic_detailed'}-->
+    <!--        <BasicDetailed data_row={data_item} config={employee_card_configuration} />-->
+    <!--    {:else if employee_card_configuration.card_view_style === 'classic_card'}-->
+    <!--        <ClassicCard data_row={data_item} config={employee_card_configuration} />-->
+    <!--    {:else if employee_card_configuration.card_view_style === 'modern_card'}-->
+    <!--        <ModernCard data_row={data_item} config={employee_card_configuration} />-->
+    <!--    {:else if employee_card_configuration.card_view_style === 'nationality'}-->
+    <!--        <HorizontalCard data_row={data_item} config={employee_card_configuration} />-->
+    <!--    {/if}-->
+    <!--{/each}-->
 
-    {#each user_data_json_for_leave_card as data_item}
-        {#if leave_management_card_configuration.card_view_style === 'leave_compact_card'}
-            <LeaveCompactCard data_row={data_item} config={leave_management_card_configuration} />
-        {:else if leave_management_card_configuration.card_view_style === 'leave_detailed_card'}
-            <LeaveDetailedCard data_row={data_item} config={leave_management_card_configuration} />
-        {:else if leave_management_card_configuration.card_view_style === 'leave_minimal_card'}
-            <LeaveMiniCard data_row={data_item} config={leave_management_card_configuration} />
-        {/if}
-    {/each}
+    <!--{#each user_data_json_for_leave_card as data_item}-->
+    <!--    {#if leave_management_card_configuration.card_view_style === 'leave_compact_card'}-->
+    <!--        <LeaveCompactCard data_row={data_item} config={leave_management_card_configuration} />-->
+    <!--    {:else if leave_management_card_configuration.card_view_style === 'leave_detailed_card'}-->
+    <!--        <LeaveDetailedCard data_row={data_item} config={leave_management_card_configuration} />-->
+    <!--    {:else if leave_management_card_configuration.card_view_style === 'leave_minimal_card'}-->
+    <!--        <LeaveMiniCard data_row={data_item} config={leave_management_card_configuration} />-->
+    <!--    {/if}-->
+    <!--{/each}-->
 
-    {#each user_data_json_for_customer_card as data_item}
-        {#if customer_card_configuration.card_view_style === 'customer_compact_card'}
-            <CustomerCompactCard data_row={data_item} config={customer_card_configuration} />
-        {:else if customer_card_configuration.card_view_style === 'customer_detailed_card'}
-            <CustomerDetailedCard data_row={data_item} config={customer_card_configuration} />
-        {:else if customer_card_configuration.card_view_style === 'customer_minimal_card'}
-            <CustomerMinimalCard data_row={data_item} config={customer_card_configuration} />
-        {/if}
-    {/each}
+    <!--{#each user_data_json_for_customer_card as data_item}-->
+    <!--    {#if customer_card_configuration.card_view_style === 'customer_compact_card'}-->
+    <!--        <CustomerCompactCard data_row={data_item} config={customer_card_configuration} />-->
+    <!--    {:else if customer_card_configuration.card_view_style === 'customer_detailed_card'}-->
+    <!--        <CustomerDetailedCard data_row={data_item} config={customer_card_configuration} />-->
+    <!--    {:else if customer_card_configuration.card_view_style === 'customer_minimal_card'}-->
+    <!--        <CustomerMinimalCard data_row={data_item} config={customer_card_configuration} />-->
+    <!--    {/if}-->
+    <!--{/each}-->
 
-    {#each user_data_json_for_financial_year_card as data_item}
-        {#if financial_year_card_configuration.card_view_style === 'financial_year_minimal_card'}
-            <FinancialCardMinimal data_row={data_item} config={financial_year_card_configuration} />
-        {:else if financial_year_card_configuration.card_view_style === 'financial_year_compact_card'}
-            <FinancialCardCompact data_row={data_item} config={financial_year_card_configuration} />
-        {/if}
-    {/each}
+    <!--{#each user_data_json_for_financial_year_card as data_item}-->
+    <!--    {#if financial_year_card_configuration.card_view_style === 'financial_year_minimal_card'}-->
+    <!--        <FinancialCardMinimal data_row={data_item} config={financial_year_card_configuration} />-->
+    <!--    {:else if financial_year_card_configuration.card_view_style === 'financial_year_compact_card'}-->
+    <!--        <FinancialCardCompact data_row={data_item} config={financial_year_card_configuration} />-->
+    <!--    {/if}-->
+    <!--{/each}-->
 
-    {#each product_profile_card_json as data_item}
-        {#if product_card_configuration.card_view_style === 'product_profile_card_compact'}
-            <ProductProfileCardCompact data_row={data_item} config={product_card_configuration} />
-        {:else if product_card_configuration.card_view_style === 'product_profile_card_detailed'}
-            <ProductProfileCardDetailed data_row={data_item} config={product_card_configuration} />
-        {/if}
-    {/each}
+    <!--{#each product_profile_card_json as data_item}-->
+    <!--    {#if product_card_configuration.card_view_style === 'product_profile_card_compact'}-->
+    <!--        <ProductProfileCardCompact data_row={data_item} config={product_card_configuration} />-->
+    <!--    {:else if product_card_configuration.card_view_style === 'product_profile_card_detailed'}-->
+    <!--        <ProductProfileCardDetailed data_row={data_item} config={product_card_configuration} />-->
+    <!--    {/if}-->
+    <!--{/each}-->
 
     <!--{#each invoice_card_json as data_item}-->
     <!--    {#if invoice_card_configuration.card_view_style === 'invoice_card_compact'}-->
@@ -1580,13 +1583,13 @@
     <!--    {/if}-->
     <!--{/each}-->
 
-    <!--{#each receipt_card_json as data_item}-->
-    <!--    {#if payment_card_configuration.card_view_style === 'payment_receipt_card_compact'}-->
-    <!--        <ReceiptCompactCard data_row={data_item} config={payment_card_configuration} />-->
-    <!--    {:else if payment_card_configuration.card_view_style === 'payment_receipt_card_detailed'}-->
-    <!--        <ReceiptDetailedCard data_row={data_item} config={payment_card_configuration} />-->
-    <!--    {/if}-->
-    <!--{/each}-->
+    {#each receipt_card_json as data_item}
+        {#if payment_card_configuration.card_view_style === 'payment_receipt_card_compact'}
+            <ReceiptCompactCard data_row={data_item} config={payment_card_configuration} />
+        {:else if payment_card_configuration.card_view_style === 'payment_receipt_card_detailed'}
+            <ReceiptDetailedCard data_row={data_item} config={payment_card_configuration} />
+        {/if}
+    {/each}
 
 </div>
 

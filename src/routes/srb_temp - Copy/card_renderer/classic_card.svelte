@@ -29,7 +29,7 @@
     <div class="card_stripe"></div>
     <div class="card_header">
         <img
-                src="/card_renderer/user_2.jpg"
+                src="https://placehold.co/80x80"
                 alt="Jane Smith"
                 class="profile_photo"/>
         <div class="header_text">

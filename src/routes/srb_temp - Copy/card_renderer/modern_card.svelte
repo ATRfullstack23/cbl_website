@@ -6,6 +6,7 @@
 
     const data_mapping = config.data_mapping;
 
+
     function get_column_display_value(column_id){
         // const column_instance = get_column_instance(column_id);
         // let display_value = column_instance.parseDisplayValue(data_row);
@@ -18,24 +19,24 @@
         return data_row[column_id]?.text || data_row[column_id]?.value;
     }
 
+
     function get_column_display_name(column_id){
         return column_id.toUpperCase();
     }
-
 </script>
 
 <div class="card_modern">
     <div class="card_background"></div>
     <div class="card_content">
         <div class="avatar_container">
-            <img src="/card_renderer/user.png" alt="John Doe" class="avatar" />
+            <img src="https://placehold.co/70x70" alt="John Doe" class="avatar" />
             <div class="avatar_ring"></div>
         </div>
 
         <div class="card_info">
             <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
             <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption.column_id)}</span>
-            <span class="status_indicator status_active"></span>
+<!--            <span class="status_indicator status_active"></span>-->
         </div>
 
         <div class="data_grid">
