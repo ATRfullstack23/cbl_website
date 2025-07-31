@@ -488,6 +488,7 @@ nav.header {
 
 .searchButtonsContainer {
     float: left;
+    padding-right: 30px;
 }
 
 td.searchButtonsContainerParent {
@@ -517,6 +518,12 @@ td.searchButtonsContainerParent {
 .defaultButtonsContainer .setDisplayModeToDirectCreateView {
     background: url("/pic/addDetails.png")no-repeat;
 }
+
+
+
+
+
+
 
 body.pc .defaultButtonsContainer .icon, body.pc .searchButtonsContainer .icon {
     height: 24px;

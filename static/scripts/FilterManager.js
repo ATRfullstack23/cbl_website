@@ -71,6 +71,10 @@ FilterManager.prototype = {
         return self;
     },
 
+    get_filter_count: function(){
+        return Object.keys(this.filters).length;
+    },
+
     initializeFilters: function(){
         var self = this;
         self.filters = {};
@@ -179,6 +183,9 @@ FilterManager.prototype = {
         });
         self.elements.btnCancel.on('click', function(){
             self.hide();
+        });
+        self.elements.close_popup_icon.on('click', function(){
+            self.hide_side_popup();
         });
         self.forEachFilter(function(filter){
             if(filter.getFilterFormElement()){
@@ -333,9 +340,15 @@ FilterManager.prototype = {
             .attr(self.constants.tabFilterPanel)
             .attr('id', self.id);
 
+        // let close_popup_icon = $('<span class="close_popup_icon"><i class="fa fa-close"></i> close</span>')
+        let close_popup_icon = $('<span class="close_popup_icon">close</span>')
+        // let reset_all_filters_icon = $('<span class="reset_filters_icon">reset</span>')
         let icon = $('<span class="show-icon"><i class="fa-regular fa-circle-left"></i></span>')
         let heading = $('<div class="filter-heading"><i class="fa-solid fa-filter"></i><span>Filters</span></div>')
-        div.append(icon).append(heading)
+        div.append(heading).append(close_popup_icon);
+        // div.append(icon).append(heading).append(close_popup_icon);
+
+        self.elements.close_popup_icon = close_popup_icon;
 
         var reArrangeButton = $(document.createElement('div'))
             .attr(self.constants.reArrangeButton)
@@ -525,6 +538,23 @@ FilterManager.prototype = {
         $(document.body).off('mousedown.filterPanel');
         return self;
     },
+
+    show_as_side_popup: function(){
+        const self = this;
+        self.elements.tabFilterPanel.addClass('show_as_side_popup');
+        globalElements.body.on('mouseup.filter_manager', function (evt) {
+            if($(evt.target).closest('.filter-tabPanel').length){
+                return;
+            }
+            self.hide_side_popup();
+        });
+    },
+    hide_side_popup: function(){
+        const self = this;
+        self.elements.tabFilterPanel.removeClass('show_as_side_popup');
+        globalElements.body.off('mouseup.filter_manager');
+    },
+
     cancel    : function () {
         var self = this;
         return self;

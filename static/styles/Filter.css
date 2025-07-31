@@ -176,38 +176,41 @@ body.pc .filter-tabPanel{
     flex-direction: column;
     height: 100%;
     width: 320px;
-    transform: translateX(96%);
+    transform: translateX(101%);
     transition: all 300ms ease-in-out;
-    transition-delay: 500ms;
+    /*transition-delay: 500ms;*/
     overflow-y: auto;
     top: 60px;
     height: calc(100% - 64px);
     position: fixed;
 }
-body.pc .filter-tabPanel:hover{
-    transition-delay: 100ms;
+/*body.pc .filter-tabPanel:hover{*/
+/*    transition-delay: 100ms;*/
+/*    transform: initial;*/
+/*}*/
+body.pc .filter-tabPanel.show_as_side_popup{
     transform: initial;
 }
-body.pc .filter-tabPanel .show-icon{
-    width: 30px;
-    height: 30px;
-    /* background-color: #000000; */
-    position: absolute;
-    left: 4px;
-    top: 44vh;
-    z-index: 10;
-    font-size: 2rem;
-    color: inherit;
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-    transition: all 300ms ease-in-out;
-}
-body.pc .filter-tabPanel:hover .show-icon{
-    transform: scale(0);
-    opacity: 0;
-    visibility: hidden;
-}
+/*body.pc .filter-tabPanel .show-icon{*/
+/*    width: 30px;*/
+/*    height: 30px;*/
+/*    !* background-color: #000000; *!*/
+/*    position: absolute;*/
+/*    left: 4px;*/
+/*    top: 44vh;*/
+/*    z-index: 10;*/
+/*    font-size: 2rem;*/
+/*    color: inherit;*/
+/*    opacity: 1;*/
+/*    visibility: visible;*/
+/*    transform: scale(1);*/
+/*    transition: all 300ms ease-in-out;*/
+/*}*/
+/*body.pc .filter-tabPanel:hover .show-icon{*/
+/*    transform: scale(0);*/
+/*    opacity: 0;*/
+/*    visibility: hidden;*/
+/*}*/
 
 table.filter-table-main tr {
     display: flex;
@@ -408,4 +411,34 @@ body.pc .filter-tabPanel.no_filters_to_show{
     margin-left: 0;
 }
 
+
+
+body.pc .filter-tabPanel .close_popup_icon i{
+    padding-right: 10px;
+}
+body.pc .filter-tabPanel .close_popup_icon{
+    height: 40px;
+    background-color: #252525;
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 50px;
+    z-index: 10;
+    font-size: 20px;
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    transition: all 300ms ease-in-out;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    color: white;
+    justify-content: center;
+}
+/*body.pc .filter-tabPanel:hover .show-icon{*/
+/*    transform: scale(0);*/
+/*    opacity: 0;*/
+/*    visibility: hidden;*/
+/*}*/
 

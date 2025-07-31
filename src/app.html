@@ -15,7 +15,8 @@
 	<link href="./../node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-	<script src="https://kit.fontawesome.com/4909abcdc7.js" crossorigin="anonymous"></script>
+<!--	<script src="https://kit.fontawesome.com/4909abcdc7.js" crossorigin="anonymous"></script>-->
+	<script async src="https://kit.fontawesome.com/a86d7cff44.js" crossorigin="anonymous"></script>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
@@ -62,11 +63,18 @@
 	--white_theme_bg_color:#f7f7fe;
 	--white_theme_color:#262338;
 	--light_theme_btn_bg_color: #408dfb";>
-<div style="display: contents">%sveltekit.body%</div>
-</body>
 
-<!--	<script type="text/javascript" id="socket_io" src="/socket.io/socket.io.js"></script>-->
+
 <script type="text/javascript" src="/lib/jquery.min.js"></script>
+
+<script>
+
+	window.globalElements = {
+		body : $(document.body),
+		documentWrapper : $('#documentWrapper'),
+	};
+</script>
+
 <script type="text/javascript" src="/lib/jquery.ui.min.js"></script>
 <script type="text/javascript" src="/lib/transit.js"></script>
 <script type="text/javascript" src="/lib/jquery.utils.js"></script>
@@ -82,6 +90,7 @@
 
 <script type="text/javascript" src="/scripts/SimpleDataTableRowValidationManager.js"></script>
 <script type="text/javascript" src="/scripts/FormView.js"></script>
+<script type="text/javascript" src="/scripts/FormViewExtensions.js"></script>
 <script type="text/javascript" src="/scripts/FilterableViewHelper.js"></script>
 <script type="text/javascript" src="/scripts/Column.js"></script>
 <script type="text/javascript" src="/scripts/ColumnManager.js"></script>
@@ -130,14 +139,16 @@
 <!--	<script type="text/javascript" src="/scripts/CardView.js"></script>-->
 <!--	<script type="text/javascript" src="/scripts/PrintPopup.js"></script>-->
 
-<script type="text/javascript" src="https://events-platform-sandbox.bigdate.events:17585/socket.io/socket.io.js"></script>
+<link rel="stylesheet" href="/lib/coloris_0_21/coloris.css">
+<script async src="/lib/coloris_0_21/coloris.js"></script>
+
+<!--<script type="text/javascript" src="https://events-platform-sandbox.bigdate.events:17585/socket.io/socket.io.js"></script>  -->  <!-- Accounts Demo  -->
+<script type="text/javascript" src="https://events-platform-sandbox.bigdate.events:17590/socket.io/socket.io.js"></script>  <!-- E-HR Company Management-->
+<!--<script type="text/javascript" src="https://events-platform-sandbox.bigdate.events:17589/socket.io/socket.io.js"></script> &lt;!&ndash; Veena Estimate &ndash;&gt;-->
 
 
 <script>
-	window.globalElements = {
-		body : $(document.body),
-		documentWrapper : $('#documentWrapper'),
-	};
+
 
 
 
@@ -689,6 +700,14 @@
 		console.log(printToConsoleContent.substring(25, printToConsoleContent.length - 15))
 	}
 </script>
+
+
+
+<div style="display: contents">%sveltekit.body%</div>
+</body>
+
+<!--	<script type="text/javascript" id="socket_io" src="/socket.io/socket.io.js"></script>-->
+
 
 
 </html>

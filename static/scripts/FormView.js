@@ -742,7 +742,9 @@ FormView.prototype = {
 
         self.latest_styling_setting = self.get_styling_setting_from_user() || {
             display_styling_mode: 'custom_size',
-            column_structure: {}
+            last_updated_at_utc : null,
+            column_structure: {},
+            custom_elements: {}
         };
         self.applyUserConfiguration();
 
@@ -2609,12 +2611,12 @@ FormView.prototype = {
 
             var btnSave = document.createElement('button');
             btnSave.innerHTML='Save';
-            btnSave.className = 'formview-save-button';
+            btnSave.className = 'formview-save-button formview_main_button_item';
             div.appendChild(btnSave);
 
             var btnCancel = document.createElement('button');
             btnCancel.innerHTML='Cancel';
-            btnCancel.className = 'formview-cancel-button';
+            btnCancel.className = 'formview-cancel-button formview_main_button_item';
             div.appendChild(btnCancel);
 
             var btnRemoveSmallQuickAddMode = document.createElement('div');
@@ -2623,9 +2625,15 @@ FormView.prototype = {
             div.appendChild(btnRemoveSmallQuickAddMode);
 
             $(btnSave).on('click', function(){
+                if(formView.is_in_styling_mode){
+                    return;
+                }
                 formView.save();
             });
             $(btnCancel).on('click', function(){
+                if(formView.is_in_styling_mode){
+                    return;
+                }
                 formView.cancel();
             });
             $(btnRemoveSmallQuickAddMode).on('click', function(){
@@ -2730,6 +2738,7 @@ FormView.prototype = {
             // td.appendChild(div);
             // tr.appendChild(td);
             formView.elements.headerTextElement = $(spanHeaderText);
+            formView.elements.headerTextContainerElement = $(divHeaderElement);
 
             return div;
         },
@@ -3002,10 +3011,10 @@ FormView.prototype = {
                 .addClass('formview-column-holder');
             div.data('column', column);
             var table = document.createElement('table');
-            table.className = 'hundred-percent';
+            table.className = 'hundred-percent-x';
             var tr = document.createElement('tr');
             var tdDisplayName = document.createElement('td');
-            tdDisplayName.className = 'formview-column-display-name';
+            tdDisplayName.className = 'formview-column-display-name primary_display_name';
             if(column.type == Column.COLUMN_TYPES.HYPERLINK && type != 'create'){
                 tdDisplayName.classList.add('hyperlinkColumn');
             }
@@ -3050,7 +3059,7 @@ FormView.prototype = {
         createDisplayNameElement: function(column){
             var self = this;
             var div = $(document.createElement('div'));
-            var span = $(document.createElement('span'));
+            var span = $(document.createElement('span')).addClass('primary_display_name_inner_span');
             div.append(span);
             if(column.icon && column.icon.originalName){
                 var imagePath = 'iconsGenerated/' + column.module.id + '/' + column.subModule.id + '/' + column.id + '_' + column.icon.name;
@@ -3108,7 +3117,7 @@ FormView.prototype = {
             table = $(table);
 
             if(formView && formView.erp.deviceType === ERP.DEVICE_TYPES.PC && tabItem) {
-
+                tabItem.mergedCells = {}; // ignoring merged cells in new ui
                 for(var key in tabItem.mergedCells){
                     var cellInfo = tabItem.mergedCells[key];
                     var td = table.find('#cell_'+key)
@@ -3606,23 +3615,43 @@ FormView.prototype = {
         self.container.find('.table-main:visible .form_view_table_cell').droppable('destroy');
         self.elements.divMain.resizable('destroy');
     },
+    refresh_form_view_column_holder_elements: function (new_element) {
+        if(new_element){
+            let handle_class = 'primary_display_name';
+            // if(new_element.classList.contains('form_view_custom_element')){
+            //     handle_class = '';
+            // }
+            jQuery(new_element).draggable({
+                // helper: "clone",
+                handle: handle_class ? `.${handle_class}` : undefined,
+                cursor: "move",
+                revert: "invalid",
+                start: function () {
+                    console.log('draggable start', this);
+                    // $(this).resizable('destroy');
+                }
+            });
+        }
+        this.formview_column_holder_elements = this.container.find('.table-main:visible').find('.form_view_custom_element,.formview-column-holder');
+    },
     initialize_styling_mode: function () {
         const self = this;
         self.container.addClass('styling_mode');
 
         // formView.elements.tableMains[type] need to use this
-        const formview_column_holder_elements = self.container.find('.table-main:visible .formview-column-holder');
-        const column_resizable_factor = 20;
+        // self.formview_column_holder_elements = self.container.find('.table-main:visible :is(.form_view_custom_element, .formview-column-holder)');
+        this.refresh_form_view_column_holder_elements();
+        const column_resizable_factor = 10
 
         $(document.body).on('keydown.formview', function(eve){
             if(eve.keyCode == ERP.KEY_CODES.CTRL){
-                formview_column_holder_elements.draggable('disable');
+                self.formview_column_holder_elements.draggable('disable');
 
-                formview_column_holder_elements.resizable({
+                self.formview_column_holder_elements.resizable({
                     // handles: "n, e, s, w, ne, se, sw, nw",
                     grid: [column_resizable_factor, column_resizable_factor],
-                    minHeight: 80,
-                    minWidth: 100,
+                    minHeight: 55,
+                    minWidth: 80,
                     // containment: "parent", // Contain resizing within the parent element
                     start: function(event, ui) {
                         $(this).css({
@@ -3641,27 +3670,47 @@ FormView.prototype = {
                         // });
                         console.log('found : ', resized_element.find('#simpleDataTable').get(0));
 
+
                         let new_width = parseInt(resized_element.css('width'));
                         let new_height = parseInt(resized_element.css('height'));
                         console.log(`new_size 1 : ${new_width},${new_height}`)
-                        if(new_width % column_resizable_factor !== 0){
-                            let diff = new_width % column_resizable_factor;
-                            if(diff >= (column_resizable_factor / 2)){
-                                new_width += column_resizable_factor - diff;
-                            }
-                            else{
-                                new_width -= diff;
-                            }
-                        }
-                        if(new_height % column_resizable_factor !== 0){
-                            let diff = new_height % column_resizable_factor;
-                            if(diff >= (column_resizable_factor / 2)){
-                                new_height += column_resizable_factor - diff;
-                            }
-                            else{
-                                new_height -= diff;
-                            }
-                        }
+
+                        new_width = parseInt(Math.round(new_width / 50) * 50);
+                        new_height = parseInt(Math.round(new_height / 10) * 10);
+
+                        // for (let allowed_column_width of allowed_column_widths) {
+                        //     if(new_width === allowed_column_width){
+                        //         break;
+                        //     }
+                        //     if(new_width > allowed_column_width){
+                        //         continue;
+                        //     }
+                        //     new_width = allowed_column_width;
+                        // }
+
+                        // if(new_width % column_resizable_factor !== 0){
+                        //     let diff = new_width % column_resizable_factor;
+                        //     if(diff >= (column_resizable_factor / 2)){
+                        //         new_width += column_resizable_factor - diff;
+                        //     }
+                        //     else{
+                        //         new_width -= diff;
+                        //     }
+                        // }
+
+
+
+
+
+                        // if(new_height % column_resizable_factor !== 0){
+                        //     let diff = new_height % column_resizable_factor;
+                        //     if(diff >= (column_resizable_factor / 2)){
+                        //         new_height += column_resizable_factor - diff;
+                        //     }
+                        //     else{
+                        //         new_height -= diff;
+                        //     }
+                        // }
                         console.log(`new_size 2 : ${new_width},${new_height}`)
                         resized_element.css('width', new_width);
                         resized_element.css('height', new_height);
@@ -3677,6 +3726,11 @@ FormView.prototype = {
                             resized_element.css('height', '');
                         }
 
+                        resized_element.css({
+                            '--column_custom_width' : new_width + 'px',
+                            '--column_custom_height' : new_height + 'px',
+                        })
+
 
 
                     }
@@ -3685,8 +3739,8 @@ FormView.prototype = {
         });
         $(document.body).on('keyup.formview', function(eve){
             if(eve.keyCode == ERP.KEY_CODES.CTRL){
-                formview_column_holder_elements.draggable('enable');
-                formview_column_holder_elements.resizable('destroy');
+                self.formview_column_holder_elements.draggable('enable');
+                self.formview_column_holder_elements.resizable('destroy');
 
                 // formview_column_holder_elements.css({
                 //     left: 0,
@@ -3720,9 +3774,9 @@ FormView.prototype = {
 
 
 
-        formview_column_holder_elements.draggable({
+        self.formview_column_holder_elements.draggable({
             // helper: "clone",
-            handle: ".formview-column-display-name",
+            handle: ".primary_display_name",
             cursor: "move",
             revert: "invalid",
             start: function () {
@@ -3732,7 +3786,7 @@ FormView.prototype = {
         });
 
         self.container.find('.table-main:visible .form_view_table_cell').droppable({
-            accept: ".formview-column-holder",
+            accept: ".formview-column-holder,.form_view_custom_element",
             hoverClass: "ui-state-hover",
             tolerance: "pointer",
             drop: function(event, ui) {
@@ -3809,24 +3863,37 @@ FormView.prototype = {
     },
     save_latest_styling_configuration: function () {
         const self = this;
-        let formview_column_holder_elements = self.container.find('.table-main:visible .formview-column-holder')
+
+        let formview_column_holder_elements = self.container.find('.table-main:visible').find('.formview-column-holder,.form_view_custom_element')
+
         let styling_config = {
-            column_structure : {}
+            column_structure : {},
+            custom_elements: this.latest_styling_setting.custom_elements,
+            last_updated_at_utc: Date.now()
         };
+
 
         styling_config.div_main_width = self.elements.divMain.outerWidth();
 
         formview_column_holder_elements.each(function () {
             let element = $(this);
             let column_id = element.attr('data-column_id');
+            let custom_element_id = element.attr('data-custom_element_id');
             let pos_string  = element.parent().attr('data-position');
-            let obj = {
+
+            let column_stack_style  = element.attr('data-column_stack_style') || 'vertical_stack_1';
+
+            const obj = self.latest_styling_setting.column_structure[column_id || custom_element_id] || {
                 column_id,
-                pos_string : pos_string,
-                position: {
-                    row_index : parseInt(pos_string.split(',')[0]),
-                    column_index : parseInt(pos_string.split(',')[1])
-                }
+                custom_element_id,
+                column_stack_style,
+                context_item_id: custom_element_id || column_id,
+            };
+
+            obj.pos_string = pos_string;
+            obj.position = {
+                row_index : parseInt(pos_string.split(',')[0]),
+                column_index : parseInt(pos_string.split(',')[1])
             }
 
             let min_height = element.css('minHeight');
@@ -3836,15 +3903,69 @@ FormView.prototype = {
                 height: element.outerHeight()
             };
 
-            styling_config.column_structure[column_id] = obj;
+            styling_config.column_structure[custom_element_id || column_id] = obj;
         });
         styling_config.display_styling_mode = self.display_styling_mode;
 
         console.log('styling_config', styling_config);
         let setting_name = self.get_styling_setting_name();
+
+
+        console.log('============ latest_styling_setting', this.latest_styling_setting);
+        console.log('============ styling_config', styling_config);
+
+
         self.erp.saveRoleSetting(setting_name, styling_config, ()=>{
             console.log(setting_name, ' saved')
         });
+    },
+
+    restore_custom_elements_from_config: function (styling_config) {
+        const self = this;
+        // console.log('styling_config', styling_config);
+
+        if(self[`is_custom_elements_restored__${self.mode}`]){
+            return;
+        }
+        self[`is_custom_elements_restored__${self.mode}`] = true;
+
+        for(const custom_element_key in styling_config.custom_elements){
+            const custom_element_info = styling_config.custom_elements[custom_element_key];
+
+            // console.log('restore_custom_elements_from_config', custom_element_key, custom_element_info)
+
+            let column_style_info = styling_config.column_structure[custom_element_key]; // || styling_config.column_structure['undefined'];
+            // if(!column_style_info){
+            //     delete styling_config.custom_elements[custom_element_key];
+            //     continue;
+            // }
+            const cell_element = self.container.find(`.table-main:visible .form_view_table_cell[data-position="${column_style_info.pos_string}"]`)
+
+            // console.log('restore_custom_elements_from_config', column_style_info, cell_element)
+
+            self.mount_custom_element(custom_element_info.id, custom_element_info.type, cell_element, custom_element_info.config);
+        }
+
+    },
+
+    get_latest_formview_item_style_info: function (context_item_id, context_info) {
+        const self = this;
+        let column_style_info = this.latest_styling_setting.column_structure[context_item_id];
+        if(!column_style_info){
+            const column_info = context_info.column_info;
+            const custom_element_info = context_info.custom_element;
+
+
+            column_style_info = {
+                column_id : column_info?.id || undefined,
+                custom_element_id : custom_element_info?.id || undefined,
+                column_stack_style : 'vertical_stack_1',
+                customizations: {}
+            }
+            column_style_info.context_item_id = column_style_info.column_id || column_style_info.custom_element_id;
+            this.latest_styling_setting.column_structure[context_item_id] = column_style_info;
+        }
+        return column_style_info;
     },
 
     restore_styling_setting_from_config: function (styling_config) {
@@ -3852,7 +3973,7 @@ FormView.prototype = {
 
         // formView.elements.tableMains[type] need to use this
 
-        let formview_column_holder_elements = self.container.find('.table-main:visible .formview-column-holder');
+        // console.log('restore_styling_setting_from_config', styling_config)
 
         if(styling_config.display_styling_mode){
             switch (styling_config.display_styling_mode){
@@ -3868,40 +3989,83 @@ FormView.prototype = {
             }
         }
 
+        if(!styling_config.last_updated_at_utc){
+            self.elements.headerTextContainerElement.addClass('formview_not_configured');
+        }
+        else{
+            self.elements.headerTextContainerElement.removeClass('formview_not_configured');
+        }
+
+        this.restore_custom_elements_from_config(styling_config);
+
         // console.log('formview_column_holder_elements', formview_column_holder_elements)
         // console.log('restore_styling_setting_from_config', styling_config)
+
+        let formview_column_holder_elements = self.container.find('.table-main:visible').find('.formview-column-holder,.form_view_custom_element');
 
         formview_column_holder_elements.each(function () {
            const element = $(this);
             // let column_id = element.find('.editable').attr('data-column-id');
-            let column_id = element.attr('data-column_id');
-            let column_style_info = styling_config.column_structure[column_id];
+            const column_id = element.attr('data-column_id');
+            const custom_element_id = element.attr('data-custom_element_id');
+            const context_item_id = column_id || custom_element_id;
+            let column_style_info = styling_config.column_structure[context_item_id];
 
+            let column_info;
+            if(column_id){
+                column_info = self.subModule.get_column_from_id(column_id);
+            }
+
+            let custom_element_info;
+            if(custom_element_id){
+                custom_element_info = self.get_custom_element_info(custom_element_id)
+            }
 
             // console.log('restore_styling_setting_from_config', element.get(0), column_id, column_style_info)
             if(column_style_info){
 
-                element.appendTo(self.container.find(`.table-main:visible .form_view_table_cell[data-position="${column_style_info.pos_string}"]`));
+                element.addClass(column_style_info.column_stack_style || 'vertical_stack_1');
+                element.attr('data-column_stack_style', column_style_info.column_stack_style || 'vertical_stack_1');
+
+                if(column_style_info.pos_string){
+                    element.appendTo(self.container.find(`.table-main:visible .form_view_table_cell[data-position="${column_style_info.pos_string}"]`));
+                }
+
 
                 let size_info = column_style_info.size_info;
-                let css_obj = {};
-                if(size_info.width){
-                    css_obj.width = size_info.width + 'px';
+                if(size_info){
+                    let css_obj = {};
+                    if(size_info.width){
+                        css_obj.width = size_info.width + 'px';
+                        css_obj['--column_custom_width'] = size_info.width + 'px';
+                    }
+
+                    if(size_info.min_height){
+                        css_obj.minHeight = size_info.min_height + 'px';
+                        css_obj['--column_custom_height'] = size_info.height + 'px';
+                    }
+                    else if(size_info.height){
+                        css_obj.height = size_info.height + 'px';
+                        css_obj['--column_custom_height'] = size_info.height + 'px';
+                    }
+
+                    element.css(css_obj);
                 }
-                if(size_info.min_height){
-                    css_obj.minHeight = size_info.min_height + 'px';
+
+                if(column_style_info.customizations && column_info){
+                    self.load_customization_to_normal_column_element(column_info, column_style_info.customizations);
                 }
-                else if(size_info.height){
-                    css_obj.height = size_info.height + 'px';
+                else if(column_style_info.customizations && custom_element_info){
+                    self.load_customization_to_custom_column_element(custom_element_info, column_style_info.customizations);
                 }
-                element.css(css_obj);
+
             }
 
         });
 
         self.container.find(`.table-main:visible .form_view_table_row`).each(function () {
             let row_element = $(this);
-            if(row_element.find('.formview-column-holder').length){
+            if(row_element.find('.formview-column-holder,.form_view_custom_element').length){
                 row_element.addClass('with_children_column')
             }
             else{

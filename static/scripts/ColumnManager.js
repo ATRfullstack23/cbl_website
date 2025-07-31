@@ -101,6 +101,9 @@ ColumnManager.prototype = {
         })
         return self;
     },
+    get_column_from_id: function(column_id){
+        return this.columns[column_id];
+    },
     forEachColumn: function(eachFunction, filterFunction){
         var self = this;
         for(var key in self.columns){

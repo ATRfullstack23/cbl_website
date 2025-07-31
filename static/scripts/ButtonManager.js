@@ -68,6 +68,9 @@ ButtonManager.prototype = {
         },
         "groupButtonContainer":{
             "class":"groupButtonContainer"
+        },
+        showFiltersPopupButton:{
+            "class":"show_filters_popup_button"
         }
     },
     initialize: function () {
@@ -361,6 +364,154 @@ ButtonManager.prototype = {
                             return options;
                         }
                     },
+                    {
+                        selector: ".formview-column-holder",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.formView.is_in_styling_mode){
+                                return {};
+                            }
+
+                            const column_id = element.attr('data-column_id')
+
+
+                            options.edit_formview_normal_element_settings = {
+                                id: 'edit_formview_normal_element_settings',
+                                displayName: 'Edit Settings',
+                                onClick: ()=>{
+                                    self.subModule.formView.show_edit_formview_normal_element_popup(column_id, 'column', element);
+                                }
+                            }
+
+                            // console.log('formview-column-holder contextMenu', contextMenu)
+                            // console.log('formview-column-holder targetElement', targetElement)
+
+                            for (const key of Object.keys(FormView.COLUMN_STACK_STYLES)) {
+
+                                const final_key = key + '';
+                                const context_menu_key = `set_column_style__${key}`;
+                                options[context_menu_key] = {
+                                    id: context_menu_key,
+                                    displayName: `Set Style -> ${FormView.COLUMN_STACK_STYLES[key].display_name}`,
+                                    onClick: ()=>{
+                                        self.subModule.formView.update_column_stack_style(column_id, element, final_key);
+                                    }
+                                }
+                            }
+
+                            options.move_all_form_items_to_next_row_upwards = {
+                                id: 'move_all_form_items_to_next_row_upwards',
+                                displayName: 'Move All Row Items -> Up',
+                                onClick: ()=>{
+                                    self.subModule.formView.move_all_form_items_to_next_row(column_id, element, 'up');
+                                }
+                            }
+
+                            options.move_all_form_items_to_next_row_downwards = {
+                                id: 'move_all_form_items_to_next_row_downwards',
+                                displayName: 'Move All Row Items -> Down',
+                                onClick: ()=>{
+                                    self.subModule.formView.move_all_form_items_to_next_row(column_id, element, 'down');
+                                }
+                            }
+
+
+                            // options.set_column_style_to_horizontal_stack_display_name_100px = {
+                            //     id: 'set_column_style_to_horizontal_stack_display_name_100px',
+                            //     displayName: 'Form Element Style -> Horizontal Short Name',
+                            //     onClick: ()=>{
+                            //         self.subModule.formView.update_column_stack_style(column_id, element, 'horizontal_stack_display_name_100px');
+                            //     }
+                            // }
+                            // options.set_column_style_to_horizontal_stack_display_name_200px = {
+                            //     id: 'set_column_style_to_horizontal_stack_display_name_200px',
+                            //     displayName: 'Form Element Style -> Horizontal Long Name',
+                            //     onClick: ()=>{
+                            //         self.subModule.formView.update_column_stack_style(column_id, element, 'horizontal_stack_display_name_200px');
+                            //     }
+                            // }
+
+
+                            return options;
+                        }
+                    },
+                    {
+                        selector: ".form_view_custom_element",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.formView.is_in_styling_mode){
+                                return {};
+                            }
+
+                            const custom_element_id = element.attr('data-custom_element_id')
+
+
+                            // console.log('formview-column-holder contextMenu', contextMenu)
+                            // console.log('formview-column-holder targetElement', targetElement)
+
+                            options.edit_formview_normal_element_settings = {
+                                id: 'edit_formview_normal_element_settings',
+                                displayName: 'Edit Settings',
+                                onClick: ()=>{
+                                    self.subModule.formView.show_edit_formview_normal_element_popup(custom_element_id, 'custom', element);
+                                }
+                            }
+
+
+                            options.edit_custom_element_settings = {
+                                id: 'edit_custom_element_settings',
+                                displayName: 'Edit Custom Element',
+                                onClick: ()=>{
+                                    self.subModule.formView.show_edit_custom_element_popup(custom_element_id, element);
+                                }
+                            }
+
+                            options.delete_custom_element = {
+                                id: 'delete_custom_element',
+                                displayName: 'Delete Custom Element',
+                                onClick: ()=>{
+                                    self.subModule.formView.verify_with_user_and_delete_custom_element(custom_element_id, element);
+                                }
+                            }
+
+
+                            return options;
+                        }
+                    },
+                    {
+                        selector: ".form_view_table_cell:is(:empty)",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.formView.is_in_styling_mode){
+                                return {};
+                            }
+
+
+
+                            // console.log('formview-column-holder contextMenu', contextMenu)
+                            // console.log('formview-column-holder targetElement', targetElement)
+
+                            for (const key of Object.keys(FormView.CUSTOM_ELEMENTS)) {
+
+                                const final_key = key + '';
+                                const context_menu_key = `add_custom_element__${key}`;
+                                options[context_menu_key] = {
+                                    id: context_menu_key,
+                                    displayName: `Add Element -> ${FormView.CUSTOM_ELEMENTS[key].display_name}`,
+                                    onClick: ()=>{
+                                        self.subModule.formView.mount_custom_element(null, final_key, element, null);
+                                    }
+                                }
+                            }
+
+
+
+                            return options;
+                        }
+                    },
 
                     {
                         selector: ".single_data_row_of_submodule",
@@ -518,6 +669,12 @@ ButtonManager.prototype = {
         if(self.subModule.hasDirectCreateView){
             self.defaultButtons.setDisplayModeToDirectCreateView.on('click',function(){
                 self.subModule.setDisplayMode(SubModule.DISPLAY_MODES.DIRECTCREATE_VIEW);
+            });
+        }
+
+        if(self.subModule.filterManager.get_filter_count()){
+            self.defaultButtons.showFiltersPopupButton.on('click',function(){
+                self.subModule.filterManager.show_as_side_popup();
             });
         }
 
@@ -1046,6 +1203,15 @@ ButtonManager.prototype = {
                 var setDisplayModeToCalendarView = $(document.createElement('div'))
                     .attr(buttonManager.constants.setDisplayModeToCalendarView)/*.text('Card')*/.appendTo(setDisplayModeButtonsContainer);
             }
+
+
+            if(buttonManager.subModule.filterManager.get_filter_count()){
+                var showFiltersPopupButton = $(document.createElement('div'))
+                    .attr(buttonManager.constants.showFiltersPopupButton)
+                    .html('<span class="fa-solid fa-filter"></span><span class="show_filter_side_popup_button_text">Filters</span>')
+                    .prependTo(setDisplayModeButtonsContainer);
+            }
+
             buttonManager.defaultButtons = {};
             buttonManager.defaultButtons.showSearchContainer = showSearchContainer;
             buttonManager.defaultButtons.clearSearch = clearSearch;
@@ -1055,6 +1221,7 @@ ButtonManager.prototype = {
             buttonManager.defaultButtons.setDisplayModeButtonsContainer = setDisplayModeButtonsContainer;
             buttonManager.defaultButtons.setDisplayModeToCalendarView = setDisplayModeToCalendarView;
             buttonManager.defaultButtons.set_display_mode_to_master_detail_view = setDisplayModeToMasterDetailView;
+            buttonManager.defaultButtons.showFiltersPopupButton = showFiltersPopupButton;
             buttonManager.elements.searchButtonsContainer = searchButtonsContainer;
 
             return div;

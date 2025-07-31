@@ -10,6 +10,7 @@
     import Dashboard from "$lib/dashboard_utils/Dashboard.svelte";
     import {env} from "$env/dynamic/public";
     import PrintPopupDialog from "$lib/ui_elements/PrintPopupDialog.svelte";
+    import FormViewCustomElementsMountHelper from "$lib/form_view/FormViewCustomElementsMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -157,6 +158,7 @@
 
 <PrintPopupDialog bind:this={print_popup_dialog_instance}/>
 
+<FormViewCustomElementsMountHelper/>
 
 <section class="main"
          class:pc={device_type !== "mobile"}

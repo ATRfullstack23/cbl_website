@@ -1,0 +1,281 @@
+<script>
+    import {createEventDispatcher, onMount} from 'svelte';
+
+    export let column_info;
+    // export let column_id;
+    export let column_existing_config;
+    let column_type = 'default'; // for now
+
+    let editorContainer;
+    let editor
+    let dispatch = createEventDispatcher()
+
+    let editable_items_arr = [];
+    let editable_data = {};
+
+    onMount(() => {
+        console.log('column_info', column_info)
+        console.log('column_existing_config', column_existing_config)
+
+        editable_data = JSON.parse(JSON.stringify(column_existing_config || {}));
+        editable_items_arr = JSON.parse(JSON.stringify(FormView.NORMAL_ELEMENTS[column_type].customization_config.items));
+    });
+
+
+    function handle_value_changed(evt) {
+        console.log('handle_value_changed', evt)
+    }
+
+    function handle_form_item_focus(evt, item) {
+        console.log('handle_form_item_focus', item);
+
+        if(item.input_type === 'color'){
+            Coloris({
+                // parent: `#form_element_${item.unique_id}`,
+                theme: 'pill',
+                themeMode: 'dark',
+                format: 'rgb',
+                formatToggle: false,
+                closeButton: true,
+                clearButton: true,
+                alpha: true,
+
+                swatches: [
+                    '#264653',
+                    '#2a9d8f',
+                    '#e9c46a',
+                    '#f4a261',
+                    '#e76f51',
+                    '#d62828',
+                    '#023e8a',
+                    '#0077b6',
+                    '#0096c7',
+                    '#00b4d8',
+                    '#48cae4'
+                ]
+            });
+        }
+    }
+
+
+
+    function parse_form_data() {
+        console.log('parse_form_data', editable_data);
+        return editable_data;
+    }
+
+
+    function confirm_update() {
+        dispatch('confirm', {new_config: editable_data});
+    }
+
+
+    function cancel_popup() {
+        dispatch('cancel');
+    }
+</script>
+
+<div class="sql_container">
+    <div bind:this={editorContainer} class="editor-container">
+
+        <div class="form_table">
+
+            {#each editable_items_arr as item}
+
+                {#if item.group_header}
+                    <p class="form_group_header">{item.group_header}</p>
+                {/if}
+
+                <div class="single_form_item" class:display_as_inline={item.display_as_inline}>
+                    <div class="editable_item_display_name">{item.display_name}</div>
+                    <div class="editable_item_form_element">
+
+                        <div>
+                            {#if item.input_type === 'single_line'}
+                                <input class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
+                                       on:change={handle_value_changed}
+                                       type="text"/>
+                            {/if}
+
+                            {#if item.input_type === 'css_unit'}
+                                <input class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
+                                       on:change={handle_value_changed}
+                                       type="number"/>
+                            {/if}
+
+                            {#if item.input_type === 'color'}
+                                <input class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
+                                       data-coloris
+                                       on:focus={(evt)=>{handle_form_item_focus(evt, item)}}
+                                       on:change={handle_value_changed}
+                                       type="text"/>
+                            {/if}
+
+                            {#if item.data_type === 'boolean' || item.data_type === 'bit'}
+                                <input class="form_input_element" bind:this={item.form_element} bind:checked={editable_data[item.unique_id]}
+                                       on:change={handle_value_changed}
+                                       type="checkbox"/>
+                            {/if}
+
+                            {#if item.input_type === 'multiple_line'}
+                                <textarea class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
+                                          on:change={handle_value_changed}></textarea>
+                            {/if}
+
+                            {#if item.input_type === 'dropdownlist' || item.input_type === 'select'}
+                                <select class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
+                                        on:change={handle_value_changed}>
+                                    {#each item.options as option}
+                                        <option value="{option.value}">{option.text}</option>
+                                    {/each}
+                                </select>
+                            {/if}
+
+                            {#if item.postfix}
+                                <span class="form_input_postfix">{item.postfix}</span>
+                            {/if}
+                        </div>
+
+                    </div>
+                </div>
+            {/each}
+
+
+        </div>
+
+
+    </div>
+
+    <div class="button_container">
+        <button class="button confirm_button" on:click={confirm_update}>Confirm</button>
+        <button class="button cancel_button" on:click={cancel_popup}>Cancel</button>
+    </div>
+</div>
+
+<style>
+    .sql_container {
+        width: 100%;
+        background-color: rgba(135, 207, 235, 0.363);
+        background-color: #2d3e50a1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        z-index: 999999;
+
+    }
+
+    .form_table{
+        display: block;
+    }
+
+    .single_form_item{
+        align-items: center;
+        display: flex;
+        text-align: left;
+        position: relative;
+
+        & .editable_item_display_name{
+            width: 200px;
+        }
+    }
+
+    .editor-container td{
+        padding: 10px;
+    }
+
+    .editor-container {
+        width: 60%;
+        margin: 0 auto;
+        min-height: 200px;
+        border-bottom: 1px solid #ddd;
+        margin-top: 50px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form_input_element{
+        min-width: 250px;
+        padding: 5px;
+    }
+
+    .form_group_header {
+        padding: 5px;
+        padding-left: 0;
+        font-weight: bold;
+        font-size: 16px;
+        margin-top: 15px;
+        margin-bottom: 20px;
+    }
+
+    .single_form_item.display_as_inline {
+        display: inline-flex;
+        margin-left: 10px;
+
+        & .editable_item_display_name{
+            width: 80px;
+            font-size: 12px;
+            position: absolute;
+            left: 0;
+            top: -20px;
+        }
+
+        & .form_input_element{
+            min-width: 50px;
+            width: 80px;
+        }
+    }
+
+
+
+
+
+
+
+
+    .button_container {
+        width: 60%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+        padding-inline: 45px;
+        padding-block: 20px;
+        background-color: #fff;
+        border-radius: 0 0 12px 12px;
+    }
+
+    .button {
+        padding: 5px 15px;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .confirm_button {
+        background-color: #4889f4;
+    }
+
+    .cancel_button {
+        background-color: #fff;
+        color: rgb(109, 108, 108);
+        border: 1px solid #ddd;
+    }
+
+    .confirm_button:hover {
+        background-color: #447ae8;
+    }
+
+    .cancel_button:hover {
+        background-color: #ddd;
+        border: 1px solid #a5a3a3;
+    }
+</style>
