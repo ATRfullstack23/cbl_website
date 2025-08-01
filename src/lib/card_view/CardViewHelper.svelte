@@ -3,7 +3,24 @@
 <script>
     import CardContent from './CardContent.svelte'
     import {onMount} from "svelte";
+    import BasicCard from "$lib/card_view/templates/BasicCard.svelte";
+    import BasicDetailedCard from "$lib/card_view/templates/BasicDetailedCard.svelte";
     import ClassicCard from "$lib/card_view/templates/ClassicCard.svelte";
+    import ModernCard from "$lib/card_view/templates/ModernCard.svelte";
+    import CustomerCompactCard from "$lib/card_view/templates/CustomerCompactCard.svelte";
+    import CustomerDetailedCard from "$lib/card_view/templates/CustomerDetailedCard.svelte";
+    import CustomerMinimalCard from "$lib/card_view/templates/CustomerMinimalCard.svelte";
+    import FinancialYearCardCompact from "$lib/card_view/templates/FinancialYearCardCompact.svelte";
+    import FinancialYearCardMinimal from "$lib/card_view/templates/FinancialYearCardMinimal.svelte";
+    import InvoiceCompactCard from "$lib/card_view/templates/InvoiceCompactCard.svelte";
+    import InvoiceDetailedCard from "$lib/card_view/templates/InvoiceDetailedCard.svelte";
+    import LeaveCompactCard from "$lib/card_view/templates/LeaveCompactCard.svelte";
+    import LeaveDetailedCard from "$lib/card_view/templates/LeaveDetailedCard.svelte";
+    import LeaveMinimalCard from "$lib/card_view/templates/LeaveMinimalCard.svelte";
+    import ProductProfileCardCompact from "$lib/card_view/templates/ProductProfileCardCompact.svelte";
+    import ProductProfileCardDetailed from "$lib/card_view/templates/ProductProfileCardDetailed.svelte";
+    import ReceiptCompactCard from "$lib/card_view/templates/ReceiptCompactCard.svelte";
+    import ReceiptDetailedCard from "$lib/card_view/templates/ReceiptDetailedCard.svelte";
 
 
     export let container;
@@ -179,11 +196,35 @@
         {#if card_data.length>0}
             {#each card_data as item}
 
+<!--                <div class="single_card_view_data_row single_data_row_of_submodule">-->
+<!--                    {#if selected_cardview_template === CardView.TEMPLATES.classic_card.id}-->
+<!--                        <ClassicCard submodule="{submodule}" data_row="{item}"/>-->
+<!--                    {/if}-->
+<!--                </div>-->
+
                 <div class="single_card_view_data_row single_data_row_of_submodule">
                     {#if selected_cardview_template === CardView.TEMPLATES.classic_card.id}
                         <ClassicCard submodule="{submodule}" data_row="{item}"/>
                     {/if}
                 </div>
+
+                <BasicCard/>
+                <BasicDetailedCard/>
+                <ModernCard/>
+                <CustomerCompactCard/>
+                <CustomerDetailedCard/>
+                <CustomerMinimalCard/>
+                <FinancialYearCardCompact/>
+                <FinancialYearCardMinimal/>
+                <InvoiceCompactCard/>
+                <InvoiceDetailedCard/>
+                <LeaveCompactCard/>
+                <LeaveDetailedCard/>
+                <LeaveMinimalCard/>
+                <ProductProfileCardCompact/>
+                <ProductProfileCardDetailed/>
+                <ReceiptCompactCard/>
+                <ReceiptDetailedCard/>
 
 
                 <!--                <div class="card single_card_view_data_row single_data_row_of_submodule">-->

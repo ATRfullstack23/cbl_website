@@ -75,7 +75,6 @@
     <p class="date_range">From {horizontal_profit_loss_data.period_from} To {horizontal_profit_loss_data.period_to}</p>
 
     <div class="report_grid">
-        <!-- Expense Column -->
         <div class="report_column">
             <h4 class="section_title">Expense</h4>
 
@@ -103,7 +102,6 @@
             {/each}
         </div>
 
-        <!-- Income Column -->
         <div class="report_column">
             <h4 class="section_title">Income</h4>
 

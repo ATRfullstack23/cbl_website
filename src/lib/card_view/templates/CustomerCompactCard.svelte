@@ -1,4 +1,4 @@
-<script>
+ <script>
     import dayjs from "dayjs";
 
     export let data_row;
