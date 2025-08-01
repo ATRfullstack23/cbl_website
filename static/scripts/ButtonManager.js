@@ -502,7 +502,9 @@ ButtonManager.prototype = {
                                     id: context_menu_key,
                                     displayName: `Add Element -> ${FormView.CUSTOM_ELEMENTS[key].display_name}`,
                                     onClick: ()=>{
-                                        self.subModule.formView.mount_custom_element(null, final_key, element, null);
+                                        self.subModule.formView.mount_custom_element(null, final_key, element, null).then(()=>{
+                                            // custom element mounted
+                                        });
                                     }
                                 }
                             }
@@ -510,6 +512,35 @@ ButtonManager.prototype = {
 
 
                             return options;
+                        }
+                    },
+
+                    {
+                        selector: ".setDisplayModeToThumbnailView",
+                        getOptions: function(actualElement, contextMenu, targetElement){
+                            var options = {};
+
+                            if(self.subModule.displayMode !== 'thumbnailView'){
+                                return options;
+                            }
+
+                            for (const key of Object.keys(CardView.TEMPLATES)) {
+
+                                const final_key = key + '';
+                                const context_menu_key = `add_custom_element__${key}`;
+                                options[context_menu_key] = {
+                                    id: context_menu_key,
+                                    displayName: `Change View -> ${CardView.TEMPLATES[key].display_name}`,
+                                    onClick: ()=>{
+                                        self.subModule.update_card_view_style_to_new_type(null, final_key).then(()=>{
+                                            // custom element mounted
+                                        });
+                                    }
+                                }
+                            }
+
+                            return options;
+
                         }
                     },
 

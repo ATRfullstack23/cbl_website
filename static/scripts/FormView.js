@@ -3912,7 +3912,7 @@ FormView.prototype = {
         });
     },
 
-    restore_custom_elements_from_config: function (styling_config) {
+    restore_custom_elements_from_config: async function (styling_config) {
         const self = this;
         // console.log('styling_config', styling_config);
 
@@ -3935,7 +3935,7 @@ FormView.prototype = {
 
             // console.log('restore_custom_elements_from_config', column_style_info, cell_element)
 
-            self.mount_custom_element(custom_element_info.id, custom_element_info.type, cell_element, custom_element_info.config);
+            await self.mount_custom_element(custom_element_info.id, custom_element_info.type, cell_element, custom_element_info.config);
         }
 
     },
@@ -3960,7 +3960,7 @@ FormView.prototype = {
         return column_style_info;
     },
 
-    restore_styling_setting_from_config: function (styling_config) {
+    restore_styling_setting_from_config: async function (styling_config) {
         const self = this;
 
         // formView.elements.tableMains[type] need to use this
@@ -3988,7 +3988,7 @@ FormView.prototype = {
             self.elements.headerTextContainerElement.removeClass('formview_not_configured');
         }
 
-        this.restore_custom_elements_from_config(styling_config);
+        await this.restore_custom_elements_from_config(styling_config);
 
         // console.log('formview_column_holder_elements', formview_column_holder_elements)
         // console.log('restore_styling_setting_from_config', styling_config)
@@ -4095,7 +4095,9 @@ FormView.prototype = {
                 }
 
                 if(self.latest_styling_setting){
-                    self.restore_styling_setting_from_config(self.latest_styling_setting);
+                    self.restore_styling_setting_from_config(self.latest_styling_setting).then(()=>{
+
+                    });
                 }
                 break;
             default:

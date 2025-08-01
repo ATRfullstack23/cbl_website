@@ -104,6 +104,15 @@ ColumnManager.prototype = {
     get_column_from_id: function(column_id){
         return this.columns[column_id];
     },
+    get_all_columns_as_array: function(column_id){
+        var self = this;
+        const arr = [];
+        for(var key in self.columns){
+            var column = self.columns[key];
+            arr.push(column);
+        }
+        return arr;
+    },
     forEachColumn: function(eachFunction, filterFunction){
         var self = this;
         for(var key in self.columns){

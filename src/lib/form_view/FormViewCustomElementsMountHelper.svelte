@@ -5,11 +5,12 @@
     import CaptionOnlyCustomElement from "$lib/form_view/CaptionOnlyCustomElement.svelte";
     import LabelWithValueCustomElement from "$lib/form_view/LabelWithValueCustomElement.svelte";
     import StatCardDisplayCustomElement from "$lib/form_view/StatCardDisplayCustomElement.svelte";
-    import {onMount} from "svelte";
+    import {onMount, tick} from "svelte";
     import CustomElementCustomizationPopup from "$lib/form_view/CustomElementCustomizationPopup.svelte";
     import NormalElementCustomizationPopup from "$lib/form_view/NormalElementCustomizationPopup.svelte";
+    import NumberDisplayCustomElement from "$lib/form_view/NumberDisplayCustomElement.svelte";
 
-    export function mount_form_view_custom_element(target_container_element, element_type, outer_config) {
+    export async function mount_form_view_custom_element(form_view, target_container_element, element_type, outer_config) {
         // const target = document.querySelector(target_selector);
         if (!target_container_element) {
             console.error("Target element not found:", target_container_element);
@@ -23,46 +24,45 @@
         // target_container_element.innerHTML = '';
         let svelte_instance ;
 
+        const props = {
+            unique_id: outer_config.unique_id,
+            config: outer_config.config,
+        };
+        // need to pass customizations as well
+
         switch (element_type) {
             case FormView.CUSTOM_ELEMENTS.title_with_caption.id:
                 svelte_instance = new TitleWithCaptionCustomElement({
                     target: target_container_element,
-                    props : {
-                        unique_id: outer_config.unique_id,
-                        config: outer_config.config,
-                        customizations: outer_config.customizations
-                    },
+                    props : props,
                 });
                 break;
             case FormView.CUSTOM_ELEMENTS.caption_only.id:
                 svelte_instance = new CaptionOnlyCustomElement({
                     target: target_container_element,
-                    props : {
-                        unique_id: outer_config.unique_id,
-                        config: outer_config.config,
-                        customizations: outer_config.customizations
-                    },
+                    props : props,
                 });
                 break;
             case FormView.CUSTOM_ELEMENTS.label_with_value.id:
                 svelte_instance = new LabelWithValueCustomElement({
                     target: target_container_element,
-                    props : {
-                        unique_id: outer_config.unique_id,
-                        config: outer_config.config,
-                    },
+                    props : props,
                 });
                 break;
             case FormView.CUSTOM_ELEMENTS.stat_card_with_value.id:
                 svelte_instance = new StatCardDisplayCustomElement({
                     target: target_container_element,
-                    props : {
-                        unique_id: outer_config.unique_id,
-                        config: outer_config.config,
-                    },
+                    props : props,
+                });
+            case FormView.CUSTOM_ELEMENTS.number_display.id:
+                svelte_instance = new NumberDisplayCustomElement({
+                    target: target_container_element,
+                    props : props,
                 });
                 break;
         }
+
+        await tick();
 
         return svelte_instance;
     }
@@ -79,6 +79,9 @@
         to_edit__custom_element_id = custom_element_id;
         to_edit__custom_element_type = custom_element_type;
         to_edit__custom_element_existing_config = custom_element_existing_config;
+
+        console.log('show_form_view_custom_element_customization_popup to_edit__form_view', to_edit__form_view)
+        console.log('show_form_view_custom_element_customization_popup custom_element_id', custom_element_id)
 
         shall_show_custom_element_customization_popup = true;
     }
@@ -143,6 +146,7 @@
 
 {#if shall_show_normal_element_customization_popup}
     <NormalElementCustomizationPopup
+            form_view="{to_edit__form_view}"
             column_info="{to_edit__column_info}"
             column_existing_config="{to_edit__column_existing_config}"
             on:confirm={handle_normal_element_customization_popup_confirm} on:cancel={handle_normal_element_customization_popup_cancel}/>
@@ -151,6 +155,7 @@
 
 {#if shall_show_custom_element_customization_popup}
     <CustomElementCustomizationPopup
+            form_view="{to_edit__form_view}"
             custom_element_id="{to_edit__custom_element_id}"
             custom_element_type="{to_edit__custom_element_type}"
             custom_element_existing_config="{to_edit__custom_element_existing_config}"

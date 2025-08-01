@@ -1,6 +1,8 @@
 <script>
     import {createEventDispatcher, onMount} from 'svelte';
+    import EditableFormItemsManager from "$lib/form_view/EditableFormItemsManager.svelte";
 
+    export let form_view;
     export let custom_element_id;
     export let custom_element_type;
     export let custom_element_existing_config;
@@ -46,49 +48,13 @@
 <div class="sql_container">
     <div bind:this={editorContainer} class="editor-container">
 
-        <table>
-
-            {#each editable_items_arr as item}
-                <tr>
-                    <td class="editable_item_display_name">{item.display_name}</td>
-                    <td class="editable_item_form_element">
-
-                        <div>
-                            {#if item.input_type === 'single_line'}
-                                <input class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
-                                       on:change={handle_value_changed}
-                                       type="text"/>
-                            {/if}
-
-                            {#if item.data_type === 'boolean' || item.data_type === 'bit'}
-                                <input class="form_input_element" bind:this={item.form_element} bind:checked={editable_data[item.unique_id]}
-                                       on:change={handle_value_changed}
-                                       type="checkbox"/>
-                            {/if}
-
-                            {#if item.input_type === 'multiple_line'}
-                                <textarea class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
-                                          on:change={handle_value_changed}></textarea>
-                            {/if}
-
-                            {#if item.input_type === 'dropdownlist' || item.input_type === 'select'}
-                                <select class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
-                                        on:change={handle_value_changed}>
-                                    {#each item.options as option}
-                                        <option value="{option.value}">{option.text}</option>
-                                    {/each}
-                                </select>
-                            {/if}
-
-                        </div>
-
-                    </td>
-                </tr>
-            {/each}
-
-
-        </table>
-
+        {#if form_view}
+            <EditableFormItemsManager
+                    form_view="{form_view}"
+                    editable_data="{editable_data}"
+                    editable_items_arr="{editable_items_arr}"
+            />
+        {/if}
 
     </div>
 

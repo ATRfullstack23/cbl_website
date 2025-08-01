@@ -653,6 +653,7 @@ SubModule.prototype = {
         // self.thumbNailView.getData();
         return self;
     },
+
     setDisplayModeToDirectCreateView: function(){
         var self = this;
 //        self.filterManager.container.hide();
@@ -846,6 +847,10 @@ SubModule.prototype = {
     get_column_from_id: function(column_id){
         const self = this;
         return self.columnManager.get_column_from_id(column_id);
+    },
+    get_all_columns_as_array: function(){
+        const self = this;
+        return self.columnManager.get_all_columns_as_array();
     },
     forEachColumn: function(eachFunction, filterFunction){
         var self = this;

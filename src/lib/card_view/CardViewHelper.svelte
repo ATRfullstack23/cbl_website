@@ -3,6 +3,7 @@
 <script>
     import CardContent from './CardContent.svelte'
     import {onMount} from "svelte";
+    import ClassicCard from "$lib/card_view/templates/ClassicCard.svelte";
 
 
     export let container;
@@ -25,8 +26,13 @@
     let header_title_column;
     let header_subtitle_column;
 
+    let cardview_settings = {};
+    let selected_cardview_template = 'classic_card';
+
     let is_hidden = true;
     export function show(){
+        cardview_settings = submodule.get_latest_card_view_settings();
+        selected_cardview_template = cardview_settings.type;
         is_hidden = false;
     }
     export function hide(){
@@ -166,29 +172,39 @@
 
 <div bind:this={container_element} class="card_view_helper" class:hidden={is_hidden}>
 
-<!--    <pre> Cards {card_data?.length}</pre>-->
+    <!--    <pre> Cards {card_data?.length}</pre>-->
 
     <div bind:this={elements.cards_container} class="main_container cards_container">
 
         {#if card_data.length>0}
             {#each card_data as item}
-                <div class="card single_card_view_data_row single_data_row_of_submodule">
-                    <input type="checkbox" class="card-row-selector" data-id="{item.id}">
-                    <div class="card-header">
-                        {item.fullName.value} - {item.leave_type_id?.text}
-                    </div>
-                    <div class="card-content">
-                        {#if card_config.columns.length>0}
-                            {#each card_config.columns as column}
-                                <CardContent column={column} item={item}/>
-                            {/each}
-                        {/if}
-                    </div>
-    <!--                <div class="card-footer">-->
-    <!--                    <div>Created On: {dayjs(item._creation_date).format('DD-MM-YYYY')}</div>-->
-    <!--                    <div>Created By: {item._creator}</div>-->
-    <!--                </div>-->
+
+                <div class="single_card_view_data_row single_data_row_of_submodule">
+                    {#if selected_cardview_template === CardView.TEMPLATES.classic_card.id}
+                        <ClassicCard submodule="{submodule}" data_row="{item}"/>
+                    {/if}
                 </div>
+
+
+                <!--                <div class="card single_card_view_data_row single_data_row_of_submodule">-->
+                <!--                    <input type="checkbox" class="card-row-selector" data-id="{item.id}">-->
+                <!--                    <div class="card-header">-->
+                <!--                        {item.fullName.value} - {item.leave_type_id?.text}-->
+                <!--                    </div>-->
+                <!--                    <div class="card-content">-->
+                <!--                        {#if card_config.columns.length>0}-->
+                <!--                            {#each card_config.columns as column}-->
+                <!--                                <CardContent column={column} item={item}/>-->
+                <!--                            {/each}-->
+                <!--                        {/if}-->
+                <!--                    </div>-->
+                <!--                    &lt;!&ndash;                <div class="card-footer">&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                    <div>Created On: {dayjs(item._creation_date).format('DD-MM-YYYY')}</div>&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                    <div>Created By: {item._creator}</div>&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                </div>&ndash;&gt;-->
+                <!--                </div>-->
+
+
             {/each}
         {/if}
     </div>
@@ -237,7 +253,7 @@
     }
 
     .single_card_view_data_row{
-
+        display: contents;
     }
     .single_card_view_data_row:global(.selected){
         border: 1px solid crimson;

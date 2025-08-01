@@ -137,7 +137,7 @@ FormView.prototype.load_customization_to_custom_column_element = function (custo
         div_holder_element.find('.primary_display_name_inner_span').text(new_config.display_name);
     }
 
-    const css_to_set = this.parse_customizations_css(new_config);
+    const css_to_set = this.parse_customizations_css(new_config, div_holder_element);
 
     if(Object.keys(css_to_set).length){
         div_holder_element.css(css_to_set);
@@ -229,12 +229,24 @@ FormView.prototype.update_column_stack_style = function (column_id, column_div_h
 
 }
 
+FormView.prototype.get_all_columns_as_array = function(){
+    const self = this;
+    return self.subModule.get_all_columns_as_array();
+}
 
 
 
 
 
 
+
+// FormView.prototype.get_item_value = function (custom_element_id, element) {
+//     console.log('show_edit_custom_element_popup', custom_element_id, element);
+//
+//     const custom_element_info = this.get_custom_element_info(custom_element_id);
+//     // const existing_config = this.get_custom_element_existing_config(custom_element_id);
+//     window.show_form_view_custom_element_customization_popup(this, custom_element_id, custom_element_info.type , custom_element_info.config);
+// }
 
 
 
@@ -262,6 +274,7 @@ FormView.prototype.handle_custom_form_view_element_config_updated = function (cu
     custom_element_info.config = new_config;
 
     const svelte_instance = this.get_custom_element_svelte_instance(custom_element_id);
+    console.log('new_config', new_config);
     console.log('svelte_instance', svelte_instance);
     svelte_instance.handle_config_updated(new_config);
 }
@@ -291,7 +304,7 @@ FormView.prototype.get_custom_element_svelte_instance = function (item_id) {
     return this.elements.divMain.find('.table-main:visible').find(`.form_view_custom_element[data-custom_element_id="${item_id}"]`).data('svelte_instance');
 }
 
-FormView.prototype.mount_custom_element = function (item_id, item_type, target_element, existing_config) {
+FormView.prototype.mount_custom_element = async function (item_id, item_type, target_element, existing_config) {
     let is_new_item = false;
     let _created_at_utc;
     if(!item_id){
@@ -305,16 +318,19 @@ FormView.prototype.mount_custom_element = function (item_id, item_type, target_e
     switch (item_type){
         case 'title_with_caption':
             current_custom_element_type = 'title_with_caption';
-            mounted_svelte_instance = this.styling_helper.mount_custom_element__title_with_caption(this, item_id, existing_config, target_element);
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__title_with_caption(this, item_id, existing_config, target_element);
             break;
         case 'caption_only':
-            mounted_svelte_instance = this.styling_helper.mount_custom_element__caption_only(this, item_id, existing_config, target_element);
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__caption_only(this, item_id, existing_config, target_element);
             break;
         case 'label_with_value':
-            mounted_svelte_instance = this.styling_helper.mount_custom_element__label_with_value(this, item_id, existing_config, target_element);
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__label_with_value(this, item_id, existing_config, target_element);
             break;
         case 'stat_card_with_value':
-            mounted_svelte_instance = this.styling_helper.mount_custom_element__stat_card_with_value(this, item_id, existing_config, target_element);
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__stat_card_with_value(this, item_id, existing_config, target_element);
+            break;
+        case FormView.CUSTOM_ELEMENTS.number_display.id:
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__number_display(this, item_id, existing_config, target_element);
             break;
     }
 
@@ -335,37 +351,37 @@ FormView.prototype.mount_custom_element = function (item_id, item_type, target_e
 
 
 FormView.prototype.styling_helper = {
-  mount_custom_element__title_with_caption : function (form_view, item_id, item_config, target_element) {
-      if(!item_config){
-          item_config = {title_text: '', caption_text: ''};
-      }
+    mount_custom_element__title_with_caption: async function (form_view, item_id, item_config, target_element) {
+        if (!item_config) {
+            item_config = {title_text: '', caption_text: ''};
+        }
 
-      const svelte_instance = window.mount_form_view_custom_element(target_element, 'title_with_caption', {
-          unique_id: item_id,
-          config: item_config
-      });
+        const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'title_with_caption', {
+            unique_id: item_id,
+            config: item_config
+        });
 
-      return svelte_instance;
-  },
-  mount_custom_element__caption_only : function (form_view, item_id, item_config, target_element) {
-    if(!item_config){
-        item_config = { caption_text: ''};
-    }
+        return svelte_instance;
+    },
+    mount_custom_element__caption_only: async function (form_view, item_id, item_config, target_element) {
+        if (!item_config) {
+            item_config = {caption_text: ''};
+        }
 
-    const svelte_instance = window.mount_form_view_custom_element(target_element, 'caption_only', {
-        unique_id: item_id,
-        config: item_config
-    });
+        const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'caption_only', {
+            unique_id: item_id,
+            config: item_config
+        });
 
-      return svelte_instance;
-  },
+        return svelte_instance;
+    },
 
-    mount_custom_element__label_with_value : function (form_view, item_id, item_config, target_element) {
-        if(!item_config){
+    mount_custom_element__label_with_value: async function (form_view, item_id, item_config, target_element) {
+        if (!item_config) {
             item_config = {label_text: '', value_text: ''};
         }
 
-        const svelte_instance = window.mount_form_view_custom_element(target_element, 'label_with_value', {
+        const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'label_with_value', {
             unique_id: item_id,
             config: item_config
         });
@@ -374,18 +390,31 @@ FormView.prototype.styling_helper = {
     },
 
 
-    mount_custom_element__stat_card_with_value : function (form_view, item_id, item_config, target_element) {
-        if(!item_config){
+    mount_custom_element__stat_card_with_value: async function (form_view, item_id, item_config, target_element) {
+        if (!item_config) {
             item_config = {label_text: '', value_text: ''};
         }
 
-        const svelte_instance = window.mount_form_view_custom_element(target_element, 'stat_card_with_value', {
+        const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'stat_card_with_value', {
             unique_id: item_id,
             config: item_config
         });
 
-    return svelte_instance;
-  }
+        return svelte_instance;
+    },
+
+    mount_custom_element__number_display: async function (form_view, item_id, item_config, target_element) {
+        if (!item_config) {
+            item_config = {label_text: '', value_text: ''};
+        }
+
+        const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, FormView.CUSTOM_ELEMENTS.number_display.id, {
+            unique_id: item_id,
+            config: item_config
+        });
+
+        return svelte_instance;
+    }
 }
 
 //
