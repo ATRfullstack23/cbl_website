@@ -21,6 +21,10 @@ function SubModule(config, parentObject) {
 SubModule.prototype = {
     initialize: async function () {
         var self = this;
+
+         // temp aki remove later :
+        self.config.hasThumbnailViewMode = true;
+
         for(var key in self.config){
             self[key] = self.config[key];
         }
@@ -88,115 +92,27 @@ SubModule.prototype = {
         if(self.hasThumbnailViewMode){
             // self.hasThumbnailViewMode = false;
             self.hasCardViewMode = true;
-            // self.defaultDisplayMode = SubModule.DISPLAY_MODES.CARD_VIEW;
+            self.defaultDisplayMode = SubModule.DISPLAY_MODES.CARD_VIEW;
             // aki temp remove later
-            self.cardViewConfig  = self.config.cardViewConfig = {
-                "display_type": "card With Image",
-                "orientation": "landscape",
-                "buttons": [
-                    {
-                        "display_name": "Edit",
-                        "type": "edit_in_view_mode"
-                    }
-                ],
-                "header_title_column": {
-                    "type": "lookUpDropDownList",
-                    "id": "employee_profile_id",
-                },
-                "header_subtitle_column": {
-                    "type": "choice",
-                    "id": "leave_type_id",
-                },
-                "columns": [
-                    {
-                        "display_name": "Status",
-                        "type": "choice",
-                        "id": "status",
-                        "index": 1,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {
-                            "style_type": "sub_title"
-                        }
-                    },
-                    {
-                        "display_name": "Available Leaves",
-                        "type": "integer",
-                        "id": "available_leaves_id",
-                        "index": 3,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {
-
-                        }
-                    },
-                    {
-                        "display_name": "Employee Profile Id",
-                        "type": "lookUpDropDownList",
-                        "id": "employee_profile_id",
-                        "index": 4,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {
-
-                        }
-                    },
-                    {
-                        "display_name": "Leave Type",
-                        "type": "choice",
-                        "id": "leave_type_id",
-                        "index": 6,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {}
-                    },
-                    {
-                        "display_name": "Leave Days",
-                        "type": "integer",
-                        "id": "leave_days",
-                        "index": 7,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {}
-                    },
-                    {
-                        "display_name": "Start Date",
-                        "type": "date",
-                        "id": "start_date",
-                        "index": 8,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {}
-                    },
-                    {
-                        "display_name": "End Date",
-                        "type": "date",
-                        "id": "end_date",
-                        "index": 9,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {}
-                    },
-                    {
-                        "display_name": "Reason",
-                        "type": "multipleLine",
-                        "id": "reason",
-                        "index": 10,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {}
-                    },
-                    {
-                        "display_name": "Informed To",
-                        "type": "singleLine",
-                        "id": "informed_to",
-                        "index": 11,
-                        "is_hidden": false,
-                        "is_editable": false,
-                        "style": {}
-                    }
-                ]
-            };
+            // self.cardViewConfig  = self.config.cardViewConfig = {
+            //     "display_type": "card With Image",
+            //     "orientation": "landscape",
+            //     "buttons": [
+            //         {
+            //             "display_name": "Edit",
+            //             "type": "edit_in_view_mode"
+            //         }
+            //     ],
+            //     "header_title_column": {
+            //         "type": "lookUpDropDownList",
+            //         "id": "employee_profile_id",
+            //     },
+            //     "header_subtitle_column": {
+            //         "type": "choice",
+            //         "id": "leave_type_id",
+            //     },
+            //     "columns": []
+            // };
             // self.thumbNailView = new CardViewHelper(self.config.thumbNailView||{}, self);
             // self.thumbNailView = new ThumbNailView(self.config.thumbNailView||{}, self);
         }

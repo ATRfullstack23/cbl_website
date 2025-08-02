@@ -59,7 +59,7 @@
         for(const item of items){
             const value = cardview_settings.data_mapping[item.unique_id];
             let processed_value;
-            if(item.input_type === 'column_id' && item.data_type === 'array_of_objects'){
+            if(item.data_type === 'array_of_objects'){
                 processed_value = [];
 
                 // iterate through value here
