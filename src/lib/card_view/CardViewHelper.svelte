@@ -2,7 +2,7 @@
 
 <script>
     import CardContent from './CardContent.svelte'
-    import {onMount} from "svelte";
+    import {onMount, tick} from "svelte";
     import BasicCard from "$lib/card_view/templates/BasicCard.svelte";
     import BasicDetailedCard from "$lib/card_view/templates/BasicDetailedCard.svelte";
     import ClassicCard from "$lib/card_view/templates/ClassicCard.svelte";
@@ -93,11 +93,15 @@
 
 
     let is_hidden = true;
+    let cards_container_width = null;
     export function show(){
         cardview_settings = submodule.get_latest_card_view_settings();
         selected_cardview_template = cardview_settings.type;
         parse_card_view_data_mapping()
         is_hidden = false;
+        tick().then(()=>{
+            cards_container_width = elements.cards_container.clientWidth;
+        });
     }
     export function hide(){
         is_hidden = true;
@@ -242,7 +246,10 @@
 
     <!--    <pre> Cards {card_data?.length}</pre>-->
 
-    <div bind:this={elements.cards_container} class="main_container cards_container">
+    <div bind:this={elements.cards_container} class="main_container cards_container"
+         style="{cards_container_width? '--cards_container_width:' + cards_container_width + 'px;' : ';'}"
+         class:card_container__classic_card={selected_cardview_template === CardView.TEMPLATES.classic_card.id}
+         class:card_container__basic_card={selected_cardview_template === CardView.TEMPLATES.basic_card.id}>
 
         {#if card_data.length>0}
             {#each card_data as item}
@@ -323,6 +330,18 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    .cards_container{
+
+
+        &.card_container__classic_card{
+            display: flex;
+            gap: 10px;
+        }
+        &.card_container__basic_card{
+
+        }
     }
 
     .card {
