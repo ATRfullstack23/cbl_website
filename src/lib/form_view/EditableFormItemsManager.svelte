@@ -2,10 +2,14 @@
 <script>
 
 
+    import EditableFormforArrayofObjects from "$lib/form_view/EditableFormforArrayofObjects.svelte";
+
     export let sub_module;
     export let form_view;
     export let editable_data;
     export let editable_items_arr;
+
+    let editable_form_for_array_of_objects_instance
 
     function handle_value_changed(evt) {
         console.log('handle_value_changed', evt)
@@ -46,6 +50,10 @@
         return form_view?.get_all_columns_as_array() || sub_module?.get_all_columns_as_array();
     }
 
+    function add_new_object_into_custom_schema() {
+        editable_form_for_array_of_objects_instance.insert_into_custom_schema()
+    }
+
 </script>
 
 
@@ -60,6 +68,9 @@
 
             <div class="single_form_item" class:display_as_inline={item.display_as_inline}>
                 <div class="editable_item_display_name">{item.display_name}</div>
+                {#if item.input_type === 'array_of_objects'}
+                    <button on:click={add_new_object_into_custom_schema}>add</button>
+                {/if}
                 <div class="editable_item_form_element">
 
                     <div>
@@ -113,9 +124,15 @@
                             </select>
                         {/if}
 
-                        {#if item.data_type === 'array_of_objects'}
-                        <!--    to do abn -->
-                        {/if}
+                        <!--{#if item.data_type === 'array_of_objects'}-->
+                        <!--&lt;!&ndash;    to do abn &ndash;&gt;-->
+                        <!--    <EditableFormforArrayofObjects-->
+                        <!--            sub_module="{sub_module}"-->
+                        <!--            editable_data="{editable_data}"-->
+                        <!--            editable_items_arr="{editable_items_arr}"-->
+                        <!--            editable_array_of_object_item="{item}"-->
+                        <!--            />-->
+                        <!--{/if}-->
 
                         {#if item.postfix}
                             <span class="form_input_postfix">{item.postfix}</span>
@@ -124,6 +141,16 @@
 
                 </div>
             </div>
+            {#if item.data_type === 'array_of_objects'}
+                <!--    to do abn -->
+                <EditableFormforArrayofObjects
+                        bind:this={editable_form_for_array_of_objects_instance}
+                        sub_module="{sub_module}"
+                        editable_data="{editable_data}"
+                        editable_items_arr="{editable_items_arr}"
+                        editable_array_of_object_item="{item}"
+                />
+            {/if}
         {/each}
 
     </div>
