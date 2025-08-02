@@ -113,6 +113,10 @@
                             </select>
                         {/if}
 
+                        {#if item.data_type === 'array_of_objects'}
+                        <!--    to do abn -->
+                        {/if}
+
                         {#if item.postfix}
                             <span class="form_input_postfix">{item.postfix}</span>
                         {/if}

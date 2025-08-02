@@ -22,8 +22,21 @@ CardView.TEMPLATES = {
                     "unique_id": "main_detail_items",
                     "display_name": "Main detail items",
                     "data_type": "array_of_objects",
-                    "multiple": true,
-                    "input_type": "column_id",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
