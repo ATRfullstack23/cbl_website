@@ -4,7 +4,35 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+
+    export let data_mapping = {
+            main_header_text: "leave_type",
+            main_header_caption: "unique_id",
+            status_badge: {
+                column_id: "status",
+                condition_color_settings : {
+                    is_enabled: true,
+                    rules : [
+                        {
+                            "condition": "equals",
+                            "condition_value": "active",
+                            "style": "green",
+                        },
+                        {
+                            "condition": "equals",
+                            "condition_value": "inactive",
+                            "style": "red",
+                        }
+                    ]
+                }
+            },
+            main_detail_items: [
+                {column_id: "max_days",},
+                {column_id: "is_paid",},
+                {column_id: "is_half_day_allowed",}
+            ]
+    };
+
 
 
     function get_column_display_value(column_id){
@@ -38,21 +66,21 @@
 <div class="card_leave_compact">
     <div class="card_header">
         <div class="card_main_info">
-            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
-            <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_text.column_id)}</span>
+            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
+            <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_text)}</span>
         </div>
         <span class="status_badge" class:status_inactive={check_status_badge_condition_red()} class:status_active={check_status_badge_condition_green()}>
-            {get_column_display_value(data_mapping.status_badge.column_id)}
+            {get_column_display_value(data_mapping.status_badge)}
         </span>
     </div>
 
     <div class="data_table">
-        {#each data_mapping.main_detail_items as item}
-            <div class="data_row">
-                <span class="data_label">{get_column_display_name(item.column_id)}:</span>
-                <span class="data_value max_days">{get_column_display_value(item.column_id)}</span>
-            </div>
-        {/each}
+        <!--{#each data_mapping.main_detail_items as item}-->
+        <!--    <div class="data_row">-->
+        <!--        <span class="data_label">{get_column_display_name(item.column_id)}:</span>-->
+        <!--        <span class="data_value max_days">{get_column_display_value(item.column_id)}</span>-->
+        <!--    </div>-->
+        <!--{/each}-->
     </div>
 </div>
 

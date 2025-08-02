@@ -4,7 +4,33 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+    export let data_mapping = {
+        main_header_text: "leave_type",
+        main_header_caption: "unique_id",
+        status_badge: {
+            column_id: "status",
+            condition_color_settings : {
+                is_enabled: true,
+                rules : [
+                    {
+                        "condition": "equals",
+                        "condition_value": "active",
+                        "style": "green",
+                    },
+                    {
+                        "condition": "equals",
+                        "condition_value": "inactive",
+                        "style": "red",
+                    }
+                ]
+            }
+        },
+        main_detail_items: [
+            {column_id: "max_days",},
+            {column_id: "is_paid",},
+            {column_id: "is_half_day_allowed",}
+        ]
+    };
 
 
     function get_column_display_value(column_id){
@@ -28,25 +54,25 @@
 <div class="common_card_minimal">
     <div class="card_header">
         <div class="card_info">
-            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
-            <span class="card_details">{get_column_display_value(data_mapping.main_header_text.column_id)}</span>
+            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
+            <span class="card_details">{get_column_display_value(data_mapping.main_header_text)}</span>
         </div>
         <div class="status_indicators">
-            {#if get_column_display_value(data_mapping.status_badge.column_id) === 'active'}
-                <span class="status_dot status_active"></span>
-            {:else}
-                <span class="status_dot status_inactive"></span>
-            {/if}
+            <!--{#if get_column_display_value(data_mapping.status_badge.column_id) === 'active'}-->
+            <!--    <span class="status_dot status_active"></span>-->
+            <!--{:else}-->
+            <!--    <span class="status_dot status_inactive"></span>-->
+            <!--{/if}-->
         </div>
     </div>
 
     <div class="card_table">
-        {#each data_mapping.main_detail_items as item}
-            <div class="card_row">
-                <span class="card_label">{get_column_display_name(item.column_id)}:</span>
-                <span class="card_value">{get_column_display_value(item.column_id)}</span>
-            </div>
-        {/each}
+        <!--{#each data_mapping.main_detail_items as item}-->
+        <!--    <div class="card_row">-->
+        <!--        <span class="card_label">{get_column_display_name(item.column_id)}:</span>-->
+        <!--        <span class="card_value">{get_column_display_value(item.column_id)}</span>-->
+        <!--    </div>-->
+        <!--{/each}-->
     </div>
 </div>
 

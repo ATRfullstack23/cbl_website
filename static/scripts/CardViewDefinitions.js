@@ -143,6 +143,18 @@ CardView.TEMPLATES = {
                     input_type: "column_id",
                 },
                 {
+                    unique_id: "primary_section_title",
+                    display_name: "Primary section title",
+                    data_type: "text",
+                    input_type: "column_id",
+                },
+                {
+                    unique_id: "secondary_section_title",
+                    display_name: "Secondary section title",
+                    data_type: "text",
+                    input_type: "column_id",
+                },
+                {
                     unique_id: "stock_badge",
                     display_name: "Stock badge",
                     data_type: "text",
@@ -231,6 +243,12 @@ CardView.TEMPLATES = {
                     input_type: "column_id",
                 },
                 {
+                    unique_id: "due_date",
+                    display_name: "Due Date",
+                    data_type: "text",
+                    input_type: "column_id",
+                },
+                {
                     unique_id: "main_detail_items",
                     display_name: "Main detail items",
                     data_type: "array_of_objects",
@@ -313,6 +331,18 @@ CardView.TEMPLATES = {
                     input_type: "column_id",
                 },
                 {
+                    unique_id: "primary_section_title",
+                    display_name: "Primary section title",
+                    data_type: "text",
+                    input_type: "column_id",
+                },
+                {
+                    unique_id: "secondary_section_title",
+                    display_name: "Secondary section title",
+                    data_type: "text",
+                    input_type: "column_id",
+                },
+                {
                     unique_id: "main_detail_items",
                     display_name: "Main detail items",
                     data_type: "array_of_objects",
@@ -383,16 +413,28 @@ CardView.TEMPLATES = {
                     input_type: "column_id"
                 },
                 {
-                    unique_id: "date_range",
-                    display_name: "Date range",
-                    data_type: "date_range",
-                    input_type: "column_id_pair"
+                    unique_id: "date_range_start",
+                    display_name: "Date range start",
+                    data_type: "date",
+                    input_type: "column_id"
+                },
+                {
+                    unique_id: "date_range_end",
+                    display_name: "Date range end",
+                    data_type: "date",
+                    input_type: "column_id"
+                },
+                {
+                    unique_id: "date_format_style",
+                    display_name: "Date format style",
+                    data_type: "date_format_templates",
+                    input_type: "column_id"
                 },
                 {
                     unique_id: "duration_display",
                     display_name: "Duration display",
                     data_type: "text",
-                    input_type: "calculated_field"
+                    input_type: "column_id"
                 },
                 {
                     unique_id: "status_badge",
@@ -425,6 +467,12 @@ CardView.TEMPLATES = {
                     display_name: "Duration display",
                     data_type: "text",
                     input_type: "calculated_field"
+                },
+                {
+                    unique_id: "date_format_style",
+                    display_name: "Date format style",
+                    data_type: "date_format_templates",
+                    input_type: "column_id"
                 },
                 {
                     unique_id: "status_badge",

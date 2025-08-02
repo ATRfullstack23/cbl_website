@@ -2,11 +2,18 @@
 
     import dayjs from "dayjs";
 
+    export let submodule;
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
-
+   export let data_mapping = {
+            main_header_text: "title",
+            date_range_start: "start_date",
+            date_range_end: "end_date",
+            date_format_style: "standard",
+            duration_display:  "duration_in_months",
+            status_badge:  "is_current_financial_year"
+        };
 
     function get_column_display_value(column_id){
         // const column_instance = get_column_instance(column_id);
@@ -39,7 +46,7 @@
         <div class="year_info">
             <div class="year_icon">📅</div>
             <div class="year_details">
-                <h3 class="year_title">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
+                <h3 class="year_title">{get_formatted_date(data_mapping.main_header_text)}</h3>
             </div>
         </div>
         <span class="current_badge">Current</span>
@@ -48,19 +55,20 @@
     <div class="date_section">
         <div class="date_range">
             <div class="date_item">
-                <span class="date_label">{get_column_display_name(data_mapping.date_range.start.column_id)}</span>
-                <span class="date_value">{get_formatted_date(data_mapping.date_range.start.column_id)}</span>
+<!--                <span class="date_label">{get_column_display_name(data_mapping.date_range_start)}</span>-->
+                <span class="date_value">{get_column_display_value(data_mapping.date_range_start)}</span>
             </div>
             <div class="date_separator">→</div>
             <div class="date_item">
-                <span class="date_label">{get_column_display_name(data_mapping.date_range.end.column_id)}</span>
-                <span class="date_value">{get_formatted_date(data_mapping.date_range.start.column_id)}</span>
+<!--                <span class="date_label">{get_column_display_name(data_mapping.date_range_end)}</span>-->
+<!--                <span class="date_value">{get_formatted_date(data_mapping.date_range_end)}</span>-->
+                <span class="date_value">{get_column_display_value(data_mapping.date_range_end)}</span>
             </div>
         </div>
-<!--        <div class="duration_info">-->
-<!--            <span class="duration_label">Duration:</span>-->
-<!--            <span class="duration_value">12 months</span>-->
-<!--        </div>-->
+        <div class="duration_info">
+            <span class="duration_label">Duration:</span>
+            <span class="duration_value">12 months</span>
+        </div>
     </div>
 </div>
 

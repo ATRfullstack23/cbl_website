@@ -4,7 +4,24 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+    let primary_section_title;
+    let secondary_section_title;
+
+    export let data_mapping = {
+        main_header_text: "product_name",
+        main_header_caption: "hsn_code",
+        caption: "product_category_id",
+        stock_badge: "available_quantity",
+        primary_section_title: "Product Information",
+        secondary_section_title: "Pricing Details",
+        main_detail_items: [
+            { column_id: "mrp" },
+            { column_id: "sale_price" },
+            { column_id: "sales_tax" },
+            { column_id: "purchase_tax" }
+        ]
+    }
+
 
 
     function get_column_display_value(column_id){
@@ -31,14 +48,14 @@
 <div class="common_card_product_detailed">
     <div class="card_header">
         <div class="product_title">
-            <h3 class="name">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
+            <h3 class="name">{get_column_display_value(data_mapping.main_header_text)}</h3>
             <div class="identifiers">
-                <span class="id">{get_column_display_name(data_mapping.main_header_caption.column_id) || ""}:</span>
-                <span class="hsn">{get_column_display_value(data_mapping.main_header_caption.column_id)}</span>
+                <span class="id">{get_column_display_name(data_mapping.main_header_caption) || ""}:</span>
+                <span class="hsn">{get_column_display_value(data_mapping.main_header_caption)}</span>
             </div>
         </div>
         <div class="stock_indicator warning">
-            <div class="stock_value">{get_column_display_value(data_mapping.stock_badge.column_id) || '0'}</div>
+            <div class="stock_value">{get_column_display_value(data_mapping.stock_badge) || '0'}</div>
             <div class="stock_unit">Pieces</div>
 <!--            <div class="stock_status">Low Stock</div>-->
         </div>
@@ -46,21 +63,21 @@
 
     <div class="card_content">
         <div class="info_section">
-            <h4 class="section_title">Product Information</h4>
+            <h4 class="section_title">{primary_section_title}</h4>
             <table class="info_table">
                 <tr>
-                    <td class="field_label">{get_column_display_name(data_mapping.caption.column_id)}</td>
-                    <td class="field_value">{get_column_display_value(data_mapping.caption.column_id)|| "0"}</td>
+                    <td class="field_label">{get_column_display_name(data_mapping.caption)}</td>
+                    <td class="field_value">{get_column_display_value(data_mapping.caption)|| "0"}</td>
                 </tr>
                 <tr>
-                    <td class="field_label">{get_column_display_name(data_mapping.main_header_caption.column_id) || ""}:</td>
-                    <td class="field_value">{get_column_display_value(data_mapping.main_header_caption.column_id)}</td>
+                    <td class="field_label">{get_column_display_name(data_mapping.main_header_caption) || ""}:</td>
+                    <td class="field_value">{get_column_display_value(data_mapping.main_header_caption)}</td>
                 </tr>
             </table>
         </div>
 
         <div class="info_section">
-            <h4 class="section_title">Pricing Details</h4>
+            <h4 class="section_title">{secondary_section_title}</h4>
             <table class="info_table">
                 {#each data_mapping.main_detail_items as item}
                     <tr>

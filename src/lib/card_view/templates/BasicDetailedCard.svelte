@@ -4,7 +4,15 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+    export let data_mapping = {
+        main_header_text : "fullName",
+        main_header_caption : "designation_profile_row_id",
+        main_detail_items : [
+            {column_id : "nationality"},
+            {column_id : "phone_number"},
+            {column_id : "registered_email_id"}
+        ]
+    };
 
 
     function get_column_display_value(column_id){
@@ -31,8 +39,8 @@
         <div class="avatar_section">
             <img src="https://placehold.co/64x64" alt="John Doe" class="avatar" />
             <div class="title_section">
-                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
-                <span class="card_caption">{get_column_display_value(data_mapping.main_header_caption.column_id)}</span>
+                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
+                <span class="card_caption">{get_column_display_value(data_mapping.main_header_caption)}</span>
             </div>
         </div>
 <!--        <span class="status_badge status_active">active</span>-->

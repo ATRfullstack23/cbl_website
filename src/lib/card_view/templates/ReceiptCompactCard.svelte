@@ -5,7 +5,22 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+    export let data_mapping = {
+            main_header_text: "voucher_number",
+            main_header_caption: "customer_profile_id",
+            payment_mode_badge: "payment_mode",
+            payment_amount_details: "payment_amount",
+            main_detail_items: [
+                { column_id: "customer_profile_id" },
+                { column_id: "transaction_date" },
+                { column_id: "payment_amount" }
+            ],
+            additional_detail_items: [
+                { column_id: "invoice_id" },
+                { column_id: "bank_profile_id" },
+                { column_id: "payment_type" }
+            ]
+        }
 
 
     function get_column_display_value(column_id){
@@ -36,24 +51,24 @@
 <div class="common_card_payment_compact">
     <div class="card_header">
         <div class="voucher_section">
-            <div class="voucher_number">{get_column_display_value(data_mapping.main_header_text.column_id)}</div>
-            <div class="payment_id">{get_column_display_value(data_mapping.main_header_caption.column_id)}</div>
+            <div class="voucher_number">{get_column_display_value(data_mapping.main_header_text)}</div>
+            <div class="payment_id">{get_column_display_value(data_mapping.main_header_caption)}</div>
         </div>
         <div class="payment_mode mode_upi">
             <span class="mode_icon">🪙</span>
-            <span class="mode_text">{get_column_display_value(data_mapping.payment_mode_badge.column_id)}</span>
+            <span class="mode_text">{get_column_display_value(data_mapping.payment_mode_badge)}</span>
         </div>
     </div>
 
     <div class="card_body">
         <div class="customer_section">
-            <div class="customer_name">{get_column_display_value(data_mapping.main_header_caption.column_id)}</div>
+            <div class="customer_name">{get_column_display_value(data_mapping.main_header_caption)}</div>
 <!--            <div class="transaction_date">{get_formatted_date(data_mapping.additional_details.column_id)}</div>-->
         </div>
 
         <div class="amount_section">
-            <div class="amount_value">{get_column_display_value(data_mapping.payment_amount_details.column_id)}</div>
-            <div class="amount_label">{get_column_display_name(data_mapping.payment_amount_details.column_id)}</div>
+            <div class="amount_value">{get_column_display_value(data_mapping.payment_amount_details)}</div>
+            <div class="amount_label">{get_column_display_name(data_mapping.payment_amount_details)}</div>
         </div>
 
         <div class="details_section">

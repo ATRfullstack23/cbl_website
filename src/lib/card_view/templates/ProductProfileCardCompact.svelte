@@ -4,7 +4,18 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+    export let data_mapping = {
+            main_header_text: "product_name",
+            main_header_caption: "hsn_code",
+            caption: "product_category_id",
+            stock_badge: "available_quantity",
+            main_detail_items: [
+                { column_id: "mrp" },
+                { column_id: "sale_price" },
+                { column_id: "sales_tax" },
+                { column_id: "purchase_tax" }
+            ]
+        }
 
 
     function get_column_display_value(column_id){
@@ -30,13 +41,13 @@
 <div class="common_card_product">
     <div class="card_header">
         <div class="product_info">
-            <h3 class="product_name">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
+            <h3 class="product_name">{get_column_display_value(data_mapping.main_header_text)}</h3>
             <div class="product_meta">
-                <span class="product_id">{get_column_display_name(data_mapping.main_header_caption.column_id) || ""}:</span>
-                <span class="hsn_code">{get_column_display_value(data_mapping.main_header_caption.column_id)}</span>
+                <span class="product_id">{get_column_display_name(data_mapping.main_header_caption) || ""}:</span>
+                <span class="hsn_code">{get_column_display_value(data_mapping.main_header_caption)}</span>
             </div>
         </div>
-        <div class="stock_status in_stock">{get_column_display_value(data_mapping.stock_badge.column_id)|| "0"}</div>
+        <div class="stock_status in_stock">{get_column_display_value(data_mapping.stock_badge)|| "0"}</div>
     </div>
 
     <div class="card_body">

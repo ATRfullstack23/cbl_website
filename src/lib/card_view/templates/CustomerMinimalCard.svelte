@@ -4,7 +4,20 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+    export let data_mapping = {
+        main_header_text: "customer_name",
+        main_header_caption: "customer_type",
+        id_badge: "id",
+        contact_info_items: [
+            {
+                column_id: "email",
+            },
+            {
+                column_id: "phone_number",
+            }
+        ],
+        address_field:"address"
+    }
 
 
     function get_column_display_value(column_id){
@@ -29,8 +42,8 @@
     <div class="customer_row">
         <div class="customer_basic">
             <div class="customer_name_section">
-                <span class="customer_name">{get_column_display_value(data_mapping.main_header_text.column_id)}</span>
-                <span class="customer_meta">{get_column_display_value(data_mapping.main_header_caption.column_id)}</span>
+                <span class="customer_name">{get_column_display_value(data_mapping.main_header_text)}</span>
+                <span class="customer_meta">{get_column_display_value(data_mapping.main_header_caption)}</span>
             </div>
         </div>
 
@@ -44,7 +57,7 @@
         </div>
 
         <div class="customer_actions">
-            <div class="address_badge">{get_column_display_name(data_mapping.address_field.column_id)}</div>
+            <div class="address_badge">{get_column_display_name(data_mapping.address_field)}</div>
 <!--            <div class="type_indicator company">C</div>-->
         </div>
     </div>

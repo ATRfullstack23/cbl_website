@@ -249,6 +249,22 @@
     <div bind:this={elements.cards_container} class="main_container cards_container"
          style="{cards_container_width? '--cards_container_width:' + cards_container_width + 'px;' : ';'}"
          class:card_container__classic_card={selected_cardview_template === CardView.TEMPLATES.classic_card.id}
+         class:card_container__basic_detailed={selected_cardview_template === CardView.TEMPLATES.basic_detailed.id}
+         class:card_container__modern_card={selected_cardview_template === CardView.TEMPLATES.modern_card.id}
+         class:card_container__customer_compact_card={selected_cardview_template === CardView.TEMPLATES.customer_compact_card.id}
+         class:card_container__customer_detailed_card={selected_cardview_template === CardView.TEMPLATES.customer_detailed_card.id}
+         class:card_container__customer_minimal_card={selected_cardview_template === CardView.TEMPLATES.customer_minimal_card.id}
+         class:card_container__financial_year_compact_card={selected_cardview_template === CardView.TEMPLATES.financial_year_compact_card.id}
+         class:card_container__financial_year_minimal_card={selected_cardview_template === CardView.TEMPLATES.financial_year_minimal_card.id}
+         class:card_container__invoice_card_compact={selected_cardview_template === CardView.TEMPLATES.invoice_card_compact.id}
+         class:card_container__invoice_card_detailed={selected_cardview_template === CardView.TEMPLATES.invoice_card_detailed.id}
+         class:card_container__leave_compact_card={selected_cardview_template === CardView.TEMPLATES.leave_compact_card.id}
+         class:card_container__leave_detailed_card={selected_cardview_template === CardView.TEMPLATES.leave_detailed_card.id}
+         class:card_container__leave_minimal_card={selected_cardview_template === CardView.TEMPLATES.leave_minimal_card.id}
+         class:card_container__product_profile_card_compact={selected_cardview_template === CardView.TEMPLATES.product_profile_card_compact.id}
+         class:card_container__product_profile_card_detailed={selected_cardview_template === CardView.TEMPLATES.product_profile_card_detailed.id}
+         class:card_container__payment_receipt_card_compact={selected_cardview_template === CardView.TEMPLATES.payment_receipt_card_compact.id}
+         class:card_container__payment_receipt_card_detailed={selected_cardview_template === CardView.TEMPLATES.payment_receipt_card_detailed.id}
          class:card_container__basic_card={selected_cardview_template === CardView.TEMPLATES.basic_card.id}>
 
         {#if card_data.length>0}
@@ -266,29 +282,76 @@
                         <ClassicCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
                     {/if}
 
-                    <!--{#if selected_cardview_template === CardView.TEMPLATES.classic_card.id}-->
-                    <!--    <ClassicCard submodule="{submodule}" data_row="{item}"/>-->
-                    <!--{/if}-->
+                    {#if selected_cardview_template === CardView.TEMPLATES.basic_card.id}
+                        <BasicCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.basic_detailed.id}
+                        <BasicDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.modern_card.id}
+                        <ModernCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.customer_compact_card.id}
+                        <CustomerCompactCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.customer_detailed_card.id}
+                        <CustomerDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.customer_minimal_card.id}
+                        <CustomerMinimalCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.financial_year_compact_card.id}
+                        <FinancialYearCardCompact submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.financial_year_minimal_card.id}
+                        <FinancialYearCardMinimal submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.invoice_card_compact.id}
+                        <InvoiceCompactCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.invoice_card_detailed.id}
+                        <InvoiceDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.leave_compact_card.id}
+                        <LeaveCompactCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.leave_detailed_card.id}
+                        <LeaveDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.leave_minimal_card.id}
+                        <LeaveMinimalCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.product_profile_card_compact.id}
+                        <ProductProfileCardCompact submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.product_profile_card_detailed.id}
+                        <ProductProfileCardDetailed submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.payment_receipt_card_compact.id}
+                        <ReceiptCompactCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.payment_receipt_card_detailed.id}
+                        <ReceiptDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
 
                 </div>
 
-<!--                <BasicCard/>-->
-<!--                <BasicDetailedCard/>-->
-<!--                <ModernCard/>-->
-<!--                <CustomerCompactCard/>-->
-<!--                <CustomerDetailedCard/>-->
-<!--                <CustomerMinimalCard/>-->
-<!--                <FinancialYearCardCompact/>-->
-<!--                <FinancialYearCardMinimal/>-->
-<!--                <InvoiceCompactCard/>-->
-<!--                <InvoiceDetailedCard/>-->
-<!--                <LeaveCompactCard/>-->
-<!--                <LeaveDetailedCard/>-->
-<!--                <LeaveMinimalCard/>-->
-<!--                <ProductProfileCardCompact/>-->
-<!--                <ProductProfileCardDetailed/>-->
-<!--                <ReceiptCompactCard/>-->
-<!--                <ReceiptDetailedCard/>-->
 
 
                 <!--                <div class="card single_card_view_data_row single_data_row_of_submodule">-->
@@ -334,16 +397,106 @@
 
     .cards_container{
 
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
 
-        &.card_container__classic_card{
-            display: flex;
-            gap: 10px;
-        }
-        &.card_container__basic_card{
 
-        }
+        /*&.card_container__basic_card{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+        /*&.card_container__basic_detailed{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__modern_card{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+        /*&.card_container__customer_compact_card{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+        /*&.card_container__customer_detailed_card{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__customer_minimal_card{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__financial_year_compact_card{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__financial_year_minimal_card{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__invoice_card_compact{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__invoice_card_detailed{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__leave_compact_card{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__leave_detailed_card{*/
+        /*    flex: 1 1 calc(33.333% - 20px);*/
+        /*    min-width: 350px;*/
+        /*    max-width: 100%;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        /*&.card_container__leave_minimal_card{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+        /*&.card_container__product_profile_card_compact{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+        /*&.card_container__product_profile_card_detailed{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+        /*&.card_container__payment_receipt_card_compact{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+        /*&.card_container__payment_receipt_card_detailed{*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*}*/
+
     }
 
+    .single_card_view_data_row {
+        flex: 1 1 calc(33.333% - 20px);
+        min-width: 350px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
     .card {
         background-color: #fff;
         border: 1px solid #ddd;

@@ -1,10 +1,24 @@
  <script>
     import dayjs from "dayjs";
 
+    export let submodule;
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+    export let data_mapping = {
+            main_header_text: "customer_name",
+            main_header_caption: "customer_type",
+            id_badge: "id",
+            contact_info_items: [
+                {
+                    column_id: "email",
+                },
+                {
+                    column_id: "phone_number",
+                }
+            ],
+            address_field:"address"
+        }
 
 
     function get_column_display_value(column_id){
@@ -30,8 +44,8 @@
         <div class="card_header">
             <span class="type_icon">👤</span>
             <div class="header_text">
-                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
-                <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption.column_id)}</span>
+                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
+                <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption)}</span>
             </div>
         </div>
         <div class="contact_info">
@@ -46,7 +60,7 @@
     <div class="right_section">
 <!--        <div class="id_badge">{get_column_display_value(data_mapping.id_badge.column_id)}</div>-->
         <div class="address_info">
-            {get_column_display_name(data_mapping.address_field.column_id)}
+            {get_column_display_name(data_mapping.address_field)}
         </div>
     </div>
 </div>

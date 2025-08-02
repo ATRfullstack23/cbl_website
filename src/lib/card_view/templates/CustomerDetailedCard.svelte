@@ -4,8 +4,20 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
-
+    export let data_mapping = {
+        main_header_text: "customer_name",
+        main_header_caption: "customer_type",
+        id_badge: "id",
+        contact_info_items: [
+            {
+                column_id: "email",
+            },
+            {
+                column_id: "phone_number",
+            }
+        ],
+        address_field:"address"
+    }
 
     function get_column_display_value(column_id){
         // const column_instance = get_column_instance(column_id);
@@ -29,12 +41,12 @@
     <div class="card_sidebar">
         <div class="customer_initial">J</div>
         <div class="customer_id">#C1234</div>
-        <div class="customer_type_label">{get_column_display_value(data_mapping.main_header_caption.column_id)}</div>
+        <div class="customer_type_label">{get_column_display_value(data_mapping.main_header_caption)}</div>
     </div>
 
     <div class="card_main">
         <div class="customer_title">
-            <h3 class="name">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
+            <h3 class="name">{get_column_display_value(data_mapping.main_header_text)}</h3>
         </div>
 
         <div class="info_sections">

@@ -4,7 +4,23 @@
     export let data_row;
     export let config;
 
-    const data_mapping = config.data_mapping;
+
+    export let data_mapping =  {
+            main_header_text: "invoice_number",
+            main_header_caption: "customer_profile_id",
+            caption: "invoice_date",
+            invoice_status: "invoice_status",
+            payment_status:"payment_status",
+            due_date: "due_date",
+            date_format_style: "standard",
+            main_detail_items: [
+                { column_id: "amount_excluding_tax" },
+                { column_id: "total_amount" },
+                { column_id: "balance_due" },
+                { column_id: "due_date" },
+                { column_id: "invoice_items" }
+            ]
+        }
 
 
     function get_column_display_value(column_id){
@@ -24,33 +40,6 @@
         return column_id.toUpperCase();
     }
 
-    const invoice_card_configuration = {
-        card_view_style: "common_card_invoice_compact",
-        data_mapping: {
-            main_header_text: {
-                column_id: "invoice_number"
-            },
-            main_header_caption: {
-                column_id: "customer_profile_id"
-            },
-            caption: {
-                column_id: "invoice_date"
-            },
-            invoice_status: {
-                    column_id: "invoice_status"
-            },
-            payment_status: {
-                column_id: "invoice_status"
-            },
-            main_detail_items: [
-                { column_id: "amount_excluding_tax" },
-                { column_id: "total_amount" },
-                { column_id: "balance_due" },
-                { column_id: "due_date" },
-                { column_id: "invoice_items" }
-            ]
-        }
-    };
 
     function get_formatted_date(column_id, format = "DD MMM YYYY") {
         const value = data_row[column_id]?.value || data_row[column_id]?.text;
@@ -63,15 +52,15 @@
 <div class="common_card_invoice_compact">
     <div class="card_header">
         <div class="invoice_info">
-            <h3 class="invoice_number">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
+            <h3 class="invoice_number">{get_formatted_date(data_mapping.main_header_text)}</h3>
             <div class="invoice_meta">
-                <span class="customer_name">{get_column_display_value(data_mapping.main_header_caption.column_id)}</span>
-                <span class="invoice_date">{get_formatted_date(data_mapping.caption.column_id)|| "0"}</span>
+                <span class="customer_name">{get_column_display_value(data_mapping.main_header_caption)}</span>
+                <span class="invoice_date">{get_formatted_date(data_mapping.caption)|| "0"}</span>
             </div>
         </div>
         <div class="status_badges">
-            <span class="invoice_status status_approved">{get_column_display_value(data_mapping.invoice_status.column_id)}</span>
-            <span class="payment_status payment_partial">{get_column_display_value(data_mapping.payment_status.column_id)}</span>
+            <span class="invoice_status status_approved">{get_column_display_value(data_mapping.invoice_status)}</span>
+            <span class="payment_status payment_partial">{get_column_display_value(data_mapping.payment_status)}</span>
         </div>
     </div>
 
@@ -87,8 +76,8 @@
 
         <div class="details_section">
             <div class="detail_item">
-                <span class="detail_label">Due Date:</span>
-                <span class="detail_value overdue">28 Jul 2025</span>
+<!--                <span class="detail_label">{get_column_display_name(data_mapping.due_date)}</span>-->
+                <span class="detail_value overdue">{get_column_display_value(data_mapping.due_date)}</span>
             </div>
             <div class="detail_item">
                 <span class="detail_label">Items:</span>
