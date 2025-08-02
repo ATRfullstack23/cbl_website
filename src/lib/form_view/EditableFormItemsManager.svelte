@@ -50,9 +50,7 @@
         return form_view?.get_all_columns_as_array() || sub_module?.get_all_columns_as_array();
     }
 
-    function add_new_object_into_custom_schema() {
-        editable_form_for_array_of_objects_instance.insert_into_custom_schema()
-    }
+
 
 </script>
 
@@ -68,9 +66,6 @@
 
             <div class="single_form_item" class:display_as_inline={item.display_as_inline}>
                 <div class="editable_item_display_name">{item.display_name}</div>
-                {#if item.input_type === 'array_of_objects'}
-                    <button on:click={add_new_object_into_custom_schema}>add</button>
-                {/if}
                 <div class="editable_item_form_element">
 
                     <div>
