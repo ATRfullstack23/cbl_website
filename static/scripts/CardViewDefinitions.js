@@ -27,6 +27,7 @@ CardView.TEMPLATES = {
                         {
                             "unique_id": "item_text",
                             "display_name": "Text",
+                            "placeholder": "Display text",
                             "data_type": "text",
                             "input_type": "single_line",
                         },
