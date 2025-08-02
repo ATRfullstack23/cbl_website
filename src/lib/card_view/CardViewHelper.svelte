@@ -60,7 +60,7 @@
             const value = cardview_settings.data_mapping[item.unique_id];
             let processed_value;
             if(item.data_type === 'array_of_objects'){
-                processed_value = [];
+                processed_value = value;
 
                 // iterate through value here
             }

@@ -65,7 +65,7 @@
             {/if}
 
             <div class="single_form_item" class:display_as_inline={item.display_as_inline}>
-                <div class="editable_item_display_name">{item.display_name}</div>
+                <div class="editable_item_display_name" class:special_heading={item.data_type === 'array_of_objects'}>{item.display_name}</div>
                 <div class="editable_item_form_element">
 
                     <div>
@@ -169,6 +169,22 @@
         & .editable_item_display_name{
             width: 200px;
         }
+
+    }
+    .editable_item_display_name.special_heading{
+        /*border-bottom: 2px solid #2196F3;*/
+        font-weight: 700;
+        padding-top: 20px;
+        position: relative;
+    }
+    .editable_item_display_name.special_heading::after{
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 130px;
+        height: 2px;
+        background-color: #2196F3;
     }
 
     .editor-container td{
