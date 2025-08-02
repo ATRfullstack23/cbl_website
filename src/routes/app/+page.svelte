@@ -270,6 +270,8 @@ data-sveltekit-preload-data="off">
         height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
+        background-color: var(--white_theme_module_bg_color);
+        border-top-left-radius: 10px;
     }
 
     .dashboards_container{

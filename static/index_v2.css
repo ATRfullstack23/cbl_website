@@ -428,5 +428,5 @@ i.fa.fa-close {
 
 .module-panel{
     background-color: var(--white_theme_module_bg_color);
-    border-top-left-radius: 10px;
+    /*border-top-left-radius: 10px;*/
 }

@@ -61,6 +61,8 @@
   }
 
   function handle_home_button_click() {
+    // window.shall_show_custom_card_popup ? window.shall_show_custom_card_popup = false : window.shall_show_custom_card_popup = true
+    // console.log("window.shall_show_custom_card_popup",window.shall_show_custom_card_popup)
     window.erp.setDefaultModule();
   }
 
@@ -358,7 +360,8 @@
   .selected_main_navigation_display_name{
     color: black;
     position: absolute;
-    left: calc(var(--main_navigation_width) + 35px);
+    /*left: calc(var(--main_navigation_width) + 35px);*/
+    left: calc(var(--main_navigation_width) + 0px);
     top: 14px;
   }
 </style>

@@ -11,6 +11,7 @@
     function handle_sidebar_item_selected(navigation_item){
         // selected_navigation_item = navigation_item;
         dispatch_event('navigation_item_selected', navigation_item);
+        window._navigation_config = navigation_config;
     }
 
     export function handle_selected_main_navigation_item_change(new_navigation_item){
@@ -38,7 +39,7 @@
             }
         });
         selected_navigation_item = selected_item_new;
-        // console.log('selected_navigation_item', selected_navigation_item)
+        console.log('selected_navigation_item', selected_navigation_item)
         // if(selected_item_new){
         // }
     }
@@ -75,20 +76,22 @@
         color: var(--white_theme_color);
     }
 
-    :global(.dark_theme :is(li.selected_navigation_item)) {
-        color: var(--white_theme_color);
-        background-color: var(--white_theme_bg_color);
-        border-radius: 8px;
-        padding: .5rem .6rem;
-        padding-left: 32px;
-    }
+    /*:global(.dark_theme :is(li.selected_navigation_item)) {*/
+    /*    color: var(--white_theme_color);*/
+    /*    background-color: var(--white_theme_bg_color);*/
+    /*    border-radius: 8px;*/
+    /*    padding: .5rem .6rem;*/
+    /*    padding-left: 32px;*/
+    /*}*/
 
-    :global(.light_theme :is(li.selected_navigation_item)) {
+    .sidebar :global(:is(.selected_navigation_item)) {
         color: #fff;
         background-color: var(--light_theme_btn_bg_color);
         border-radius: 8px;
         padding: .5rem .6rem;
-        padding-left: 32px;
+        /*padding-left: 32px;*/
+        border-radius: 8px;
+        background: var(--light_theme_btn_bg_color);
     }
 
 
@@ -107,9 +110,9 @@
         width: 100%;
     }
 
-    :global(.selected_navigation_item){
-        border-radius: 8px;
-    }
+    /*:global(.selected_navigation_item){*/
+    /*    border-radius: 8px;*/
+    /*}*/
     .sidebar{
         padding: 2rem;
         padding-left: 1.5rem;

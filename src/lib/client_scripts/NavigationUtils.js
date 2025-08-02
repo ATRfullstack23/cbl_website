@@ -259,6 +259,7 @@ export async function generate_main_navigation_configuration(erp_instance) {
                 "display_name": actual_module.displayName,
                 "item_type": "item",
                 "action_type": "go_to_module",
+                "custom_icon": actual_module.config.customIcon,
                 "context_data": {
                     "module_id": actual_module.id,
                     "submodule_id": group_item_info?.submodule_id || actual_module.getDefaultSubModule()?.id
@@ -281,10 +282,7 @@ export async function generate_main_navigation_configuration(erp_instance) {
             const item_config = {
                 "icon": "MailBoxSolid",
                 "id": actual_module.id,
-                "custom_icon": {
-                    "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
-                    "color": "#fff"
-                },
+                "custom_icon": actual_module.config.customIcon,
                 "display_name": actual_module.displayName,
                 "item_type": "item",
                 "action_type": "go_to_module",
