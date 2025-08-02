@@ -1,5 +1,6 @@
 .pager-panel{
     padding: 15px;
+    max-width: calc(var(--submodule_container_width) - 30px);
 }
 
 .pager-page-item-panel{

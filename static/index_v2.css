@@ -404,6 +404,7 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
     min-height: 70vh;
     font-family: Inter, sans-serif;
     font-weight: 400;
+    padding-top: 15px;
 }
 
 
@@ -422,4 +423,10 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
 
 i.fa.fa-close {
     font-family: 'Font Awesome 6 Free' !important;
+}
+
+
+.module-panel{
+    background-color: var(--white_theme_module_bg_color);
+    border-top-left-radius: 10px;
 }

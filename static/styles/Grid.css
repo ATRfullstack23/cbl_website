@@ -18,7 +18,8 @@
     max-width: calc(var(--submodule_container_width) - 30px);
     transition: all 100ms ease-in-out;
     margin-left: 2px;
-
+    background: white;
+    border-radius: 10px;
 }
 
 .expand .grid-container.pc{
