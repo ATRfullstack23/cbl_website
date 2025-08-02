@@ -11,14 +11,14 @@
 
     let custom_schema_array = editable_array_of_object_item.custom_schema
     if(!editable_data[editable_array_of_object_item.unique_id]){
+        const key_object = {}
+        custom_schema_array.forEach(item => {
+            key_object[item.unique_id] = ""
+        })
         editable_data[editable_array_of_object_item.unique_id] = [
-            {
-                item_text:"",
-                item_value:""
-            }
+            key_object
         ];
     }
-    console.log("custom_schema_array", custom_schema_array)
 
     function handle_value_changed(evt) {
         console.log('handle_value_changed', evt)
@@ -67,7 +67,7 @@
 </script>
 
 <div class="outer_container">
-    {#each custom_schema_array as item}
+    {#each editable_data[editable_array_of_object_item.unique_id] as item}
         <div class="editor-container">
             <div class="form_table">
                 <div class="editable_item_form_element">
