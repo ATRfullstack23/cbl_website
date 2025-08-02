@@ -516,25 +516,42 @@ ButtonManager.prototype = {
                     },
 
                     {
-                        selector: ".setDisplayModeToThumbnailView",
+                        selector: ".buttonsRow",
                         getOptions: function(actualElement, contextMenu, targetElement){
                             var options = {};
 
-                            if(self.subModule.displayMode !== 'thumbnailView'){
-                                return options;
+                            if(self.subModule.displayMode === 'thumbnailView'){
+                                for (const key of Object.keys(CardView.TEMPLATES)) {
+                                    const final_key = key + '';
+                                    const context_menu_key = `add_custom_element__${key}`;
+                                    options[context_menu_key] = {
+                                        id: context_menu_key,
+                                        displayName: `Change View -> ${CardView.TEMPLATES[key].display_name}`,
+                                        onClick: ()=>{
+                                            self.subModule.update_card_view_style_to_new_type(final_key).then(()=>{
+                                                // custom element mounted
+                                            });
+                                        }
+                                    }
+                                }
                             }
 
-                            for (const key of Object.keys(CardView.TEMPLATES)) {
 
-                                const final_key = key + '';
-                                const context_menu_key = `add_custom_element__${key}`;
-                                options[context_menu_key] = {
-                                    id: context_menu_key,
-                                    displayName: `Change View -> ${CardView.TEMPLATES[key].display_name}`,
+                            return options;
+
+                        }
+                    },
+                    {
+                        selector: ".cards_container",
+                        getOptions: function(actualElement, contextMenu, targetElement){
+                            var options = {};
+
+                            if(targetElement.is(actualElement)){
+                                options.edit_card_view_data_mapping_config = {
+                                    id: 'edit_card_view_data_mapping_config',
+                                    displayName: 'Edit Data Mapping',
                                     onClick: ()=>{
-                                        self.subModule.update_card_view_style_to_new_type(null, final_key).then(()=>{
-                                            // custom element mounted
-                                        });
+                                        self.subModule.cardViewHelper.show_edit_card_view_data_mapping_popup();
                                     }
                                 }
                             }

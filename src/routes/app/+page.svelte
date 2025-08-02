@@ -11,6 +11,7 @@
     import {env} from "$env/dynamic/public";
     import PrintPopupDialog from "$lib/ui_elements/PrintPopupDialog.svelte";
     import FormViewCustomElementsMountHelper from "$lib/form_view/FormViewCustomElementsMountHelper.svelte";
+    import CardViewMountHelper from "$lib/card_view/CardViewMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -153,10 +154,13 @@
 
     let print_popup_dialog_instance;
 
-
 </script>
 
+<!--<CustomCardCustomizationPopup/>-->
+
 <PrintPopupDialog bind:this={print_popup_dialog_instance}/>
+
+<CardViewMountHelper/>
 
 <FormViewCustomElementsMountHelper/>
 

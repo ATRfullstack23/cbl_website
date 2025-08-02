@@ -2,6 +2,7 @@
 <script>
 
 
+    export let sub_module;
     export let form_view;
     export let editable_data;
     export let editable_items_arr;
@@ -39,6 +40,10 @@
                 ]
             });
         }
+    }
+
+    function get_all_columns_as_array() {
+        return form_view?.get_all_columns_as_array() || sub_module?.get_all_columns_as_array();
     }
 
 </script>
@@ -102,7 +107,7 @@
                         {#if item.input_type === 'column_id'}
                             <select class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
                                     on:change={handle_value_changed}>
-                                {#each form_view.get_all_columns_as_array() as option}
+                                {#each get_all_columns_as_array() as option}
                                     <option value="{option.id}">{option.displayName}</option>
                                 {/each}
                             </select>

@@ -35,6 +35,8 @@
     export let card_data = [];
     export let card_data_map = {};
 
+    let card_view_data_mapping_processed = {};
+
 
     onMount(()=>{
         container = jQuery(container_element);
@@ -43,13 +45,58 @@
     let header_title_column;
     let header_subtitle_column;
 
-    let cardview_settings = {};
+    let cardview_settings = {
+        data_mapping: {}
+    };
     let selected_cardview_template = 'classic_card';
+
+    function parse_card_view_data_mapping() {
+        card_view_data_mapping_processed = {};
+
+
+        const items = CardView.TEMPLATES[selected_cardview_template].data_mapping_config.items;
+
+        for(const item of items){
+            const value = cardview_settings.data_mapping[item.unique_id];
+            let processed_value;
+            if(item.input_type === 'column_id' && item.data_type === 'array_of_objects'){
+                processed_value = [];
+
+                // iterate through value here
+            }
+            else if(item.input_type === 'column_id'){
+                processed_value = value;
+            }
+
+            card_view_data_mapping_processed[item.unique_id] = processed_value;
+        }
+
+
+        // for(const key in cardview_settings.data_mapping){
+        //     const value = cardview_settings.data_mapping[key];
+        //     let processed_value;
+        //     if(typeof value === 'string'){
+        //         processed_value = {
+        //             column_id: value
+        //         }
+        //     }
+        //     else if(value instanceof Array){
+        //         // handle multiple values here
+        //         processed_value = [];
+        //     }
+        //
+        //     card_view_data_mapping_processed[key] = processed_value;
+        // }
+        console.log('card_view_data_mapping_processed', card_view_data_mapping_processed)
+
+    }
+
 
     let is_hidden = true;
     export function show(){
         cardview_settings = submodule.get_latest_card_view_settings();
         selected_cardview_template = cardview_settings.type;
+        parse_card_view_data_mapping()
         is_hidden = false;
     }
     export function hide(){
@@ -181,6 +228,10 @@
     }
 
 
+    export function show_edit_card_view_data_mapping_popup() {
+        window.show_card_view_data_mapping_config_popup(submodule, selected_cardview_template, cardview_settings.data_mapping);
+    }
+
     // card_data = data?.card_data;
 
 </script>
@@ -203,28 +254,34 @@
 <!--                </div>-->
 
                 <div class="single_card_view_data_row single_data_row_of_submodule">
+                    <input type="checkbox" class="card-row-selector" data-id="{item.id}">
                     {#if selected_cardview_template === CardView.TEMPLATES.classic_card.id}
-                        <ClassicCard submodule="{submodule}" data_row="{item}"/>
+                        <ClassicCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
                     {/if}
+
+                    <!--{#if selected_cardview_template === CardView.TEMPLATES.classic_card.id}-->
+                    <!--    <ClassicCard submodule="{submodule}" data_row="{item}"/>-->
+                    <!--{/if}-->
+
                 </div>
 
-                <BasicCard/>
-                <BasicDetailedCard/>
-                <ModernCard/>
-                <CustomerCompactCard/>
-                <CustomerDetailedCard/>
-                <CustomerMinimalCard/>
-                <FinancialYearCardCompact/>
-                <FinancialYearCardMinimal/>
-                <InvoiceCompactCard/>
-                <InvoiceDetailedCard/>
-                <LeaveCompactCard/>
-                <LeaveDetailedCard/>
-                <LeaveMinimalCard/>
-                <ProductProfileCardCompact/>
-                <ProductProfileCardDetailed/>
-                <ReceiptCompactCard/>
-                <ReceiptDetailedCard/>
+<!--                <BasicCard/>-->
+<!--                <BasicDetailedCard/>-->
+<!--                <ModernCard/>-->
+<!--                <CustomerCompactCard/>-->
+<!--                <CustomerDetailedCard/>-->
+<!--                <CustomerMinimalCard/>-->
+<!--                <FinancialYearCardCompact/>-->
+<!--                <FinancialYearCardMinimal/>-->
+<!--                <InvoiceCompactCard/>-->
+<!--                <InvoiceDetailedCard/>-->
+<!--                <LeaveCompactCard/>-->
+<!--                <LeaveDetailedCard/>-->
+<!--                <LeaveMinimalCard/>-->
+<!--                <ProductProfileCardCompact/>-->
+<!--                <ProductProfileCardDetailed/>-->
+<!--                <ReceiptCompactCard/>-->
+<!--                <ReceiptDetailedCard/>-->
 
 
                 <!--                <div class="card single_card_view_data_row single_data_row_of_submodule">-->

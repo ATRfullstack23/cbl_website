@@ -5,13 +5,9 @@
     export let data_row;
     export let config = {};
 
-    const data_mapping = config.data_mapping ||  {
-        main_header_text : {
-            column_id : "fullName"
-        },
-        main_header_caption : {
-            column_id : "designation_profile_row_id"
-        },
+    export let data_mapping = {
+        main_header_text : "fullName",
+        main_header_caption : "designation_profile_row_id",
         main_detail_items : [
             {column_id : "nationality"},
             {column_id : "phone_number"},
@@ -46,8 +42,8 @@
                 alt="Jane Smith"
                 class="profile_photo"/>
         <div class="header_text">
-            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text.column_id)}</h3>
-            <p class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption.column_id)}</p>
+            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
+            <p class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption)}</p>
 <!--            <div class="status_wrapper">-->
 <!--                <span class="status_label">Status:</span>-->
 <!--                <span class="status_value status_active">active</span>-->

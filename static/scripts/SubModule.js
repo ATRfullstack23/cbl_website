@@ -41,6 +41,7 @@ SubModule.prototype = {
             }
             else if(self.hasThumbnailViewMode){
                 self.defaultDisplayMode = SubModule.DISPLAY_MODES.THUMBNAIL_VIEW;
+                this.cardViewHelper = null; // will be populated later
             }
             else if(self.hasCalendarViewMode){
                 self.defaultDisplayMode = SubModule.DISPLAY_MODES.CALENDAR_VIEW;
@@ -848,9 +849,9 @@ SubModule.prototype = {
         const self = this;
         return self.columnManager.get_column_from_id(column_id);
     },
-    get_all_columns_as_array: function(){
+    get_all_columns_as_array: function(options){
         const self = this;
-        return self.columnManager.get_all_columns_as_array();
+        return self.columnManager.get_all_columns_as_array(options);
     },
     forEachColumn: function(eachFunction, filterFunction){
         var self = this;

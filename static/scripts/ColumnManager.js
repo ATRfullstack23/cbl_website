@@ -104,12 +104,25 @@ ColumnManager.prototype = {
     get_column_from_id: function(column_id){
         return this.columns[column_id];
     },
-    get_all_columns_as_array: function(column_id){
+    get_all_columns_as_array: function(options){
         var self = this;
         const arr = [];
         for(var key in self.columns){
             var column = self.columns[key];
             arr.push(column);
+        }
+        arr.sort((a, b) => {
+            if (a.displayName < b.displayName) {
+                return -1;
+            }
+            if (a.displayName > b.displayName) {
+                return 1;
+            }
+            return 0;
+        });
+
+        if(options){
+            // for future
         }
         return arr;
     },

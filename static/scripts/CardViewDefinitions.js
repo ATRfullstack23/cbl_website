@@ -22,6 +22,7 @@ CardView.TEMPLATES = {
                     "unique_id": "main_detail_items",
                     "display_name": "Main detail items",
                     "data_type": "array_of_objects",
+                    "multiple": true,
                     "input_type": "column_id",
                 }
             ]
