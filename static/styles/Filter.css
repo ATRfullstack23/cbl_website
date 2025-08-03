@@ -386,8 +386,8 @@ body.pc .filter-tabPanel.no_filters_to_show{
 }
 
 .filter-inlineTabFilterPanel{
-    margin-left: 35px;
-    margin-top: 20px;
+    /*margin-left: 35px;*/
+    /*margin-top: 20px;*/
 }
 
 .filter-inlineTabFilterPanel .filter-container{

@@ -404,7 +404,7 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
     min-height: 70vh;
     font-family: Inter, sans-serif;
     font-weight: 400;
-    padding-top: 15px;
+    /*padding-top: 15px;*/
 }
 
 
@@ -429,4 +429,12 @@ i.fa.fa-close {
 .module-panel{
     background-color: var(--white_theme_module_bg_color);
     /*border-top-left-radius: 10px;*/
+}
+
+.subModule-container.with_tab_filter_panel .buttonsRow{
+    --buttons_row_height: 90px;
+}
+
+.subModule-container .buttonsRow{
+    height: var(--buttons_row_height, 90px);
 }

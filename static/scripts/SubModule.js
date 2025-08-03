@@ -22,8 +22,8 @@ SubModule.prototype = {
     initialize: async function () {
         var self = this;
 
-         // temp aki remove later :
-        self.config.hasThumbnailViewMode = true;
+         // temp aki remove later : forcing hasThumbnailViewMode
+        // self.config.hasThumbnailViewMode = true;
 
         for(var key in self.config){
             self[key] = self.config[key];
@@ -871,9 +871,12 @@ SubModule.prototype = {
                     tdButtons.append(tabFilterPanel);
                 }
 
-                trButtons.css('height', '90px')
+                container.addClass('with_tab_filter_panel');
+
+                // trButtons.css('height', '90px')
             } else {
-                trButtons.css('height', '45px')
+                container.addClass('without_tab_filter_panel');
+                // trButtons.css('height', '45px')
             }
 
             if (subModule.hasGridViewMode) {

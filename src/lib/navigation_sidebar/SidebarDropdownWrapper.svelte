@@ -34,7 +34,7 @@
 
 </script>
 
-<div class="label-container" on:click={show_hide_slide}>
+<div class="label-container sidebar_dropdown_wrapper" on:click={show_hide_slide}>
     <div class="labelhead_and_labelicon_container"  >
     <span class="icon">
          <svg width=17 height=17
@@ -46,7 +46,7 @@
             />
         </svg>
     </span>
-        <span class="label">{label}</span>
+        <span class="label_for_dropdown_wrapper">{label}</span>
     </div>
     <span class="icon">
         {#if show}
@@ -114,8 +114,9 @@
         width: 100%;
         padding-bottom: 10px;
     }
-    .label-container span {
-        font-weight: 700;
+    .label_for_dropdown_wrapper {
+        font-weight: 600;
+        /*border-bottom: 1px solid transparent;*/
     }
 
 

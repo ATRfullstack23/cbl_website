@@ -21,7 +21,7 @@
     background: white;
     border-radius: 10px;
     margin: 0 auto;
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 .expand .grid-container.pc{
@@ -80,10 +80,13 @@
 }
 .grid-container.pc #grid > thead > tr > th{
     text-align: left;
-    text-transform: uppercase;
-    font-size: .75rem;
+    /*text-transform: uppercase;*/
+    /*font-size: .75rem;*/
     line-height: 1rem;
     padding: 1rem 1.5rem;
+    text-transform: capitalize;
+    font-weight: 500;
+    font-size: 12px;
 }
 .grid-container.pc #grid > tbody > tr > td{
     /* font-family: "Open Sans", sans-serif; */

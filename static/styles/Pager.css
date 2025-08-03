@@ -24,6 +24,11 @@
     margin: 0;
     cursor: pointer;
     color: #333;
+    border-radius: 3px;
+    min-width: 30px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
 }
 
 .pager-page-item[disabled]{
@@ -37,7 +42,8 @@
 }
 
 .pager-page-item-selected{
-    background: rgba(133, 131, 131, 0.35);
+    background: var(--light_theme_btn_bg_color);
+    color: var(--light_theme_btn_text_color);
 }
 
 .webpages-nav-panel{

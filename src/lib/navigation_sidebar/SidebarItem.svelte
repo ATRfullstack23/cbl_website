@@ -87,6 +87,7 @@
 
     .label{
         font-weight: 400;
+        border-bottom: 1px solid transparent;
     }
 
 

@@ -74,6 +74,11 @@
                                    on:change={handle_value_changed}
                                    type="text"/>
                         {/if}
+                        {#if item.input_type === 'emoji'}
+                            <input class="form_input_element emoji" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
+                                   on:change={handle_value_changed}
+                                   type="text"/>
+                        {/if}
 
                         {#if item.input_type === 'css_unit'}
                             <input class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}

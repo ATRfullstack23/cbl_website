@@ -20,7 +20,7 @@
         </div>
         <table class="hundred-percent subModule-container-table">
             <tbody>
-            <tr class="buttonsRow" style="height: 90px;">
+            <tr class="buttonsRow">
                 <td>
 
                 </td>

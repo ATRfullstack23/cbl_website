@@ -166,6 +166,27 @@ ButtonManager.prototype = {
             self.contextMenu = new ContextMenu({
                 targetContainer: $(self.subModule.container).add(self.subModule.formView.container),
                 targetAreas: [
+
+
+
+                    {
+                        selector: ".gridViewButtonsContainer button",
+                        getOptions: function(actualElement, contextMenu, targetElement){
+                            var options = {};
+
+                            var option = {};
+                            option.displayName = 'Edit Button';
+                            option.id = 'edit_button_settings';
+                            option.onClick = function(){
+                                self.show_edit_button_settings_popup(actualElement);
+                            }
+                            options[option.id] = option;
+
+                            return options;
+
+                        }
+                    },
+
                     {
                         selector: ".filter-tabPanel",
                         getOptions: function(actualElement, contextMenu, targetElement){
@@ -1166,8 +1187,8 @@ ButtonManager.prototype = {
                 .appendTo(buttonManagerGridViewTableMain);
 
             var tdSearch = $(document.createElement('td'))
-                .attr(buttonManager.constants.tdSearch)
-                .appendTo(trMain);
+                .attr(buttonManager.constants.tdSearch); // tdSearch is not used any more
+                // .appendTo(trMain);
             var searchButtonsContainer = $(document.createElement('div'))
                 .attr(buttonManager.constants.searchButtonsContainer)
                 .prependTo(tdSearch);

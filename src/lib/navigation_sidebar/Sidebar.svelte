@@ -84,6 +84,11 @@
     /*    padding-left: 32px;*/
     /*}*/
 
+    .sidebar :global(.label-container:not(.selected_navigation_item):hover .label){
+        /*font-weight: 600;*/
+        border-bottom: 1px solid var(--light_theme_btn_bg_color);
+    }
+
     .sidebar :global(:is(.selected_navigation_item)) {
         color: #fff;
         background-color: var(--light_theme_btn_bg_color);

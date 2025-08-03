@@ -15,25 +15,6 @@ function Button(config, parentObject) {
     return self;
 }
 
-Button.BUTTON_TYPES = {};
-Button.BUTTON_TYPES.CREATE = 'create';
-Button.BUTTON_TYPES.EDIT = 'edit';
-Button.BUTTON_TYPES.DELETE = 'delete';
-Button.BUTTON_TYPES.VIEW = 'view';
-Button.BUTTON_TYPES.EMAIL = 'email';
-Button.BUTTON_TYPES.SMS = 'sms';
-Button.BUTTON_TYPES.PRINT = 'print';
-Button.BUTTON_TYPES.EXEC_SQL = 'execSql';
-Button.BUTTON_TYPES.EXEC_JAVA_SCRIPT = 'execJavaScript';
-Button.BUTTON_TYPES.EXPORT_TO_EXCEL = 'exportToExcel';
-Button.BUTTON_TYPES.OPEN_SUBMODULE_IN_FORMVIEW_MODE = 'openSubModuleInFormViewMode';
-Button.BUTTON_TYPES.OPEN_CHILD_WINDOW = 'openChildWindow';
-Button.BUTTON_TYPES.STATUS_CHANGE = 'statusChange';
-Button.BUTTON_TYPES.TRIGGER_ANOTHER_BUTTON = 'triggerAnotherButton';
-
-Button.BUTTON_MODES = {};
-Button.BUTTON_MODES.GRID = 'grid';
-Button.BUTTON_MODES.FORM = 'form';
 
 Button.prototype = {
     initialize: function () {
@@ -50,8 +31,12 @@ Button.prototype = {
         if(self.disableCondition.grid){
             self.disableCondition.gridView = self.disableCondition.grid;
         }
-        self.gridViewElement = self._creation.createElement(self, Button.BUTTON_MODES.GRID);
-        self.formViewElement = self._creation.createElement(self, Button.BUTTON_MODES.FORM);
+        self.grid_view_element_svelte_instance = self._creation.createElement(self, Button.BUTTON_MODES.GRID);
+        self.gridViewElement = self.grid_view_element_svelte_instance.container_element_jquery;
+
+        self.form_view_element_svelte_instance = self._creation.createElement(self, Button.BUTTON_MODES.FORM);
+        self.formViewElement = self.form_view_element_svelte_instance.container_element_jquery;
+
         self.bindEvents();
         self.setDeviceTypeDisplayMode();
         if(self.showInDirectAction && self.showInDirectAction.isEnabled){
@@ -236,6 +221,9 @@ Button.prototype = {
         }
         return self;
     },
+    get unique_id(){
+        return `btn_${this.module.id}__${this.subModule.id}__${this.id}`;
+    },
     get loading(){
         var self = this;
         var ret = false;
@@ -261,15 +249,21 @@ Button.prototype = {
     },
     _creation : {
         createElement: function(button, type){
-            var element = $(document.createElement('button')).attr({id: type+'_'+button.id}).data({help: button.helpMessage});
-            if(button.icon && button.icon.originalName){
-                var imagePath = 'iconsGenerated/' + button.module.id + '/' + button.subModule.id + '/' + button.id + '_' + button.icon.name;
-                var image = $(document.createElement('img')).attr({class: "buttonImageContainer", src: imagePath})
-                element.append(image);
-            }
-            element.append(button.displayName)
 
-            return element;
+
+            const svelte_instance = window.mount_button_element(button, button.buttonManager.get_button_settings_from_user(button), type);
+
+            // var element = $(document.createElement('button')).attr({id: type+'_'+button.id})
+            //     .attr('data-button_id', button.id)
+            //     .data({help: button.helpMessage});
+            // if(button.icon && button.icon.originalName){
+            //     var imagePath = 'iconsGenerated/' + button.module.id + '/' + button.subModule.id + '/' + button.id + '_' + button.icon.name;
+            //     var image = $(document.createElement('img')).attr({class: "buttonImageContainer", src: imagePath})
+            //     element.append(image);
+            // }
+            // element.append(button.displayName)
+
+            return svelte_instance;
         }
     },
     _events   : {
