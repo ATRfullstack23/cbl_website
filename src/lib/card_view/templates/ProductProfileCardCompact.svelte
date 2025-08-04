@@ -10,10 +10,10 @@
             caption: "product_category_id",
             stock_badge: "available_quantity",
             main_detail_items: [
-                { column_id: "mrp" },
-                { column_id: "sale_price" },
-                { column_id: "sales_tax" },
-                { column_id: "purchase_tax" }
+                { item_value: "mrp", item_text: "" },
+                { item_value: "sale_price" , item_text: ""},
+                { item_value: "sales_tax" , item_text: ""},
+                { item_value: "purchase_tax" , item_text: ""}
             ]
         }
 
@@ -32,7 +32,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 
 </script>
@@ -53,8 +53,8 @@
     <div class="card_body">
         {#each data_mapping.main_detail_items as item}
             <div class="data_row">
-                <span class="label">{get_column_display_name(item.column_id) || ""}:</span>
-                <span class="value">{get_column_display_value(item.column_id) || ""}</span>
+                <span class="label">{get_column_display_name(item.item_text) || ""}:</span>
+                <span class="value">{get_column_display_value(item.item_value) || ""}</span>
             </div>
         {/each}
     </div>

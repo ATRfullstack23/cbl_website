@@ -14,11 +14,11 @@
             due_date: "due_date",
             date_format_style: "standard",
             main_detail_items: [
-                { column_id: "amount_excluding_tax" },
-                { column_id: "total_amount" },
-                { column_id: "balance_due" },
-                { column_id: "due_date" },
-                { column_id: "invoice_items" }
+                { item_value: "amount_excluding_tax", item_text: "" },
+                { item_value: "total_amount" , item_text: ""},
+                { item_value: "balance_due" , item_text: ""},
+                { item_value: "due_date" , item_text: ""},
+                { item_value: "invoice_items" , item_text: ""}
             ]
         }
 
@@ -37,7 +37,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 
 
@@ -68,8 +68,8 @@
         <div class="amount_section">
             {#each data_mapping.main_detail_items as item}
                 <div class="amount_row">
-                    <span class="label">{get_column_display_name(item.column_id) || ""}:</span>
-                    <span class="value">{get_column_display_value(item.column_id) || ""}</span>
+                    <span class="label">{get_column_display_name(item.item_text) || ""}:</span>
+                    <span class="value">{get_column_display_value(item.item_value) || ""}</span>
                 </div>
             {/each}
         </div>

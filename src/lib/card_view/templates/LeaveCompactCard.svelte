@@ -27,9 +27,9 @@
                 }
             },
             main_detail_items: [
-                {column_id: "max_days",},
-                {column_id: "is_paid",},
-                {column_id: "is_half_day_allowed",}
+                {item_value: "max_days", item_text: ""},
+                {item_value: "is_paid", item_text: ""},
+                {item_value: "is_half_day_allowed", item_text: ""}
             ]
     };
 
@@ -49,7 +49,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 
     let time_now = Date.now();
@@ -75,12 +75,12 @@
     </div>
 
     <div class="data_table">
-        <!--{#each data_mapping.main_detail_items as item}-->
-        <!--    <div class="data_row">-->
-        <!--        <span class="data_label">{get_column_display_name(item.column_id)}:</span>-->
-        <!--        <span class="data_value max_days">{get_column_display_value(item.column_id)}</span>-->
-        <!--    </div>-->
-        <!--{/each}-->
+        {#each data_mapping.main_detail_items as item}
+            <div class="data_row">
+                <span class="data_label">{get_column_display_name(item.item_text) || ""}:</span>
+                <span class="data_value max_days">{get_column_display_value(item.item_value) || ""}</span>
+            </div>
+        {/each}
     </div>
 </div>
 

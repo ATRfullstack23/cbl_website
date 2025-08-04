@@ -29,7 +29,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 
     function get_formatted_date(column_id, format = "DD MMM YYYY") {

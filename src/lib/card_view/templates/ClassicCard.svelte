@@ -9,9 +9,9 @@
         main_header_text : "fullName",
         main_header_caption : "designation_profile_row_id",
         main_detail_items : [
-            {column_id : "nationality"},
-            {column_id : "phone_number"},
-            {column_id : "registered_email_id"}
+            {item_value : "nationality" ,item_text: ""},
+            {item_value : "phone_number" ,item_text: ""},
+            {item_value : "registered_email_id" ,item_text: ""}
         ]
     };
 
@@ -30,7 +30,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 </script>
 
@@ -56,8 +56,8 @@
             <tbody>
             {#each data_mapping.main_detail_items as item}
                 <tr class="table_row">
-                    <td class="label_cell">{get_column_display_name(item.column_id)}:</td>
-                    <td class="value_cell">{get_column_display_value(item.column_id)}</td>
+                    <td class="label_cell">{get_column_display_name(item.item_text)}:</td>
+                    <td class="value_cell">{get_column_display_value(item.item_value)}</td>
                 </tr>
             {/each}
             </tbody>

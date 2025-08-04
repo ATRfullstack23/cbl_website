@@ -13,7 +13,6 @@
     import FinancialYearCardCompact from "$lib/card_view/templates/FinancialYearCardCompact.svelte";
     import FinancialYearCardMinimal from "$lib/card_view/templates/FinancialYearCardMinimal.svelte";
     import InvoiceCompactCard from "$lib/card_view/templates/InvoiceCompactCard.svelte";
-    import InvoiceDetailedCard from "$lib/card_view/templates/InvoiceDetailedCard.svelte";
     import LeaveCompactCard from "$lib/card_view/templates/LeaveCompactCard.svelte";
     import LeaveDetailedCard from "$lib/card_view/templates/LeaveDetailedCard.svelte";
     import LeaveMinimalCard from "$lib/card_view/templates/LeaveMinimalCard.svelte";
@@ -53,8 +52,16 @@
     function parse_card_view_data_mapping() {
         card_view_data_mapping_processed = {};
 
+        console.log("selected_cardview_template", selected_cardview_template);
+
+        if (selected_cardview_template === "customer_compact_card_duplicate") {
+            selected_cardview_template = "classic_card";
+        }
 
         const items = CardView.TEMPLATES[selected_cardview_template].data_mapping_config.items;
+        console.log(items,"after")
+
+
 
         for(const item of items){
             const value = cardview_settings.data_mapping[item.unique_id];
@@ -103,6 +110,21 @@
             cards_container_width = elements.cards_container.clientWidth;
         });
     }
+
+    let card_width = 300;
+    let gap_between_cards = 20;
+    let max_cards_per_row = 3;
+
+    $: {
+        if (cards_container_width) {
+            const total_gap_space = (max_cards_per_row - 1) * gap_between_cards;
+            const available_space = cards_container_width - total_gap_space;
+            const calculated_width = available_space / max_cards_per_row;
+            card_width = Math.max(250, Math.floor(calculated_width));
+        }
+    }
+
+
     export function hide(){
         is_hidden = true;
     }
@@ -247,7 +269,7 @@
     <!--    <pre> Cards {card_data?.length}</pre>-->
 
     <div bind:this={elements.cards_container} class="main_container cards_container"
-         style="{cards_container_width? '--cards_container_width:' + cards_container_width + 'px;' : ';'}"
+         style="--card_width: {card_width}px;"
          class:card_container__classic_card={selected_cardview_template === CardView.TEMPLATES.classic_card.id}
          class:card_container__basic_detailed={selected_cardview_template === CardView.TEMPLATES.basic_detailed.id}
          class:card_container__modern_card={selected_cardview_template === CardView.TEMPLATES.modern_card.id}
@@ -257,7 +279,6 @@
          class:card_container__financial_year_compact_card={selected_cardview_template === CardView.TEMPLATES.financial_year_compact_card.id}
          class:card_container__financial_year_minimal_card={selected_cardview_template === CardView.TEMPLATES.financial_year_minimal_card.id}
          class:card_container__invoice_card_compact={selected_cardview_template === CardView.TEMPLATES.invoice_card_compact.id}
-         class:card_container__invoice_card_detailed={selected_cardview_template === CardView.TEMPLATES.invoice_card_detailed.id}
          class:card_container__leave_compact_card={selected_cardview_template === CardView.TEMPLATES.leave_compact_card.id}
          class:card_container__leave_detailed_card={selected_cardview_template === CardView.TEMPLATES.leave_detailed_card.id}
          class:card_container__leave_minimal_card={selected_cardview_template === CardView.TEMPLATES.leave_minimal_card.id}
@@ -316,10 +337,6 @@
 
                     {#if selected_cardview_template === CardView.TEMPLATES.invoice_card_compact.id}
                         <InvoiceCompactCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
-                    {/if}
-
-                    {#if selected_cardview_template === CardView.TEMPLATES.invoice_card_detailed.id}
-                        <InvoiceDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
                     {/if}
 
                     {#if selected_cardview_template === CardView.TEMPLATES.leave_compact_card.id}
@@ -397,9 +414,11 @@
 
     .cards_container{
 
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
         gap: 20px;
+        width: 100%;
+        grid-template-columns: repeat(auto-fill, minmax(var(--card_width, 300px), 1fr));
+        align-items: start;
 
 
         /*&.card_container__basic_card{*/
