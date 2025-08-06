@@ -13,11 +13,20 @@ function Module(config, parentObject){
 }
 
 Module.prototype = {
+    apply_version_change_fixes: function(){
+        const self = this;
+        if(self.type === 'hiddenModules'){
+            self.hiddenFromMainNavigation = self.config.hiddenFromMainNavigation = true;
+        }
+    },
+
     initialize: async function(){
         var self = this;
         for(var key in self.config){
             self[key] = self.config[key];
         }
+
+        self.apply_version_change_fixes();
 
         self.visibilitySettings = self.erp.visibilitySettings.columnButtonFilterVisibility[self.id] || {};
 
