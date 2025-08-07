@@ -39,7 +39,7 @@ Filter.prototype = {
             "class": "filter-table-main"
         },
         tabFilterOptions:{
-            "class": "filter-tabOptions"
+            "class": "filter-tabOptions full_background_tab"
         }
     },
     initialize: function () {

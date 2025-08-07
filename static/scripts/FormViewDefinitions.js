@@ -249,6 +249,52 @@ FormView.CUSTOM_ELEMENTS = {
             ]
         }
     },
+    alert_message: {
+        id: 'alert_message',
+        display_name: 'Alert Message with Icon',
+        customization_config: {
+            items: [
+                {
+                    "unique_id": "caption_text",
+                    "display_name": "Alert Message",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "alert_icon",
+                    "display_name": "Alert Icon",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "font_size",
+                    "display_name": "Font Size",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "content_alignment",
+                    "display_name": "Content Position",
+                    "data_type": "text",
+                    "input_type": "dropdownlist",
+                    "options": [
+                        {
+                            "text" : "Left",
+                            "value" : "left",
+                        },
+                        {
+                            "text" : "Right",
+                            "value" : "right",
+                        },
+                        {
+                            "text" : "Center",
+                            "value" : "center",
+                        },
+                    ],
+                }
+            ]
+        }
+    },
     caption_only: {
         id: 'caption_only',
         display_name: 'Caption Only',
