@@ -16,6 +16,7 @@
     let title_text;
     let caption_text;
     let content_alignment = 'left';
+    let caption_font_size;
 
     export function handle_config_updated(new_config){
         config = new_config;
@@ -29,6 +30,10 @@
     function parse_config(){
         caption_text = config.caption_text || 'Caption';
         content_alignment = config.content_alignment || 'left';
+        caption_font_size = config.caption_font_size || '14';
+        if(caption_font_size){
+            caption_font_size = caption_font_size.replace(/px/gi, '');
+        }
     }
 
     parse_config();
@@ -40,27 +45,28 @@
 </script>
 
 
-<div bind:this={container_element} data-custom_element_id="{unique_id}" data-unique_id="{unique_id}" data- class="form_view_custom_element title_with_caption {content_alignment}">
+<div bind:this={container_element} data-custom_element_id="{unique_id}" data-unique_id="{unique_id}" data- class="form_view_custom_element caption_only {content_alignment}" style="--caption_font_size: {caption_font_size}px;">
     <p class="caption_text">{caption_text}</p>
 
 </div>
 
 <style>
-    .title_with_caption{
+    .caption_only{
         padding-right: 8px;
     }
-    .title_with_caption.right{
+    .caption_only.right{
         text-align: right;
     }
-    .title_with_caption.center{
+    .caption_only.center{
         text-align: center;
     }
-    .title_with_caption{
+    .caption_only{
         padding: 10px;
         color: var(--color);
     }
     .caption_text{
         color: var(--color);
+        font-size: var(--caption_font_size);
     }
 
 </style>

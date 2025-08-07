@@ -1227,6 +1227,18 @@ Column.prototype = {
             formView.lookUpParentChanged(self, options);
         });
     },
+    hide_form_view_element_due_to_parent_button: function(formViewMode){
+        var self = this;
+        const form_view_column_holder_element = self.getFormViewElement(formViewMode).closest('.formview-column-holder').addClass('hidden_due_to_parent_button');
+        const parent = form_view_column_holder_element.parent();
+        form_view_column_holder_element.detach();
+        return {parent_element: parent, form_view_column_holder_element, column: this};
+    },
+    reset_form_view_element_hidden_status_due_to_parent_button: function(hidden_info){
+        var self = this;
+        hidden_info.form_view_column_holder_element.removeClass('hidden_due_to_parent_button').appendTo(hidden_info.parent_element);
+        return self;
+    },
     enableFormViewElement: function(formViewMode){
         var self = this;
         self.getFormViewElement(formViewMode).prop('disabled', false);
@@ -2802,6 +2814,8 @@ Column.prototype = {
                 }
                 self.addHtml5Validations(column, element);
             }
+
+            element.attr('data-form_view_mode', mode);
 
             return element;
         },

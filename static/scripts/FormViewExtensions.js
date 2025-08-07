@@ -304,12 +304,28 @@ FormView.prototype.get_custom_element_svelte_instance = function (item_id) {
     return this.elements.divMain.find('.table-main:visible').find(`.form_view_custom_element[data-custom_element_id="${item_id}"]`).data('svelte_instance');
 }
 
+FormView.prototype.detach_custom_elements_from_view = async function () {
+    for(const item_id in this.mounted_custom_element_svelte_instances[this.button.id]){
+        const svelte_instance = this.mounted_custom_element_svelte_instances[this.button.id][item_id];
+        console.log(`detaching : ${item_id}`, svelte_instance)
+        svelte_instance.container_element_jquery.detach();
+    }
+}
+
 FormView.prototype.mount_custom_element = async function (item_id, item_type, target_element, existing_config) {
+
+    if(item_id && this.mounted_custom_element_svelte_instances[this.button.id][item_id]){
+        const svelte_instance = this.mounted_custom_element_svelte_instances[this.button.id][item_id];
+        console.log(`restoring : ${item_id}`, svelte_instance)
+        svelte_instance.container_element_jquery.appendTo(target_element);
+        return;
+    }
+
     let is_new_item = false;
     let _created_at_utc;
     if(!item_id){
         _created_at_utc = Date.now();
-        item_id = `ce_${this.mode}_${item_type}__${_created_at_utc}`;
+        item_id = `ce_${this.button.id}_${item_type}__${_created_at_utc}`;
         is_new_item = true;
     }
 
@@ -346,6 +362,8 @@ FormView.prototype.mount_custom_element = async function (item_id, item_type, ta
         }
     }
 
+    this.mounted_custom_element_svelte_instances[this.button.id][item_id] = mounted_svelte_instance;
+
     return mounted_svelte_instance;
 }
 
@@ -353,7 +371,7 @@ FormView.prototype.mount_custom_element = async function (item_id, item_type, ta
 FormView.prototype.styling_helper = {
     mount_custom_element__title_with_caption: async function (form_view, item_id, item_config, target_element) {
         if (!item_config) {
-            item_config = {title_text: '', caption_text: ''};
+            item_config = {title_text: '', title_font_size:'', caption_text: '', caption_font_size: ''};
         }
 
         const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'title_with_caption', {
@@ -365,7 +383,7 @@ FormView.prototype.styling_helper = {
     },
     mount_custom_element__caption_only: async function (form_view, item_id, item_config, target_element) {
         if (!item_config) {
-            item_config = {caption_text: ''};
+            item_config = {caption_text: '', caption_font_size: ''};
         }
 
         const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'caption_only', {

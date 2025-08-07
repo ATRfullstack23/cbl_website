@@ -51,15 +51,29 @@ FormView.prototype = {
         var self = this;
 
         self.userConfiguration = {
-            create: self.userConfiguration = self.erp.getUserSetting(self.subModule.id + '_create_formViewConfiguration') || {},
-            edit: self.userConfiguration = self.erp.getUserSetting(self.subModule.id + '_edit_formViewConfiguration') || {},
-            view: self.userConfiguration = self.erp.getUserSetting(self.subModule.id + '_view_formViewConfiguration') || {}
+            create: self.erp.getUserSetting(self.subModule.id + '_create_formViewConfiguration') || {},
+            edit: self.erp.getUserSetting(self.subModule.id + '_edit_formViewConfiguration') || {},
+            view: self.erp.getUserSetting(self.subModule.id + '_view_formViewConfiguration') || {}
         };
-        self.isConfigurationRestored = {
-            create: false,
-            edit: false,
-            view: false
-        }
+
+        self.mounted_custom_element_svelte_instances = {
+            create: {},
+            edit: {},
+            view: {}
+        };
+        self.subModule.forEachButton(function (button_info) {
+
+            if(button_info.type == Button.BUTTON_TYPES.CREATE){
+                self.mounted_custom_element_svelte_instances[button_info.id] = {};
+                self.userConfiguration[button_info.id] = self.erp.getUserSetting(self.subModule.id + `_${button_info.id}_formViewConfiguration`) || {};
+            }
+        });
+
+        // self.isConfigurationRestored = {
+        //     create: false,
+        //     edit: false,
+        //     view: false
+        // }
         self.displayMode = self.config.displayMode || FormView.DISPLAY_MODES.DEFAULT;
         self.disabledColumns = [];
         self.columns = self.subModule.columnManager.columns;
@@ -403,10 +417,10 @@ FormView.prototype = {
     },
     saveFormViewWidth: function(size){
         var self = this;
-        self.userConfiguration[self.mode].size = {
+        self.userConfiguration[self.button.id].size = {
             width: size.width
         };
-        self.erp.saveFormViewConfiguration(self.subModule, self.mode, self.userConfiguration[self.mode]);
+        self.erp.saveFormViewConfiguration(self.subModule, self.button.id, self.userConfiguration[self.button.id]);
         return self;
     },
     setFormViewBarcodeScanningMode: function(){
@@ -600,10 +614,11 @@ FormView.prototype = {
         }
         if(isFromCloseButton || self.mode == FormView.CREATE_MODE){
             self.hide();
-
         }
         else{
             //self.show(FormView.VIEW_MODE, self.data.view);
+            this.detach_custom_elements_from_view().then(()=>{});
+            self._getSet.reset_column_values_from_parent_button(this);
             self.showViewModeFromEditMode();
         }
 
@@ -1066,6 +1081,9 @@ FormView.prototype = {
         }
         self.resetHyperlinkChildWindows();
         self.dynamicCallBacks = {};
+        this.detach_custom_elements_from_view().then(()=>{});
+        self._getSet.reset_column_values_from_parent_button(this);
+
         return self;
     },
     forEach: function(eachFunction, filterFunction){
@@ -1496,13 +1514,7 @@ FormView.prototype = {
             }, function(err, result){
                 formView._getSet.setDefaultValues(formView);
 
-                if(formView.subModule.parentObject.parentItem && formView.subModule.parentObject.parentItem.typeSpecific.targetColumnsValue){
-                    var button = formView.subModule.parentObject.parentItem;
-                    button.typeSpecific.targetColumnsValue.forEach(function(columnValueObject){
-                        formView.subModule.columnManager.columns[columnValueObject.text]
-                            .setFormViewEditValue(null, button.typeSpecific.formViewMode, columnValueObject.value, {triggerChange: true});
-                    });
-                }
+                formView._getSet.set_column_values_from_parent_button(formView);
 
             });
         },
@@ -2409,6 +2421,65 @@ FormView.prototype = {
                 }
                 return ret;
             });
+            return self;
+        },
+        reset_column_values_from_parent_button: function(formView){
+
+            const latest_form_view_mode = formView.mode;
+
+            if(!formView.temp_hidden_from_view_elements){
+                formView.temp_hidden_from_view_elements = {};
+            }
+
+            let temp_hidden_from_view_elements_arr = formView.temp_hidden_from_view_elements[latest_form_view_mode];
+            if(temp_hidden_from_view_elements_arr){
+                for (let hidden_info of temp_hidden_from_view_elements_arr) {
+                    hidden_info.column.reset_form_view_element_hidden_status_due_to_parent_button(hidden_info);
+                }
+            }
+            formView.temp_hidden_from_view_elements[latest_form_view_mode] = [];
+        },
+        set_column_values_from_parent_button: function(formView){
+            var self = this;
+
+            const latest_form_view_mode = formView.mode;
+
+            if(!formView.temp_hidden_from_view_elements){
+                formView.temp_hidden_from_view_elements = {};
+            }
+
+            let temp_hidden_from_view_elements_arr = formView.temp_hidden_from_view_elements[latest_form_view_mode] = [];
+
+            var button = formView.subModule.parentObject.parentItem;
+            let target_columns_value_to_apply;
+            if(formView.subModule.parentObject.parentItem && formView.subModule.parentObject.parentItem.typeSpecific.targetColumnsValue?.length){
+                target_columns_value_to_apply = formView.subModule.parentObject.parentItem.typeSpecific.targetColumnsValue;
+            }
+            else if(formView.button.typeSpecific.targetColumnsValue?.length){
+                button = formView.button;
+                target_columns_value_to_apply = formView.button.typeSpecific.targetColumnsValue;
+            }
+
+            console.log('formView.subModule.parentObject.parentItem', formView.subModule.parentObject.parentItem)
+            console.log('button', button)
+            console.log('target_columns_value_to_apply', target_columns_value_to_apply)
+
+            target_columns_value_to_apply && target_columns_value_to_apply.forEach(function(columnValueObject){
+                const target_column = formView.subModule.columnManager.columns[columnValueObject.target_column_id || columnValueObject.text];
+                target_column.setFormViewEditValue(null, button.typeSpecific.formViewMode, columnValueObject.value, {triggerChange: true});
+
+                switch (columnValueObject.target_column_restriction) {
+                    case 'hidden':
+                        const hidden_info = target_column.hide_form_view_element_due_to_parent_button(latest_form_view_mode);
+                        temp_hidden_from_view_elements_arr.push(hidden_info);
+                        break;
+                    default:
+                        throw new Error(`target_column_restriction is not supported : ${columnValueObject}`);
+                }
+
+            });
+
+
             return self;
         },
         enableDisableGetFromParentConditionElements: function(formView){
@@ -3851,7 +3922,7 @@ FormView.prototype = {
     },
     get_styling_setting_name: function () {
         const self = this;
-        return `formview_styling_config__${self.subModule.id}__${self.mode}`
+        return `formview_styling_config__${self.subModule.id}__${self.button.id}`; // please add module here as well
     },
     save_latest_styling_configuration: function () {
         const self = this;
@@ -3916,10 +3987,10 @@ FormView.prototype = {
         const self = this;
         // console.log('styling_config', styling_config);
 
-        if(self[`is_custom_elements_restored__${self.mode}`]){
-            return;
-        }
-        self[`is_custom_elements_restored__${self.mode}`] = true;
+        // if(self[`is_custom_elements_restored__${self.button.id}`]){
+        //     return;
+        // }
+        // self[`is_custom_elements_restored__${self.button.id}`] = true;
 
         for(const custom_element_key in styling_config.custom_elements){
             const custom_element_info = styling_config.custom_elements[custom_element_key];
@@ -3981,12 +4052,13 @@ FormView.prototype = {
             }
         }
 
-        if(!styling_config.last_updated_at_utc){
-            self.elements.headerTextContainerElement.addClass('formview_not_configured');
-        }
-        else{
-            self.elements.headerTextContainerElement.removeClass('formview_not_configured');
-        }
+        // if(!styling_config.last_updated_at_utc){
+        //     self.elements.headerTextContainerElement.addClass('formview_not_configured');
+        // }
+        // else{
+        //     self.elements.headerTextContainerElement.removeClass('formview_not_configured');
+        // }
+
 
         await this.restore_custom_elements_from_config(styling_config);
 
@@ -4057,11 +4129,12 @@ FormView.prototype = {
 
         self.container.find(`.table-main:visible .form_view_table_row`).each(function () {
             let row_element = $(this);
+            row_element.removeClass('without_children_column with_children_column');
             if(row_element.find('.formview-column-holder,.form_view_custom_element').length){
-                row_element.addClass('with_children_column')
+                row_element.addClass('with_children_column');
             }
             else{
-                row_element.addClass('without_children_column')
+                row_element.addClass('without_children_column');
             }
         })
 
@@ -4083,10 +4156,13 @@ FormView.prototype = {
     },
     applyUserConfiguration: function(){
         var self = this;
-        if(self.isConfigurationRestored[self.mode]){
-        }
-        self.isConfigurationRestored[self.mode] = true;
-        var configuration = self.userConfiguration[self.mode];
+        // if(self.isConfigurationRestored[self.button.id]){
+        // }
+        // self.isConfigurationRestored[self.button.id] = true;
+
+        // var configuration = self.userConfiguration[self.mode];
+        var configuration = self.userConfiguration[self.button.id];
+
         switch(self.erp.deviceType){
             case ERP.DEVICE_TYPES.PC:
                 if(configuration.size){

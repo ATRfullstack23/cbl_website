@@ -209,8 +209,20 @@ FormView.CUSTOM_ELEMENTS = {
                     "input_type": "single_line",
                 },
                 {
+                    "unique_id": "title_font_size",
+                    "display_name": "Title Font Size",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
                     "unique_id": "caption_text",
                     "display_name": "caption_text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "caption_font_size",
+                    "display_name": "caption_font_size",
                     "data_type": "text",
                     "input_type": "single_line",
                 },
@@ -244,7 +256,13 @@ FormView.CUSTOM_ELEMENTS = {
             items: [
                 {
                     "unique_id": "caption_text",
-                    "display_name": "caption_text",
+                    "display_name": "Caption Text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "caption_font_size",
+                    "display_name": "Caption Font Size",
                     "data_type": "text",
                     "input_type": "single_line",
                 },
