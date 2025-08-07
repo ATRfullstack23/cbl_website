@@ -13,6 +13,7 @@
     import FormViewCustomElementsMountHelper from "$lib/form_view/FormViewCustomElementsMountHelper.svelte";
     import CardViewMountHelper from "$lib/card_view/CardViewMountHelper.svelte";
     import ButtonManagerMountHelper from "$lib/button_manager/ButtonManagerMountHelper.svelte";
+    import ChildWindowMountHelper from "$lib/child_window/ChildWindowMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -162,6 +163,8 @@
 <PrintPopupDialog bind:this={print_popup_dialog_instance}/>
 
 <ButtonManagerMountHelper/>
+
+<ChildWindowMountHelper/>
 
 <CardViewMountHelper/>
 

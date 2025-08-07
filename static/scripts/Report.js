@@ -210,7 +210,7 @@ Report.prototype = {
                         value = value.value;
                     }
                 }
-                self.parentWindow.headerMessage = subReport.displayName+ ' ('+value+')';
+                self.parentWindow.headerMessage = value;
             }
 //            else{
 //                console.log(self)

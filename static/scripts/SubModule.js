@@ -1667,7 +1667,8 @@ SubModule.prototype = {
             }, false);
         }
 
-        xhr.open('POST', '/uploadFile', true);
+        let url = self.erp.backend_root_url + "/uploadFile";
+        xhr.open('POST', url, true);
         xhr.send(formData);
         return self;
     },
@@ -1840,7 +1841,7 @@ SubModule.prototype = {
     createChildWindowForColumn: function(column, randomId, dataRow, childWindowDisplayMode, createChildWindowForColumnCallback){
         var self = this;
         var dataSource = column.typeSpecific.dataSource;
-        var moduleConfig = self.erp.allModules[dataSource.moduleId].config;
+        var moduleConfig = self.erp.allModules[dataSource.moduleId].config; // dont you think this should do a JSON.parse & stringify to make sure its a deep copy
 //        moduleConfig = JSON.parse(JSON.stringify(moduleConfig));
         var absorbContainer;
         if(self.grid.elements.rows){

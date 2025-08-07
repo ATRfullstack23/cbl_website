@@ -70,6 +70,7 @@
     -ms-perspective: 1400px;
     perspective: 1400px;
     cursor: auto;
+    backdrop-filter: blur(2px);
 }
 .formview-container.pc.form-view-in-direct-create{
     top: 0px;

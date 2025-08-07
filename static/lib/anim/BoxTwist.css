@@ -5,13 +5,13 @@
 body{
 }
 
-.box-twist-animation{
-    -webkit-transition: -webkit-transform 500ms ease;
-    -webkit-transform: scale(1,1);
-}
+/*.box-twist-animation{*/
+/*    -webkit-transition: -webkit-transform 500ms ease;*/
+/*    -webkit-transform: scale(1,1);*/
+/*}*/
 
-/*creating absorbing container*/
+/*!*creating absorbing container*!*/
 
-.absorb-container{
-    position: relative;
-}
+/*.absorb-container{*/
+/*    position: relative;*/
+/*}*/
