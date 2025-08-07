@@ -353,7 +353,7 @@ FormView.prototype.mount_custom_element = async function (item_id, item_type, ta
 FormView.prototype.styling_helper = {
     mount_custom_element__title_with_caption: async function (form_view, item_id, item_config, target_element) {
         if (!item_config) {
-            item_config = {title_text: '', caption_text: ''};
+            item_config = {title_text: '', title_font_size:'', caption_text: '', caption_font_size: ''};
         }
 
         const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'title_with_caption', {
@@ -365,7 +365,7 @@ FormView.prototype.styling_helper = {
     },
     mount_custom_element__caption_only: async function (form_view, item_id, item_config, target_element) {
         if (!item_config) {
-            item_config = {caption_text: ''};
+            item_config = {caption_text: '', caption_font_size: ''};
         }
 
         const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'caption_only', {

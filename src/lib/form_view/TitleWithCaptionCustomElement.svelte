@@ -15,6 +15,8 @@
 
     let title_text;
     let caption_text;
+    let title_font_size;
+    let caption_font_size;
     let content_alignment = 'left';
 
     export function handle_config_updated(new_config){
@@ -28,8 +30,14 @@
 
     function parse_config(){
         title_text = config.title_text || 'Title';
+        title_font_size = config.title_font_size || '20px';
         caption_text = config.caption_text || 'Caption';
+        caption_font_size = config.caption_font_size || '14px';
         content_alignment = config.content_alignment || 'left';
+
+        if (title_font_size){
+            title_font_size = title_font_size.replace(/px/gi, '');
+        }
     }
 
     parse_config();
@@ -41,7 +49,7 @@
 </script>
 
 
-<div bind:this={container_element} data-custom_element_id="{unique_id}" data-unique_id="{unique_id}" data- class="form_view_custom_element title_with_caption {content_alignment}">
+<div bind:this={container_element} data-custom_element_id="{unique_id}" data-unique_id="{unique_id}" data- class="form_view_custom_element title_with_caption {content_alignment}" style="--title_font_size: {title_font_size}px; --caption_font_size: {caption_font_size}px;">
 
     <h4 class="title_text primary_display_name">{title_text}</h4>
     <p class="caption_text">{caption_text}</p>
@@ -65,9 +73,11 @@
     .title_text{
         font-size: 20px;
         color: var(--color);
+        font-size: var(--title_font_size);
     }
     .caption_text{
         color: var(--color);
+        font-size: var(--caption_font_size);
     }
 
 </style>
