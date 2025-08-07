@@ -5,20 +5,23 @@
     export let data_row;
     export let config;
 
+    let badge_icon;
+
     export let data_mapping = {
             main_header_text: "voucher_number",
             main_header_caption: "customer_profile_id",
             payment_mode_badge: "payment_mode",
             payment_amount_details: "payment_amount",
+            badge_icon: "icon",
             main_detail_items: [
-                { column_id: "customer_profile_id" },
-                { column_id: "transaction_date" },
-                { column_id: "payment_amount" }
+                { item_value: "customer_profile_id" , item_text: "" },
+                { item_value: "transaction_date"  , item_text: "" },
+                { item_value: "payment_amount"  , item_text: "" }
             ],
             additional_detail_items: [
-                { column_id: "invoice_id" },
-                { column_id: "bank_profile_id" },
-                { column_id: "payment_type" }
+                { item_value: "invoice_id"  , item_text: "" },
+                { item_value: "bank_profile_id"  , item_text: "" },
+                { item_value: "payment_type"  , item_text: "" }
             ]
         }
 
@@ -36,7 +39,7 @@
     }
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 
     function get_formatted_date(column_id, format = "DD MMM YYYY") {
@@ -55,7 +58,7 @@
             <div class="payment_id">{get_column_display_value(data_mapping.main_header_caption)}</div>
         </div>
         <div class="payment_mode mode_upi">
-            <span class="mode_icon">🪙</span>
+            <span class="mode_icon">{get_column_display_value(data_mapping.badge_icon)}</span>
             <span class="mode_text">{get_column_display_value(data_mapping.payment_mode_badge)}</span>
         </div>
     </div>
@@ -74,8 +77,8 @@
         <div class="details_section">
             {#each data_mapping.main_detail_items as item}
                 <div class="detail_row">
-                    <span class="detail_label">{get_column_display_name(item.column_id) || ""}:</span>
-                    <span class="detail_value">{get_column_display_value(item.column_id) || ""}</span>
+                    <span class="detail_label">{get_column_display_name(item.item_text) || ""}:</span>
+                    <span class="detail_value">{get_column_display_value(item.item_value) || ""}</span>
                 </div>
             {/each}
         </div>

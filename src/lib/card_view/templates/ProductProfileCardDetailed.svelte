@@ -15,10 +15,10 @@
         primary_section_title: "Product Information",
         secondary_section_title: "Pricing Details",
         main_detail_items: [
-            { column_id: "mrp" },
-            { column_id: "sale_price" },
-            { column_id: "sales_tax" },
-            { column_id: "purchase_tax" }
+            { item_value: "mrp", item_text: "" },
+            { item_value: "sale_price", item_text: "" },
+            { item_value: "sales_tax", item_text: "" },
+            { item_value: "purchase_tax", item_text: "" }
         ]
     }
 
@@ -38,7 +38,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 
 </script>
@@ -63,7 +63,7 @@
 
     <div class="card_content">
         <div class="info_section">
-            <h4 class="section_title">{primary_section_title}</h4>
+            <h4 class="section_title">{get_column_display_value(data_mapping.primary_section_title) || ""}}</h4>
             <table class="info_table">
                 <tr>
                     <td class="field_label">{get_column_display_name(data_mapping.caption)}</td>
@@ -77,12 +77,12 @@
         </div>
 
         <div class="info_section">
-            <h4 class="section_title">{secondary_section_title}</h4>
+            <h4 class="section_title">{get_column_display_value(data_mapping.secondary_section_title) || ""}</h4>
             <table class="info_table">
                 {#each data_mapping.main_detail_items as item}
                     <tr>
-                        <td class="field_label">{get_column_display_name(item.column_id) || ""}:</td>
-                        <td class="field_value price_mrp">{get_column_display_value(item.column_id) || ""}</td>
+                        <td class="field_label">{get_column_display_name(item.item_text) || ""}:</td>
+                        <td class="field_value price_mrp">{get_column_display_value(item.item_value) || ""}</td>
                     </tr>
                 {/each}
             </table>

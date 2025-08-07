@@ -63,7 +63,22 @@ CardView.TEMPLATES = {
                     "unique_id": "main_detail_items",
                     "display_name": "Main detail items",
                     "data_type": "array_of_objects",
-                    "input_type": "column_id",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -89,7 +104,22 @@ CardView.TEMPLATES = {
                     "unique_id": "main_detail_items",
                     "display_name": "Main detail items",
                     "data_type": "array_of_objects",
-                    "input_type": "column_id",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -115,7 +145,22 @@ CardView.TEMPLATES = {
                     "unique_id": "main_detail_items",
                     "display_name": "Main detail items",
                     "data_type": "array_of_objects",
-                    "input_type": "column_id",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -165,7 +210,22 @@ CardView.TEMPLATES = {
                     unique_id: "main_detail_items",
                     display_name: "Main detail items",
                     data_type: "array_of_objects",
-                    input_type: "column_id",
+                    input_type: "array_of_objects",
+                    custom_schema : [
+                        {
+                            unique_id: "item_text",
+                            display_name: "Text",
+                            placeholder: "Display text",
+                            data_type: "text",
+                            input_type: "single_line",
+                        },
+                        {
+                            unique_id: "item_value",
+                            display_name: "Value",
+                            data_type: "text",
+                            input_type: "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -200,60 +260,25 @@ CardView.TEMPLATES = {
                     input_type: "column_id",
                 },
                 {
-                    unique_id: "main_detail_items",
-                    display_name: "Main detail items",
-                    data_type: "array_of_objects",
-                    input_type: "column_id",
-                }
-            ]
-        }
-    },
-    invoice_card_detailed: {
-        id: "invoice_card_detailed",
-        display_name: "Invoice Detailed",
-        data_mapping_config: {
-            items: [
-                {
-                    unique_id: "main_header_text",
-                    display_name: "Main header text",
-                    data_type: "text",
-                    input_type: "column_id",
-                },
-                {
-                    unique_id: "main_header_caption",
-                    display_name: "Main header caption",
-                    data_type: "text",
-                    input_type: "column_id",
-                },
-                {
-                    unique_id: "caption",
-                    display_name: "Caption",
-                    data_type: "text",
-                    input_type: "column_id",
-                },
-                {
-                    unique_id: "invoice_status",
-                    display_name: "Invoice status",
-                    data_type: "text",
-                    input_type: "column_id",
-                },
-                {
-                    unique_id: "payment_status",
-                    display_name: "Payment status",
-                    data_type: "text",
-                    input_type: "column_id",
-                },
-                {
-                    unique_id: "due_date",
-                    display_name: "Due Date",
-                    data_type: "text",
-                    input_type: "column_id",
-                },
-                {
-                    unique_id: "main_detail_items",
-                    display_name: "Main detail items",
-                    data_type: "array_of_objects",
-                    input_type: "column_id",
+                    "unique_id": "main_detail_items",
+                    "display_name": "Main detail items",
+                    "data_type": "array_of_objects",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -294,10 +319,25 @@ CardView.TEMPLATES = {
                     input_type: "column_id",
                 },
                 {
-                    unique_id: "main_detail_items",
-                    display_name: "Main detail items",
-                    data_type: "array_of_objects",
-                    input_type: "column_id",
+                    "unique_id": "main_detail_items",
+                    "display_name": "Main detail items",
+                    "data_type": "array_of_objects",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -344,16 +384,46 @@ CardView.TEMPLATES = {
                     input_type: "column_id",
                 },
                 {
-                    unique_id: "main_detail_items",
-                    display_name: "Main detail items",
-                    data_type: "array_of_objects",
-                    input_type: "column_id",
+                    "unique_id": "main_detail_items",
+                    "display_name": "Main detail items",
+                    "data_type": "array_of_objects",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 },
                 {
                     unique_id: "additional_detail_items",
                     display_name: "Additional detail items",
                     data_type: "array_of_objects",
-                    input_type: "column_id",
+                    input_type: "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -382,22 +452,37 @@ CardView.TEMPLATES = {
                     input_type: "column_id",
                 },
                 {
+                    unique_id: "badge_icon",
+                    display_name: "Badge Icon",
+                    data_type: "icon",
+                    input_type: "column_id",
+                },
+                {
                     unique_id: "payment_amount_details",
                     display_name: "Payment amount details",
                     data_type: "text",
                     input_type: "column_id",
                 },
                 {
-                    unique_id: "main_detail_items",
-                    display_name: "Main detail items",
-                    data_type: "array_of_objects",
-                    input_type: "column_id",
-                },
-                {
-                    unique_id: "additional_detail_items",
-                    display_name: "Additional detail items",
-                    data_type: "array_of_objects",
-                    input_type: "column_id",
+                    "unique_id": "main_detail_items",
+                    "display_name": "Main detail items",
+                    "data_type": "array_of_objects",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 }
             ]
         }
@@ -432,6 +517,12 @@ CardView.TEMPLATES = {
                     input_type: "column_id"
                 },
                 {
+                    unique_id: "heading_icon",
+                    display_name: "Heading icon",
+                    data_type: "icon",
+                    input_type: "column_id"
+                },
+                {
                     unique_id: "duration_display",
                     display_name: "Duration display",
                     data_type: "text",
@@ -461,13 +552,13 @@ CardView.TEMPLATES = {
                     unique_id: "date_range",
                     display_name: "Date range",
                     data_type: "date_range",
-                    input_type: "column_id_pair"
+                    input_type: "column_id"
                 },
                 {
                     unique_id: "duration_display",
                     display_name: "Duration display",
                     data_type: "text",
-                    input_type: "calculated_field"
+                    input_type: "column_id"
                 },
                 {
                     unique_id: "date_format_style",
@@ -508,10 +599,25 @@ CardView.TEMPLATES = {
                     input_type: "column_id"
                 },
                 {
-                    unique_id: "contact_info_items",
-                    display_name: "Contact info items",
+                    unique_id: "main_detail_items",
+                    display_name: "Main Detail Items",
                     data_type: "array_of_objects",
-                    input_type: "column_id"
+                    input_type: "array_of_objects",
+                    custom_schema : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 },
                 {
                     unique_id: "address_field",
@@ -546,10 +652,25 @@ CardView.TEMPLATES = {
                     input_type: "column_id"
                 },
                 {
-                    unique_id: "contact_info_items",
-                    display_name: "Contact info items",
+                    unique_id: "main_detail_items",
+                    display_name: "main detail items",
                     data_type: "array_of_objects",
-                    input_type: "column_id"
+                    input_type: "array_of_objects",
+                    custom_schema : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 },
                 {
                     unique_id: "address_field",
@@ -584,10 +705,25 @@ CardView.TEMPLATES = {
                     input_type: "column_id"
                 },
                 {
-                    unique_id: "contact_info_items",
-                    display_name: "Contact info items",
+                    unique_id: "main_detail_items",
+                    display_name: "Main Detail Items",
                     data_type: "array_of_objects",
-                    input_type: "column_id"
+                    input_type: "array_of_objects",
+                    custom_schema : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 },
                 {
                     unique_id: "address_field",
@@ -598,34 +734,49 @@ CardView.TEMPLATES = {
             ]
         }
     },
-    customer_compact_card_duplicate: {
-        id: "customer_compact_card_duplicate",
+    customer_compact_card: {
+        id: "customer_compact_card",
         display_name: "Customer Compact Card",
         data_mapping_config: {
             items: [
                 {
-                    unique_id: "main_header_text",
-                    display_name: "Main header text",
-                    data_type: "text",
-                    input_type: "column_id"
+                    "unique_id": "main_header_text",
+                    "display_name": "Main header text",
+                    "data_type": "text",
+                    "input_type": "column_id"
                 },
                 {
-                    unique_id: "main_header_caption",
-                    display_name: "Main header caption",
-                    data_type: "text",
-                    input_type: "column_id"
+                    "unique_id": "main_header_caption",
+                    "display_name": "Main header caption",
+                    "data_type": "text",
+                    "input_type": "column_id"
                 },
                 {
-                    unique_id: "id_badge",
-                    display_name: "ID badge",
-                    data_type: "number",
-                    input_type: "column_id"
+                    "unique_id": "id_badge",
+                    "display_name": "ID badge",
+                    "data_type": "number",
+                    "input_type": "column_id"
                 },
                 {
-                    unique_id: "contact_info_items",
-                    display_name: "Contact info items",
-                    data_type: "array_of_objects",
-                    input_type: "column_id"
+                    "unique_id": "main_detail_items",
+                    "display_name": "Main Detail Items",
+                    "data_type": "array_of_objects",
+                    "input_type": "array_of_objects",
+                    "custom_schema" : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 },
                 {
                     unique_id: "address_field",
@@ -660,10 +811,25 @@ CardView.TEMPLATES = {
                     input_type: "column_id"
                 },
                 {
-                    unique_id: "contact_info_items",
-                    display_name: "Contact info items",
+                    unique_id: "main_detail_items",
+                    display_name: "Main Detail Items",
                     data_type: "array_of_objects",
-                    input_type: "column_id"
+                    input_type: "array_of_objects",
+                    custom_schema : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 },
                 {
                     unique_id: "address_field",
@@ -698,10 +864,25 @@ CardView.TEMPLATES = {
                     input_type: "column_id"
                 },
                 {
-                    unique_id: "contact_info_items",
-                    display_name: "Contact info items",
+                    unique_id: "main_detail_items",
+                    display_name: "Main Detail Items",
                     data_type: "array_of_objects",
-                    input_type: "column_id"
+                    input_type: "array_of_objects",
+                    custom_schema : [
+                        {
+                            "unique_id": "item_text",
+                            "display_name": "Text",
+                            "placeholder": "Display text",
+                            "data_type": "text",
+                            "input_type": "single_line",
+                        },
+                        {
+                            "unique_id": "item_value",
+                            "display_name": "Value",
+                            "data_type": "text",
+                            "input_type": "column_id",
+                        },
+                    ]
                 },
                 {
                     unique_id: "address_field",
@@ -712,8 +893,8 @@ CardView.TEMPLATES = {
             ]
         }
     },
-    customer_compact_card: {
-        id: 'customer_compact_card',
+    customer_compact_card_duplicate: {
+        id: 'customer_compact_card_duplicate',
         display_name: 'Customer Compact',
         customization_config: {
             items: [

@@ -6,10 +6,13 @@
     export let data_row;
     export let config;
 
+    let heading_icon;
+
    export let data_mapping = {
             main_header_text: "title",
             date_range_start: "start_date",
             date_range_end: "end_date",
+            heading_icon: "icon",
             date_format_style: "standard",
             duration_display:  "duration_in_months",
             status_badge:  "is_current_financial_year"
@@ -29,7 +32,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 
     function get_formatted_date(column_id, format = "DD MMM YYYY") {
@@ -44,7 +47,9 @@
 <div class="common_card_year">
     <div class="card_header">
         <div class="year_info">
-            <div class="year_icon">📅</div>
+            {#if get_column_display_value(data_mapping.heading_icon) && get_column_display_value(data_mapping.heading_icon).length}
+                <div class="year_icon">{get_column_display_value(data_mapping.heading_icon) || ""}</div>
+            {/if}
             <div class="year_details">
                 <h3 class="year_title">{get_formatted_date(data_mapping.main_header_text)}</h3>
             </div>
@@ -74,11 +79,15 @@
 
 <style>
     .common_card_year {
+        width: 100%;
+
+        max-width: 100%;
+        margin: 0 auto;
+
         background: white;
         border: 1px solid #e5e7eb;
         border-radius: 12px;
         padding: 20px;
-        margin-bottom: 16px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         transition: all 0.3s ease;
         position: relative;

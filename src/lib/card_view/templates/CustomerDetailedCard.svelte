@@ -8,12 +8,12 @@
         main_header_text: "customer_name",
         main_header_caption: "customer_type",
         id_badge: "id",
-        contact_info_items: [
+        main_detail_items: [
             {
-                column_id: "email",
+                item_value: "email", item_text: ""
             },
             {
-                column_id: "phone_number",
+                item_value: "phone_number", item_text: ""
             }
         ],
         address_field:"address"
@@ -33,7 +33,7 @@
 
 
     function get_column_display_name(column_id){
-        return column_id.toUpperCase();
+        return column_id?.toUpperCase() || '-';
     }
 </script>
 
@@ -53,10 +53,10 @@
             <div class="info_section">
 <!--                <h4 class="section_title">{get_column_display_name(data_mapping.contact_info_items.column_id)}</h4>-->
                 <div class="info_list">
-                    {#each data_mapping.contact_info_items as item}
+                    {#each data_mapping.main_detail_items as item}
                         <div class="info_item">
-                            <span class="label">{get_column_display_name(item.column_id) || ""}:</span>
-                            <span class="value">{get_column_display_value(item.column_id) || ""}</span>
+                            <span class="label">{get_column_display_name(item.item_text) || ""}:</span>
+                            <span class="value">{get_column_display_value(item.item_value) || ""}</span>
                         </div>
                     {/each}
                 </div>
