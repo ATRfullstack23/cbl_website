@@ -9,6 +9,7 @@
     import CustomElementCustomizationPopup from "$lib/form_view/CustomElementCustomizationPopup.svelte";
     import NormalElementCustomizationPopup from "$lib/form_view/NormalElementCustomizationPopup.svelte";
     import NumberDisplayCustomElement from "$lib/form_view/NumberDisplayCustomElement.svelte";
+    import AlertCustomElement from "$lib/form_view/AlertCustomElement.svelte";
 
     export async function mount_form_view_custom_element(form_view, target_container_element, element_type, outer_config) {
         // const target = document.querySelector(target_selector);
@@ -33,6 +34,12 @@
         switch (element_type) {
             case FormView.CUSTOM_ELEMENTS.title_with_caption.id:
                 svelte_instance = new TitleWithCaptionCustomElement({
+                    target: target_container_element,
+                    props : props,
+                });
+                break;
+            case FormView.CUSTOM_ELEMENTS.alert_message.id:
+                svelte_instance = new AlertCustomElement({
                     target: target_container_element,
                     props : props,
                 });
