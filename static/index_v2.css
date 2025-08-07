@@ -373,7 +373,7 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
 }
 #viewsContainer{
     vertical-align: top;
-    padding: 5px;
+    padding: 0px;
 }
 
 
@@ -404,7 +404,8 @@ body.mobile .defaultButtonsContainer .icon, body.mobile .searchButtonsContainer 
     min-height: 70vh;
     font-family: Inter, sans-serif;
     font-weight: 400;
-    /*padding-top: 15px;*/
+    padding: 5px;
+    padding-top: 10px;
 }
 
 
@@ -433,6 +434,10 @@ i.fa.fa-close {
 
 .subModule-container.with_tab_filter_panel .buttonsRow{
     --buttons_row_height: 90px;
+
+    .button-panel{
+        padding: 5px;
+    }
 }
 
 .subModule-container .buttonsRow{

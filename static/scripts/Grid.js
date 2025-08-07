@@ -678,6 +678,8 @@ Grid.prototype = {
             }).always(function (responseObj, status) {
                 // console.log(grid.socketEvents.getGridData + '_Done', responseObj, status);
                 grid._db.getData_done(grid, responseObj);
+                // setTimeout(()=>{
+                // }, window.__ttt || 0)
             });
 
 
@@ -789,11 +791,18 @@ Grid.prototype = {
         var self = this;
         tr = $(tr);
         tr.data('currentCondition', currentCondition);
+        const td = tr.find('[data-id="'+ currentCondition.column +'"]').closest('td');
         switch (currentCondition.actionToTake){
+            case "column_value_rounded_style":
+                td.addClass('column_value_rounded_style');
+                td.css('--column_value_rounded_style_text_color', currentCondition.colorChooser);
+                td.css('--column_value_rounded_style_bg_color', window.COMMON_UTILS.get_lighter_color(currentCondition.colorChooser, 90));
+
+                break;
             case "colBackColor":
             case "colForeColor":
             case "colTextShadow":
-                var td = tr.find('[data-id="'+ currentCondition.column +'"]').closest('td');
+                // var td = tr.find('[data-id="'+ currentCondition.column +'"]').closest('td');
                 switch (currentCondition.actionToTake){
                     case "colBackColor":
                         td.css('background', currentCondition.colorChooser);

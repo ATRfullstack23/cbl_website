@@ -188,6 +188,22 @@ ButtonManager.prototype = {
                     },
 
                     {
+                        selector: ".filter-container",
+                        getOptions: function(actualElement, contextMenu, targetElement){
+                            var options = {};
+
+                            var option = {};
+                            option.displayName = 'Edit Filter';
+                            option.id = 'edit_filter_settings';
+                            option.onClick = function(){
+                                self.subModule.filterManager.show_edit_filter_settings_popup(actualElement);
+                            }
+                            options[option.id] = option;
+
+                            return options;
+                        }
+                    },
+                    {
                         selector: ".filter-tabPanel",
                         getOptions: function(actualElement, contextMenu, targetElement){
                             var options = {};
