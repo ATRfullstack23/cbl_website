@@ -5,14 +5,13 @@
     export let data_row;
     export let config;
 
-    let badge_icon;
 
     export let data_mapping = {
             main_header_text: "voucher_number",
             main_header_caption: "customer_profile_id",
             payment_mode_badge: "payment_mode",
             payment_amount_details: "payment_amount",
-            badge_icon: "icon",
+            badge_icon: "badge_icon",
             main_detail_items: [
                 { item_value: "customer_profile_id" , item_text: "" },
                 { item_value: "transaction_date"  , item_text: "" },
@@ -97,6 +96,7 @@
         overflow: hidden;
         position: relative;
         min-width: 400px;
+        height: -webkit-fill-available;
     }
 
     .common_card_payment_compact::before {

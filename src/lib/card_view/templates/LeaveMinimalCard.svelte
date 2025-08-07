@@ -87,6 +87,7 @@
         transition: all 0.2s ease;
         position: relative;
         min-width: 350px;
+        height: -webkit-fill-available;
     }
 
     .common_card_minimal:hover {

@@ -93,6 +93,7 @@
         position: relative;
         overflow: hidden;
         min-width: 350px;
+        height: -webkit-fill-available;
     }
 
     .common_card_detailed::before {

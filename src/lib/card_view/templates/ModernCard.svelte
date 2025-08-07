@@ -4,9 +4,12 @@
     export let data_row;
     export let config;
 
+    let text_icon;
+
     export let data_mapping = {
         main_header_text : "fullName",
         main_header_caption : "designation_profile_row_id",
+        text_icon: "H",
         main_detail_items : [
             {item_value : "nationality", item_text : ""},
             {item_value : "phone_number", item_text : ""},
@@ -49,7 +52,7 @@
         <div class="data_grid">
             {#each data_mapping.main_detail_items as item}
             <div class="data_item">
-                <span class="data_icon">🏢</span>
+                <span class="data_icon">{get_column_display_value(data_mapping.text_icon)}</span>
                 <div class="data_content">
                     <span class="data_label">{get_column_display_name(item.item_text)}:</span>
                     <span class="data_value">{get_column_display_value(item.item_value)}</span>

@@ -77,6 +77,7 @@
         transition: all 0.2s ease;
         min-height: 120px;
         min-width: 450px;
+        height: -webkit-fill-available;
     }
 
     .common_card_horizontal:hover {

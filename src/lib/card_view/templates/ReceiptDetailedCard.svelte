@@ -120,6 +120,7 @@
         transition: all 0.3s ease;
         overflow: hidden;
         position: relative;
+        height: -webkit-fill-available;
     }
 
     .common_card_payment_detailed:hover {

@@ -96,6 +96,7 @@
         position: relative;
         overflow: hidden;
         min-width: 350px;
+        height: -webkit-fill-available;
     }
 
     .card_leave_compact:hover {

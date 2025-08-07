@@ -97,6 +97,7 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         transition: box-shadow 0.2s ease;
         min-width: 400px;
+        height: -webkit-fill-available;
     }
 
     .common_card_invoice_compact:hover {

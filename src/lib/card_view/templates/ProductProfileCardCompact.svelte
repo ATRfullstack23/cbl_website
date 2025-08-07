@@ -68,6 +68,7 @@
         margin-bottom: 12px;
         min-width: 350px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        height: -webkit-fill-available;
     }
 
     .card_header {

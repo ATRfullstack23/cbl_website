@@ -1,7 +1,7 @@
 <svelte:options accessors/>
 
 <script>
-    import CardContent from './CardContent.svelte'
+   import CardContent from './CardContent.svelte'
     import {onMount, tick} from "svelte";
     import BasicCard from "$lib/card_view/templates/BasicCard.svelte";
     import BasicDetailedCard from "$lib/card_view/templates/BasicDetailedCard.svelte";
@@ -20,7 +20,6 @@
     import ProductProfileCardDetailed from "$lib/card_view/templates/ProductProfileCardDetailed.svelte";
     import ReceiptCompactCard from "$lib/card_view/templates/ReceiptCompactCard.svelte";
     import ReceiptDetailedCard from "$lib/card_view/templates/ReceiptDetailedCard.svelte";
-
 
     export let container;
     export let container_element;
@@ -73,6 +72,10 @@
             }
             else if(item.input_type === 'column_id'){
                 processed_value = value;
+            }
+
+            else if(item.input_type === 'single_line'){
+                processed_value = value
             }
 
             card_view_data_mapping_processed[item.unique_id] = processed_value;

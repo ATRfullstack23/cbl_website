@@ -80,6 +80,7 @@
 <style>
     .common_card_year {
         width: 100%;
+        height: -webkit-fill-available;
 
         max-width: 100%;
         margin: 0 auto;

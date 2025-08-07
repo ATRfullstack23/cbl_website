@@ -40,7 +40,7 @@
 <div class="common_card_split">
     <div class="card_sidebar">
         <div class="customer_initial">J</div>
-        <div class="customer_id">#C1234</div>
+        <div class="customer_id">{get_column_display_value(data_mapping.id_badge)}</div>
         <div class="customer_type_label">{get_column_display_value(data_mapping.main_header_caption)}</div>
     </div>
 
@@ -76,6 +76,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: box-shadow 0.2s ease;
         overflow: hidden;
+        height: -webkit-fill-available;
     }
 
     .common_card_split:hover {

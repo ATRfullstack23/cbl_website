@@ -72,6 +72,7 @@
         border-radius: 4px;
         margin-bottom: 8px;
         transition: all 0.2s ease;
+        height: -webkit-fill-available;
     }
 
     .common_card_list:hover {

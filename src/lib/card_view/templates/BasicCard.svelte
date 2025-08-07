@@ -41,8 +41,8 @@
         <div class="avatar_section">
             <img src="https://placehold.co/48x48" alt="User Name" class="avatar" />
             <div class="title_section">
-                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
-                <span class="card_caption">{get_column_display_value(data_mapping.main_header_caption)}</span>
+                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
+                <span class="card_caption">{get_column_display_value(data_mapping.main_header_caption) || ""}</span>
             </div>
         </div>
 <!--        <span class="status_badge status_active">active</span>-->
@@ -51,8 +51,8 @@
     <div class="data_table">
         {#each data_mapping.main_detail_items as item}
         <div class="data_row">
-            <span class="data_label">{get_column_display_name(item.item_text)}:</span>
-            <span class="data_value">{get_column_display_value(item.item_value)}</span>
+            <span class="data_label">{get_column_display_name(item.item_text) || ""}:</span>
+            <span class="data_value">{get_column_display_value(item.item_value) || ""}</span>
         </div>
         {/each}
     </div>
@@ -69,6 +69,7 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
+        height: -webkit-fill-available;
     }
 
     .card_compact:hover {

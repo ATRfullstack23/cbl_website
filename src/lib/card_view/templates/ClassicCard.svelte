@@ -42,8 +42,8 @@
                 alt="Jane Smith"
                 class="profile_photo"/>
         <div class="header_text">
-            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
-            <p class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption)}</p>
+            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
+            <p class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption) || ""}</p>
 <!--            <div class="status_wrapper">-->
 <!--                <span class="status_label">Status:</span>-->
 <!--                <span class="status_value status_active">active</span>-->
@@ -56,8 +56,8 @@
             <tbody>
             {#each data_mapping.main_detail_items as item}
                 <tr class="table_row">
-                    <td class="label_cell">{get_column_display_name(item.item_text)}:</td>
-                    <td class="value_cell">{get_column_display_value(item.item_value)}</td>
+                    <td class="label_cell">{get_column_display_name(item.item_text) || ""}:</td>
+                    <td class="value_cell">{get_column_display_value(item.item_value || "")}</td>
                 </tr>
             {/each}
             </tbody>
@@ -75,6 +75,7 @@
         transition: all 0.3s ease;
         position: relative;
         font-family: 'Georgia', serif;
+        height: -webkit-fill-available;
     }
 
     .card_stripe {
