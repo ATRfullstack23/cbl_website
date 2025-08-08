@@ -322,7 +322,7 @@ export async function generate_main_navigation_configuration(erp_instance) {
                 "item_type": "item",
                 "action_type": "go_to_module",
                 "context_data": {
-                    "id": actual_module.id || actual_module.config.id,
+                    "module_id": actual_module.id || actual_module.config.id,
                     "submodule_id": actual_module.getDefaultSubModule()?.id
                 }
             };
