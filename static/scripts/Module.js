@@ -274,7 +274,7 @@ Module.prototype = {
 //                }
 
                 var headerText = self.parentItem.subModule.getTextFromSmartTextConfig(self.parentItem.typeSpecific.referenceColumns, self.parentDataRow);
-                self.parentWindow.headerMessage = subModule.displayName+ ' ('+headerText+')';
+                self.parentWindow.headerMessage = headerText;
             }
             else if(self.parentWindow){
                 self.parentWindow.headerMessage = self.parentItem.typeSpecific.referenceColumns.text;

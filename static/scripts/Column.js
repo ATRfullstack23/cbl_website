@@ -3726,19 +3726,52 @@ Column.prototype = {
 
         setSelectOptions: function(addAll, element, arr){
             var options = [];
-            arr.forEach(function(item){
-                var option =  document.createElement('option');
-                option.value = item.value;
-                option.innerHTML = item.text;
 
-                //item.shortText = item.text + ' - short' ;
+            const has_grouping = arr[0]?.group_name != null;
 
-                if(item.shortText){
-                    option.setAttribute('shorttext', item.shortText);
-                }
+            if(has_grouping){
+                const grouped_options = {};
+                arr.forEach(item => {
+                    const group = item.group_name || 'Ungrouped';
+                    if (!grouped_options[group]) {
+                        grouped_options[group] = [];
+                    }
+                    grouped_options[group].push(item);
+                });
 
-                options.push(option);
-            });
+                Object.keys(grouped_options).forEach(group_name => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = group_name;
+
+                    grouped_options[group_name].forEach(option_data => {
+                        const option = document.createElement('option');
+                        option.value = option_data.value;
+                        option.textContent = option_data.text;
+                        optgroup.appendChild(option);
+                    });
+
+                    options.push(optgroup);
+
+                    // select_element.appendChild(optgroup);
+                });
+
+            }
+            else{
+                arr.forEach(function(item){
+                    var option =  document.createElement('option');
+                    option.value = item.value;
+                    option.innerHTML = item.text;
+
+                    //item.shortText = item.text + ' - short' ;
+
+                    if(item.shortText){
+                        option.setAttribute('shorttext', item.shortText);
+                    }
+
+                    options.push(option);
+                });
+            }
+
             if(addAll){
                 var option =  document.createElement('option');
                 option.value = '';

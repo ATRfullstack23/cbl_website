@@ -6,7 +6,7 @@ import {
     get_main_navigation_configuration
 } from "$lib/client_scripts/NavigationUtils.js";
 
-export class ERP{
+export class ERP {
 
     constructor(config, options) {
         var self = this;
@@ -31,39 +31,39 @@ export class ERP{
     }
 
 
-    getLocalStorageLookUps(){
+    getLocalStorageLookUps() {
         var self = this;
-        try{
+        try {
             var lookUpDataConfig = JSON.parse(localStorage[self.id]);
             self.lookUpDataConfig = lookUpDataConfig;
-        }
-        catch(err){
+        } catch (err) {
             console.log(err.message);
         }
 
         return self;
     }
-    addLookUpsToLocalStorage(){
+
+    addLookUpsToLocalStorage() {
         var self = this;
         var localStorageName = '';
-        self.forEachModule(function(module){
-            module.forEachSubModule(function(subModule){
-                subModule.forEachColumn(function(column){
-                    localStorageName = column.module.id + '_' +column.subModule.id + '_' + column.id + '_lookUpData'
+        self.forEachModule(function (module) {
+            module.forEachSubModule(function (subModule) {
+                subModule.forEachColumn(function (column) {
+                    localStorageName = column.module.id + '_' + column.subModule.id + '_' + column.id + '_lookUpData'
                     self.lookUpDataConfig[localStorageName] = column.lookUpDataBackUp;
-                }, function(column){
+                }, function (column) {
                     var ret = false;
-                    if(column.hasLocalStorage){
+                    if (column.hasLocalStorage) {
                         ret = true;
                     }
                     return ret;
                 });
-                subModule.filterManager.forEachFilter(function(filter){
+                subModule.filterManager.forEachFilter(function (filter) {
                     localStorageName = module.id + '_' + subModule.id + '_' + filter.id + '_lookUpData_filter';
                     self.lookUpDataConfig[localStorageName] = filter.filterData;
-                }, function(filter){
+                }, function (filter) {
                     var ret = false;
-                    if(filter.hasLocalStorage){
+                    if (filter.hasLocalStorage) {
                         ret = true;
                     }
                     return ret;
@@ -73,18 +73,21 @@ export class ERP{
         localStorage[self.id] = JSON.stringify(self.lookUpDataConfig);
         return self;
     }
-    async initialize(){
+
+    async initialize() {
         var self = this;
-        if(!self.config.appSettings.idleTimeout){
+        const start_at_utc = Date.now();
+        console.log('erp init start @ : ', start_at_utc)
+        if (!self.config.appSettings.idleTimeout) {
             self.config.appSettings.idleTimeout = 60;
         }
 
-        for(var key in self.config){
+        for (var key in self.config) {
             self[key] = self.config[key];
         }
 
         jQuery.ajaxSetup({
-            beforeSend: function(xhr) {
+            beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', `Bearer ${self.user.userDetails.sessionId}`);
             }
         });
@@ -94,6 +97,7 @@ export class ERP{
         self.floatingReports = {};
 
         globalElements.body.trigger('erp_initialization_started');
+        console.log('erp init step 1 @ : ', (Date.now() - start_at_utc))
 
         self.notifier = new Notifier({
             container: $(document.body)
@@ -107,10 +111,12 @@ export class ERP{
             reportVisibility: self.user.userDetails.roleSettings.reportVisibility || {}
         };
 
+        console.log('erp init step 2 @ : ', (Date.now() - start_at_utc))
+
         await self.initializeModules();
         await self.initializeReports();
 
-
+        console.log('erp init step 3 @ : ', (Date.now() - start_at_utc))
 
         globalElements.body.trigger('erp_initialization_layout_created');
 
@@ -124,7 +130,7 @@ export class ERP{
         //     moduleNavDisplayMode = 'accordionLeft';
         // }
         self.moduleNavPointer = new Navigation({
-            id : 'moduleNavPointer',
+            id: 'moduleNavPointer',
             options: self.modules,
             order: self.user.userDetails.settings.modulesNavigationArrangementHorizontal,
             deviceType: self.deviceType,
@@ -138,13 +144,13 @@ export class ERP{
                 mobileSwipe: self.elements.documentWrapper
             },
             displayMode: moduleNavDisplayMode,
-            onChange: function(module){
+            onChange: function (module) {
                 self.setSelectedModule(module);
             }
         }, self);
 
 
-        if(self.directActionMenu.length() == 0){
+        if (self.directActionMenu.length() == 0) {
             self.elements.directActionButton.remove();
             self.directActionMenu.container.remove()
         }
@@ -166,9 +172,9 @@ export class ERP{
                 mobileSwipe: self.elements.reportsContainer,
                 "leftAlign": self.elements.leftAlignReportNavContainer
             },
-            addTitleToListItems : true,
+            addTitleToListItems: true,
             enableSearch: true,
-            onChange: function(report){
+            onChange: function (report) {
                 self.setSelectedReport(report);
             }
         }, self);
@@ -181,19 +187,19 @@ export class ERP{
             swipeTarget: self.elements.settingModulesContentContainer,
             contentsContainer: self.elements.settingModulesContentContainer,
             displayMode: "default",
-            classes:{
+            classes: {
                 container: "settingModulesNavElement"
             },
             parentContainers: {
                 dock: document.body,
                 "default": self.elements.settingModulesNavPointerContainer
             },
-            onChange: function(report){
+            onChange: function (report) {
                 self.setSelectedSettingModule(report);
             }
         }, self);
 
-        if(self.settingModulesNavPointer.numberOfItems === 0){
+        if (self.settingModulesNavPointer.numberOfItems === 0) {
             self.elements.preferencesButton.parent().detach();
         }
 
@@ -202,16 +208,18 @@ export class ERP{
 //             container: self.selectors.bugReportContainer
 //         }, self);
 
+        console.log('erp init step 4 @ : ', (Date.now() - start_at_utc))
+
         self.addElementsToAppSettingsContainer();
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
             self.createVisibilitySettingsContainer();
             self.addContentsToAdministratorWindow();
         }
         self.socket.emit('get_logged_in_users', self.user.userDetails.userName);
-        self.socket.on('remove_logouted_user', function(user){
+        self.socket.on('remove_logouted_user', function (user) {
             console.log(user);
-            $('#'+user.userName).removeClass('onlineUser');
-            $('#'+user.userName).addClass('offlineUser');
+            $('#' + user.userName).removeClass('onlineUser');
+            $('#' + user.userName).addClass('offlineUser');
         });
         self.user.configureSocket(self.socket, self);
 
@@ -219,18 +227,17 @@ export class ERP{
 /////////////////yathi///////////////////////
         var currentLoginUserId = self.user.userDetails.id;
         var userIcon = self.elements.userImage;
-        try{
-            if(self.user.users[currentLoginUserId]){
+        try {
+            if (self.user.users[currentLoginUserId]) {
                 var extensionArr = self.user.users[currentLoginUserId].image.split('.');
-                var extension = extensionArr[extensionArr.length-1];
+                var extension = extensionArr[extensionArr.length - 1];
                 var userIcon = self.elements.userImage;
-                userIcon.css({background: "url('uploads/_users/_users/"+currentLoginUserId+"_image."+extension+"')no-repeat", "background-size": "100%","height":"30px","width":"30px"});
+                userIcon.css({background: "url('uploads/_users/_users/" + currentLoginUserId + "_image." + extension + "')no-repeat", "background-size": "100%", "height": "30px", "width": "30px"});
             }
-            else{
-                userIcon.css({background: "url('uploads/_users/_users/"+currentLoginUserId+"_image.png')no-repeat", "background-size": "100%","height":"30px","width":"30px"});
+            else {
+                userIcon.css({background: "url('uploads/_users/_users/" + currentLoginUserId + "_image.png')no-repeat", "background-size": "100%", "height": "30px", "width": "30px"});
             }
-        }
-        catch(e){
+        } catch (e) {
 
         }
 //////////////////////////////////////////////
@@ -250,12 +257,12 @@ export class ERP{
         self.addDetailsToProfileWindow();
         self.createEasyAccessingReports();
         self.bindEvents();
-        self.socket.on('get_logged_in_users_done', function(data){
-            self.loginUsers={};
+        self.socket.on('get_logged_in_users_done', function (data) {
+            self.loginUsers = {};
             self.loginUsers = data;
 //            console.log(data)
 //            self.addOnlineUsersToContainer(data);
-            if(self.elements.showUserWindow){
+            if (self.elements.showUserWindow) {
                 self.elements.showUserWindow.remove();
             }
             /*   for(var key in data){
@@ -264,7 +271,7 @@ export class ERP{
              $('#'+key).addClass('onlineUser');
              }
              }*/
-            self.createUserDetailsContainer(self.elements.userWindow,data);
+            self.createUserDetailsContainer(self.elements.userWindow, data);
         });
         document.title = self.displayName;
 
@@ -275,8 +282,8 @@ export class ERP{
 //        self.setDefaultTheme();
 
         self.initializeFloatingWindows();
-        self.container.css({opacity:.1});
-        setTimeout(function(){
+        self.container.css({opacity: .1});
+        setTimeout(function () {
             self.container.transition({opacity: 1}, 1000);
         }, 0);
 
@@ -287,11 +294,11 @@ export class ERP{
         self.initializeContextMenu();
 
 
-        if(self.dashboards_arr.length === 0){
+        if (self.dashboards_arr.length === 0) {
             self.removeTopLevelNavigationItem('dashboard');
             self.setSelectedTopNavigationMode('modules');
         }
-        else{
+        else {
             self.setSelectedTopNavigationMode('dashboard');
         }
 
@@ -299,45 +306,49 @@ export class ERP{
 
         return self;
     }
+
 /////////////////////////////////////////yathi//////////////////////////////////////////////////
-    createEasyAccessingReports(){
+    createEasyAccessingReports() {
         var self = this;
-        self.forEachReport(function(report){
-            report.forEachSubReport(function(subReport){
+        self.forEachReport(function (report) {
+            report.forEachSubReport(function (subReport) {
                 var subModule = self.modules[subReport.bindReportToSubModule.bindReportToSubModule.moduleId].subModules[subReport.bindReportToSubModule.bindReportToSubModule.subModuleId];
                 subModule.addChildSubReport(subReport);
-            }, function(subReport){
+            }, function (subReport) {
                 var ret = false;
 
-                if(subReport.bindReportToSubModule && subReport.bindReportToSubModule.isEnabled){
+                if (subReport.bindReportToSubModule && subReport.bindReportToSubModule.isEnabled) {
                     ret = true;
                 }
                 return ret;
             })
         });
 
-        self.forEachModule(function(module){
-            module.forEachSubModule(function(subModule){
+        self.forEachModule(function (module) {
+            module.forEachSubModule(function (subModule) {
                 subModule.buttonManager.initializeChildReports();
             });
         });
         return self;
     }
+
 ///////////////////////////////////////////////////////////////////////////
-    initializeHelpBox(){
+    initializeHelpBox() {
         var self = this;
         self.helpBox = new HelpBox(self);
         self.elements.documentWrapper.append(self.helpBox.container);
         return self;
     }
-    setModuleNavigationPostion(){
+
+    setModuleNavigationPostion() {
         var self = this;
         var mode = self.getUserSetting('module_navigation_mode');
         self.moduleNavPointer.container.addClass(mode || 'bottom');
-        self.elements.documentWrapper.addClass('navigationMode_'+ mode || 'dock')
+        self.elements.documentWrapper.addClass('navigationMode_' + mode || 'dock')
         return self;
     }
-    initializeDashboardManager(){
+
+    initializeDashboardManager() {
         var self = this;
 
         var dashboards_config = self.user.userDetails.dashboards || [];
@@ -520,18 +531,18 @@ export class ERP{
         self.dashboards_arr = [];
         self.dashboards = {};
 
-        if(self.deviceType != ERP.DEVICE_TYPES.MOBILE){
+        if (self.deviceType != ERP.DEVICE_TYPES.MOBILE) {
             self.dashboard_context_menu = new ContextMenu({
                 targetContainer: $(document.body),
                 targetAreas: [
                     {
                         selector: ".single_dashboard_report_item",
-                        getOptions: function(actualElement, contextMenu, targetElement){
+                        getOptions: function (actualElement, contextMenu, targetElement) {
                             var options = {};
                             var option = {};
                             option.displayName = 'Edit';
                             option.id = 'edit_single_dashboard_report_item';
-                            option.onClick = function(){
+                            option.onClick = function () {
                                 let dashboard_id = actualElement.closest('.single_dashboard_container').attr('data-dashboard_id');
                                 let dashboard_item_id = actualElement.attr('data-dashboard_item_id');
                                 console.log('edit_single_dashboard_report_item', dashboard_id, dashboard_item_id)
@@ -543,14 +554,14 @@ export class ERP{
                     },
                     {
                         selector: ".single_dashboard_container",
-                        getOptions: function(actualElement, contextMenu, targetElement){
+                        getOptions: function (actualElement, contextMenu, targetElement) {
                             var options = {};
 
 
                             var add_dashboard_filter_option = {};
                             add_dashboard_filter_option.displayName = 'Add Filter';
                             add_dashboard_filter_option.id = 'add_single_dashboard_filter_item';
-                            add_dashboard_filter_option.onClick = function(){
+                            add_dashboard_filter_option.onClick = function () {
                                 let dashboard_id = actualElement.attr('data-dashboard_id');
                                 // console.log('add_single_dashboard_item', dashboard_id)
                                 self.dashboards[dashboard_id].show_add_new_filter_item_popup();
@@ -560,7 +571,7 @@ export class ERP{
                             var add_dashboard_item_option = {};
                             add_dashboard_item_option.displayName = 'Add Report Item';
                             add_dashboard_item_option.id = 'add_single_dashboard_item';
-                            add_dashboard_item_option.onClick = function(){
+                            add_dashboard_item_option.onClick = function () {
                                 let dashboard_id = actualElement.attr('data-dashboard_id');
                                 // console.log('add_single_dashboard_item', dashboard_id)
                                 self.dashboards[dashboard_id].show_add_new_dashboard_item_popup();
@@ -581,17 +592,19 @@ export class ERP{
 
         return self;
     }
-    removeTopLevelNavigationItem(itemIdToRemove){
+
+    removeTopLevelNavigationItem(itemIdToRemove) {
         var self = this;
 
         self.elements.topLevelNavigation.children('#' + itemIdToRemove).remove();
-        if(self.elements.topLevelNavigation.children().length  == 1){
+        if (self.elements.topLevelNavigation.children().length == 1) {
             self.elements.topLevelNavigation.hide();
         }
 
         return self;
     }
-    initializeTopNavigation(){
+
+    initializeTopNavigation() {
         var self = this;
         var topNavigationUl = $(self.selectors.topLevelNavigation);
         self.elements.topLevelNavigation = topNavigationUl;
@@ -600,14 +613,16 @@ export class ERP{
             self.setSelectedTopNavigationMode($(this).attr('id'));
         });
     }
-    setSelectedTopNavigationMode(newMode){
+
+    setSelectedTopNavigationMode(newMode) {
         var self = this;
         self.elements.topLevelNavigation.children('.selected').removeClass('selected');
         self.elements.topLevelNavigation.children('#' + newMode).addClass('selected');
 
         self.selectedTopNavigationMode = newMode;
 
-        switch (newMode){
+        console.log('setSelectedTopNavigationMode', newMode)
+        switch (newMode) {
             case 'dashboard':
                 self.elements.modulesContainer.addClass('hidden');
                 self.elements.reportsContainer.addClass('hidden');
@@ -621,7 +636,7 @@ export class ERP{
 
                 self.elements.reportsContainer.removeClass('hidden');
 
-                if(!self.selectedReport){
+                if (!self.selectedReport) {
                     self.setDefaultReport();
                 }
 
@@ -654,15 +669,16 @@ export class ERP{
                 break;
         }
     }
-    onSocketConnected(){
+
+    onSocketConnected() {
         var self = this;
         self.isSocketConnected = true;
         setTimeout(function () {
-            if(self.selectedTopNavigationMode == 'dashboard'){
+            if (self.selectedTopNavigationMode == 'dashboard') {
                 self.dashboardManager.refreshItemsDataFromServer();
             }
-            else if(self.selectedTopNavigationMode == 'modules'){
-                if(self.getSelectedModule() != null && self.getSelectedModule().getSelectedSubModule() != null){
+            else if (self.selectedTopNavigationMode == 'modules') {
+                if (self.getSelectedModule() != null && self.getSelectedModule().getSelectedSubModule() != null) {
                     self.getSelectedModule().getSelectedSubModule()
                         .filterManager.getAllFilterDataFromServer();
                 }
@@ -670,15 +686,16 @@ export class ERP{
         }, 1000);
 
     }
-    onSocketDisconnected(){
+
+    onSocketDisconnected() {
         var self = this;
         self.isSocketConnected = false;
     }
 
-    changeModuleNavigationPosition(newMode){
+    changeModuleNavigationPosition(newMode) {
         var self = this;
 
-        self.saveUserSetting('module_navigation_mode', newMode, function(data){
+        self.saveUserSetting('module_navigation_mode', newMode, function (data) {
             // if(data.success){
             //     self.elements.documentWrapper.removeClass('navigationOn_top navigationOn_bottom navigationOn_left navigationOn_right');
             //     self.moduleNavPointer.container.removeClass('bottom top left right')
@@ -689,44 +706,45 @@ export class ERP{
             //     self.notifier.showErrorNotification('Error In Changing Navigation Position')
             // }
 
-            if(data.success){
+            if (data.success) {
                 // self.elements.documentWrapper.removeClass('dock');
                 self.elements.documentWrapper.removeClass('navigationMode_accordionLeft');
                 self.elements.documentWrapper.removeClass('navigationMode_dock');
 
-                self.elements.documentWrapper.addClass('navigationMode_'+newMode);
+                self.elements.documentWrapper.addClass('navigationMode_' + newMode);
                 self.moduleNavPointer.setDisplayMode(newMode);
 
             }
-            else{
+            else {
                 self.notifier.showErrorNotification('Error In Changing Navigation Position');
             }
         });
 
         return self;
     }
-    initializeContextMenu(){
+
+    initializeContextMenu() {
         var self = this;
-        if(self.deviceType != ERP.DEVICE_TYPES.MOBILE){
+        if (self.deviceType != ERP.DEVICE_TYPES.MOBILE) {
             self.contextMenu = new ContextMenu({
                 targetContainer: $(document.body),
                 targetAreas: [
                     {
                         selector: ".directActionMenuContainer",
-                        getOptions: function(actualElement, contextMenu, targetElement){
+                        getOptions: function (actualElement, contextMenu, targetElement) {
                             var options = {};
                             var option = {};
                             option.displayName = 'Re-Order';
                             option.id = 'reOrderDirectAction';
-                            option.onClick = function(){
+                            option.onClick = function () {
                                 self.directActionMenu.setToReArrangeMode(self);
                             }
                             options[option.id] = option;
-                            if(targetElement.data('help')){
+                            if (targetElement.data('help')) {
                                 option = {};
                                 option.displayName = 'Help';
                                 option.id = 'help';
-                                option.onClick = function(clickedElementContainer, contextMenu, rightClickedEvent){
+                                option.onClick = function (clickedElementContainer, contextMenu, rightClickedEvent) {
                                     var containerData = $(rightClickedEvent.target).data('help');
                                     self.helpBox.show(rightClickedEvent.pageX, rightClickedEvent.pageY, containerData);
                                 }
@@ -737,13 +755,13 @@ export class ERP{
                     },
                     {
                         selector: "#documentWrapper",
-                        getOptions: function(actualElement, contextMenu, targetElement){
+                        getOptions: function (actualElement, contextMenu, targetElement) {
                             var options = {};
-                            if(targetElement.data('help')){
+                            if (targetElement.data('help')) {
                                 var option = {};
                                 option.displayName = 'Help';
                                 option.id = 'help';
-                                option.onClick = function(clickedElementContainer, contextMenu, rightClickedEvent){
+                                option.onClick = function (clickedElementContainer, contextMenu, rightClickedEvent) {
                                     var containerData = $(rightClickedEvent.target).data('help');
                                     self.helpBox.show(rightClickedEvent.pageX, rightClickedEvent.pageY, containerData);
                                 }
@@ -756,13 +774,13 @@ export class ERP{
 
                     {
                         selector: "#applicationSettings",
-                        getOptions: function(actualElement, contextMenu, targetElement){
+                        getOptions: function (actualElement, contextMenu, targetElement) {
                             var options = {};
-                            if(targetElement.data('help')){
+                            if (targetElement.data('help')) {
                                 var option = {};
                                 option.displayName = 'Help';
                                 option.id = 'help';
-                                option.onClick = function(clickedElementContainer, contextMenu, rightClickedEvent){
+                                option.onClick = function (clickedElementContainer, contextMenu, rightClickedEvent) {
                                     var containerData = $(rightClickedEvent.target).data('help');
                                     self.helpBox.show(rightClickedEvent.pageX, rightClickedEvent.pageY, containerData);
                                 }
@@ -774,27 +792,27 @@ export class ERP{
 
                     {
                         selector: ".nav-container .nav-element",
-                        getOptions: function(actualElement, contextMenu, targetElement){
+                        getOptions: function (actualElement, contextMenu, targetElement) {
                             var options = {};
 
-                            for(var key in moduleNavMenuConfig){
+                            for (var key in moduleNavMenuConfig) {
                                 var option = {};
                                 var mainConfig = moduleNavMenuConfig[key]
                                 option.id = mainConfig.id;
                                 option.displayName = mainConfig.displayName;
                                 option.hasSubMenu = true;
                                 option.subMenu = {};
-                                for(var subKey in mainConfig.subMenuConfig){
+                                for (var subKey in mainConfig.subMenuConfig) {
                                     var subOption = {}
                                     var subConfig = mainConfig.subMenuConfig[subKey];
                                     subOption.id = subConfig.id
                                     subOption.displayName = subConfig.displayName;
-                                    subOption.onClick = function(clickedElementContainer, contextMenu, rightClickedEvent){
+                                    subOption.onClick = function (clickedElementContainer, contextMenu, rightClickedEvent) {
                                         self.changeModuleNavigationPosition(clickedElementContainer.id)
                                     }
                                     option.subMenu[subConfig.id] = subOption;
                                 }
-                                if(self.moduleNavPointer.container.find('.module-group-container').get(0)){
+                                if (self.moduleNavPointer.container.find('.module-group-container').get(0)) {
                                     delete option.subMenu.left;
                                     delete option.subMenu.right;
                                 }
@@ -810,14 +828,14 @@ export class ERP{
         return self;
     }
 
-    createBarcodeContainerInFormView(){
+    createBarcodeContainerInFormView() {
         var self = this;
-        self.forEachModule(function(module){
-            module.forEachSubModule(function(subModule){
+        self.forEachModule(function (module) {
+            module.forEachSubModule(function (subModule) {
                 subModule.formView.createContainerForBarcode();
-            }, function(subModule){
+            }, function (subModule) {
                 var ret = false;
-                if(subModule.barcodeSubModule && subModule.barcodeSubModule.isEnabled){
+                if (subModule.barcodeSubModule && subModule.barcodeSubModule.isEnabled) {
                     ret = true;
                 }
                 return ret;
@@ -825,7 +843,8 @@ export class ERP{
         })
         return self;
     }
-    initializeSocketIO(){
+
+    initializeSocketIO() {
         var self = this;
         var script = document.createElement('script');
         script.src = '/socket.io/socket.io.js';
@@ -833,33 +852,37 @@ export class ERP{
         $('#socket_io').remove();
         document.body.appendChild(script)
     }
-    initializeMiscSettings(){
+
+    initializeMiscSettings() {
         var self = this;
         var settings = self.user.userDetails.settings || {};
         $(document.body).addClass((settings.applicationFontSize || 'small') + 'FontSize');
         return self;
     }
-    initializeDefaultSettingModule(){
+
+    initializeDefaultSettingModule() {
         var self = this;
         var defaultModule = Object.keys(self.settingModules)[0];
-        if(defaultModule){
+        if (defaultModule) {
             self.defaultSettingModule = self.settingModules[defaultModule];
         }
         return self;
     }
-    get isMobileDevice(){
+
+    get isMobileDevice() {
         var self = this;
         return self.deviceType == ERP.DEVICE_TYPES.MOBILE;
     }
-    initializeDefaultModule(){
+
+    initializeDefaultModule() {
         var self = this;
         var settings = self.user.userDetails.settings;
         var defaultModule = '';
-        if(location.hash){
+        if (location.hash) {
             defaultModule = location.hash.substring(1);
         }
-        else{
-            switch(self.deviceType){
+        else {
+            switch (self.deviceType) {
                 case ERP.DEVICE_TYPES.PC:
                     defaultModule = settings.defaultModuleForPC;
                     break;
@@ -870,20 +893,20 @@ export class ERP{
                     defaultModule = settings.defaultModuleForMobile;
                     break;
             }
-            if(!defaultModule){
+            if (!defaultModule) {
                 defaultModule = self.defaultModule;
             }
         }
 
-        if(defaultModule.startsWith('d_')){
+        if (defaultModule.startsWith('d_')) {
             self.defaultDashboard = self.dashboards[defaultModule];
         }
-        else{
-            if(defaultModule){
+        else {
+            if (defaultModule) {
                 self.defaultModule = self.modules[defaultModule];
             }
-            else{
-                if(self.modules){
+            else {
+                if (self.modules) {
                     self.defaultModule = self.modules[Object.keys(self.modules)[0]];
                 }
             }
@@ -892,19 +915,20 @@ export class ERP{
 
         return self;
     }
-    initializeDeviceType(){
+
+    initializeDeviceType() {
         var self = this;
-        if( window.screen.width <= 480 ) {
+        if (window.screen.width <= 480) {
             self.deviceType = ERP.DEVICE_TYPES.MOBILE;
         }
-        else if(window.screen.width >480 && window.screen.width < 800){
+        else if (window.screen.width > 480 && window.screen.width < 800) {
             self.deviceType = ERP.DEVICE_TYPES.TABLET;
         }
-        else{
+        else {
             self.deviceType = ERP.DEVICE_TYPES.PC;
         }
-        if(self.deviceType !== ERP.DEVICE_TYPES.MOBILE){
-            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        if (self.deviceType !== ERP.DEVICE_TYPES.MOBILE) {
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 self.deviceType = ERP.DEVICE_TYPES.MOBILE;
             }
         }
@@ -912,15 +936,17 @@ export class ERP{
 //        self.container.addClass(self.deviceType);
         return self;
     }
-    initializePCUIElements(){
+
+    initializePCUIElements() {
         var self = this;
         self.elements.titleElement.text(self.appSettings.displayName);
         self.elements.titleElement.text(self.appSettings.displayName);
         return self;
     }
-    initializeDeviceOrientationType(){
+
+    initializeDeviceOrientationType() {
         var self = this;
-        switch(self.deviceOrientation){
+        switch (self.deviceOrientation) {
             case ERP.DEVICE_ORIENTATIONS.PORTRAIT:
                 self.elements.titleElement.text(self.appSettings.shortName);
                 self.elements.applicationDisplayNameFooterElement.text(self.appSettings.displayName);
@@ -935,18 +961,19 @@ export class ERP{
         document.body.classList.add(self.deviceOrientation);
         return self;
     }
-    destroy(){
+
+    destroy() {
         var self = this;
-        self.elements.reportsContentContainer.find('div').each(function(){
+        self.elements.reportsContentContainer.find('div').each(function () {
             $(this).remove();
         });
-        self.elements.reportsNavPointerContainer.find('div').each(function(){
+        self.elements.reportsNavPointerContainer.find('div').each(function () {
             $(this).remove();
         });
-        self.elements.buttonSortingWindow.find('div').each(function(){
+        self.elements.buttonSortingWindow.find('div').each(function () {
             $(this).remove();
         });
-        self.elements.profileWindow.find('div').each(function(){
+        self.elements.profileWindow.find('div').each(function () {
             $(this).remove();
         });
         self.directActionMenu.container.remove();
@@ -956,7 +983,7 @@ export class ERP{
 //        });
 
 //        });
-        self.forEachFloatingReport(function(floatingReport){
+        self.forEachFloatingReport(function (floatingReport) {
             floatingReport.destroy();
         });
 
@@ -964,7 +991,7 @@ export class ERP{
         self.settingModulesNavPointer.destroy();
         self.elements.settingModulesContentContainer.children().remove();
         self.container.remove();
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
             self.elements.userButtonContainer.remove();
             self.elements.VisibilityButtonContainer.remove();
             self.elements.adminWindow.remove();
@@ -976,9 +1003,10 @@ export class ERP{
 
         return self;
     }
-    addElementsToAppSettingsContainer(){
+
+    addElementsToAppSettingsContainer() {
         var self = this;
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
             var adminDiv = $(document.createElement('div')).attr(({id: "adminWindow", class: "hide-settings-window"})).appendTo(document.body);
             self.elements.adminWindow = adminDiv;
 
@@ -1022,23 +1050,24 @@ export class ERP{
         }
         return self;
     }
-    initializeColumnAndModuleVisibility(userConfig){
+
+    initializeColumnAndModuleVisibility(userConfig) {
         var self = this;
         var config = {
-            moduleVisibilityConfig:{
+            moduleVisibilityConfig: {
                 displayName: "Module Visibility Manager",
                 roles: {}
             },
-            columnButtonFilterVisibilityConfig:{
+            columnButtonFilterVisibilityConfig: {
                 displayName: "Column Button Filter Visibility Manager",
                 roles: {}
             },
-            reportVisibilityConfig:{
+            reportVisibilityConfig: {
                 displayName: "Report Visibility Manager",
                 roles: {}
             }
         };
-        userConfig.data.forEach(function(role){
+        userConfig.data.forEach(function (role) {
             config.moduleVisibilityConfig.roles[role.id] = {
                 id: role.id,
                 displayName: role.roleName,
@@ -1067,7 +1096,8 @@ export class ERP{
         self.reportVisibilityManager.container.appendTo(self.elements.contentContainer);
         return self;
     }
-    createVisibilitySettingsContainer(){
+
+    createVisibilitySettingsContainer() {
         var self = this;
         var container = $(document.createElement('div')).attr(self.constants.visibilitySettingsContainer);
         var tableContainer = $(document.createElement('div')).attr({class: "visibility-table-container"}).appendTo(container);
@@ -1114,7 +1144,8 @@ export class ERP{
         self.elements.visibilitySettingsContainer = container;
         return self;
     }
-    addContentsToAdministratorWindow(){
+
+    addContentsToAdministratorWindow() {
         var self = this;
         var adminWindow = self.elements.adminWindow;
         var userNamesContainer = $(document.createElement('div')).attr({class: "admin-window-user-names-container"}).appendTo(adminWindow);
@@ -1128,17 +1159,18 @@ export class ERP{
         self.elements.onlineUsersContainer = onlineUsersContainer;
         return self;
     }
-    addOnlineUsersToContainer(onlineUsers){
+
+    addOnlineUsersToContainer(onlineUsers) {
         var self = this;
-        self.elements.onlineUsersContainer.children().each(function(){
+        self.elements.onlineUsersContainer.children().each(function () {
             var ele = $(this);
             ele.remove();
         });
-        for(var key in onlineUsers){
-            if(key === self.user.userDetails.userName){
+        for (var key in onlineUsers) {
+            if (key === self.user.userDetails.userName) {
 
             }
-            else{
+            else {
                 var userObj = onlineUsers[key];
                 var userContainer = $(document.createElement('div')).attr({id: userObj.userName, class: "admin-user-container"}).appendTo(self.elements.onlineUsersContainer);
                 var userPicContainer = $(document.createElement('div')).attr({class: "user-pic-container"}).appendTo(userContainer);
@@ -1153,12 +1185,12 @@ export class ERP{
                 self.userDetailsContainers[userObj.userName] = userDetailsContainer;
 
                 self.bindUserContainerClick(userContainer, userObj);
-                if(!userObj.isAdmin){
+                if (!userObj.isAdmin) {
 //                    var adminLogoutButtonContainer = $(document.createElement('div')).attr({class: "admin-logout-button-container"}).appendTo(userContainer);
 //                    var adminLogoutButton = $(document.createElement('div')).attr({class: "admin-logout-button"}).appendTo(adminLogoutButtonContainer);
 //                    self.bindAdminLogout(adminLogoutButton, userObj);
                 }
-                else{
+                else {
 //                    userNameContainer.css({top: '0px'});
 //                    userContainer.css({top: '-9px'});
 //                    user.css({"min-width": "98px"})
@@ -1168,17 +1200,19 @@ export class ERP{
         }
         return self;
     }
-    bindUserContainerClick(userContainer, user,userName){
+
+    bindUserContainerClick(userContainer, user, userName) {
         var self = this;
 
-        userContainer.on('click', function(){
-            if(confirm('Force Logout: '+ user.userName)){
+        userContainer.on('click', function () {
+            if (confirm('Force Logout: ' + user.userName)) {
                 userContainer.off('click');
                 self.socket.emit('forced_logout', user);
             }
         });
         return self;
     }
+
     /*bindAdminLogout: function(button, user){
      var self = this;
      button.on('click', function(){
@@ -1186,7 +1220,7 @@ export class ERP{
      });
      return self;
      },*/
-    addDetailsToProfileWindow(){
+    addDetailsToProfileWindow() {
         var self = this;
         var profileWindow = self.elements.profileWindow;
         var windowTitleContainer = $(document.createElement('div')).attr({class: "profile-window-title-container"}).appendTo(profileWindow);
@@ -1194,7 +1228,7 @@ export class ERP{
         windowTitle.text('Profile Manager window');
         var titleContainer = $(document.createElement('div')).attr({class: "profile-title-container"}).appendTo(profileWindow);
         var title = $(document.createElement('div')).attr({class: "profile-title-name"}).appendTo(titleContainer);
-        title.text(self.user.userDetails.userName+'\'s profile');
+        title.text(self.user.userDetails.userName + '\'s profile');
         var container = $(document.createElement('div')).attr({class: "password-editing--container"}).appendTo(profileWindow)
         var passwordContainer = $(document.createElement('div')).attr({class: "password-container"}).appendTo(container);
         var managePasswordContainer = $(document.createElement('div')).attr({class: "manage-password-container"}).appendTo(passwordContainer);
@@ -1204,7 +1238,8 @@ export class ERP{
         self.elements.managePasswordContainer = managePasswordContainer;
         return self;
     }
-    managePassWordInProfileWindow(){
+
+    managePassWordInProfileWindow() {
         var self = this;
         var container = $(document.createElement('div')).attr({class: "password-changing-container"}).appendTo(self.elements.passwordContainer);
 
@@ -1212,7 +1247,7 @@ export class ERP{
         var newPassWordContainer = $(document.createElement('div')).attr({class: "new-password-container"}).appendTo(container);
         var reEneteringContainer = $(document.createElement('div')).attr({class: "re-enter-password-container"}).appendTo(container);
         var changeContainer = $(document.createElement('div')).attr({class: "change-container"}).appendTo(container);
-        var backContainer= $(document.createElement('div')).attr({class: "back-container"}).appendTo(container);
+        var backContainer = $(document.createElement('div')).attr({class: "back-container"}).appendTo(container);
 
         var name1 = $(document.createElement('div')).attr({class: "password-names"}).text('Old Password').appendTo(oldPasWordContainer);
         var name2 = $(document.createElement('div')).attr({class: "password-names"}).text('New Password').appendTo(newPassWordContainer);
@@ -1232,25 +1267,26 @@ export class ERP{
         backButton.hide();
         return self;
     }
-    changePassword(){
+
+    changePassword() {
         var self = this;
         var newPassword = self.elements.newPassword.val();
         var reEnteredPassword = self.elements.reEnterPassWord.val();
         var oldPassword = self.elements.oldpassWord.val();
 
-        if(newPassword.length < 4){
+        if (newPassword.length < 4) {
             self.user.notifier.showErrorNotification('too short password');
             self.elements.newPassword.val('');
             self.elements.reEnterPassWord.val('');
             return;
         }
-        else{
-            if(newPassword != reEnteredPassword){
+        else {
+            if (newPassword != reEnteredPassword) {
                 self.elements.newPassword.val('');
                 self.elements.reEnterPassWord.val('');
                 self.user.notifier.showErrorNotification('re-entered password bot matching');
             }
-            else{
+            else {
                 var data = {};
                 data.password = newPassword;
                 data.userName = self.user.userDetails.userName;
@@ -1260,14 +1296,16 @@ export class ERP{
         }
         return self;
     }
-    saveModulePositionConfig(config){
+
+    saveModulePositionConfig(config) {
         var self = this;
-        self.saveUserSetting('modulesNavigationArrangementHorizontal', config, function(data){
+        self.saveUserSetting('modulesNavigationArrangementHorizontal', config, function (data) {
 //            console.log(data)
         });
         return self;
     }
-    addButtonsToButtonSortingWindow(){
+
+    addButtonsToButtonSortingWindow() {
         var self = this;
 
         var tableContainer = $(document.createElement('div')).attr({class: "button-sorting-window-table-container"}).appendTo(self.elements.buttonSortingWindow);
@@ -1310,7 +1348,8 @@ export class ERP{
         self.elements.filtersContainerInSortingWindow = filtersContainer;
         return self;
     }
-    createSelectorTableForButtonSorting(){
+
+    createSelectorTableForButtonSorting() {
         var self = this;
         var table = $(document.createElement('table')).attr({class: "button-sorting-window-selector-table"});
         var tr = $(document.createElement('tr')).appendTo(table);
@@ -1322,16 +1361,16 @@ export class ERP{
         var subModuleSelect = $(document.createElement('select')).attr({class: "button-sorting-window-submodule-select"}).appendTo(tdSubModule);
 //        var columnSelect = $(document.createElement('select')).attr(self.columnVisibilityManager.constants.columnSelect).appendTo(tdColumn);
 
-        for(var key in self.config.modules){
+        for (var key in self.config.modules) {
             var module = self.config.modules[key];
             var moduleOption = $(document.createElement('option')).text(module.displayName).val(module.id);
             moduleOption.appendTo(moduleSelect);
         }
 
-        moduleSelect.on('change', function(){
+        moduleSelect.on('change', function () {
             subModuleSelect.empty();
             var selectedModule = moduleSelect.val();
-            for(var key in self.config.modules[selectedModule].subModules){
+            for (var key in self.config.modules[selectedModule].subModules) {
                 var subModule = self.config.modules[selectedModule].subModules[key];
                 var subModuleOption = $(document.createElement('option')).text(subModule.displayName).val(subModule.id);
                 subModuleOption.appendTo(subModuleSelect);
@@ -1355,23 +1394,23 @@ export class ERP{
         return table;
     }
 
-    logOut(logout_callback){
+    logOut(logout_callback) {
         var self = this;
         $.ajax({
             url: self.backend_root_url + "/logout",
             type: "POST"
-        }).done(function(data){
-            if(data.success){
+        }).done(function (data) {
+            if (data.success) {
                 clearInterval(self.idleInterval);
                 self.addLookUpsToLocalStorage();
                 self.unBindEvents();
                 self.destroy();
-                self.elements.sortableNavWindow.css('display','');
-                self.elements.profileWindow.css('display','');
+                self.elements.sortableNavWindow.css('display', '');
+                self.elements.profileWindow.css('display', '');
                 self.hideAppSettingsContainer();
 //                    self.elements.applicationSettingsContainer.hide();
                 self.elements.documentWrapper.find('button').off();
-                self.elements.applicationSettingsContainer.find('div').each(function(){
+                self.elements.applicationSettingsContainer.find('div').each(function () {
                     var ele = $(this);
                     ele.find('div').off();
                 });
@@ -1386,18 +1425,20 @@ export class ERP{
         });
     }
 
-    unBindEvents(){
-        var self  =this;
+    unBindEvents() {
+        var self = this;
         self.elements.logoutButton.off('click');
         self.elements.directActionButton.off('click');
         return self;
     }
-    initializeUser(){
+
+    initializeUser() {
         var self = this;
 
         return self;
     }
-    async initializeModules(){
+
+    async initializeModules() {
         var self = this;
         self.modules = {};
         self.hiddenModules = {};
@@ -1409,39 +1450,44 @@ export class ERP{
         var moduleVisibilitySettings = self.visibilitySettings.moduleVisibility;
 
 
-        for(var key in moduleVisibilitySettings){
+        for (var key in moduleVisibilitySettings) {
             var moduleConfig = moduleVisibilitySettings[key];
-            if(moduleConfig.isVisible === false){
+            if (moduleConfig.isVisible === false) {
                 self.hiddenModules[moduleConfig.id] = self.config.modules[moduleConfig.id];
                 delete self.config.modules[moduleConfig.id];
             }
         }
-        for(var key in self.config.modules){
-            var moduleConfig =  self.config.modules[key];
-            if(moduleConfig.disabled){
+        let module_count = 0;
+        for (var key in self.config.modules) {
+            module_count++;
+            var moduleConfig = self.config.modules[key];
+            if (moduleConfig.disabled) {
                 self.disabledModules[moduleConfig.id] = self.config.modules[moduleConfig.id];
                 delete self.config.modules[moduleConfig.id];
             }
-            else if(moduleConfig.type == 'settings'){
+            else if (moduleConfig.type == 'settings') {
                 self.allModules[moduleConfig.id] = self.settingModules[moduleConfig.id] = new Module(self.config.modules[moduleConfig.id], self);
                 //delete self.config.modules[moduleConfig.id];
             }
-            else{
+            else {
                 self.allModules[moduleConfig.id] = self.modules[moduleConfig.id] = new Module(moduleConfig, self);
             }
-            if(self.allModules[moduleConfig.id]){
-                await self.allModules[moduleConfig.id].initialize();
+            if (self.allModules[moduleConfig.id]) {
+                if (module_count < Number(localStorage.module_initialization_limit || 100)) {
+                    await self.allModules[moduleConfig.id].initialize();
+                }
             }
         }
         return self;
     }
-    initializeFloatingWindows(){
+
+    initializeFloatingWindows() {
         var self = this;
-        if(self.deviceType == ERP.DEVICE_TYPES.MOBILE){
+        if (self.deviceType == ERP.DEVICE_TYPES.MOBILE) {
             return self;
         }
         var newFloatingReports = {};
-        for( var key in self.floatingReports){
+        for (var key in self.floatingReports) {
             var subReport = self.floatingReports[key];
             var dataSource = {
                 reportId: subReport.report.id,
@@ -1458,23 +1504,25 @@ export class ERP{
         self.floatingReports = newFloatingReports;
         return self;
     }
-    forEachFloatingReport(eachFunction, filterFunction){
+
+    forEachFloatingReport(eachFunction, filterFunction) {
         var self = this;
         var count = 0;
-        for(var key in self.floatingReports){
+        for (var key in self.floatingReports) {
             var floatingReport = self.floatingReports[key];
-            if(filterFunction){
-                if(filterFunction(floatingReport)){
+            if (filterFunction) {
+                if (filterFunction(floatingReport)) {
                     eachFunction.apply(floatingReport, [floatingReport, count++]);
                 }
             }
-            else{
+            else {
                 eachFunction.apply(floatingReport, [floatingReport, count++]);
             }
         }
         return self;
     }
-    createElements(){
+
+    createElements() {
         var self = this;
         self.elements = {};
         self.userDetailsContainers = {};
@@ -1489,18 +1537,18 @@ export class ERP{
         }
 //        self.selectedVisibility;
         self.visibilityConfig = {};
-        self.elements.titleElement  = $(self.selectors.titleElement);
-        self.elements.applicationDisplayNameFooterElement  = $(self.selectors.applicationDisplayNameFooterElement);
-        self.elements.showReportsButton  = $(self.selectors.showReportsButton);
-        self.elements.moduleNavPointerContainer  = $(self.selectors.moduleNavPointerContainer);
+        self.elements.titleElement = $(self.selectors.titleElement);
+        self.elements.applicationDisplayNameFooterElement = $(self.selectors.applicationDisplayNameFooterElement);
+        self.elements.showReportsButton = $(self.selectors.showReportsButton);
+        self.elements.moduleNavPointerContainer = $(self.selectors.moduleNavPointerContainer);
         self.elements.reportsContainer = $(self.selectors.reportsContainer);
         self.elements.reportsContentContainer = self.elements.reportsContainer.find(self.selectors.reportsContentContainer);
-        self.elements.reportsNavPointerContainer  = $(self.selectors.reportsNavPointerContainer);
-        self.elements.selectThemeChooser  = $(self.selectors.selectThemeChooser);
-        self.elements.switchStyle  = $(self.selectors.switchStyle);
+        self.elements.reportsNavPointerContainer = $(self.selectors.reportsNavPointerContainer);
+        self.elements.selectThemeChooser = $(self.selectors.selectThemeChooser);
+        self.elements.switchStyle = $(self.selectors.switchStyle);
         self.elements.dashboardContainer = $(self.selectors.dashboardContainer);
         self.elements.userName = $(self.selectors.userName);
-        self.elements.userImage= $(self.selectors.userImage);
+        self.elements.userImage = $(self.selectors.userImage);
         self.elements.content = $(self.selectors.contentContainer);
         self.elements.applicationSettingsContainer = $(self.selectors.applicationSettingsContainer);
         self.elements.appSettingsIcon = $(self.selectors.appSettingsIcon);
@@ -1560,11 +1608,12 @@ export class ERP{
         self._creation.createElements(self)
         return self;
     }
-    setDefaultModuleValues(){
+
+    setDefaultModuleValues() {
         var self = this;
 
         var options = [];
-        self.forEachModule(function(module){
+        self.forEachModule(function (module) {
             var option = document.createElement('option');
             option.innerHTML = module.displayName;
             option.value = module.id;
@@ -1579,7 +1628,8 @@ export class ERP{
 
         return self;
     }
-    getDefaultModuleValues(){
+
+    getDefaultModuleValues() {
         var self = this;
         var obj = {};
         obj.defaultModuleForMobile = self.elements.defaultModuleForMobile.val();
@@ -1587,59 +1637,63 @@ export class ERP{
         obj.defaultModuleForPC = self.elements.defaultModuleForPC.val();
         return obj;
     }
-    setMiscSettingsValues(){
+
+    setMiscSettingsValues() {
         var self = this;
         var settings = self.user.userDetails.settings || {};
         self.elements.applicationFontSize.val(settings.applicationFontSize || 'small');
         return self;
     }
-    getUserSetting(settingName){
+
+    getUserSetting(settingName) {
         var self = this;
         return self.user.userDetails.settings[settingName];
     }
-    getMiscSettingsValues(){
+
+    getMiscSettingsValues() {
         var self = this;
         var obj = {};
         obj.applicationFontSize = self.elements.applicationFontSize.val();
         return obj;
     }
-    saveDefaultModuleValues(){
+
+    saveDefaultModuleValues() {
         var self = this;
         var obj = self.getDefaultModuleValues();
-        for(var key in obj){
+        for (var key in obj) {
             self.saveUserSetting(key, obj[key]);
         }
         self.notifier.showSuccessNotification('Default Module Saved Successfully');
         return self;
     }
 
-    saveMiscSettingsValues(){
+    saveMiscSettingsValues() {
         var self = this;
         var obj = self.getMiscSettingsValues();
-        for(var key in obj){
+        for (var key in obj) {
             self.saveUserSetting(key, obj[key]);
         }
         self.notifier.showSuccessNotification('Settings Saved Successfully');
         return self;
     }
 
-    setFloatingReportsSelectionValues(){
+    setFloatingReportsSelectionValues() {
         var self = this;
         self.elements.floatingReportsCheckboxes.empty();
-        for(var key in self.floatingReports){
+        for (var key in self.floatingReports) {
             var floatingReport = self.floatingReports[key];
             var tr = document.createElement('tr');
             var td = document.createElement('td');
             var chk = document.createElement('input');
             chk.type = 'checkbox';
             chk.checked = true;
-            chk.id = floatingReport.subReport.id+'_chk';
+            chk.id = floatingReport.subReport.id + '_chk';
             chk.value = floatingReport.subReport.id;
-            if(floatingReport.config.position && floatingReport.config.position.isEnabled !== undefined){
+            if (floatingReport.config.position && floatingReport.config.position.isEnabled !== undefined) {
                 chk.checked = floatingReport.config.position.isEnabled == true;
             }
             var label = document.createElement('label');
-            label.setAttribute('for', chk.id) ;
+            label.setAttribute('for', chk.id);
             label.innerHTML = floatingReport.subReport.displayName;
             tr.appendChild(td);
             td.appendChild(chk);
@@ -1649,28 +1703,30 @@ export class ERP{
 
         return self;
     }
-    getFloatingReportsSelectionValues(){
+
+    getFloatingReportsSelectionValues() {
         var self = this;
         var obj = {};
-        self.elements.floatingReportsCheckboxes.find('input:checkbox').each(function(){
+        self.elements.floatingReportsCheckboxes.find('input:checkbox').each(function () {
             obj[this.value] = this.checked;
         });
         return obj;
     }
-    saveFloatingReportsSelectionValues(){
+
+    saveFloatingReportsSelectionValues() {
         var self = this;
         var obj = self.getFloatingReportsSelectionValues();
-        for(var key in obj){
+        for (var key in obj) {
             var config = self.user.userDetails.settings[key + '_floatingWindow'] || {};
             config.isEnabled = obj[key];
-            self.saveUserSetting(key + '_floatingWindow', config, function(){
+            self.saveUserSetting(key + '_floatingWindow', config, function () {
             });
         }
         self.notifier.showSuccessNotification('Floating Reports Settings Saved Successfully');
         return self;
     }
 
-    setNavigationModeValues(){
+    setNavigationModeValues() {
         var self = this;
         var settings = self.user.userDetails.settings;
         self.elements.moduleNavigationModeForMobile.val(settings.moduleNavigationModeForMobile);
@@ -1678,7 +1734,8 @@ export class ERP{
         self.elements.moduleNavigationModeForPC.val(settings.moduleNavigationModeForPC);
         return self;
     }
-    getNavigationModeValues(){
+
+    getNavigationModeValues() {
         var self = this;
         var obj = {};
         obj.moduleNavigationModeForMobile = self.elements.moduleNavigationModeForMobile.val();
@@ -1687,71 +1744,78 @@ export class ERP{
 
         return obj;
     }
-    saveNavigationModeValues(){
+
+    saveNavigationModeValues() {
         var self = this;
         var obj = self.getNavigationModeValues();
-        for(var key in obj){
+        for (var key in obj) {
             self.saveUserSetting(key, obj[key]);
         }
         self.notifier.showSuccessNotification('Navigation Modes Saved Successfully');
         return self;
     }
-    saveButtonsOrder(){
+
+    saveButtonsOrder() {
         var self = this;
         var buttonsPosition = {
             gridViewButtonsOrder: self.createButtonsPositionJson(self.elements.buttonsContainerInSortingWindow, self.gridViewButtonsPositionConfig),
             formViewButtonsOrder: self.createButtonsPositionJson(self.elements.formViewButtonsContainerInSortingWindow, self.formViewButtonsPositionConfig),
             /* filtersOrder: self.createButtonsPositionJson(self.elements.filtersContainerInSortingWindow, self.filtersPositionConfig)*/
         }
-        var settingName = self.elements.buttonSortingWindowSubmoduleSelect.val()+ '_buttonsOrder';
-        self.saveUserSetting(settingName, buttonsPosition, function(data){
-            if(data.success){
+        var settingName = self.elements.buttonSortingWindowSubmoduleSelect.val() + '_buttonsOrder';
+        self.saveUserSetting(settingName, buttonsPosition, function (data) {
+            if (data.success) {
                 self.notifier.showSuccessNotification('Buttons Order Saved Successfully');
             }
         });
         return self;
     }
-    saveGridOrder(subModule, json){
+
+    saveGridOrder(subModule, json) {
         var self = this;
         var settingName = subModule.id + '_gridOrder';
-        self.saveUserSetting(settingName, json, function(data){
-            if(data.success){
+        self.saveUserSetting(settingName, json, function (data) {
+            if (data.success) {
                 self.notifier.showSuccessNotification('Grid Order Saved Successfully');
             }
         });
         return self;
     }
-    saveInlineFiltersOrder(subModule, obj){
+
+    saveInlineFiltersOrder(subModule, obj) {
         var self = this;
-        var settingName = subModule.id+ '_inlineFiltersOrder';
-        self.saveUserSetting(settingName, obj, function(data){
-            if(data.success){
+        var settingName = subModule.id + '_inlineFiltersOrder';
+        self.saveUserSetting(settingName, obj, function (data) {
+            if (data.success) {
                 self.notifier.showSuccessNotification('Filters Order Saved Successfully');
             }
         });
         return self;
     }
-    saveFormViewConfiguration(subModule, mode, obj){
+
+    saveFormViewConfiguration(subModule, mode, obj) {
         var self = this;
-        var settingName = subModule.id+ '_'+ mode + '_formViewConfiguration';
-        self.saveUserSetting(settingName, obj, function(data){
+        var settingName = subModule.id + '_' + mode + '_formViewConfiguration';
+        self.saveUserSetting(settingName, obj, function (data) {
 //            if(data.success){
 //                self.notifier.showSuccessNotification('FormView Width Saved Successfully');
 //            }
         });
         return self;
     }
-    saveSimpleDataTableConfiguration(subModule, column, obj){
+
+    saveSimpleDataTableConfiguration(subModule, column, obj) {
         var self = this;
-        var settingName = subModule.id+ '_'+ column.id + '_simpleDataTableConfiguration';
-        self.saveUserSetting(settingName, obj, function(data){
+        var settingName = subModule.id + '_' + column.id + '_simpleDataTableConfiguration';
+        self.saveUserSetting(settingName, obj, function (data) {
 //            if(data.success){
 //                self.notifier.showSuccessNotification('Simple Data Table Configuration Saved Successfully');
 //            }
         });
         return self;
     }
-    saveUserSetting(settingName, settingValue, saveUserSettingCallBack){
+
+    saveUserSetting(settingName, settingValue, saveUserSettingCallBack) {
         var self = this;
 
         var data = {
@@ -1759,12 +1823,13 @@ export class ERP{
             settingName: settingName
         };
         self.socket.emit('save_user_setting', data);
-        self.socket.once('save_user_setting_done', function(data){
+        self.socket.once('save_user_setting_done', function (data) {
             saveUserSettingCallBack && saveUserSettingCallBack(data);
         });
         return self;
     }
-    saveRoleSetting(settingName, settingValue, saveRoleSettingCallBack){
+
+    saveRoleSetting(settingName, settingValue, saveRoleSettingCallBack) {
         var self = this;
 
         var data = {
@@ -1773,23 +1838,24 @@ export class ERP{
                 settingName: settingName
             }
         };
-        self.do_ajax_request('save_role_setting', data, (a_err, response_obj)=>{
+        self.do_ajax_request('save_role_setting', data, (a_err, response_obj) => {
 
-            if(localStorage.user_login_result){
+            if (localStorage.user_login_result) {
                 let temp_config = JSON.parse(localStorage.user_login_result);
                 temp_config.roleSettings[settingName] = data.config.config;
                 localStorage.user_login_result = JSON.stringify(temp_config);
             }
 
             saveRoleSettingCallBack && saveRoleSettingCallBack(a_err, response_obj);
-        } );
+        });
         // self.socket.emit('save_role_setting', data);
         // self.socket.once('save_role_setting_done', function(data){
         //     saveRoleSettingCallBack && saveRoleSettingCallBack(data);
         // });
         return self;
     }
-    saveRoleSettingForSpecificRole(roleId, settingName, settingValue, saveRoleSettingForSpecificRoleCallBack){
+
+    saveRoleSettingForSpecificRole(roleId, settingName, settingValue, saveRoleSettingForSpecificRoleCallBack) {
         var self = this;
         var data = {
             roleId: roleId,
@@ -1797,26 +1863,28 @@ export class ERP{
             settingName: settingName
         };
         self.socket.emit('save_role_for_specific_role_setting', data);
-        self.socket.once('save_role_for_specific_role_setting_done', function(data){
+        self.socket.once('save_role_for_specific_role_setting_done', function (data) {
             saveRoleSettingForSpecificRoleCallBack && saveRoleSettingForSpecificRoleCallBack(data);
         });
         return self;
     }
-    saveVisibilityConfig(){
+
+    saveVisibilityConfig() {
         var self = this;
         var obj = self.getVisibilityConfig();
 
         var moduleVisibilityRoles = obj[(self.visibilitySettingSelected || 'moduleVisibility')].roles;
-        for(var key in moduleVisibilityRoles){
+        for (var key in moduleVisibilityRoles) {
             var roleName = key;
             var value = moduleVisibilityRoles[key].modules || moduleVisibilityRoles[key].reports;
-            self.saveRoleSettingForSpecificRole(roleName, self.visibilitySettingSelected, value, function(data){
+            self.saveRoleSettingForSpecificRole(roleName, self.visibilitySettingSelected, value, function (data) {
                 self.notifier.showSuccessNotification('Visibility Settings Saved Successfully');
             });
         }
         return self;
     }
-    getVisibilityConfig(){
+
+    getVisibilityConfig() {
         var self = this;
         var obj = {
             moduleVisibility: self.moduleVisibilityManager.moduleVisibilityJson,
@@ -1830,7 +1898,8 @@ export class ERP{
 
         return obj;
     }
-    initializeReports(){
+
+    initializeReports() {
         var self = this;
         self.reports = {};
 
@@ -1842,36 +1911,37 @@ export class ERP{
         var reportVisibilitySettings = self.visibilitySettings.reportVisibility;
 
 
-        for(var key in reportVisibilitySettings){
+        for (var key in reportVisibilitySettings) {
             var reportConfig = reportVisibilitySettings[key];
-            if(reportConfig.isVisible === false){
+            if (reportConfig.isVisible === false) {
                 self.hiddenReports[reportConfig.id] = self.config.reports[reportConfig.id];
                 delete self.config.reports[reportConfig.id];
             }
         }
 
-        if(disableReportsAccess){
-            setTimeout(function(){
+        if (disableReportsAccess) {
+            setTimeout(function () {
                 self.elements.showReportsButton.hide();
                 self.removeTopLevelNavigationItem('reports');
             }, 100);
 
             return self;
         }
-        else{
-            setTimeout(function(){
+        else {
+            setTimeout(function () {
                 self.elements.showReportsButton.show();
             }, 100);
         }
 
 
-        for(var key in self.config.reports){
+        for (var key in self.config.reports) {
             var reportConfig = self.config.reports[key];
             self.reports[reportConfig.id] = new Report(reportConfig, self);
         }
         return self;
     }
-    createReportsSplitLayout(){
+
+    createReportsSplitLayout() {
         var self = this;
 
 //         var reportsSplitLayoutConfig = {
@@ -1894,47 +1964,51 @@ export class ERP{
 
         return self;
     }
-    configureSocket(){
+
+    configureSocket() {
         var self = this;
         self._socket.configureSocket(self);
         return self;
     }
-    setDefaultModule(){
+
+    setDefaultModule() {
         var self = this;
         // console.log(self.getDefaultModule().container.attr('style'))
         self.setSelectedModule(self.getDefaultModule(), {fromTrigger: false});
         // console.log(self.getDefaultModule().container.attr('style'))
         return self;
     }
-    setDefaultReport(){
+
+    setDefaultReport() {
         var self = this;
-        self.setSelectedReport(self.getDefaultReport(), true);
+        self.setSelectedReport(self.getDefaultReport(), {fromTrigger: true});
         return self;
     }
 
-    userLoggedIn(user){
+    userLoggedIn(user) {
         var self = this;
         //self.moduleNavPointer.setDefaultValue();
         self.setSelectedModule(self.getDefaultModule(), {fromTrigger: true});
         return self;
     }
-    addUltoSortableNavWindow(){
-        var self=  this;
+
+    addUltoSortableNavWindow() {
+        var self = this;
         var modulesIndock = self.moduleNavPointer.container;
 
         self.elements.sortableNavWindow.append(modulesIndock);
         var modulesUl = self.elements.sortableNavWindow.find('ul');
         var moduleGroupContainer = modulesUl.find('.module-group-main-container');
 //        modulesUl.css({width: "100%"})
-        if(!self.elements.sortableNavWindow.find('.'+ self.constants.addModuleGroup.class).length){
+        if (!self.elements.sortableNavWindow.find('.' + self.constants.addModuleGroup.class).length) {
             var addGroup = $(document.createElement('div'))
                 .attr(self.constants.addModuleGroup).val('Add Group');
-            var imageDiv =  $(document.createElement('div')).addClass('div-icon')
-                .css({'background-image':'url(pics/add_group.png)'}).appendTo(addGroup);
+            var imageDiv = $(document.createElement('div')).addClass('div-icon')
+                .css({'background-image': 'url(pics/add_group.png)'}).appendTo(addGroup);
             var addGroupSpan = $(document.createElement('span')).text('Add Group').appendTo(addGroup);
             modulesIndock.append(addGroup);
             self.elements.addGroup = addGroup;
-            self.elements.addGroup.on('click',function(){
+            self.elements.addGroup.on('click', function () {
                 self.showPopupMenu();
             });
         }
@@ -1951,7 +2025,7 @@ export class ERP{
         modulesUl.sortable({
             connectWith: ".module-group-container",
 //            axis: 'x',
-            stop(){
+            stop() {
                 self.saveModulePositionConfig(self.createModulePositionConfig(modulesUl));
             }
         });
@@ -1967,7 +2041,8 @@ export class ERP{
 //        })
         return self;
     }
-    showPopupMenu(){
+
+    showPopupMenu() {
         var self = this;
         var getGroupName = $(document.createElement('div')).appendTo(self.elements.sortableNavWindow).attr(self.constants.popUpMenu);
         var table = $(document.createElement('table')).appendTo(getGroupName);
@@ -1975,54 +2050,57 @@ export class ERP{
         var td = $(document.createElement('td')).appendTo(tr);
         var nameSpan = $(document.createElement('span')).text('Group Name').appendTo(td);
 
-        var td1= $(document.createElement('td')).appendTo(tr);
-        var nametextArea = $(document.createElement('input')).attr('type','text').appendTo(td1);
+        var td1 = $(document.createElement('td')).appendTo(tr);
+        var nametextArea = $(document.createElement('input')).attr('type', 'text').appendTo(td1);
         var tr1 = $(document.createElement('tr')).appendTo(table);
-        var td2= $(document.createElement('td')).appendTo(tr1);
+        var td2 = $(document.createElement('td')).appendTo(tr1);
         var IDSpan = $(document.createElement('span')).text('Group ID').appendTo(td2);
-        var td3= $(document.createElement('td')).appendTo(tr1);
-        var IDtextArea = $(document.createElement('input')).attr('type','text').appendTo(td3);
+        var td3 = $(document.createElement('td')).appendTo(tr1);
+        var IDtextArea = $(document.createElement('input')).attr('type', 'text').appendTo(td3);
         var buttonContainer = $(document.createElement('div')).appendTo(getGroupName);
         var addButton = $(document.createElement('button')).text('Add Group').appendTo(buttonContainer);
         var cancelButton = $(document.createElement('button')).text('Cancel').appendTo(buttonContainer);
 
-        addButton.on('click',function(){
-            if(nametextArea.val() && IDtextArea.val()){
-                var container = self.createGroupContainer(nametextArea.val(),IDtextArea.val());
+        addButton.on('click', function () {
+            if (nametextArea.val() && IDtextArea.val()) {
+                var container = self.createGroupContainer(nametextArea.val(), IDtextArea.val());
                 container.appendTo(self.moduleNavPointer.elements.ulMain);
                 getGroupName.remove();
 //                self.elements.sortableNavWindow.find('ul').sortable('disable')
                 (self.elements.sortableNavWindow.find('ul')).sortable({
                     connectWith: ".nav-element",
-                    stop(){
+                    stop() {
                         self.saveModulePositionConfig(self.createModulePositionConfig(self.elements.sortableNavWindow.find('ul')));
                     }
                 });
-            }else{
-                if(!IDtextArea.val()){
-                    IDtextArea.css('background-color','red');
-                }else{
-                    nametextArea.css('background-color','red');
+            }
+            else {
+                if (!IDtextArea.val()) {
+                    IDtextArea.css('background-color', 'red');
+                }
+                else {
+                    nametextArea.css('background-color', 'red');
                 }
             }
         });
-        cancelButton.on('click',function(){
+        cancelButton.on('click', function () {
             getGroupName.remove();
         });
 
     }
-    createGroupContainer(groupname,id){
+
+    createGroupContainer(groupname, id) {
         var self = this;
-        var containers = $(document.createElement('div')).attr(self.constants.moduleGroupMainContainer).attr('id',id);
-        var container = $(document.createElement('ul')).attr(self.constants.moduleGroupContainer).attr('id',id)
+        var containers = $(document.createElement('div')).attr(self.constants.moduleGroupMainContainer).attr('id', id);
+        var container = $(document.createElement('ul')).attr(self.constants.moduleGroupContainer).attr('id', id)
             .addClass('nav-element')
-            .attr('value',groupname).appendTo(containers);
-        var titleDiv =  $(document.createElement('div')).attr(self.constants.moduleGroupTitleDiv).appendTo(containers);
-        var titlespan =  $(document.createElement('span')).text(groupname).appendTo(titleDiv);
+            .attr('value', groupname).appendTo(containers);
+        var titleDiv = $(document.createElement('div')).attr(self.constants.moduleGroupTitleDiv).appendTo(containers);
+        var titlespan = $(document.createElement('span')).text(groupname).appendTo(titleDiv);
         var closebutton = $(document.createElement('span')).text('X').appendTo(titleDiv).attr(self.constants.groupCloseButtons);
 //        var groupUl =  $(document.createElement('ul')).appendTo(container).attr('class','sortableUl');
 
-        closebutton.on('click',function(){
+        closebutton.on('click', function () {
             container.find('li')
                 .appendTo(self.elements.sortableNavWindow.children('div').children('ul'));
             containers.remove();
@@ -2030,19 +2108,22 @@ export class ERP{
         });
         return containers;
     }
-    removeUlBackToHeader(){
+
+    removeUlBackToHeader() {
         var self = this;
         var element = self.elements.sortableNavWindow.find('.modules-in-sorting-window');
         element.removeClass('modules-in-sorting-window');
         var modulesUl = element.find('ul');
         modulesUl.sortable('destroy');
-        self.moduleNavPointer.container.css({bottom: "",
+        self.moduleNavPointer.container.css({
+            bottom: "",
             background: "",
             position: "",
             width: "",
             left: "",
             "border-radius": "",
-            "box-shadow": ""});
+            "box-shadow": ""
+        });
 
         self.moduleNavPointer.container.appendTo(document.body)
 //        modulesUl.find('li').each(function(){
@@ -2053,31 +2134,33 @@ export class ERP{
 //        self.elements.moduleNavPointerContainer.find('.navigation-pointer').show();
         return self;
     }
-    createModulePositionConfig(modulesUl){
+
+    createModulePositionConfig(modulesUl) {
         var self = this;
         var modulePositions = {};
         var posCount = 0;
         var mo = {};
         var group = {};
-        modulesUl.each(function(){
+        modulesUl.each(function () {
             var ul = $(this);
 //            var t = ul.find('.module-group-title-div')
 
-            if(ul.hasClass('module-group-container')){
+            if (ul.hasClass('module-group-container')) {
                 var module = {};
-                ul.children().each(function(){
+                ul.children().each(function () {
                     var dd = $(this);
                     module[dd.attr('value')] = {
-                        name:dd.find('span').text() ,
+                        name: dd.find('span').text(),
                         id: dd.attr('value'),
                         index: posCount
                     }
                     posCount++;
                 });
-                group[ul.attr('value')]= module;
-                group[ul.attr('value')]['id'] =  ul.attr('id');
-            }else{
-                ul.children('[value]').each(function(){
+                group[ul.attr('value')] = module;
+                group[ul.attr('value')]['id'] = ul.attr('id');
+            }
+            else {
+                ul.children('[value]').each(function () {
                     var dd = $(this);
                     mo[dd.attr('value')] = {
                         name: dd.attr('value'),
@@ -2098,25 +2181,28 @@ export class ERP{
          });*/
         return mo;
     }
-    hideAllFloatingReports(){
+
+    hideAllFloatingReports() {
         var self = this;
-        self.forEachFloatingReport(function(floatingReport){
+        self.forEachFloatingReport(function (floatingReport) {
             floatingReport.hide();
-        }, function(floatingReport){
+        }, function (floatingReport) {
             return !floatingReport.isInRecycleBin;
         });
         return self;
     }
-    showAllFloatingReports(){
+
+    showAllFloatingReports() {
         var self = this;
-        self.forEachFloatingReport(function(floatingReport){
+        self.forEachFloatingReport(function (floatingReport) {
             floatingReport.show();
-        }, function(floatingReport){
+        }, function (floatingReport) {
             return !floatingReport.isInRecycleBin;
         });
         return self;
     }
-    showAppSettingsContainer(){
+
+    showAppSettingsContainer() {
         var self = this;
         self.elements.applicationSettingsContainer.addClass('show-app-settings-container');
         self.elements.documentWrapper.addClass('body-wrapper-hide-partially');
@@ -2124,7 +2210,8 @@ export class ERP{
         self.hideAllFloatingReports();
         return self;
     }
-    hideAppSettingsContainer(){
+
+    hideAppSettingsContainer() {
         var self = this;
         $(document.body).children('.show-settings-window').removeClass('show-settings-window');
         self.elements.documentWrapper.removeClass('body-wrapper-hide');
@@ -2133,42 +2220,43 @@ export class ERP{
         self.showAllFloatingReports();
         return self;
     }
-    showButtonsInWindow(){
-        var self= this;
+
+    showButtonsInWindow() {
+        var self = this;
         var selectedModule = self.elements.buttonSortingWindowModuleSelect.val();
         var selectedSubModule = self.elements.buttonSortingWindowSubmoduleSelect.val();
         var buttonContainers = self.elements.buttonsContainerInSortingWindow.children();
         var formViewButtonContainer = self.elements.formViewButtonsContainerInSortingWindow.children();
         var filtersContainer = self.elements.filtersContainerInSortingWindow.children();
-        if(buttonContainers && buttonContainers.get(0)){
-            buttonContainers.each(function(){
+        if (buttonContainers && buttonContainers.get(0)) {
+            buttonContainers.each(function () {
                 var ul = $(this);
-                if(ul.attr('class') === 'grid-view-title-container'){
+                if (ul.attr('class') === 'grid-view-title-container') {
 
                 }
-                else{
+                else {
                     ul.remove();
                 }
             });
         }
-        if(formViewButtonContainer && formViewButtonContainer.get(0)){
-            formViewButtonContainer.each(function(){
+        if (formViewButtonContainer && formViewButtonContainer.get(0)) {
+            formViewButtonContainer.each(function () {
                 var ul = $(this);
-                if(ul.attr('class') === 'form-view-title-container'){
+                if (ul.attr('class') === 'form-view-title-container') {
 
                 }
-                else{
+                else {
                     ul.remove();
                 }
             });
         }
-        if(filtersContainer && filtersContainer.get(0)){
-            filtersContainer.each(function(){
+        if (filtersContainer && filtersContainer.get(0)) {
+            filtersContainer.each(function () {
                 var ul = $(this);
-                if(ul.attr('class') === 'filters-title-container'){
+                if (ul.attr('class') === 'filters-title-container') {
 
                 }
-                else{
+                else {
                     ul.remove();
                 }
             });
@@ -2177,48 +2265,48 @@ export class ERP{
         var buttons = self.modules[selectedModule].subModules[selectedSubModule].buttonManager.gridViewButtons;
         var formViewButtons = self.modules[selectedModule].subModules[selectedSubModule].buttonManager.formViewButtons;
         var filters = self.modules[selectedModule].subModules[selectedSubModule].filterManager.filters;
-        var repeatingButtonUl = self.elements.buttonsContainerInSortingWindow.find('#'+selectedSubModule);
-        var repeatingFormViewButtonUl = self.elements.formViewButtonsContainerInSortingWindow.find('#'+selectedSubModule);
-        var repeatingFiltersButtonUl = self.elements.filtersContainerInSortingWindow.find('#'+selectedSubModule);
+        var repeatingButtonUl = self.elements.buttonsContainerInSortingWindow.find('#' + selectedSubModule);
+        var repeatingFormViewButtonUl = self.elements.formViewButtonsContainerInSortingWindow.find('#' + selectedSubModule);
+        var repeatingFiltersButtonUl = self.elements.filtersContainerInSortingWindow.find('#' + selectedSubModule);
 
-        if(repeatingButtonUl && repeatingButtonUl.get(0)){
+        if (repeatingButtonUl && repeatingButtonUl.get(0)) {
             repeatingButtonUl.show();
         }
-        else{
+        else {
             var ulButtons = $(document.createElement('ul')).attr({id: selectedSubModule, class: "ul-button-sorting", module: selectedModule}).appendTo(self.elements.buttonsContainerInSortingWindow);
             ulButtons.sortable({
                 axis: 'x'
             })
-            for(var key in buttons){
+            for (var key in buttons) {
                 var li = $(document.createElement('li')).attr({class: "button-in-ul-sorting-window"}).appendTo(ulButtons);
                 li.text(buttons[key].displayName);
             }
         }
 
-        if(repeatingFormViewButtonUl && repeatingFormViewButtonUl.get(0)){
+        if (repeatingFormViewButtonUl && repeatingFormViewButtonUl.get(0)) {
             repeatingFormViewButtonUl.show();
         }
-        else{
+        else {
             var ulButtons = $(document.createElement('ul')).attr({id: selectedSubModule, class: "ul-button-sorting", module: selectedModule}).appendTo(self.elements.formViewButtonsContainerInSortingWindow);
             ulButtons.sortable({
                 axis: 'x'
             })
-            for(var key in formViewButtons){
+            for (var key in formViewButtons) {
                 var li = $(document.createElement('li')).attr({class: "button-in-ul-sorting-window"}).appendTo(ulButtons);
                 li.text(formViewButtons[key].displayName);
             }
         }
-        if(repeatingFiltersButtonUl && repeatingFiltersButtonUl.get(0)){
+        if (repeatingFiltersButtonUl && repeatingFiltersButtonUl.get(0)) {
             repeatingFiltersButtonUl.show();
         }
-        else{
+        else {
             var ulButtons = $(document.createElement('ul')).attr({id: selectedSubModule, class: "ul-button-sorting", module: selectedModule}).appendTo(self.elements.filtersContainerInSortingWindow);
             ulButtons.sortable({
                 axis: 'x'
             })
-            for(var key in filters){
+            for (var key in filters) {
                 var filter = filters[key];
-                if(filter.showAsInlineElement){
+                if (filter.showAsInlineElement) {
                     var li = $(document.createElement('li')).attr({class: "button-in-ul-sorting-window"}).appendTo(ulButtons);
                     li.text(filter.displayName);
                 }
@@ -2227,24 +2315,25 @@ export class ERP{
         }
         return self;
     }
-    createButtonsPositionJson(buttonUlContainer, buttonPosJson){
+
+    createButtonsPositionJson(buttonUlContainer, buttonPosJson) {
         var self = this;
-        buttonUlContainer.children().each(function(){
+        buttonUlContainer.children().each(function () {
             var ul = $(this);
-            if(ul.attr('class') != 'grid-view-title-container' && ul.attr('class') != 'form-view-title-container' && ul.attr('class') != 'filters-title-container'){
+            if (ul.attr('class') != 'grid-view-title-container' && ul.attr('class') != 'form-view-title-container' && ul.attr('class') != 'filters-title-container') {
                 buttonPosJson = ul.sortable('toArray');
             }
         });
         return buttonPosJson;
     }
 
-    bindIdleTimeEvents(){
+    bindIdleTimeEvents() {
         var self = this;
         var idleTimeout = 0;
 
-        self.idleInterval = setInterval(function(){
+        self.idleInterval = setInterval(function () {
             idleTimeout++;
-            if(idleTimeout >= self.config.appSettings.idleTimeout){
+            if (idleTimeout >= self.config.appSettings.idleTimeout) {
                 idleTimeout = 0;
                 console.log('inside');
                 clearInterval(self.idleInterval);
@@ -2252,11 +2341,11 @@ export class ERP{
             }
         }, (60 * 1000));
 
-        $(document).on('mousemove', function(){
+        $(document).on('mousemove', function () {
 //            console.log('mousemove', idleTimeout)
             idleTimeout = 0;
         });
-        $(document).on('keypress', function(){
+        $(document).on('keypress', function () {
 //            console.log('keypress', idleTimeout)
             idleTimeout = 0;
         });
@@ -2265,10 +2354,10 @@ export class ERP{
         return self;
     }
 
-    showAboutUsPopup  () {
+    showAboutUsPopup() {
         var self = this;
         var aboutUsContainer = self.elements.aboutUsContainer;
-        if(!aboutUsContainer){
+        if (!aboutUsContainer) {
             aboutUsContainer = globalElements.body.find('#aboutUsContainer');
 
             aboutUsContainer.find('#aboutUsAppDisplayName').text(self.displayName);
@@ -2277,7 +2366,7 @@ export class ERP{
 
             self.elements.aboutUsContainer = aboutUsContainer;
             aboutUsContainer.on('click', function (eve) {
-                if($(eve.target).is('.overlay')){
+                if ($(eve.target).is('.overlay')) {
                     aboutUsContainer.fadeOut();
                 }
             });
@@ -2287,14 +2376,14 @@ export class ERP{
 
     }
 
-    bindEvents () {
+    bindEvents() {
         var self = this;
         var showDirectAction = true;
         self.visibilitySettingSelected = '';
 
         self.bindIdleTimeEvents();
 
-        $(window).on('unload', function(){
+        $(window).on('unload', function () {
             self.addLookUpsToLocalStorage();
         })
 
@@ -2303,65 +2392,65 @@ export class ERP{
             self.showAboutUsPopup();
         });
 
-        self.socket.on('get_Main_users_done',function(data){
+        self.socket.on('get_Main_users_done', function (data) {
             self.usersData = data;
 
         });
-        if(self.user.userDetails.userName === 'admin'){
-            self.socket.on('get_logged_in_users_done', function(data){
+        if (self.user.userDetails.userName === 'admin') {
+            self.socket.on('get_logged_in_users_done', function (data) {
                 self.addOnlineUsersToContainer(data);
             });
-            self.socket.on('remove_logouted_user', function(user){
-                $('#'+user.userName).addClass('offLineUser')
+            self.socket.on('remove_logouted_user', function (user) {
+                $('#' + user.userName).addClass('offLineUser')
             });
         }
 
 
-        self.socket.on('consoleLog',function(data){
+        self.socket.on('consoleLog', function (data) {
             var arr = [];
-            for(var key in data){
+            for (var key in data) {
                 arr.push(data[key]);
             }
             console.info.apply(console, arr);
         });
 
-        self.socket.on('session_expired', function(){
+        self.socket.on('session_expired', function () {
             self.user.notifier.showErrorNotification('your session has expired')
-            setTimeout(function(){
+            setTimeout(function () {
                 self.logOut();
             }, 0)
         });
-        self.socket.on('forced_logout_done', function(){
+        self.socket.on('forced_logout_done', function () {
 
             self.logOut();
         });
-        self.socket.on('change_password_done', function(data){
-            if(data.success){
+        self.socket.on('change_password_done', function (data) {
+            if (data.success) {
 //                self.elements.passwordChangingContainer.remove();
                 self.user.notifier.showSuccessNotification(data.successMessage);
 
 //                self.elements.managePassword.removeClass('remove-pointer-events');
             }
-            else{
+            else {
                 self.user.notifier.showReportableErrorNotification(data.errorMessage);
                 self.elements.oldpassWord.val('');
             }
         });
-        self.elements.passwordContainer.on('click', '.change-container', function(){
+        self.elements.passwordContainer.on('click', '.change-container', function () {
             self.changePassword();
         });
-        self.elements.passwordContainer.on('click', '.back-container', function(){
+        self.elements.passwordContainer.on('click', '.back-container', function () {
 //            self.elements.passwordChangingContainer.remove();
 //            self.elements.managePassword.removeClass('remove-pointer-events');
         })
-        self.elements.managePassword.on('click', function(){
+        self.elements.managePassword.on('click', function () {
             self.elements.managePassword.addClass('remove-pointer-events');
             self.managePassWordInProfileWindow();
         });
-        self.elements.saveButtonPositionsButton.on('click', function(){
+        self.elements.saveButtonPositionsButton.on('click', function () {
             self.saveButtonsOrder();
         });
-        self.elements.buttonSortingWindowSubmoduleSelect. on('change', function(){
+        self.elements.buttonSortingWindowSubmoduleSelect.on('change', function () {
             self.showButtonsInWindow();
         });
 
@@ -2376,25 +2465,25 @@ export class ERP{
 //
 //         });
 
-        self.elements.appSettingsIcon.on('click', function(){
+        self.elements.appSettingsIcon.on('click', function () {
             $('.windows8tabs').removeClass('demoshow');
             self.socket.emit('get_Main_users');
 
             self.showAppSettingsContainer();
         });
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
 //            self.elements.adminButton.on('click', function(){
 //                self.showAdminWindow();
 //            });
-            self.elements.userSettingsButton.on('click', function(){
+            self.elements.userSettingsButton.on('click', function () {
                 self.showUserWindow();
                 self.removeClickFunctionsInAppSettings($(this));
             });
-            self.elements.visibilityButton.on('click', function(){
+            self.elements.visibilityButton.on('click', function () {
                 self.showVisibilityWindow();
                 self.removeClickFunctionsInAppSettings($(this));
             });
-            self.elements.columnVisibilityButton.on('click', function(){
+            self.elements.columnVisibilityButton.on('click', function () {
                 self.visibilitySettingSelected = 'columnButtonFilterVisibility';
                 self.moduleVisibilityManager.container.hide();
                 self.reportVisibilityManager.container.hide();
@@ -2402,7 +2491,7 @@ export class ERP{
                 self.selectedVisibility = self.columnVisibilityManager;
             });
 
-            self.elements.moduleVisibilityButton.on('click', function(){
+            self.elements.moduleVisibilityButton.on('click', function () {
                 self.visibilitySettingSelected = 'moduleVisibility';
                 self.columnVisibilityManager.container.hide();
                 self.reportVisibilityManager.container.hide();
@@ -2410,31 +2499,31 @@ export class ERP{
                 self.selectedVisibility = self.moduleVisibilityManager
             });
 
-            self.elements.reportVisibilityButton.on('click', function(){
+            self.elements.reportVisibilityButton.on('click', function () {
                 self.visibilitySettingSelected = 'reportVisibility';
                 self.moduleVisibilityManager.container.hide();
                 self.columnVisibilityManager.container.hide();
                 self.reportVisibilityManager.container.show();
                 self.selectedVisibility = self.reportVisibilityManager;
             });
-            self.elements.applyButton.on('click', function(){
+            self.elements.applyButton.on('click', function () {
                 console.log(self.selectedVisibility)
                 self.selectedVisibility.createJSON();
                 self.notifier.showSuccessNotification('json created successfully');
             });
-            self.elements.saveButton.on('click', function(){
+            self.elements.saveButton.on('click', function () {
                 self.saveVisibilityConfig();
             });
         }
-        self.elements.preferencesButton.on('click', function(){
+        self.elements.preferencesButton.on('click', function () {
             self.showPreferencesWindow();
             self.removeClickFunctionsInAppSettings($(this));
         });
-        self.elements.profileButton.on('click', function(){
+        self.elements.profileButton.on('click', function () {
             self.showProfileWindow();
             self.removeClickFunctionsInAppSettings($(this));
         });
-        self.elements.sortableNavButton.on('click', function(){
+        self.elements.sortableNavButton.on('click', function () {
             self.removeClickFunctionsInAppSettings($(this));
             self.addUltoSortableNavWindow();
             self.showsortableNavWindow();
@@ -2443,27 +2532,27 @@ export class ERP{
             self.setMiscSettingsValues();
             self.setFloatingReportsSelectionValues();
         });
-        self.elements.buttonsSortingWindowButton.on('click', function(){
+        self.elements.buttonsSortingWindowButton.on('click', function () {
             self.removeClickFunctionsInAppSettings($(this));
             self.elements.buttonSortingWindowModuleSelect.trigger('change');
             self.showButtonSortingWindow();
         })
-        self.elements.logoutButton.on('click', function(){
+        self.elements.logoutButton.on('click', function () {
             self.logOut();
-            setTimeout(function(){
+            setTimeout(function () {
                 location.reload();
-            },1500)
+            }, 1500)
         });
-        self.elements.appSettingsBackButton.on('click', function(){
+        self.elements.appSettingsBackButton.on('click', function () {
             self.removeClickFunctionsInAppSettings('');
             self.removeUlBackToHeader();
             self.hideAppSettingsContainer();
-            $('.'+self.constants.groupCloseButtons.class).hide()
-            $('.'+self.constants.addModuleGroup.class).remove();
+            $('.' + self.constants.groupCloseButtons.class).hide()
+            $('.' + self.constants.addModuleGroup.class).remove();
         });
 
 
-        self.elements.pdf.on('click', function(){
+        self.elements.pdf.on('click', function () {
             self.socket.emit('create_pdf');
         });
 //        self.elements.columnVisibilityButton.on('click', function(){
@@ -2479,10 +2568,10 @@ export class ERP{
 //        self.elements.cancelButton.on('click', function(){
 //            self.elements.visibilitySettingsContainer.hide();
 //        });
-        $(document.body).on('keydown.erp', function(eve){
+        $(document.body).on('keydown.erp', function (eve) {
             return self.handleKeyDown(eve.keyCode, eve);
         });
-        $(document.body).on('keyup.erp', function(eve){
+        $(document.body).on('keyup.erp', function (eve) {
             return self.handleKeyUp(eve.keyCode, eve);
         });
 
@@ -2492,35 +2581,35 @@ export class ERP{
         //     self.reportsNavPointer.showNavMenuContainer();
         // });
 
-        self.elements.selectThemeChooser.on('change',function(){
+        self.elements.selectThemeChooser.on('change', function () {
             self.setSelectedTheme(self.elements.selectThemeChooser.val());
         });
-        self.elements.saveModuleNavigationMode.on('click', function(){
+        self.elements.saveModuleNavigationMode.on('click', function () {
             self.saveNavigationModeValues();
         });
-        self.elements.saveDefaultModule.on('click', function(){
+        self.elements.saveDefaultModule.on('click', function () {
             self.saveDefaultModuleValues();
         });
-        self.elements.saveMiscSettings.on('click', function(){
+        self.elements.saveMiscSettings.on('click', function () {
             self.saveMiscSettingsValues();
         });
-        self.elements.saveFloatingReportsSelection.on('click', function(){
+        self.elements.saveFloatingReportsSelection.on('click', function () {
             self.saveFloatingReportsSelectionValues();
         });
-        if(self.deviceType !== ERP.DEVICE_TYPES.PC){
-            if(window.screen.height > window.screen.width){
+        if (self.deviceType !== ERP.DEVICE_TYPES.PC) {
+            if (window.screen.height > window.screen.width) {
                 self.deviceOrientation = ERP.DEVICE_ORIENTATIONS.PORTRAIT;
             }
-            else{
+            else {
                 self.deviceOrientation = ERP.DEVICE_ORIENTATIONS.LANDSCAPE;
             }
-            $(window).on('orientationchange.erp', function(eve){
+            $(window).on('orientationchange.erp', function (eve) {
 //                console.log('changed', eve)
 //                self.deviceOrientation = eve.orientation;
-                if(window.screen.height > window.screen.width){
+                if (window.screen.height > window.screen.width) {
                     self.deviceOrientation = ERP.DEVICE_ORIENTATIONS.PORTRAIT;
                 }
-                else{
+                else {
                     self.deviceOrientation = ERP.DEVICE_ORIENTATIONS.LANDSCAPE;
                 }
                 self.getSelectedModule().getSelectedSubModule().deviceOrientationChanged(self.deviceOrientation);
@@ -2528,18 +2617,18 @@ export class ERP{
             });
             self.initializeDeviceOrientationType();
         }
-        else{
+        else {
             self.initializePCUIElements();
         }
-        self.elements.directActionButton.on('click', function(event){
+        self.elements.directActionButton.on('click', function (event) {
             event.stopPropagation();
-            if(showDirectAction){
+            if (showDirectAction) {
                 showDirectAction = false;
                 self.elements.directActionButton.addClass('directActionButtonClicked');
                 self.directActionMenu.show();
 
             }
-            else{
+            else {
                 showDirectAction = true;
                 self.elements.directActionButton.removeClass('directActionButtonClicked');
                 self.directActionMenu.hide();
@@ -2547,7 +2636,7 @@ export class ERP{
 
 
         });
-        self.elements.documentWrapper.on('click.directActionMenu', function(){
+        self.elements.documentWrapper.on('click.directActionMenu', function () {
             showDirectAction = true;
             self.elements.directActionButton.removeClass('directActionButtonClicked');
             self.directActionMenu.hide();
@@ -2555,17 +2644,19 @@ export class ERP{
         });
         return self;
     }
-    createDirectActionMenu(){
+
+    createDirectActionMenu() {
         var self = this;
         var directActionMenu = new DirectActionMenu(self);
-        directActionMenu.container.appendTo( globalElements.documentWrapper );
+        directActionMenu.container.appendTo(globalElements.documentWrapper);
         directActionMenu.hide();
         self.directActionMenu = directActionMenu;
         return self;
     }
-    removeClickFunctionsInAppSettings(button){
+
+    removeClickFunctionsInAppSettings(button) {
         var self = this;
-        self.elements.applicationSettingsContainer.children().each(function(){
+        self.elements.applicationSettingsContainer.children().each(function () {
             var buttonContainer = $(this);
             var buttonEle = buttonContainer.find('.app-settings-button');
             var iconEle = buttonContainer.find('.app-setting-icon');
@@ -2573,7 +2664,7 @@ export class ERP{
             buttonEle.parent().removeClass('selected');
             iconEle.removeClass('app-setting-icon-clicked');
         });
-        if(button){
+        if (button) {
             var icon = button.closest('.app-settings-button-container')
                 .find('.app-setting-icon');
             button.addClass('app-settings-button-clicked');
@@ -2582,7 +2673,8 @@ export class ERP{
         }
         return self;
     }
-    showAdminWindow(){
+
+    showAdminWindow() {
         var self = this;
         $('.windows8tabs').removeClass('demoshow')
         self.elements.adminButton.addClass('demoshow')
@@ -2595,7 +2687,8 @@ export class ERP{
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
         return self;
     }
-    showUserWindow(){
+
+    showUserWindow() {
         var self = this;
         $('.windows8tabs').removeClass('demoshow')
         self.elements.userSettingsButton.addClass('demoshow')
@@ -2607,7 +2700,7 @@ export class ERP{
         self.elements.sortableNavButton.removeClass('show-settings-window');
         self.elements.visibilityWindow.removeClass('show-settings-window');
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
-        if(self.elements.showUserWindow){
+        if (self.elements.showUserWindow) {
             self.elements.showUserWindow.remove();
         }
         $('.user-details-container').remove();
@@ -2615,43 +2708,46 @@ export class ERP{
         self.createUserDetailsContainer(self.elements.userWindow);
         return self;
     }
-    createUserDetailsContainer(userWindow,data){
+
+    createUserDetailsContainer(userWindow, data) {
         var self = this;
         var container = $(document.createElement('div')).addClass('user-details-container').appendTo(userWindow);
         self.createHeader(container);
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
 
-            self.socket.on('remove_logouted_user', function(user){
-                $('#'+user.userName).removeClass('onlineUser');
-                $('#'+user.userName).addClass('offlineUser');
+            self.socket.on('remove_logouted_user', function (user) {
+                $('#' + user.userName).removeClass('onlineUser');
+                $('#' + user.userName).addClass('offlineUser');
             });
         }
         var table = $(document.createElement('table')).appendTo(container);
         var tr = $(document.createElement('tr')).appendTo(table);
         var tr1 = $(document.createElement('tr')).appendTo(table);
-        self.enterUserDetails(tr1,table,data);
+        self.enterUserDetails(tr1, table, data);
         self.elements.showUserWindow = container;
         return self;
     }
-    createHeader(tr){
-        var self = this ;
+
+    createHeader(tr) {
+        var self = this;
 
 //        var div = $(document.createElement('div')).appendTo(tr);
 //        var titleDiv = $(document.createElement('div')).addClass('user-details').appendTo(tr);
 //        titleDiv.text('User Details');
     }
-    enterUserDetails(tr,table,loginUsers){
+
+    enterUserDetails(tr, table, loginUsers) {
         var self = this;
-        var i =0;
-        if(!self.usersData){
+        var i = 0;
+        if (!self.usersData) {
             return self;
         }
-        for(var key in self.usersData.data){
+        for (var key in self.usersData.data) {
             var user = self.usersData.data[key];
-            if(i === 9){
+            if (i === 9) {
                 tr = $(document.createElement('tr')).appendTo(table)
             }
-            if(user.roleName != 'admin'){
+            if (user.roleName != 'admin') {
                 var td = $(document.createElement('td')).appendTo(tr);
                 var container = $(document.createElement('div')).attr({class: "user-window-user-container"}).appendTo(td);
 //                var userDivName = $(document.createElement('tr')).appendTo(td)
@@ -2664,22 +2760,23 @@ export class ERP{
                  userdata.roleId = user.role_id;
                  self.socket.emit('forced_logout', userdata);
                  });*/
-                if(user.status === 'active'){
+                if (user.status === 'active') {
 
-                }else{
+                }
+                else {
                     container.css({background: "rgba(128, 128, 128, 0.56)"});
                     var tab = $(document.createElement('div')).addClass('inactive').prependTo(container);
                 }
                 var loginUsersList = loginUsers || self.loginUsers;
-                for(var key1 in loginUsersList){
+                for (var key1 in loginUsersList) {
                     userName.addClass('offLineUser');
-                    if(key1 === 'admin'){
+                    if (key1 === 'admin') {
 
                     }
-                    else{
-                        if(key1 === user.roleName){
+                    else {
+                        if (key1 === user.roleName) {
                             userName.addClass('onlineUser');
-                            userName.attr('id',user.roleName);
+                            userName.attr('id', user.roleName);
                             userName.removeClass('offLineUser');
                             var userdata = {}
                             userdata.userName = user.roleName;
@@ -2690,16 +2787,17 @@ export class ERP{
 //                            self.userDetailsContainers[user.roleName] = userDetailsContainer;
                             self.bindUserContainerClick(logout, userdata);
                             break;
-                        }else{
-                            if(userName.attr('class') != 'onlineUser'){
+                        }
+                        else {
+                            if (userName.attr('class') != 'onlineUser') {
                                 userName.addClass('offLineUser');
                             }
                         }
                     }
                 }
-                var img = $(document.createElement('div')).css({"background":"url(pics/user.jpg)no-repeat", "background-size": "100%"}).addClass('image').appendTo(container)
+                var img = $(document.createElement('div')).css({"background": "url(pics/user.jpg)no-repeat", "background-size": "100%"}).addClass('image').appendTo(container)
                 var changeButton = $(document.createElement('button')).text('Change Password').appendTo(container);
-                self.bindUserChangePassword(changeButton,user);
+                self.bindUserChangePassword(changeButton, user);
             }
 
             i++;
@@ -2707,102 +2805,110 @@ export class ERP{
 
         return self;
     }
-    bindUserChangePassword(button,user){
+
+    bindUserChangePassword(button, user) {
         var self = this;
-        button.on('click',function(){
+        button.on('click', function () {
             self.changeUserPasswordWindow(user);
         })
         return self;
     }
-    changeUserPasswordWindow(user){
+
+    changeUserPasswordWindow(user) {
         var self = this;
-        var container =  $(document.createElement('div')).addClass('changeUserPasswordContainer').appendTo(document.body);
-        var dataContainer =  $(document.createElement('div')).addClass('changeUserPasswordDataContainer').appendTo(container)
+        var container = $(document.createElement('div')).addClass('changeUserPasswordContainer').appendTo(document.body);
+        var dataContainer = $(document.createElement('div')).addClass('changeUserPasswordDataContainer').appendTo(container)
         var table = $(document.createElement('table')).appendTo(dataContainer);
         var tr = $(document.createElement('tr')).appendTo(table);
         var td = $(document.createElement('td')).appendTo(tr);
         $(document.createElement('span')).text('New Password').appendTo(td);
-        var newPassword =  $(document.createElement('input')).attr('type','password').appendTo(td);
-        var tr1 =  $(document.createElement('tr')).appendTo(table);
+        var newPassword = $(document.createElement('input')).attr('type', 'password').appendTo(td);
+        var tr1 = $(document.createElement('tr')).appendTo(table);
         var td1 = $(document.createElement('td')).css('text-align', 'center').appendTo(tr1);
         var changeButton = $(document.createElement('button')).text('Set Password').appendTo(td1);
         var cancelButton = $(document.createElement('button')).text('Cancel').appendTo(td1);
-        changeButton.on('click',function(){
+        changeButton.on('click', function () {
             console.log(user)
             console.log(user.roleName)
-            if(newPassword.val()){
+            if (newPassword.val()) {
                 var userData = {
-                    role_name :user.roleName,
-                    password :newPassword.val()
+                    role_name: user.roleName,
+                    password: newPassword.val()
                 }
                 var checker = self.adminChecker(userData);
-                if(checker === 'true'){
+                if (checker === 'true') {
 
-                }else{
+                }
+                else {
                     container.remove();
                 }
-                self.socket.on('forceChangeUserPassword_done',function(){
+                self.socket.on('forceChangeUserPassword_done', function () {
                     container.remove();
                 })
-            }else{
+            }
+            else {
                 alert('Please enter a password to change')
             }
 
         });
-        cancelButton.on('click',function(){
+        cancelButton.on('click', function () {
             newPassword.text();
             container.remove();
         });
         return self;
     }
-    adminChecker(userData){
+
+    adminChecker(userData) {
         var self = this;
-        var container =  $(document.createElement('div')).addClass('changeUserPasswordContainer').appendTo(document.body);
-        var dataContainer =  $(document.createElement('div')).addClass('changeUserPasswordDataContainer').appendTo(container)
+        var container = $(document.createElement('div')).addClass('changeUserPasswordContainer').appendTo(document.body);
+        var dataContainer = $(document.createElement('div')).addClass('changeUserPasswordDataContainer').appendTo(container)
         var table = $(document.createElement('table')).appendTo(dataContainer);
         var tr0 = $(document.createElement('tr')).css('text-align', 'center').text('Admin password').appendTo(table);
         var tr = $(document.createElement('tr')).appendTo(table);
         var td = $(document.createElement('td')).appendTo(tr);
         $(document.createElement('span')).text('Password').appendTo(td);
-        var newPassword =  $(document.createElement('input')).attr('type','password').appendTo(td);
-        var tr1 =  $(document.createElement('tr')).appendTo(table);
+        var newPassword = $(document.createElement('input')).attr('type', 'password').appendTo(td);
+        var tr1 = $(document.createElement('tr')).appendTo(table);
         var td1 = $(document.createElement('td')).css('text-align', 'center').appendTo(tr1);
         var changeButton = $(document.createElement('button')).text('Set Password').appendTo(td1);
         var cancelButton = $(document.createElement('button')).text('Cancel').appendTo(td1);
 //        console.log(self.user.userDetails.userName);
-        changeButton.on('click',function(){
-            if(newPassword.val()){
+        changeButton.on('click', function () {
+            if (newPassword.val()) {
                 var data = {
-                    user_name :self.user.userDetails.userName,
-                    password :newPassword.val()
+                    user_name: self.user.userDetails.userName,
+                    password: newPassword.val()
 
                 }
 
 
-                self.socket.emit('checkUserPassword',data);
-            }else{
+                self.socket.emit('checkUserPassword', data);
+            }
+            else {
                 alert('Enter admin password')
             }
 
-            self.socket.on('checkUserPassword_done',function(data){
-                if(data === 'true'){
+            self.socket.on('checkUserPassword_done', function (data) {
+                if (data === 'true') {
 //                    console.log(data)
-                    self.socket.emit('forceChangeUserPassword',userData);
+                    self.socket.emit('forceChangeUserPassword', userData);
                     container.remove();
                     return true;
-                }else{
-                    alert('Invalid '+self.user.userDetails.userName+' password');
+                }
+                else {
+                    alert('Invalid ' + self.user.userDetails.userName + ' password');
                 }
             });
         });
-        cancelButton.on('click',function(){
+        cancelButton.on('click', function () {
             container.remove();
             return false;
         });
 
         return false;
     }
-    showVisibilityWindow(){
+
+    showVisibilityWindow() {
         var self = this;
         $('.windows8tabs').removeClass('demoshow')
         self.elements.visibilityButton.addClass('demoshow')
@@ -2815,7 +2921,8 @@ export class ERP{
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
         return self;
     }
-    showPreferencesWindow(){
+
+    showPreferencesWindow() {
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.preferencesButton.addClass('demoshow');
@@ -2824,7 +2931,7 @@ export class ERP{
         self.elements.profileWindow.removeClass('show-settings-window');
         self.elements.sortableNavWindow.removeClass('show-settings-window');
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
             self.elements.adminWindow.removeClass('show-settings-window');
             self.elements.userWindow.removeClass('show-settings-window');
             self.elements.visibilityWindow.removeClass('show-settings-window');
@@ -2832,7 +2939,8 @@ export class ERP{
         self.setSelectedSettingModule(self.defaultSettingModule, true);
         return self;
     }
-    showProfileWindow(){
+
+    showProfileWindow() {
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.profileButton.addClass('demoshow')
@@ -2841,14 +2949,15 @@ export class ERP{
         self.elements.sortableNavWindow.removeClass('show-settings-window');
         self.elements.preferencesWindow.removeClass('show-settings-window');
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
             self.elements.adminWindow.removeClass('show-settings-window');
             self.elements.userWindow.removeClass('show-settings-window');
             self.elements.visibilityWindow.removeClass('show-settings-window');
         }
         return self;
     }
-    showsortableNavWindow(){
+
+    showsortableNavWindow() {
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.sortableNavButton.addClass('demoshow')
@@ -2857,14 +2966,15 @@ export class ERP{
         self.elements.preferencesWindow.removeClass('show-settings-window');
         self.elements.profileWindow.removeClass('show-settings-window');
         self.elements.buttonSortingWindow.removeClass('show-settings-window');
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
             self.elements.adminWindow.removeClass('show-settings-window');
             self.elements.userWindow.removeClass('show-settings-window');
             self.elements.visibilityWindow.removeClass('show-settings-window');
         }
         return self;
     }
-    showButtonSortingWindow(){
+
+    showButtonSortingWindow() {
         var self = this;
         $('.windows8tabs').removeClass('demoshow');
         self.elements.buttonsSortingWindowButton.addClass('demoshow')
@@ -2873,7 +2983,7 @@ export class ERP{
         self.elements.preferencesWindow.removeClass('show-settings-window');
         self.elements.sortableNavWindow.removeClass('show-settings-window');
         self.elements.profileWindow.removeClass('show-settings-window');
-        if(self.user.userDetails.userName === 'admin'){
+        if (self.user.userDetails.userName === 'admin') {
             self.elements.adminWindow.removeClass('show-settings-window');
             self.elements.userWindow.removeClass('show-settings-window');
             self.elements.visibilityWindow.removeClass('show-settings-window');
@@ -2881,67 +2991,75 @@ export class ERP{
         return self
     }
 
-    disableNavigation(){
+    disableNavigation() {
         var self = this
         document.body.style.pointerEvents = 'none';
         return self;
     }
-    enableNavigation(){
+
+    enableNavigation() {
         var self = this;
         document.body.style.pointerEvents = '';
         return self;
     }
-    setSelectedTheme(theme){
+
+    setSelectedTheme(theme) {
         var self = this;
-        self.elements.switchStyle.attr("href", "/styles/"+theme+".css");
+        self.elements.switchStyle.attr("href", "/styles/" + theme + ".css");
         self.selectedTheme = theme;
         return self;
     }
-    setDefaultTheme(theme){
+
+    setDefaultTheme(theme) {
         var self = this;
         var theme = self.defaultTheme || self.elements.selectThemeChooser.val();
         self.setSelectedTheme(theme);
         return self;
     }
-    getSelectedTheme(theme){
+
+    getSelectedTheme(theme) {
         var self = this;
         return self.selectedTheme;
     }
-    handleCtrlKeyUpEvent(eve){
+
+    handleCtrlKeyUpEvent(eve) {
         var self = this;
         self.container.removeClass('ctrlKeyDown');
         self.getTopMostModuleInViewPlane().getTopMostSubModuleInViewPlane().handleCtrlKeyUpEvent(eve);
         return self;
     }
-    handleCtrlKeyDownEvent(eve){
+
+    handleCtrlKeyDownEvent(eve) {
         var self = this;
         self.container.addClass('ctrlKeyDown');
         self.getTopMostModuleInViewPlane().getTopMostSubModuleInViewPlane().handleCtrlKeyDownEvent(eve);
         return self;
     }
-    handleKeyUp(keyCode, eve){
+
+    handleKeyUp(keyCode, eve) {
         var self = this;
         var ret = true;
-        if(keyCode == ERP.KEY_CODES.CTRL){
+        if (keyCode == ERP.KEY_CODES.CTRL) {
             self.isCtrlDown = false;
             self.handleCtrlKeyUpEvent(eve);
         }
         return ret;
     }
-    handleKeyDown(keyCode, eve){
+
+    handleKeyDown(keyCode, eve) {
         var self = this;
         var ret = true;
 
-        if(eve.target && (eve.target.tagName == 'INPUT' || eve.target.tagName == 'TEXTAREA')){
+        if (eve.target && (eve.target.tagName == 'INPUT' || eve.target.tagName == 'TEXTAREA')) {
             return true;
         }
-        if(keyCode == ERP.KEY_CODES.CTRL){
+        if (keyCode == ERP.KEY_CODES.CTRL) {
             self.isCtrlDown = true;
             self.handleCtrlKeyDownEvent(eve);
             ret = false;
         }
-        else{
-            switch(keyCode){
+        else {
+            switch (keyCode) {
                 case ERP.KEY_CODES.LEFT:
                     break;
                 case ERP.KEY_CODES.RIGHT:
@@ -2954,103 +3072,113 @@ export class ERP{
         }
 
 
-        for(var key in ERP.KEY_CODES){
-            if(eve.keyCode == ERP.KEY_CODES[key]){
+        for (var key in ERP.KEY_CODES) {
+            if (eve.keyCode == ERP.KEY_CODES[key]) {
                 ret = false;
             }
         }
-        if(ret){
+        if (ret) {
             ret = self.getTopMostModuleInViewPlane().getTopMostSubModuleInViewPlane().handleKeyDown(eve.keyCode);
         }
         return ret;
     }
-    getTopMostModuleInViewPlane(){
+
+    getTopMostModuleInViewPlane() {
         var self = this;
         return self.topMostModuleInViewPlane;
     }
-    getSelectedModule(){
+
+    getSelectedModule() {
         var self = this;
         return self.selectedModule;
     }
-    show       () {
+
+    show() {
         var self = this;
         self.container.show();
         return self;
     }
-    hide       () {
+
+    hide() {
         var self = this;
         self.container.hide();
         return self;
     }
-    getElement(){
+
+    getElement() {
         var self = this;
         return self.element;
     }
-    forEachReport(eachFunction, filterFunction){
+
+    forEachReport(eachFunction, filterFunction) {
         var self = this;
-        for(var key in self.reports){
+        for (var key in self.reports) {
             var report = self.reports[key];
-            if(filterFunction){
-                if(filterFunction(report)){
+            if (filterFunction) {
+                if (filterFunction(report)) {
                     eachFunction.apply(report, []);
                 }
             }
-            else{
+            else {
                 eachFunction.apply(report, [report]);
             }
         }
         return self;
     }
-    forEachSettingModule(eachFunction, filterFunction){
+
+    forEachSettingModule(eachFunction, filterFunction) {
         var self = this;
-        for(var key in self.settingModules){
+        for (var key in self.settingModules) {
             var module = self.settingModules[key];
-            if(filterFunction){
-                if(filterFunction(module)){
+            if (filterFunction) {
+                if (filterFunction(module)) {
                     eachFunction.apply(module, []);
                 }
             }
-            else{
+            else {
                 eachFunction.apply(module, [module]);
             }
         }
         return self;
     }
-    get_all_modules_arr(){
+
+    get_all_modules_arr() {
         const self = this;
         const arr = [];
-        for(const key in self.allModules){
+        for (const key in self.allModules) {
             const module = self.allModules[key];
             arr.push(module);
         }
         return arr;
     }
-    forEachModule(eachFunction, filterFunction){
+
+    forEachModule(eachFunction, filterFunction) {
         var self = this;
-        for(var key in self.modules){
+        for (var key in self.modules) {
             var module = self.modules[key];
-            if(filterFunction){
-                if(filterFunction(module)){
+            if (filterFunction) {
+                if (filterFunction(module)) {
                     eachFunction.apply(module, []);
                 }
             }
-            else{
+            else {
                 eachFunction.apply(module, [module]);
             }
         }
         return self;
     }
-    setSelectedSettingModule(module, fromTrigger){
+
+    setSelectedSettingModule(module, fromTrigger) {
         var self = this;
-        if(fromTrigger){
+        if (fromTrigger) {
             self.settingModulesNavPointer.setValue(module.id, true);
             return;
         }
-        if(self.selectedSettingModule){
+        if (self.selectedSettingModule) {
             self.selectedSettingModule.hide();
             self.selectedSettingModule.hideFloatingReports();
         }
-        if(!module.id){
+        if (!module.id) {
             module = self.settingModules[module];
         }
         self.selectedSettingModule = module;
@@ -3059,27 +3187,29 @@ export class ERP{
         self.selectedSettingModuleChanged();
         return self;
     }
-    selectedSettingModuleChanged(){
+
+    selectedSettingModuleChanged() {
         var self = this;
         var module = self.selectedSettingModule;
         module.setSelectedSubModule(module.getSelectedSubModule());
         module.showFloatingReports();
         return self;
     }
-    setSelectedModule(module, view_options){
+
+    setSelectedModule(module, view_options) {
         var self = this;
         // view_options = view_options || undefined;
         const fromTrigger = view_options?.fromTrigger || false;
 
-        if(fromTrigger){
+        if (fromTrigger) {
             self.moduleNavPointer.setValue(module.id, true);
             return;
         }
-        if(self.selectedModule){
+        if (self.selectedModule) {
             self.selectedModule.hide();
             self.selectedModule.hideFloatingReports();
         }
-        if(!module.id){
+        if (!module.id) {
             module = self.modules[module];
         }
         self.selectedModule = module;
@@ -3087,7 +3217,7 @@ export class ERP{
 
         window._module = module;
 
-        if(self.selectedTopNavigationMode !== 'modules'){
+        if (self.selectedTopNavigationMode !== 'modules') {
             self.setSelectedTopNavigationMode('modules');
         }
 
@@ -3096,14 +3226,15 @@ export class ERP{
         self.selectedModuleChanged(view_options);
         return self;
     }
-    selectedModuleChanged(view_options){
+
+    selectedModuleChanged(view_options) {
         var self = this;
         var module = self.selectedModule;
         console.log('view_options', view_options)
-        if(view_options?.submodule_id){
+        if (view_options?.submodule_id) {
             module.setSelectedSubModule(module.subModules[view_options.submodule_id], view_options);
         }
-        else{
+        else {
             module.setSelectedSubModule(module.getSelectedSubModule(), view_options);
         }
         module.subModuleNavPointer.setValue(module.getSelectedSubModule().id, false);
@@ -3111,55 +3242,67 @@ export class ERP{
         return self;
     }
 
-    setSelectedReport(report, fromTrigger){
+    setSelectedReport(report, view_options) {
         var self = this;
-        if(fromTrigger){
+        console.log('setSelectedReport', report, this.selectedTopNavigationMode)
+        if (view_options&& view_options.fromTrigger) {
             self.reportsNavPointer.setValue(report.id, true);
             return;
         }
-        if(self.selectedReport){
+        if (self.selectedReport) {
             self.selectedReport.hide();
         }
-        if(!report.id){
+        if (!report.id) {
             report = self.reports[report];
         }
         self.selectedReport = report;
         window._report = report;
-        if(self.selectedTopNavigationMode !== 'reports'){
+        if (self.selectedTopNavigationMode !== 'reports') {
             self.setSelectedTopNavigationMode('reports');
         }
         self.selectedReport.show();
-        self.selectedReportChanged();
+        self.selectedReportChanged(view_options);
         return self;
     }
-    selectedReportChanged(){
+
+    selectedReportChanged(view_options) {
         var self = this;
         var report = self.selectedReport;
-        report.setSelectedSubReport(report.getSelectedSubReport(), false);
+
+        if (view_options?.subreport_id) {
+            // module.setSelectedSubModule(report.subReports[view_options.subreport_id], view_options);
+            report.setSelectedSubReport(report.subReports[view_options.subreport_id], view_options);
+        }
+        else {
+            report.setSelectedSubReport(report.getSelectedSubReport(), view_options);
+        }
+
         // report.subReportNavPointer.updatePointerPosition();
         return self;
     }
 
-    selectedDashboardChanged(){
+    selectedDashboardChanged() {
         var self = this;
         var dashboard = self.selectedDashboard;
-        dashboard.refresh_data().then(()=>{});
+        dashboard.refresh_data().then(() => {
+        });
         return self;
     }
-    setSelectedDashboard(dashboard, fromTrigger){
+
+    setSelectedDashboard(dashboard, fromTrigger) {
         var self = this;
 
-        if(self.selectedDashboard){
+        if (self.selectedDashboard) {
             self.selectedDashboard.hide();
         }
-        if(!dashboard.id){
+        if (!dashboard.id) {
             dashboard = self.dashboards[dashboard];
         }
         self.selectedDashboard = dashboard;
         self.topMostDashboardInViewPlane = dashboard;
 
         window._dashboard = dashboard;
-        if(self.selectedTopNavigationMode !== 'dashboard'){
+        if (self.selectedTopNavigationMode !== 'dashboard') {
             self.setSelectedTopNavigationMode('dashboard');
         }
         self.selectedDashboard.show();
@@ -3168,42 +3311,45 @@ export class ERP{
         return self;
     }
 
-    getDefaultModule(){
+    getDefaultModule() {
         var self = this;
-        if(self.defaultModule){
+        if (self.defaultModule) {
             return self.defaultModule;
         }
-        else{
+        else {
             return self.modules[Object.keys(self.modules)[0]];
         }
         return self;
     }
-    getDefaultReport(){
+
+    getDefaultReport() {
         var self = this;
-        if(self.defaultReport){
+        if (self.defaultReport) {
             return self.defaultReport;
         }
-        else{
+        else {
             var firstVisibleReport = self.getFirstVisibleReport();
             return self.reports[firstVisibleReport];
         }
         return self;
     }
-    getFirstVisibleReport(){
+
+    getFirstVisibleReport() {
         var self = this;
         var activeReports = {}
-        for (var reportKey in self.reports){
-            if(!self.reports[reportKey].hiddenFromMainNavigation){
+        for (var reportKey in self.reports) {
+            if (!self.reports[reportKey].hiddenFromMainNavigation) {
                 activeReports[reportKey] = self.reports[reportKey]
             }
         }
         var firstVisibleReport = Object.keys(activeReports)[0];
         return firstVisibleReport;
     }
-    executeQuery(str){
+
+    executeQuery(str) {
         var self = this;
         self.socket.emit('executeQuery', {query: str});
-        self.socket.once('executeQuery_done', function(data){
+        self.socket.once('executeQuery_done', function (data) {
 //            console.log(data)
             window.data = data;
         })
@@ -3211,28 +3357,26 @@ export class ERP{
     }
 
 
-
-
-    getModulesListAsSelectOptions(addAll){
-    var self = this;
-    var options = [];
-    self.forEachModule(function(module){
-        var option = document.createElement('option');
-        option.value = module.id;
-        option.innerHTML = module.displayName;
-        options.push(option);
-    });
-    if(addAll){
-        var addAllOption = document.createElement('option');
-        addAllOption.value = '';
-        addAllOption.innerHTML = '--Please Select--';
-        options.unshift(addAllOption);
+    getModulesListAsSelectOptions(addAll) {
+        var self = this;
+        var options = [];
+        self.forEachModule(function (module) {
+            var option = document.createElement('option');
+            option.value = module.id;
+            option.innerHTML = module.displayName;
+            options.push(option);
+        });
+        if (addAll) {
+            var addAllOption = document.createElement('option');
+            addAllOption.value = '';
+            addAllOption.innerHTML = '--Please Select--';
+            options.unshift(addAllOption);
+        }
+        return $(options);
     }
-    return $(options);
-}
 
 
-    registerChildWindow(subModule, column, dataRow, registerChildWindowCallBack){
+    registerChildWindow(subModule, column, dataRow, registerChildWindowCallBack) {
         var self = this;
         var erp = subModule.erp;
         // var socket = erp.socket;
@@ -3251,51 +3395,52 @@ export class ERP{
             data: data,
             url: url,
         }).always(function (responseObj, status) {
-            console.log( 'registerChildWindow_Done', responseObj, status);
+            console.log('registerChildWindow_Done', responseObj, status);
             //grid._db.getData_done(grid, responseObj);
             registerChildWindowCallBack && registerChildWindowCallBack(responseObj)
         });
 
         return self;
     }
-    getKeyFromValueOfObject(value, obj){
+
+    getKeyFromValueOfObject(value, obj) {
         var self = this;
 
-        for(var key in obj){
-            if(obj[key] == value){
+        for (var key in obj) {
+            if (obj[key] == value) {
                 return key;
             }
         }
     }
-    get_user_setting_value(key){
+
+    get_user_setting_value(key) {
         const str_value = this.user.userDetails?.settings[key];
-        if(str_value !== undefined && str_value.length){
+        if (str_value !== undefined && str_value.length) {
             // not efficient, update later
-            try{
+            try {
                 return JSON.parse(str_value)
-            }
-            catch(errr){
+            } catch (errr) {
                 return str_value;
             }
         }
         return str_value;
     }
 
-    get_role_setting_value(key){
+    get_role_setting_value(key) {
         const str_value = this.user.userDetails?.roleSettings[key];
-        if(str_value !== undefined && str_value.length){
+        if (str_value !== undefined && str_value.length) {
             // not efficient, update later
-            try{
+            try {
                 return JSON.parse(str_value)
-            }
-            catch(errr){
+            } catch (errr) {
                 return str_value;
             }
         }
         return str_value;
     }
 
-    async handle_action_button_click_go_to_module(button_info, report_item_instance, latest_report_item_data){
+
+    async handle_action_button_click_go_to_module(button_info, report_item_instance, latest_report_item_data) {
         let target_module_id = button_info.context_data.module_id;
         let target_submodule_id = button_info.context_data.submodule_id;
         this.setSelectedModule(target_module_id, {
@@ -3304,7 +3449,7 @@ export class ERP{
         });
     }
 
-    async handle_action_button_click_of_dashboard_item(dashboard_id, report_item_instance, evt_info){
+    async handle_action_button_click_of_dashboard_item(dashboard_id, report_item_instance, evt_info) {
         let dashboard_info = this.dashboards[dashboard_id];
         console.log('handle_action_button_click_of_dashboard_item', dashboard_info, report_item_instance, evt_info);
         const button_info = evt_info.button_info;
@@ -3314,18 +3459,19 @@ export class ERP{
                 break;
         }
     }
-    do_ajax_request (queryType, data_with_config_inside, do_ajax_request_callback) {
+
+    do_ajax_request(queryType, data_with_config_inside, do_ajax_request_callback) {
         const self = this;
         // const ajax_url = self.getAjaxUrl(queryType);
         var ajax_url = window.ERP_API_AJAX_ROOT_URL + '/' + queryType;
 
         let data_to_pass;
 
-        if(data_with_config_inside.config){
-            data_to_pass = {_source : JSON.stringify(data_with_config_inside)};
+        if (data_with_config_inside.config) {
+            data_to_pass = {_source: JSON.stringify(data_with_config_inside)};
         }
-        else{
-            data_to_pass = {_source : JSON.stringify({config: data_with_config_inside})};
+        else {
+            data_to_pass = {_source: JSON.stringify({config: data_with_config_inside})};
         }
 
         $.ajax({
@@ -3333,7 +3479,7 @@ export class ERP{
             data: data_to_pass,
             url: ajax_url,
         }).always(function (responseObj, status) {
-            if(responseObj.error || responseObj.errorMessage){
+            if (responseObj.error || responseObj.errorMessage) {
                 do_ajax_request_callback && do_ajax_request_callback(responseObj, responseObj); // shall return result only?
                 return;
             }
@@ -3347,71 +3493,71 @@ export class ERP{
 
 ERP.prototype.selectors = {
     bodyWrapper: "#body_wrapper",
-        documentWrapper: "#documentWrapper",
-        topLevelNavigation: "#topLevelNavigation",
-        titleElement: "#header_title_message",
-        applicationDisplayNameFooterElement: "#applicationDisplayName",
-        moduleNavPointerContainer: "#documentWrapper #moduleNavPointerContainer",
-        reportsNavPointerContainer: "#reportsNavPointerContainer",
-        dashboardContainer: "#dashboardContainer",
-        reportsContainer: "#reportsContainer",
-        reportsContentContainer: "#reportsContentContainer",
-        showReportsButton: "#showReports",
-        selectThemeChooser: "#themeChooser",
-        switchStyle: "#switchStyle",
-        logOutButton: "#logOutButton",
-        reportBugButton: "#reportBugButton",
-        contentContainer: "#body_wrapper > #content",
-        applicationSettingsContainer: "#applicationSettings",
-        appSettingsIcon: "#appSettingsIcon",
-        profileButton: "#profileButton",
-        preferencesButton: "#preferencesButton",
-        preferencesIcon: "#preferencesIcon",
-        sortableNavButton: "#sortableNavButton",
-        logoutButton: "#logoutButton",
-        appSettingsBackButton: "#appSettingsBackButton",
-        profileWindow: "#profileWindow",
-        preferencesWindow: "#preferencesWindow",
-        sortableNavWindow: "#sortableNavWindow",
-        settingModulesContentContainer: "#settingModulesContentContainer",
-        settingModulesNavPointerContainer: "#settingModulesNavPointerContainer",
-        userName: "#userName",
-        userImage:"#userImage",
-        pdf: "#pdf",
-        buttonSortingWindow: "#buttonSortingWindow",
-        buttonsSortingWindowButton: "#buttonsSortingWindowButton",
+    documentWrapper: "#documentWrapper",
+    topLevelNavigation: "#topLevelNavigation",
+    titleElement: "#header_title_message",
+    applicationDisplayNameFooterElement: "#applicationDisplayName",
+    moduleNavPointerContainer: "#documentWrapper #moduleNavPointerContainer",
+    reportsNavPointerContainer: "#reportsNavPointerContainer",
+    dashboardContainer: "#dashboardContainer",
+    reportsContainer: "#reportsContainer",
+    reportsContentContainer: "#reportsContentContainer",
+    showReportsButton: "#showReports",
+    selectThemeChooser: "#themeChooser",
+    switchStyle: "#switchStyle",
+    logOutButton: "#logOutButton",
+    reportBugButton: "#reportBugButton",
+    contentContainer: "#body_wrapper > #content",
+    applicationSettingsContainer: "#applicationSettings",
+    appSettingsIcon: "#appSettingsIcon",
+    profileButton: "#profileButton",
+    preferencesButton: "#preferencesButton",
+    preferencesIcon: "#preferencesIcon",
+    sortableNavButton: "#sortableNavButton",
+    logoutButton: "#logoutButton",
+    appSettingsBackButton: "#appSettingsBackButton",
+    profileWindow: "#profileWindow",
+    preferencesWindow: "#preferencesWindow",
+    sortableNavWindow: "#sortableNavWindow",
+    settingModulesContentContainer: "#settingModulesContentContainer",
+    settingModulesNavPointerContainer: "#settingModulesNavPointerContainer",
+    userName: "#userName",
+    userImage: "#userImage",
+    pdf: "#pdf",
+    buttonSortingWindow: "#buttonSortingWindow",
+    buttonsSortingWindowButton: "#buttonsSortingWindowButton",
 
-        saveModuleNavigationMode: "#saveModuleNavigationMode",
-        moduleNavigationModeForMobile: "#moduleNavigationModeForMobile",
-        moduleNavigationModeForTablet: "#moduleNavigationModeForTablet",
-        moduleNavigationModeForPC: "#moduleNavigationModeForPC",
+    saveModuleNavigationMode: "#saveModuleNavigationMode",
+    moduleNavigationModeForMobile: "#moduleNavigationModeForMobile",
+    moduleNavigationModeForTablet: "#moduleNavigationModeForTablet",
+    moduleNavigationModeForPC: "#moduleNavigationModeForPC",
 
-        saveDefaultModule: "#saveDefaultModule",
-        defaultModuleForMobile: "#defaultModuleForMobile",
-        defaultModuleForTablet: "#defaultModuleForTablet",
-        defaultModuleForPC: "#defaultModuleForPC",
+    saveDefaultModule: "#saveDefaultModule",
+    defaultModuleForMobile: "#defaultModuleForMobile",
+    defaultModuleForTablet: "#defaultModuleForTablet",
+    defaultModuleForPC: "#defaultModuleForPC",
 
-        saveMiscSettings: "#saveMiscSettings",
-        applicationFontSize: "#applicationFontSize",
+    saveMiscSettings: "#saveMiscSettings",
+    applicationFontSize: "#applicationFontSize",
 
-        saveFloatingReportsSelection: "#saveFloatingReportsSelection",
-        floatingReportsCheckboxes: "#floatingReportsCheckboxes",
+    saveFloatingReportsSelection: "#saveFloatingReportsSelection",
+    floatingReportsCheckboxes: "#floatingReportsCheckboxes",
 
-        bugReportContainer: "#bugReportContainer",
-        reportsTitle:"#reportsTitle",
+    bugReportContainer: "#bugReportContainer",
+    reportsTitle: "#reportsTitle",
 
-        buttonsSortingWindowIcon: "#buttonsSortingWindowIcon",
-        sortableNavIcon: "#sortableNavIcon",
-        appSettingsBackButtonIcon: "#appSettingsBackButtonIcon",
-        directActionButton: "#directActionButton",
+    buttonsSortingWindowIcon: "#buttonsSortingWindowIcon",
+    sortableNavIcon: "#sortableNavIcon",
+    appSettingsBackButtonIcon: "#appSettingsBackButtonIcon",
+    directActionButton: "#directActionButton",
 
-        leftAlignReportNavContainer: "#leftAlignReportNavContainer"
+    leftAlignReportNavContainer: "#leftAlignReportNavContainer"
 }
 ERP.prototype.constants = {
     container: {
         "class": "application"
     },
-    reportsContainer:{
+    reportsContainer: {
         "class": "reports-container"
     },
     accountDetailsContainer: {
@@ -3424,33 +3570,32 @@ ERP.prototype.constants = {
         "class": "add-module-group"
     },
     moduleGroupMainContainer: {
-        "class" : "module-group-main-container"
+        "class": "module-group-main-container"
     },
     moduleGroupContainer: {
-        "class" : "module-group-container"
+        "class": "module-group-container"
     },
     moduleGroupTitleDiv: {
-        "class" : "module-group-title-div"
+        "class": "module-group-title-div"
     },
     groupCloseButtons: {
-        "class" : "group-close-buttons"
+        "class": "group-close-buttons"
     },
     popUpMenu: {
-        "class" : "pop-up-menu"
+        "class": "pop-up-menu"
     }
 }
 
 
-
 ERP.prototype._socket = {
-    configureSocket: function(erp){
+    configureSocket: function (erp) {
         var self = this;
         let socket_url = location.protocol + '//' + location.host + '?sessionId=' + erp.user.config.user.sessionId;
-        if(erp.config.backend_root_url){
+        if (erp.config.backend_root_url) {
             socket_url = erp.config.backend_root_url + `/socket.io/socket.io.js?sessionId=${erp.user.config.user.sessionId}`;
         }
         console.log('socket_url', socket_url)
-        var socket = io(socket_url, {'userId' : 'aki143s'});
+        var socket = io(socket_url, {'userId': 'aki143s'});
         socket.connect();
 
         socket.on("disconnect", (reason, details) => {
@@ -3483,10 +3628,10 @@ ERP.prototype._socket = {
         self.bindSocketEvents(erp);
         return erp;
     },
-    bindSocketEvents: function(erp){
+    bindSocketEvents: function (erp) {
         var self = this;
         var socket = erp.socket;
-        socket.on('connect', function(){
+        socket.on('connect', function () {
             // erp.setDefaultModule();
             console.log('socket connected 1')
             erp.elements.container.css({opacity: 1});
@@ -3495,26 +3640,26 @@ ERP.prototype._socket = {
             erp.onSocketConnected();
 
         });
-        socket.on('disconnect', function(err, data){
+        socket.on('disconnect', function (err, data) {
             console.log('socket disconnected')
-            setTimeout(function(){
+            setTimeout(function () {
 
                 erp.onSocketDisconnected();
 
-                if(erp.user.userDetails){
+                if (erp.user.userDetails) {
                     var str = 'Connection to server lost. Reload to retry.'
                     erp.notifier.showErrorNotification(str, {
                         buttons: {
                             reload: {
                                 displayName: "Reload",
-                                onClick: function(){
+                                onClick: function () {
                                     location.reload();
                                 }
                             }
                         }
-                    } );
+                    });
                     $('.window-container:visible').hide();
-                    erp.elements.container.transition({opacity:.25}, 1000);
+                    erp.elements.container.transition({opacity: .25}, 1000);
                 }
             }, 1000);
         });
@@ -3535,14 +3680,12 @@ ERP.prototype._socket = {
 }
 
 
-
-
 ERP.prototype._creation = {
-    createContainer: function(erp){
+    createContainer: function (erp) {
         var div = $(document.createElement('div')).attr({id: erp.id}).attr(erp.constants.container);
         return div;
     },
-    createElements: function(erp){
+    createElements: function (erp) {
         var self = this;
         var container = self.createContainer(erp);
 
@@ -3551,7 +3694,7 @@ ERP.prototype._creation = {
         // const dashboards_container = $(document.createElement('div')).attr({"class": "dashboards_container hidden"});
 
 
-        erp.forEachModule(function(module){
+        erp.forEachModule(function (module) {
             modules_container.append(module.getElement());
         });
 
@@ -3566,22 +3709,28 @@ ERP.prototype._creation = {
         // container.append(dashboards_container);
 
 
-        erp.forEachSettingModule(function(module){
+        erp.forEachSettingModule(function (module) {
             erp.elements.settingModulesContentContainer.append(module.getElement());
         });
-        erp.forEachReport(function(report){
-            erp.elements.reportsContentContainer.append(report.getElement());
+
+
+        const reports_container = $(document.createElement('div'))
+            .attr({
+                "id" : "reportsContainer",
+                "class": "reportsContainer reports_container hidden"
+            });
+
+        erp.forEachReport(function (report) {
+            reports_container.append(report.getElement());
         });
         erp.container = container;
-//            erp.elements.reportsContainer = self.createReportsContainer(erp).appendTo(document.body);
+        erp.elements.reportsContainer = reports_container.appendTo(container);
         erp.elements.container = container;
         return erp;
     }
 }
-ERP.prototype._events = {
-}
-ERP.prototype._ui = {
-}
+ERP.prototype._events = {}
+ERP.prototype._ui = {}
 
 
 ERP.KEY_CODES = {
@@ -3611,8 +3760,8 @@ ERP.DEVICE_TYPES = {
 // }
 
 ERP.HELPER_FUNCTIONS = {
-    createImageFromText: function(text, options, getImageFromTextCallBack){
-        if(!ERP.HELPER_FUNCTIONS.isWaitingForImageCreation){
+    createImageFromText: function (text, options, getImageFromTextCallBack) {
+        if (!ERP.HELPER_FUNCTIONS.isWaitingForImageCreation) {
             ERP.HELPER_FUNCTIONS.isWaitingForImageCreation = true;
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
@@ -3622,9 +3771,9 @@ ERP.HELPER_FUNCTIONS = {
             canvas.width = (span.width() * 3) || 350;
             canvas.height = 60;
             ctx.font = (options.fontSize || 30) + " Georgia";
-            ctx.fillText(text,10,40);
+            ctx.fillText(text, 10, 40);
             span.remove();
-            canvas.toBlob(function(blob){
+            canvas.toBlob(function (blob) {
                 getImageFromTextCallBack(blob);
             });
         }
@@ -3640,12 +3789,12 @@ var moduleNavMenuConfig = {
     mode: {
         id: "mode",
         displayName: "Mode",
-        subMenuConfig:{
-            dock:{
+        subMenuConfig: {
+            dock: {
                 id: "dock",
                 displayName: "Dock"
             },
-            accordionLeft:{
+            accordionLeft: {
                 id: "accordionLeft",
                 displayName: "Accordion"
             }

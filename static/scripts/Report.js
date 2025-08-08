@@ -28,6 +28,7 @@ Report.prototype = {
 			type: 'subReport',
 
             onChange: function(subReport){
+                console.log('set sub report : ', subReport)
 //                var gridster = $('#'+self.id+' ul').gridster(
 //                    {
 //                        widget_margins: [5, 5],
@@ -165,9 +166,10 @@ Report.prototype = {
         var self = this;
         return self.defaultSubReport;
     },
-    setSelectedSubReport: function(subReport, fromTrigger){
+    setSelectedSubReport: function(subReport, view_options){
         var self = this;
         window._subReport = self.selectedSubReport;
+        const fromTrigger = view_options?.fromTrigger || false;
         if(fromTrigger){
 //            self.navPointer.setValue(subReport.id, true);
             self.selectedSubReportChanged(true);
@@ -210,7 +212,7 @@ Report.prototype = {
                         value = value.value;
                     }
                 }
-                self.parentWindow.headerMessage = subReport.displayName+ ' ('+value+')';
+                self.parentWindow.headerMessage = value;
             }
 //            else{
 //                console.log(self)

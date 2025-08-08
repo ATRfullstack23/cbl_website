@@ -14,16 +14,6 @@ function Filter(config, parentObject) {
     return self;
 }
 
-Filter.FILTER_TYPES = {};
-Filter.FILTER_TYPES.FREE_SEARCH = 'freeSearch';
-Filter.FILTER_TYPES.NUMBER = 'number';
-Filter.FILTER_TYPES.CHECKBOX = 'checkbox';
-Filter.FILTER_TYPES.DATE = 'date';
-Filter.FILTER_TYPES.CHOICE = 'choice';
-Filter.FILTER_TYPES.TAB_FILTER = 'tabFilter';
-Filter.FILTER_TYPES.LOOKUP = 'lookUp';
-Filter.FILTER_TYPES.HIDDEN = 'hidden';
-
 Filter.prototype = {
     constants: {
         container: {
@@ -48,9 +38,33 @@ Filter.prototype = {
             self[key] = self.config[key];
         }
 
+
         self.createElements().bindEvents();
         self.setDeviceTypeDisplayMode();
+
+        this.load_customizations(this.filterManager.get_filter_settings_from_user(this));
+
         return self;
+    },
+    load_customizations: function(advanced_settings){
+        this.advanced_settings = advanced_settings;
+
+        if(!Object.keys(advanced_settings).length){
+            return;
+        }
+
+        for (let style_type of Filter.TAB_FILTER_STYLES) {
+            this.container.removeClass(style_type.value);
+        }
+
+        if(this.type === Filter.FILTER_TYPES.TAB_FILTER){
+            this.container.addClass(advanced_settings.tab_filter_style || 'button_like_tabs')
+        }
+
+        if(advanced_settings.emoji_icon){
+            this.elements.divDisplayName.find('.filter_icon_emoji_span').text(advanced_settings.emoji_icon);
+
+        }
     },
     initializeChosen: function(){
         var self = this;
@@ -406,15 +420,27 @@ Filter.prototype = {
             filter.elements.divFormElements.append(div);
         },
         createContainer: function(filter){
-            var div = $(document.createElement('div')).attr({id: filter.id, class: filter.constants.container.class});
+            var div = $(document.createElement('div')).attr({
+                id: filter.id,
+                'data-filter_id': filter.id,
+                class: filter.constants.container.class
+            });
             div.addClass('filter_type_'+filter.type);
             div.data('help', filter.helpMessage);
             return div;
         },
         createDisplayNameContainer: function(filter){
+            const span_display_name = document.createElement('span');
+            span_display_name.classList.add('filter_display_name_span');
+            span_display_name.innerText = filter.displayName;
+
+            const span_icon_emoji = document.createElement('span');
+            span_icon_emoji.classList.add('filter_icon_emoji_span')
+
             var div = $(document.createElement('div'))
                 .attr(filter.constants.divDisplayName)
-                .text(filter.displayName);
+                .append(span_icon_emoji)
+                .append(span_display_name);
             return div;
         },
         createFormElementsContainer: function(filter){

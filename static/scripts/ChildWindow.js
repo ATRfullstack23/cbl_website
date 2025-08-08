@@ -26,7 +26,7 @@ ChildWindow.prototype = {
             self.parentItem = self.button;
         }
         if(!self.preventAnimation){
-            self.boxTwistAnimation = new BoxTwistAnimation();
+            // self.boxTwistAnimation = new BoxTwistAnimation();
         }
 
         // if(self.config.displayMode){
@@ -47,6 +47,31 @@ ChildWindow.prototype = {
         self.container.attr('data-child-sub-module-id', self.childSubModule.id);
 
         self.bindEvents();
+
+        self.contextMenu = new ContextMenu({
+            targetContainer: self.container,
+            targetAreas: [
+
+                {
+                    selector: ".window-buttons",
+                    getOptions: function(actualElement, contextMenu, targetElement){
+                        var options = {};
+
+                        var option = {};
+                        option.displayName = 'Edit Popup Settings';
+                        option.id = 'edit_child_window_settings';
+                        option.onClick = function(){
+                            self.show_edit_child_window_settings_popup();
+                        }
+                        options[option.id] = option;
+
+                        return options;
+
+                    }
+                }
+
+            ]
+        }, self);
 
         return self;
     },
@@ -80,10 +105,12 @@ ChildWindow.prototype = {
         var animObj = {container: self.container, absorbContainer: self.currentAbsorbContainer};
 
         if(self.preventAnimation){
-            self.container.show();
+            self.container.addClass('child_window_visible_without_animation');
+            // self.container.show();
         }
         else{
-            self.boxTwistAnimation.show(animObj, config || {});
+            self.container.addClass('child_window_visible_with_animation');
+            // self.boxTwistAnimation.show(animObj, config || {});
         }
         if(self.onShow){
             self.onShow.apply(self, [self]);
@@ -96,7 +123,8 @@ ChildWindow.prototype = {
         }
 
         if(self.inlineMode){
-            self.container.show();
+            container.addClass('child_window_visible_without_animation');
+            // self.container.show();
         }
 
         self.isOpen = true;
@@ -199,14 +227,21 @@ ChildWindow.prototype = {
         }
         var animObj = {container: self.container, absorbContainer: self.currentAbsorbContainer};
         if(self.preventAnimation){
-            self.container.hide();
+            // self.container.hide();
+            self.container.removeClass('child_window_visible_without_animation');
         }
         else{
-            self.boxTwistAnimation.hide(animObj, config || {});
+            // self.boxTwistAnimation.hide(animObj, config || {});
+            self.container.addClass('child_window_hiding_with_animation');
+            self.container.removeClass('child_window_visible_with_animation');
+            setTimeout(()=>{
+                self.container.removeClass('child_window_hiding_with_animation');
+            }, 300);
         }
 
         if(self.inlineMode){
-            self.container.hide();
+            self.container.removeClass('child_window_visible_without_animation');
+            // self.container.hide();
         }
 
         self.erp.current_active_child_window = null; // multiple level, pls take care later
@@ -241,77 +276,91 @@ ChildWindow.prototype = {
             var elements = {};
             childWindow.elements = {};
 
+            const svelte_instance = window.mount_child_window_element(childWindow, childWindow.get_child_window_settings_from_user());
+
             var container = self.createContainer(childWindow);
 
-            var header = self.createHeader(childWindow);
-            if(childWindow.initialDisplayMode != 'inline'){
-                header.appendTo(container);
+            if(childWindow.initialDisplayMode === 'inline'){
+                console.error('inline mode is not supported in new ui framework yet', childWindow);
             }
 
-            var content = self.createContent(childWindow).appendTo(container);
+            // var header = self.createHeader(childWindow);
+            // if(childWindow.initialDisplayMode != 'inline'){
+            //     header.appendTo(container);
+            // }
 
-            var inlineModePointer = self.createInlineModePointer(childWindow).appendTo(container);
-            var inlineModeCloseButton = self.createInlineModeCloseButton(childWindow).appendTo(container);
+            // var content = self.createContent(childWindow).appendTo(container);
+            //
+            // var inlineModePointer = self.createInlineModePointer(childWindow).appendTo(container);
+            // var inlineModeCloseButton = self.createInlineModeCloseButton(childWindow).appendTo(container);
 
 
+            childWindow.svelte_element_instance = svelte_instance;
 
-            childWindow.container = container;
-            childWindow.elements.container = container;
-            childWindow.elements.header = header;
-            childWindow.elements.content = content;
-            childWindow.elements.inlineModePointer = inlineModePointer;
-            childWindow.elements.inlineModeCloseButton = inlineModeCloseButton;
+            childWindow.container = svelte_instance.container_element_jquery;
+            childWindow.elements.container = svelte_instance.container_element_jquery;
 
+            // childWindow.container = container;
+            // childWindow.elements.container = container;
+
+            childWindow.elements.header = childWindow.container.find('header');
+            childWindow.elements.content = childWindow.container.find('.window-content');
+            childWindow.elements.inlineModePointer = childWindow.container.find('.inline-mode-pointer');
+            childWindow.elements.inlineModeCloseButton = childWindow.container.find('.inline-mode-close-button');
+
+            childWindow.elements.divReferenceMessage = childWindow.elements.header.find('.reference-message');
+            childWindow.elements.closeButton = childWindow.elements.header.find('.child_window_close_button');
+            childWindow.elements.divWindowButtons = childWindow.elements.header.find('.window-buttons');
             return container;
         },
-        createContent: function(childWindow){
-            var self = this;
-            if(childWindow.initialDisplayMode == 'inline'){
-                var div = $(document.createElement('td')).attr({"class": "window-content", id: 'window_content'});
-                return div;
-            }
-            else{
-                var div = $(document.createElement('div')).attr({"class": "window-content", id: 'window_content'});
-                return div;
-            }
-
-
-        },
-        createInlineModePointer: function(childWindow){
-            var self = this;
-            var div = $(document.createElement('div')).attr({"class": "inline-mode-pointer", id: 'inlineModePointer'});
-            return div;
-        },
-        createInlineModeCloseButton: function(childWindow){
-            var self = this;
-            var div = $(document.createElement('div')).attr({"class": "inline-mode-close-button", id: 'inlineModeCloseButton'}).html('X');
-            return div;
-        },
-        createHeader: function(childWindow){
-            var self = this;
-            var header = $(document.createElement('header'));
-            var table = $(document.createElement('table')).addClass('hundred-percent');
-            var tr = document.createElement('tr');
-            var td1 = document.createElement('td');
-            // var td2 = document.createElement('td');
-            var divReferenceMessage =  $(document.createElement('div')).attr({id: 'reference_message', "class": 'reference-message'})
-                .text('Reference Message');
-            divReferenceMessage.appendTo(td1);
-            var divWindowButtons =  $(document.createElement('div')).attr({id: 'window_buttons', "class": 'window-buttons'});
-            var closeButton = $(document.createElement('button')).attr({title: 'close'})
-                .html('<span class="fa fa-icon fa-arrow-left"></span>').appendTo(divWindowButtons);
-            divWindowButtons.prependTo(td1);
-            tr.appendChild(td1);
-            // tr.appendChild(td2);
-            table.append(tr);
-            header.append(table);
-
-            childWindow.elements.divReferenceMessage = divReferenceMessage;
-            childWindow.elements.closeButton = closeButton;
-            childWindow.elements.divWindowButtons = divWindowButtons;
-
-            return header;
-        }
+        // createContent: function(childWindow){
+        //     var self = this;
+        //     if(childWindow.initialDisplayMode == 'inline'){
+        //         var div = $(document.createElement('td')).attr({"class": "window-content", id: 'window_content'});
+        //         return div;
+        //     }
+        //     else{
+        //         var div = $(document.createElement('div')).attr({"class": "window-content", id: 'window_content'});
+        //         return div;
+        //     }
+        //
+        //
+        // },
+        // createInlineModePointer: function(childWindow){
+        //     var self = this;
+        //     var div = $(document.createElement('div')).attr({"class": "inline-mode-pointer", id: 'inlineModePointer'});
+        //     return div;
+        // },
+        // createInlineModeCloseButton: function(childWindow){
+        //     var self = this;
+        //     var div = $(document.createElement('div')).attr({"class": "inline-mode-close-button", id: 'inlineModeCloseButton'}).html('X');
+        //     return div;
+        // },
+        // createHeader: function(childWindow){
+        //     var self = this;
+        //     var header = $(document.createElement('header'));
+        //     var table = $(document.createElement('table')).addClass('hundred-percent');
+        //     var tr = document.createElement('tr');
+        //     var td1 = document.createElement('td');
+        //     // var td2 = document.createElement('td');
+        //     var divReferenceMessage =  $(document.createElement('div')).attr({id: 'reference_message', "class": 'reference-message'})
+        //         .text('Reference Message');
+        //     divReferenceMessage.appendTo(td1);
+        //     var divWindowButtons =  $(document.createElement('div')).attr({id: 'window_buttons', "class": 'window-buttons'});
+        //     var closeButton = $(document.createElement('button')).attr({title: 'close'})
+        //         .html('<span class="fa fa-icon fa-arrow-left"></span>').appendTo(divWindowButtons);
+        //     divWindowButtons.prependTo(td1);
+        //     tr.appendChild(td1);
+        //     // tr.appendChild(td2);
+        //     table.append(tr);
+        //     header.append(table);
+        //
+        //     childWindow.elements.divReferenceMessage = divReferenceMessage;
+        //     childWindow.elements.closeButton = closeButton;
+        //     childWindow.elements.divWindowButtons = divWindowButtons;
+        //
+        //     return header;
+        // }
     },
     _events   : {
     },

@@ -60,6 +60,17 @@ let report_group_obj = {
     items: []
 }
 
+let usc_report_group_obj = {
+    "id": "usc_reports_group",
+    "display_name": "Reports (Advanced)",
+    "custom_icon": {
+        "url": "M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8",
+        "color": "#fff"
+    },
+    "item_type": "group",
+    items: []
+}
+
 let dashboard_group_obj = {
     "id": "dashboard_group",
     "display_name": "Dashboards",
@@ -195,8 +206,29 @@ export async function generate_main_navigation_configuration(erp_instance) {
         }
     }
 
+    for(const dashboard_id in erp_instance.reports || {}){
+        let report_info = erp_instance.reports[dashboard_id];
+        let nav_item = {
+            "icon": "MailBoxSolid",
+            "id": "r_" + report_info.id,
+            "custom_icon": {
+                "url": "M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z",
+                "color": "#fff"
+            },
+            "display_name": report_info.displayName,
+            "item_type": "item",
+            "action_type": "go_to_report",
+            "context_data": {
+                "report_id" : report_info.id,
+                "subreport_id": report_info.getDefaultSubReport()?.id
+            }
+        };
+        usc_report_group_obj.items.push(nav_item);
+    }
+
     nav_config.items.push(dashboard_group_obj);
     nav_config.items.push(report_group_obj);
+    nav_config.items.push(usc_report_group_obj);
 
     for(const group_key in nav_config_by_user.groups){
         let group_items = nav_config_by_user.groups[group_key];
@@ -255,13 +287,13 @@ export async function generate_main_navigation_configuration(erp_instance) {
             }
             let item_config_obj = {
                 "icon": "ChartPieSolid",
-                "id": actual_module.id,
-                "display_name": actual_module.displayName,
+                "id": actual_module.id || actual_module.config.id,
+                "display_name": actual_module.displayName || actual_module.config.displayName,
                 "item_type": "item",
                 "action_type": "go_to_module",
                 "custom_icon": actual_module.config.customIcon,
                 "context_data": {
-                    "module_id": actual_module.id,
+                    "module_id": actual_module.id || actual_module.config.id,
                     "submodule_id": group_item_info?.submodule_id || actual_module.getDefaultSubModule()?.id
                 }
             };
@@ -275,19 +307,22 @@ export async function generate_main_navigation_configuration(erp_instance) {
     for(let module_id in erp_instance.modules){
         if(!added_main_modules_map[module_id]){
             let actual_module = erp.modules[module_id];
+            if(!actual_module){
+                continue;
+            }
             if(actual_module.hiddenFromMainNavigation){
                 continue;
             }
             added_main_modules_map[module_id] = true;
             const item_config = {
                 "icon": "MailBoxSolid",
-                "id": actual_module.id,
+                "id": actual_module.id || actual_module.config.id,
                 "custom_icon": actual_module.config.customIcon,
-                "display_name": actual_module.displayName,
+                "display_name": actual_module.displayName || actual_module.config.displayName,
                 "item_type": "item",
                 "action_type": "go_to_module",
                 "context_data": {
-                    "module_id": actual_module.id,
+                    "id": actual_module.id || actual_module.config.id,
                     "submodule_id": actual_module.getDefaultSubModule()?.id
                 }
             };

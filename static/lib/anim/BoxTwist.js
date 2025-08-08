@@ -35,26 +35,26 @@ BoxTwistAnimation.prototype = {
             var self = this;
             self.hideAnimation(boxTwist, container, absorbContainer, {preventAnimation: true});
             if(options.preventAnimation){
-                container.removeClass('box-twist-animation');
+                container.removeClass('box_twist_animation');
             }
             else{
-                container.addClass('box-twist-animation');
+                container.addClass('box_twist_animation');
             }
-            container.css('-webkit-transform', 'rotateY(0deg) scale(1,1)');
+            // container.css('-webkit-transform', 'rotateY(0deg) scale(1,1)');
             return self;
         },
         hideAnimation: function(boxTwist, container, absorbContainer, options){
             var self = this;
             if(options.preventAnimation){
-                container.removeClass('box-twist-animation');
+                container.removeClass('box_twist_animation');
             }
             else{
-                container.addClass('box-twist-animation');
+                container.addClass('box_twist_animation');
             }
             var position = boxTwist.translateDistanceFinder(container, absorbContainer);
 //            console.log(absorbContainer.get(0), position)
 //            container.css('-webkit-transform', 'translateX('+position.translateX+'px) translateY('+position.translateY+'px) rotateY(-200deg) scale(0.0,0.0)');
-            container.css('-webkit-transform', ' scale(1.0,0.0)');
+//             container.css('-webkit-transform', ' scale(1.0,0.0)');
 //            if(options.preventAnimation){
 //                container.addClass('box-twist-animation');
 //            }

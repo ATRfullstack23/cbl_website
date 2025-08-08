@@ -13,6 +13,8 @@
     import FormViewCustomElementsMountHelper from "$lib/form_view/FormViewCustomElementsMountHelper.svelte";
     import CardViewMountHelper from "$lib/card_view/CardViewMountHelper.svelte";
     import ButtonManagerMountHelper from "$lib/button_manager/ButtonManagerMountHelper.svelte";
+    import ChildWindowMountHelper from "$lib/child_window/ChildWindowMountHelper.svelte";
+    import FilterManagerMountHelper from "$lib/filter_manager/FilterManagerMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -133,6 +135,12 @@
                 filter_config: item_info.context_data.filter_config || undefined
             });
         }
+        else if(item_info.action_type === 'go_to_report'){
+            erp_instance.setSelectedReport(item_info.context_data.report_id, {
+                subreport_id: item_info.context_data.subreport_id || undefined,
+                filter_config: item_info.context_data.filter_config || undefined
+            });
+        }
         else if(item_info.action_type === 'go_to_dashboard'){
             erp_instance.setSelectedDashboard(item_info.context_data.dashboard_id);
         }
@@ -162,6 +170,10 @@
 <PrintPopupDialog bind:this={print_popup_dialog_instance}/>
 
 <ButtonManagerMountHelper/>
+
+<FilterManagerMountHelper/>
+
+<ChildWindowMountHelper/>
 
 <CardViewMountHelper/>
 

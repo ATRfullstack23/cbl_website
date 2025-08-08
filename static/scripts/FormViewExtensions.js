@@ -336,6 +336,10 @@ FormView.prototype.mount_custom_element = async function (item_id, item_type, ta
             current_custom_element_type = 'title_with_caption';
             mounted_svelte_instance = await this.styling_helper.mount_custom_element__title_with_caption(this, item_id, existing_config, target_element);
             break;
+        case 'alert_message':
+            current_custom_element_type = 'alert_message';
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__alert_message(this, item_id, existing_config, target_element);
+            break;
         case 'caption_only':
             mounted_svelte_instance = await this.styling_helper.mount_custom_element__caption_only(this, item_id, existing_config, target_element);
             break;
@@ -375,6 +379,18 @@ FormView.prototype.styling_helper = {
         }
 
         const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'title_with_caption', {
+            unique_id: item_id,
+            config: item_config
+        });
+
+        return svelte_instance;
+    },
+    mount_custom_element__alert_message: async function (form_view, item_id, item_config, target_element) {
+        if (!item_config) {
+            item_config = {caption_text: '', font_size: '', alert_icon: '⚠️'};
+        }
+
+        const svelte_instance = await window.mount_form_view_custom_element(form_view, target_element, 'alert_message', {
             unique_id: item_id,
             config: item_config
         });
