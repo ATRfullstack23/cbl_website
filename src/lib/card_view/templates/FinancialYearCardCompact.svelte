@@ -10,11 +10,10 @@
 
    export let data_mapping = {
             main_header_text: "title",
-            date_range_start: "start_date",
-            date_range_end: "end_date",
-            heading_icon: "icon",
+            range_start_date: "start_date",
+            range_end_date: "end_date",
+            header_icon: "icon",
             date_format_style: "standard",
-            duration_display:  "duration_in_months",
             status_badge:  "is_current_financial_year"
         };
 
@@ -47,32 +46,28 @@
 <div class="common_card_year">
     <div class="card_header">
         <div class="year_info">
-            {#if get_column_display_value(data_mapping.heading_icon) && get_column_display_value(data_mapping.heading_icon).length}
-                <div class="year_icon">{get_column_display_value(data_mapping.heading_icon) || ""}</div>
+            {#if get_column_display_value(data_mapping.header_icon) && get_column_display_value(data_mapping.header_icon).length}
+                <div class="year_icon">{get_column_display_value(data_mapping.header_icon) || ""}</div>
             {/if}
             <div class="year_details">
-                <h3 class="year_title">{get_formatted_date(data_mapping.main_header_text)}</h3>
+                <h3 class="year_title">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
             </div>
         </div>
-        <span class="current_badge">Current</span>
+        <span class="current_badge">{get_column_display_value(data_mapping.status_badge) || ""}</span>
     </div>
 
     <div class="date_section">
         <div class="date_range">
             <div class="date_item">
 <!--                <span class="date_label">{get_column_display_name(data_mapping.date_range_start)}</span>-->
-                <span class="date_value">{get_column_display_value(data_mapping.date_range_start)}</span>
+                <span class="date_value">{get_column_display_value(data_mapping.range_start_date) || ""}</span>
             </div>
             <div class="date_separator">→</div>
             <div class="date_item">
 <!--                <span class="date_label">{get_column_display_name(data_mapping.date_range_end)}</span>-->
 <!--                <span class="date_value">{get_formatted_date(data_mapping.date_range_end)}</span>-->
-                <span class="date_value">{get_column_display_value(data_mapping.date_range_end)}</span>
+                <span class="date_value">{get_column_display_value(data_mapping.range_end_date) || ""}</span>
             </div>
-        </div>
-        <div class="duration_info">
-            <span class="duration_label">Duration:</span>
-            <span class="duration_value">12 months</span>
         </div>
     </div>
 </div>

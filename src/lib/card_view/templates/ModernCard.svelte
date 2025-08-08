@@ -9,7 +9,7 @@
     export let data_mapping = {
         main_header_text : "fullName",
         main_header_caption : "designation_profile_row_id",
-        text_icon: "H",
+        item_icon: "😞",
         main_detail_items : [
             {item_value : "nationality", item_text : ""},
             {item_value : "phone_number", item_text : ""},
@@ -44,18 +44,18 @@
         </div>
 
         <div class="card_info">
-            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
-            <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption)}</span>
+            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
+            <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption) || ""}</span>
             <span class="status_indicator status_active"></span>
         </div>
 
         <div class="data_grid">
             {#each data_mapping.main_detail_items as item}
             <div class="data_item">
-                <span class="data_icon">{get_column_display_value(data_mapping.text_icon)}</span>
+                <span class="data_icon">{data_mapping.item_icon}</span>
                 <div class="data_content">
-                    <span class="data_label">{get_column_display_name(item.item_text)}:</span>
-                    <span class="data_value">{get_column_display_value(item.item_value)}</span>
+                    <span class="data_label">{get_column_display_name(item.item_text) || ""}:</span>
+                    <span class="data_value">{get_column_display_value(item.item_value) || ""}</span>
                 </div>
             </div>
             {/each}
@@ -74,6 +74,7 @@
         margin-bottom: 20px;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: -webkit-fill-available;
         border: 1px solid #f0f0f0;
     }
 

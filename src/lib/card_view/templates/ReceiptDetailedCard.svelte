@@ -11,16 +11,15 @@
     export let data_mapping = {
         main_header_text: "voucher_number",
         main_header_caption: "customer_profile_id",
-        payment_mode_badge: "payment_mode",
-        payment_amount_details: "payment_amount",
-        primary_section_title: "Transaction Details",
-        secondary_section_title: "Payment Details",
-        main_detail_items: [
+        highlight_value_box: "payment_amount",
+        left_section_title: "Transaction Details",
+        right_section_title: "Payment Details",
+        left_section_items: [
             { item_value: "customer_profile_id" , item_text: "" },
             { item_value: "transaction_date"  , item_text: "" },
             { item_value: "payment_amount"  , item_text: "" }
         ],
-        additional_detail_items: [
+        right_section_items: [
             { item_value: "invoice_id"  , item_text: "" },
             { item_value: "bank_profile_id"  , item_text: "" },
             { item_value: "payment_type"  , item_text: "" }
@@ -73,8 +72,8 @@
 
     <div class="card_content">
         <div class="amount_showcase">
-            <div class="amount_label">{get_column_display_name(data_mapping.payment_amount_details)}</div>
-            <div class="amount_value">{get_column_display_value(data_mapping.payment_amount_details)}</div>
+            <div class="amount_label">{get_column_display_name(data_mapping.highlight_value_box)}</div>
+            <div class="amount_value">{get_column_display_value(data_mapping.highlight_value_box)}</div>
             <div class="payment_method">
                 <!--{get_column_display_value(data_mapping.payment_mode_badge)}-->
             </div>
@@ -82,24 +81,24 @@
 
         <div class="info_grid">
             <div class="info_section">
-                <h4 class="section_title">{get_column_display_value(data_mapping.primary_section_title) || ""}</h4>
+                <h4 class="section_title">{get_column_display_value(data_mapping.left_section_title) || ""}</h4>
                 <table class="info_table">
-                    <!--{#each data_mapping.additional_detail_items as item}-->
-                    <!--    <tr>-->
-                    <!--        <td class="field_label">{get_column_display_name(item.item_text) || ""}:</td>-->
-                    <!--        <td class="field_value">{get_column_display_value(item.item_value) || ""}</td>-->
-                    <!--    </tr>-->
-                    <!--{/each}-->
+                    {#each data_mapping.left_section_items as item}
+                        <tr>
+                            <td class="field_label">{get_column_display_name(item.item_text) || ""}:</td>
+                            <td class="field_value">{get_column_display_value(item.item_value) || ""}</td>
+                        </tr>
+                    {/each}
                 </table>
             </div>
 
             <div class="info_section">
-                <h4 class="section_title">{get_column_display_value(data_mapping.secondary_section_title) || ""}</h4>
+                <h4 class="section_title">{get_column_display_value(data_mapping.right_section_title) || ""}</h4>
                 <table class="info_table">
-                    {#each data_mapping.main_detail_items as item}
+                    {#each data_mapping.right_section_items as item}
                         <tr>
                             <td class="field_label">{get_column_display_name(item.item_text) || ""}</td>
-                            <td class="field_value payment_mode">{get_column_display_value(item.column_id) || ""}</td>
+                            <td class="field_value payment_mode">{get_column_display_value(item.item_value) || ""}</td>
                         </tr>
                     {/each}
                 </table>

@@ -7,10 +7,9 @@
 
     export let data_mapping = {
         main_header_text: "title",
-        date_range_start: "start_date",
-        date_range_end: "end_date",
+        range_start_date: "start_date",
+        range_end_date: "end_date",
         date_format_style: "standard",
-        duration_display:  "duration_in_months",
         status_badge:  "is_current_financial_year"
     };
 
@@ -44,20 +43,18 @@
     <div class="card_content">
         <div class="year_info">
             <div class="year_display">
-<!--                <span class="start_year">{get_formatted_date(data_mapping.date_range_start)}</span>-->
-                <span class="start_year">{get_column_display_value(data_mapping.date_range_start)}</span>
+                <span class="start_year">{get_column_display_value(data_mapping.range_start_date) || ""}</span>
                 <span class="year_separator">—</span>
-<!--                <span class="end_year">{get_formatted_date(data_mapping.date_range_start)}</span>-->
-                <span class="end_year">{get_column_display_value(data_mapping.date_range_start)}</span>
+                <span class="end_year">{get_column_display_value(data_mapping.range_end_date) || ""}</span>
             </div>
-            <div class="year_title">{get_column_display_value(data_mapping.main_header_text)}</div>
+            <div class="year_title">{get_column_display_value(data_mapping.main_header_text) || ""}</div>
         </div>
 
         <div class="year_meta">
-            <span class="year_id">{get_column_display_value(data_mapping.main_header_text)}</span>
+            <span class="year_id">{get_column_display_value(data_mapping.main_header_text) || ""}</span>
             <div class="status_indicator">
                 <span class="status_dot status_active"></span>
-                <span class="status_text">active</span>
+                <span class="status_text">{get_column_display_value(data_mapping.status_badge) || ""}</span>
             </div>
         </div>
     </div>

@@ -9,7 +9,6 @@
     import ModernCard from "$lib/card_view/templates/ModernCard.svelte";
     import CustomerCompactCard from "$lib/card_view/templates/CustomerCompactCard.svelte";
     import CustomerDetailedCard from "$lib/card_view/templates/CustomerDetailedCard.svelte";
-    import CustomerMinimalCard from "$lib/card_view/templates/CustomerMinimalCard.svelte";
     import FinancialYearCardCompact from "$lib/card_view/templates/FinancialYearCardCompact.svelte";
     import FinancialYearCardMinimal from "$lib/card_view/templates/FinancialYearCardMinimal.svelte";
     import InvoiceCompactCard from "$lib/card_view/templates/InvoiceCompactCard.svelte";
@@ -20,6 +19,9 @@
     import ProductProfileCardDetailed from "$lib/card_view/templates/ProductProfileCardDetailed.svelte";
     import ReceiptCompactCard from "$lib/card_view/templates/ReceiptCompactCard.svelte";
     import ReceiptDetailedCard from "$lib/card_view/templates/ReceiptDetailedCard.svelte";
+    import FullWidthDetailedCard from "$lib/card_view/templates/FullWidthDetailedCard.svelte";
+    import FullWidthMinimalCard from "$lib/card_view/templates/FullWidthMinimalCard.svelte";
+    import FullWidthCompactCard from "$lib/card_view/templates/FullWidthCompactCard.svelte";
 
     export let container;
     export let container_element;
@@ -53,7 +55,7 @@
 
         console.log("selected_cardview_template", selected_cardview_template);
 
-        if (selected_cardview_template === "customer_compact_card_duplicate") {
+        if (selected_cardview_template === "customer_minimal_card") {
             selected_cardview_template = "classic_card";
         }
 
@@ -269,36 +271,13 @@
 
 <div bind:this={container_element} class="card_view_helper" class:hidden={is_hidden}>
 
-    <!--    <pre> Cards {card_data?.length}</pre>-->
-
     <div bind:this={elements.cards_container} class="main_container cards_container"
-         style="--card_width: {card_width}px;"
-         class:card_container__classic_card={selected_cardview_template === CardView.TEMPLATES.classic_card.id}
-         class:card_container__basic_detailed={selected_cardview_template === CardView.TEMPLATES.basic_detailed.id}
-         class:card_container__modern_card={selected_cardview_template === CardView.TEMPLATES.modern_card.id}
-         class:card_container__customer_compact_card={selected_cardview_template === CardView.TEMPLATES.customer_compact_card.id}
-         class:card_container__customer_detailed_card={selected_cardview_template === CardView.TEMPLATES.customer_detailed_card.id}
-         class:card_container__customer_minimal_card={selected_cardview_template === CardView.TEMPLATES.customer_minimal_card.id}
-         class:card_container__financial_year_compact_card={selected_cardview_template === CardView.TEMPLATES.financial_year_compact_card.id}
-         class:card_container__financial_year_minimal_card={selected_cardview_template === CardView.TEMPLATES.financial_year_minimal_card.id}
-         class:card_container__invoice_card_compact={selected_cardview_template === CardView.TEMPLATES.invoice_card_compact.id}
-         class:card_container__leave_compact_card={selected_cardview_template === CardView.TEMPLATES.leave_compact_card.id}
-         class:card_container__leave_detailed_card={selected_cardview_template === CardView.TEMPLATES.leave_detailed_card.id}
-         class:card_container__leave_minimal_card={selected_cardview_template === CardView.TEMPLATES.leave_minimal_card.id}
-         class:card_container__product_profile_card_compact={selected_cardview_template === CardView.TEMPLATES.product_profile_card_compact.id}
-         class:card_container__product_profile_card_detailed={selected_cardview_template === CardView.TEMPLATES.product_profile_card_detailed.id}
-         class:card_container__payment_receipt_card_compact={selected_cardview_template === CardView.TEMPLATES.payment_receipt_card_compact.id}
-         class:card_container__payment_receipt_card_detailed={selected_cardview_template === CardView.TEMPLATES.payment_receipt_card_detailed.id}
-         class:card_container__basic_card={selected_cardview_template === CardView.TEMPLATES.basic_card.id}>
+         style={selected_cardview_template === CardView.TEMPLATES.full_width_card_compact.id ||
+                selected_cardview_template === CardView.TEMPLATES.full_width_card_minimal.id ||
+                selected_cardview_template === CardView.TEMPLATES.full_width_card_detailed.id ? `--card_width: 100%;` : `--card_width: ${card_width}px;`}>
 
         {#if card_data.length>0}
             {#each card_data as item}
-
-<!--                <div class="single_card_view_data_row single_data_row_of_submodule">-->
-<!--                    {#if selected_cardview_template === CardView.TEMPLATES.classic_card.id}-->
-<!--                        <ClassicCard submodule="{submodule}" data_row="{item}"/>-->
-<!--                    {/if}-->
-<!--                </div>-->
 
                 <div class="single_card_view_data_row single_data_row_of_submodule">
                     <input type="checkbox" class="card-row-selector" data-id="{item.id}">
@@ -324,10 +303,6 @@
 
                     {#if selected_cardview_template === CardView.TEMPLATES.customer_detailed_card.id}
                         <CustomerDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
-                    {/if}
-
-                    {#if selected_cardview_template === CardView.TEMPLATES.customer_minimal_card.id}
-                        <CustomerMinimalCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
                     {/if}
 
                     {#if selected_cardview_template === CardView.TEMPLATES.financial_year_compact_card.id}
@@ -370,28 +345,19 @@
                         <ReceiptDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
                     {/if}
 
+                    {#if selected_cardview_template === CardView.TEMPLATES.full_width_card_detailed.id}
+                        <FullWidthDetailedCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.full_width_card_minimal.id}
+                        <FullWidthMinimalCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.full_width_card_compact.id}
+                        <FullWidthCompactCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
                 </div>
-
-
-
-                <!--                <div class="card single_card_view_data_row single_data_row_of_submodule">-->
-                <!--                    <input type="checkbox" class="card-row-selector" data-id="{item.id}">-->
-                <!--                    <div class="card-header">-->
-                <!--                        {item.fullName.value} - {item.leave_type_id?.text}-->
-                <!--                    </div>-->
-                <!--                    <div class="card-content">-->
-                <!--                        {#if card_config.columns.length>0}-->
-                <!--                            {#each card_config.columns as column}-->
-                <!--                                <CardContent column={column} item={item}/>-->
-                <!--                            {/each}-->
-                <!--                        {/if}-->
-                <!--                    </div>-->
-                <!--                    &lt;!&ndash;                <div class="card-footer">&ndash;&gt;-->
-                <!--                    &lt;!&ndash;                    <div>Created On: {dayjs(item._creation_date).format('DD-MM-YYYY')}</div>&ndash;&gt;-->
-                <!--                    &lt;!&ndash;                    <div>Created By: {item._creator}</div>&ndash;&gt;-->
-                <!--                    &lt;!&ndash;                </div>&ndash;&gt;-->
-                <!--                </div>-->
-
 
             {/each}
         {/if}
@@ -416,101 +382,11 @@
     }
 
     .cards_container{
-
         display: grid;
         gap: 20px;
         width: 100%;
         grid-template-columns: repeat(auto-fill, minmax(var(--card_width, 300px), 1fr));
         align-items: start;
-
-
-        /*&.card_container__basic_card{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-        /*&.card_container__basic_detailed{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__modern_card{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-        /*&.card_container__customer_compact_card{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-        /*&.card_container__customer_detailed_card{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__customer_minimal_card{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__financial_year_compact_card{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__financial_year_minimal_card{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__invoice_card_compact{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__invoice_card_detailed{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__leave_compact_card{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__leave_detailed_card{*/
-        /*    flex: 1 1 calc(33.333% - 20px);*/
-        /*    min-width: 350px;*/
-        /*    max-width: 100%;*/
-        /*    box-sizing: border-box;*/
-        /*}*/
-        /*&.card_container__leave_minimal_card{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-        /*&.card_container__product_profile_card_compact{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-        /*&.card_container__product_profile_card_detailed{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-        /*&.card_container__payment_receipt_card_compact{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-        /*&.card_container__payment_receipt_card_detailed{*/
-        /*    display: flex;*/
-        /*    gap: 20px;*/
-        /*}*/
-
     }
 
     .single_card_view_data_row {
@@ -519,6 +395,7 @@
         max-width: 100%;
         box-sizing: border-box;
     }
+
     .card {
         background-color: #fff;
         border: 1px solid #ddd;

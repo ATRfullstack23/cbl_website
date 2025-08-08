@@ -8,19 +8,19 @@
     export let data_mapping = {
             main_header_text: "customer_name",
             main_header_caption: "customer_type",
-            id_badge: "id",
+            header_icon: "",
+            highlight_value_box:"address",
             main_detail_items: [
-                {
-                    item_value: "email",
-                    item_text: "",
-                },
-                {
-                    item_value: "phone_number",
-                    item_text: ""
-                }
-            ],
-            address_field:"address"
-        }
+                    {
+                        item_value: "email",
+                        item_text: "",
+                    },
+                    {
+                        item_value: "phone_number",
+                        item_text: ""
+                    }
+                ],
+            }
 
 
     function get_column_display_value(column_id){
@@ -44,10 +44,12 @@
 <div class="common_card_horizontal">
     <div class="left_section">
         <div class="card_header">
-            <span class="type_icon">👤</span>
+            {#if data_mapping.header_icon && data_mapping.header_icon.length}
+                <span class="type_icon">{data_mapping.header_icon || ""}</span>
+            {/if}
             <div class="header_text">
-                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text)}</h3>
-                <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption)}</span>
+                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
+                <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_caption) || ""}</span>
             </div>
         </div>
         <div class="contact_info">
@@ -60,9 +62,8 @@
         </div>
     </div>
     <div class="right_section">
-<!--        <div class="id_badge">{get_column_display_value(data_mapping.id_badge.column_id)}</div>-->
         <div class="address_info">
-            {get_column_display_name(data_mapping.address_field)}
+            {get_column_display_name(data_mapping.highlight_value_box || "")}
         </div>
     </div>
 </div>

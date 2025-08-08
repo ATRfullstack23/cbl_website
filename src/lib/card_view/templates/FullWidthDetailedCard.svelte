@@ -1,41 +1,22 @@
 <script>
     import dayjs from "dayjs";
 
+    export let submodule;
     export let data_row;
     export let config;
 
-
     export let data_mapping = {
-            main_header_text: "leave_type",
-            main_header_caption: "unique_id",
-            status_badge: {
-                column_id: "status",
-                condition_color_settings : {
-                    is_enabled: true,
-                    rules : [
-                        {
-                            "condition": "equals",
-                            "condition_value": "active",
-                            "style": "green",
-                        },
-                        {
-                            "condition": "equals",
-                            "condition_value": "inactive",
-                            "style": "red",
-                        }
-                    ]
-                }
-            },
-            main_detail_items: [
-                {item_value: "max_days", item_text: ""},
-                {item_value: "is_paid", item_text: ""},
-                {item_value: "is_half_day_allowed", item_text: ""}
-            ]
+        main_header_text: "fullName",
+        main_header_caption: "designation_profile_row_id",
+        main_detail_items: [
+            {item_value: "nationality", item_text: ""},
+            {item_value: "phone_number", item_text: ""},
+            {item_value: "registered_email_id", item_text: ""}
+        ]
     };
 
 
-
-    function get_column_display_value(column_id){
+    function get_column_display_value(column_id) {
         // const column_instance = get_column_instance(column_id);
         // let display_value = column_instance.parseDisplayValue(data_row);
 
@@ -48,44 +29,37 @@
     }
 
 
-    function get_column_display_name(column_id){
+    function get_column_display_name(column_id) {
         return column_id?.toUpperCase() || '-';
     }
 
-    let time_now = Date.now();
-    function check_status_badge_condition_green(){
-        return time_now % 2 === 1;
-    }
-    function check_status_badge_condition_red(){
-        return time_now % 2 === 0;
-    }
-
-
 </script>
 
-<div class="card_leave_compact">
+
+<div class="card_compact">
     <div class="card_header">
-        <div class="card_main_info">
-            <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
-            <span class="card_subtitle">{get_column_display_value(data_mapping.main_header_text) || ""}</span>
+        <div class="avatar_section">
+            <img src="https://placehold.co/48x48" alt="User Name" class="avatar"/>
+            <div class="title_section">
+                <h3 class="card_title">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
+                <span class="card_caption">{get_column_display_value(data_mapping.main_header_caption) || ""}</span>
+            </div>
         </div>
-        <span class="status_badge" class:status_inactive={check_status_badge_condition_red()} class:status_active={check_status_badge_condition_green()}>
-            {get_column_display_value(data_mapping.status_badge) || ""}
-        </span>
+        <!--        <span class="status_badge status_active">active</span>-->
     </div>
 
     <div class="data_table">
         {#each data_mapping.main_detail_items as item}
             <div class="data_row">
                 <span class="data_label">{get_column_display_name(item.item_text) || ""}:</span>
-                <span class="data_value max_days">{get_column_display_value(item.item_value) || ""}</span>
+                <span class="data_value">{get_column_display_value(item.item_value) || ""}</span>
             </div>
         {/each}
     </div>
 </div>
 
 <style>
-    .card_leave_compact {
+    .card_compact {
         background: white;
         border: 1px solid #e5e7eb;
         border-radius: 12px;
@@ -95,11 +69,10 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
-        min-width: 350px;
         height: -webkit-fill-available;
     }
 
-    .card_leave_compact:hover {
+    .card_compact:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         border-color: #d1d5db;
@@ -114,21 +87,40 @@
         border-bottom: 1px solid #f3f4f6;
     }
 
-    .card_main_info {
+    .avatar_section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #f3f4f6;
+        transition: border-color 0.3s ease;
+    }
+
+    .card_compact:hover .avatar {
+        border-color: #3b82f6;
+    }
+
+    .title_section {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 2px;
     }
 
     .card_title {
         margin: 0;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
         color: #1f2937;
         line-height: 1.2;
     }
 
-    .card_subtitle {
+    .card_caption {
         font-size: 12px;
         color: #6b7280;
         background: #f9fafb;
@@ -157,6 +149,11 @@
         color: #991b1b;
     }
 
+    .status_on_leave {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
     .data_table {
         display: flex;
         flex-direction: column;
@@ -169,6 +166,7 @@
         align-items: center;
         padding: 8px 0;
         border-bottom: 1px solid #f9fafb;
+        gap: 20px;
     }
 
     .data_row:last-child {
@@ -189,23 +187,9 @@
         font-weight: 600;
     }
 
-    .max_days {
-        color: #3b82f6;
-        background: #eff6ff;
-        padding: 4px 8px;
-        border-radius: 6px;
-    }
-
-    .paid {
+    .salary {
         color: #059669;
         background: #ecfdf5;
-        padding: 4px 8px;
-        border-radius: 6px;
-    }
-
-    .unpaid {
-        color: #dc2626;
-        background: #fef2f2;
         padding: 4px 8px;
         border-radius: 6px;
     }

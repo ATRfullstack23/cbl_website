@@ -11,14 +11,14 @@
         main_header_text: "product_name",
         main_header_caption: "hsn_code",
         caption: "product_category_id",
-        stock_badge: "available_quantity",
-        primary_section_title: "Product Information",
-        secondary_section_title: "Pricing Details",
-        main_detail_items: [
+        status_badge: "available_quantity",
+        left_section_title: "Product Information",
+        right_section_title: "Pricing Details",
+        left_section_items: [
             { item_value: "mrp", item_text: "" },
-            { item_value: "sale_price", item_text: "" },
-            { item_value: "sales_tax", item_text: "" },
-            { item_value: "purchase_tax", item_text: "" }
+        ],
+        right_section_items: [
+            { item_value: "mrp", item_text: "" },
         ]
     }
 
@@ -51,35 +51,32 @@
             <h3 class="name">{get_column_display_value(data_mapping.main_header_text)}</h3>
             <div class="identifiers">
                 <span class="id">{get_column_display_name(data_mapping.main_header_caption) || ""}:</span>
-                <span class="hsn">{get_column_display_value(data_mapping.main_header_caption)}</span>
+                <span class="hsn">{get_column_display_value(data_mapping.main_header_caption) || ""}</span>
             </div>
         </div>
         <div class="stock_indicator warning">
-            <div class="stock_value">{get_column_display_value(data_mapping.stock_badge) || '0'}</div>
-            <div class="stock_unit">Pieces</div>
+            <div class="stock_value">{get_column_display_value(data_mapping.status_badge) || ''}</div>
 <!--            <div class="stock_status">Low Stock</div>-->
         </div>
     </div>
 
     <div class="card_content">
         <div class="info_section">
-            <h4 class="section_title">{get_column_display_value(data_mapping.primary_section_title) || ""}}</h4>
+            <h4 class="section_title">{get_column_display_value(data_mapping.left_section_title) || ""}</h4>
             <table class="info_table">
+                {#each data_mapping.left_section_items as item}
                 <tr>
-                    <td class="field_label">{get_column_display_name(data_mapping.caption)}</td>
-                    <td class="field_value">{get_column_display_value(data_mapping.caption)|| "0"}</td>
+                    <td class="field_label">{get_column_display_name(item.item_text)}</td>
+                    <td class="field_value">{get_column_display_value(item.item_value)|| ""}</td>
                 </tr>
-                <tr>
-                    <td class="field_label">{get_column_display_name(data_mapping.main_header_caption) || ""}:</td>
-                    <td class="field_value">{get_column_display_value(data_mapping.main_header_caption)}</td>
-                </tr>
+                {/each}
             </table>
         </div>
 
         <div class="info_section">
-            <h4 class="section_title">{get_column_display_value(data_mapping.secondary_section_title) || ""}</h4>
+            <h4 class="section_title">{get_column_display_value(data_mapping.right_section_title) || ""}</h4>
             <table class="info_table">
-                {#each data_mapping.main_detail_items as item}
+                {#each data_mapping.right_section_items as item}
                     <tr>
                         <td class="field_label">{get_column_display_name(item.item_text) || ""}:</td>
                         <td class="field_value price_mrp">{get_column_display_value(item.item_value) || ""}</td>

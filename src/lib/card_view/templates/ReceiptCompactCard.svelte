@@ -9,18 +9,13 @@
     export let data_mapping = {
             main_header_text: "voucher_number",
             main_header_caption: "customer_profile_id",
-            payment_mode_badge: "payment_mode",
-            payment_amount_details: "payment_amount",
-            badge_icon: "badge_icon",
+            status_badge: "payment_mode",
+            status_icon: "badge_icon",
+            highlight_value_box: "payment_amount",
             main_detail_items: [
                 { item_value: "customer_profile_id" , item_text: "" },
                 { item_value: "transaction_date"  , item_text: "" },
                 { item_value: "payment_amount"  , item_text: "" }
-            ],
-            additional_detail_items: [
-                { item_value: "invoice_id"  , item_text: "" },
-                { item_value: "bank_profile_id"  , item_text: "" },
-                { item_value: "payment_type"  , item_text: "" }
             ]
         }
 
@@ -53,24 +48,24 @@
 <div class="common_card_payment_compact">
     <div class="card_header">
         <div class="voucher_section">
-            <div class="voucher_number">{get_column_display_value(data_mapping.main_header_text)}</div>
-            <div class="payment_id">{get_column_display_value(data_mapping.main_header_caption)}</div>
+            <div class="voucher_number">{get_column_display_value(data_mapping.main_header_text) || ""}</div>
+            <div class="payment_id">{get_column_display_value(data_mapping.main_header_caption) || ""}</div>
         </div>
         <div class="payment_mode mode_upi">
-            <span class="mode_icon">{get_column_display_value(data_mapping.badge_icon)}</span>
-            <span class="mode_text">{get_column_display_value(data_mapping.payment_mode_badge)}</span>
+            <span class="mode_icon">{data_mapping.status_icon}</span>
+            <span class="mode_text">{get_column_display_value(data_mapping.status_badge) || ""}</span>
         </div>
     </div>
 
     <div class="card_body">
-        <div class="customer_section">
-            <div class="customer_name">{get_column_display_value(data_mapping.main_header_caption)}</div>
-<!--            <div class="transaction_date">{get_formatted_date(data_mapping.additional_details.column_id)}</div>-->
-        </div>
+<!--        <div class="customer_section">-->
+<!--&lt;!&ndash;            <div class="customer_name">{get_column_display_value(data_mapping.main_header_caption)}</div>&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="transaction_date">{get_formatted_date(data_mapping.additional_details.column_id)}</div>&ndash;&gt;-->
+<!--        </div>-->
 
         <div class="amount_section">
-            <div class="amount_value">{get_column_display_value(data_mapping.payment_amount_details)}</div>
-            <div class="amount_label">{get_column_display_name(data_mapping.payment_amount_details)}</div>
+            <div class="amount_value">{get_column_display_value(data_mapping.highlight_value_box) || ""}</div>
+            <div class="amount_label">{get_column_display_name(data_mapping.highlight_value_box) || ""}</div>
         </div>
 
         <div class="details_section">

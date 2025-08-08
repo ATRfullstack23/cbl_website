@@ -7,7 +7,8 @@
     export let data_mapping = {
         main_header_text: "customer_name",
         main_header_caption: "customer_type",
-        id_badge: "id",
+        status_badge: "id",
+        header_icon: "",
         main_detail_items: [
             {
                 item_value: "email", item_text: ""
@@ -15,8 +16,7 @@
             {
                 item_value: "phone_number", item_text: ""
             }
-        ],
-        address_field:"address"
+        ]
     }
 
     function get_column_display_value(column_id){
@@ -39,14 +39,18 @@
 
 <div class="common_card_split">
     <div class="card_sidebar">
-        <div class="customer_initial">J</div>
-        <div class="customer_id">{get_column_display_value(data_mapping.id_badge)}</div>
-        <div class="customer_type_label">{get_column_display_value(data_mapping.main_header_caption)}</div>
+        {#if data_mapping.header_icon && data_mapping.header_icon.length}
+            <div class="customer_initial">{data_mapping.header_icon || ""}</div>
+        {/if}
+        {#if get_column_display_value(data_mapping.status_badge) && get_column_display_value(data_mapping.status_badge).length}
+            <div class="customer_id">{get_column_display_value(data_mapping.status_badge) || ""}</div>
+        {/if}
+        <div class="customer_type_label">{get_column_display_value(data_mapping.main_header_caption) || ""}</div>
     </div>
 
     <div class="card_main">
         <div class="customer_title">
-            <h3 class="name">{get_column_display_value(data_mapping.main_header_text)}</h3>
+            <h3 class="name">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
         </div>
 
         <div class="info_sections">
