@@ -228,7 +228,7 @@ Navigation.prototype = {
         self.forEachItem(function(item){
             if(item instanceof Module){
                 var subModule = item.defaultSubModule;
-                if(subModule.notification && subModule.notification.countSql && subModule.notification.countSql.sql && subModule.notification.interval){
+                if(subModule && subModule.notification && subModule.notification.countSql && subModule.notification.countSql.sql && subModule.notification.interval){
                     subModule.on(SubModule.EVENTS.notificationCountReceived, function(notificationCount){
                         self.setNotificationCount(item, notificationCount);
                     });

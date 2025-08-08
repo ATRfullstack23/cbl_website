@@ -26,12 +26,12 @@ SubReport.prototype = {
 
         self.elements = {};
         self.container = self.elements.container = $(document.createElement('div'));
-        return;
+        // return;
 
         // self.cardManager = new CardManager(self.config.cards, self);
         // self.graphManager = new GraphManager(self.config.graphs, self);
-        // self.listManager = new ListManager(self.config.lists, self);
-        // self.reportFilterManager = new ReportFilterManager(self.config.reportFilters, self);
+        self.listManager = new ListManager(self.config.lists, self);
+        self.reportFilterManager = new ReportFilterManager(self.config.reportFilters, self);
 
         self.createElements();
         self.intializeSocketEventsObject();
@@ -162,6 +162,8 @@ SubReport.prototype = {
         if(!positionObj){
             positionObj = userSettings[self.id+ '_gridster_'+ ERP.DEVICE_TYPES.PC];
         }
+
+        positionObj = self.erp.get_user_setting_value(self.id+ '_gridster_'+ ERP.DEVICE_TYPES.PC);
         return positionObj;
     },
     setPositionAndSize: function(){
@@ -170,15 +172,15 @@ SubReport.prototype = {
         if(!positionObj){
             return self;
         }
-        self.forEachCard(function(card){
-            card.setPositionAndSize(positionObj.cards[card.id]);
-        });
+        // self.forEachCard(function(card){
+        //     card.setPositionAndSize(positionObj.cards[card.id]);
+        // });
         self.forEachList(function(list){
             list.setPositionAndSize(positionObj.lists[list.id]);
         });
-        self.forEachGraph(function(graph){
-            graph.setPositionAndSize(positionObj.graphs[graph.id]);
-        });
+        // self.forEachGraph(function(graph){
+        //     graph.setPositionAndSize(positionObj.graphs[graph.id]);
+        // });
         self.forEachReportFilter(function(reportFilter){
             reportFilter.setPositionAndSize(positionObj.reportFilters[reportFilter.id]);
         });
@@ -191,15 +193,15 @@ SubReport.prototype = {
         var self = this;
         self.isInReorderMode = true;
         self.container.css('min-height', (window.innerHeight-100)+'px');
-        self.forEachCard(function(card){
-            card.setToReorderMode();
-        });
+        // self.forEachCard(function(card){
+        //     card.setToReorderMode();
+        // });
         self.forEachList(function(list){
             list.setToReorderMode();
         });
-        self.forEachGraph(function(graph){
-            graph.setToReorderMode();
-        });
+        // self.forEachGraph(function(graph){
+        //     graph.setToReorderMode();
+        // });
         self.forEachReportFilter(function(graph){
             graph.setToReorderMode();
         });
@@ -235,55 +237,55 @@ SubReport.prototype = {
     },
     resetAllItems: function(){
         var self = this;
-        self.cardManager.resetCardValues();
-        self.graphManager.resetGraphValues();
+        // self.cardManager.resetCardValues();
+        // self.graphManager.resetGraphValues();
         self.listManager.resetListValues();
-        self.cardManager.resetCardValues();
+        // self.cardManager.resetCardValues();
         return self;
     },
     refreshAllItems: function(){
         var self = this;
         if(!self.isInFloatingWindow && !self.gridster && self.erp.deviceType === ERP.DEVICE_TYPES.PC){
             self.setPositionAndSize();
-            self.gridster = self.elements.ulContainer.gridster(
-                {
-                    widget_margins: [5, 5],
-                    widget_base_dimensions: [200, 100],
-                    avoid_overlapped_widgets: true,
-                    resize: {
-                        enabled: true,
-                        axes: ['x', 'y', 'both'],
-                        max_size: [Infinity, Infinity],
-                        stop: function(event, ui, element){
-                            var report = self.report;
-                            /*report.getSelectedSubReport().savePositionAndSize();*/
-                            self.savePositionAndSize();
-                            //var subReport =  report.getSelectedSubReport();
-                            var subReport =  self;
-                            if(subReport.graphManager.graphs){
-                                if(element.hasClass('graph-container')){
-                                    var graphId = element.attr('id');
-                                    setTimeout(function(){
-                                        subReport.graphManager.graphs[graphId]
-                                            .redraw();
-                                    }, 500);
-                                }
-                            }
-                            else{
-                                var report = self.report;
-                                report.getSelectedSubReport().savePositionAndSize();
-                            }
-                        }
-                    },
-                    draggable:{
-                        enabled: false,
-                        handle: '.divHandle',
-                        axes: ['x', 'y', 'both'],
-                        stop: function(event, ui){
-                            self.savePositionAndSize();
-                        }
-                    }
-                });
+            // self.gridster = self.elements.ulContainer.gridster(
+            //     {
+            //         widget_margins: [5, 5],
+            //         widget_base_dimensions: [200, 100],
+            //         avoid_overlapped_widgets: true,
+            //         resize: {
+            //             enabled: true,
+            //             axes: ['x', 'y', 'both'],
+            //             max_size: [Infinity, Infinity],
+            //             stop: function(event, ui, element){
+            //                 var report = self.report;
+            //                 /*report.getSelectedSubReport().savePositionAndSize();*/
+            //                 self.savePositionAndSize();
+            //                 //var subReport =  report.getSelectedSubReport();
+            //                 var subReport =  self;
+            //                 if(subReport.graphManager.graphs){
+            //                     if(element.hasClass('graph-container')){
+            //                         var graphId = element.attr('id');
+            //                         setTimeout(function(){
+            //                             subReport.graphManager.graphs[graphId]
+            //                                 .redraw();
+            //                         }, 500);
+            //                     }
+            //                 }
+            //                 else{
+            //                     var report = self.report;
+            //                     report.getSelectedSubReport().savePositionAndSize();
+            //                 }
+            //             }
+            //         },
+            //         draggable:{
+            //             enabled: false,
+            //             handle: '.divHandle',
+            //             axes: ['x', 'y', 'both'],
+            //             stop: function(event, ui){
+            //                 self.savePositionAndSize();
+            //             }
+            //         }
+            //     });
         }
         self.refreshItemsDataFromServer(true);
         //self.socket.emit(self.socketEvents.getAllReports, {});
@@ -305,12 +307,12 @@ SubReport.prototype = {
         self.forEachList(function(list){
             list.refreshDataFromServer(parentReportFilter);
         });
-        self.forEachCard(function(card){
-            card.refreshDataFromServer(parentReportFilter);
-        });
-        self.forEachGraph(function(graph){
-            graph.refreshDataFromServer(parentReportFilter);
-        });
+        // self.forEachCard(function(card){
+        //     card.refreshDataFromServer(parentReportFilter);
+        // });
+        // self.forEachGraph(function(graph){
+        //     graph.refreshDataFromServer(parentReportFilter);
+        // });
         if(getReportFilterData){
             self.forEachReportFilter(function(reportFilter){
                 reportFilter.refreshDataFromServer(parentReportFilter);
@@ -414,15 +416,17 @@ SubReport.prototype = {
 //            subReport.forEachReportFilter(function(reportFilter){
 //                controlContainer.append(reportFilter.getElement());
 //            });
-            subReport.forEachCard(function(card){
-                ulContainer.append(card.getElement());
-            });
+
+
+            // subReport.forEachCard(function(card){
+            //     ulContainer.append(card.getElement());
+            // });
             subReport.forEachList(function(list){
                 ulContainer.append(list.getElement());
             });
-            subReport.forEachGraph(function(graph){
-                ulContainer.append(graph.getElement());
-            });
+            // subReport.forEachGraph(function(graph){
+            //     ulContainer.append(graph.getElement());
+            // });
 
 //            container.append(table);
             subReport.elements = elements;
@@ -543,7 +547,7 @@ SubReport.prototype = {
                 //delete self.childWindows[childWindow.id];
             },
             onShow: function(){
-                childReport.show().setSelectedSubReport(childReport.getSelectedSubReport(), true);
+                childReport.show().setSelectedSubReport(childReport.getSelectedSubReport(), {fromTrigger: true});
             }
         }, self);
         self.childWindows[childWindow.id] = childWindow;

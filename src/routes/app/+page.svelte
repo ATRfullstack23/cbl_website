@@ -135,6 +135,12 @@
                 filter_config: item_info.context_data.filter_config || undefined
             });
         }
+        else if(item_info.action_type === 'go_to_report'){
+            erp_instance.setSelectedReport(item_info.context_data.report_id, {
+                subreport_id: item_info.context_data.subreport_id || undefined,
+                filter_config: item_info.context_data.filter_config || undefined
+            });
+        }
         else if(item_info.action_type === 'go_to_dashboard'){
             erp_instance.setSelectedDashboard(item_info.context_data.dashboard_id);
         }

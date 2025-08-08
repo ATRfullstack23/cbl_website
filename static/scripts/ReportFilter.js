@@ -242,7 +242,7 @@ ReportFilter.prototype = {
             }
         }
 
-        var url = '/ajax/reports/' + self.report.id + '/' +self.subReport.id + '/getReportFilterData/'+ self.id;
+        var url = self.erp.backend_root_url + '/ajax/reports/' + self.report.id + '/' +self.subReport.id + '/getReportFilterData/'+ self.id;
         self.resetValues();
         $.ajax({
             url: url,

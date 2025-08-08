@@ -14,8 +14,8 @@
     height: 100%;
     width: 100%;
     overflow: auto;
-	padding-bottom: 10px;
-	padding-right: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
 }
 .list-divHeader {
     padding: 12px 0px;
@@ -78,17 +78,26 @@
     text-transform: capitalize !important;
     text-align: left;
     padding: 10px 10px !important;
+    padding: 8px 5px !important;
     border-bottom: 1px solid #CCC;
     font-size: 14px;
+    font-size: 13px;
 }
+
+.list-tableMain th input {
+    display: none !important;
+}
+
 .list-tableMain th > span{
     display: block;
     padding: 5px;
 }
 .list-tableMain td{
     padding: 10px 10px !important;
+    padding: 8px 5px !important;
     color: #000;
     font-size: 14px;
+    font-size: 13px;
 }
 
 .list-tableMain > tbody > tr:nth-child(odd) {
@@ -107,3 +116,38 @@
 .dataTables_filter{
     display: none;
 }
+
+.list-tableMain.wysiwyg_table td {
+    padding: 8px;
+    min-width: 120px;
+}
+
+.list-tableMain.wysiwyg_table td, .list-tableMain.wysiwyg_table td span {
+    font-family: "Red Hat Display", sans-serif;
+}
+
+.list-container .subReportItem{
+    padding: 0;
+}
+
+.list-container .subReportItem{
+    padding: 0;
+}
+
+.list-container {
+
+    & div#DataTables_Table_1_length{
+        padding: 1px 7px;
+    }
+
+    & .dataTables_wrapper .dataTables_info{
+
+    }
+}
+
+
+
+
+
+
+

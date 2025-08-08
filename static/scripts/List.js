@@ -1,10 +1,51 @@
 /**
  * Created by Akhil Sekharan on 12/5/13.
  */
+/**
+ * Created by Akhil Sekharan on 12/5/13.
+ */
 
 function List(config, parentObject) {
     var self = this;
     self.config = config;
+
+    // temp aki for accounts demo -- need to remove later and move this configuration at usc level
+    if(config.id === 'profit_and_loss_account'){
+        // manual override aki
+        config.is_wysiwyg_table = true;
+        config.wysiwyg_table_settings = {
+            number_of_columns: 6,
+
+        };
+    }
+
+    if(config.id === 'trial_balance'){
+        // manual override aki
+        config.is_wysiwyg_table = true;
+        config.wysiwyg_table_settings = {
+            number_of_columns: 3,
+
+        };
+    }
+
+    if(config.id === 'project_wise_p_and_l_report'){
+        // manual override aki
+        config.is_wysiwyg_table = true;
+        config.wysiwyg_table_settings = {
+            number_of_columns: 3,
+
+        };
+    }
+
+    if(config.id === 'vertical_profit_and_loss_account'){
+        // manual override aki
+        config.is_wysiwyg_table = true;
+        config.wysiwyg_table_settings = {
+            number_of_columns: 3,
+
+        };
+    }
+
     self.listManager = parentObject;
     self.subReport = self.listManager.parentObject;
     self.report = self.listManager.parentObject.parentObject;
@@ -47,6 +88,12 @@ List.prototype = {
             enableFilters: true,
             enableSorting: true
         };
+
+        if(self.config.is_wysiwyg_table){
+            self.is_wysiwyg_table = true;
+            self.config.dataTables = self.dataTables = null;
+        }
+
         for(var key in self.config){
             self[key] = self.config[key];
         }
@@ -195,7 +242,7 @@ List.prototype = {
         else{
             self.latestParentReportFilterId = undefined;
         }
-        var url = '/ajax/reports/' + self.report.id + '/' +self.subReport.id + '/getListData/'+ self.id;
+        var url = self.erp.backend_root_url + '/ajax/reports/' + self.report.id + '/' +self.subReport.id + '/getListData/'+ self.id;
         self.resetValues();
         $.ajax({
             url: url,
@@ -254,12 +301,47 @@ List.prototype = {
     },
 
 
+    setup_wysiwyg_table: function(data){
+        const self = this;
+        const table_data = [];
+        table_data.push(...data);
+        self.data = table_data;
+
+        table_data.shift();
+        console.log('table_data', table_data)
+        console.log('list self', self)
+        window.__list = self;
+
+        self.tbody = self._creation.createTableBody(self);
+
+        self.elements.tableMain.empty();
+        // self.elements.tableMain.append(self.thead);
+        self.elements.tableMain.append(self.tbody);
+        self.elements.tableMain.addClass('wysiwyg_table');
+
+        for(const data_row of table_data){
+            for(const data_column_value in data_row){
+
+            }
+        }
+
+
+    },
+
     listDataReceived: function(data){
         var self = this;
         self.hideOverLay();
         var listData = [];
         var dataRowId = 1;
         data = data || [];
+
+
+        if(self.is_wysiwyg_table){
+            self.setup_wysiwyg_table(data);
+            return;
+        }
+
+
         if(self.config.dataTables.enableSorting){
             data.reverse().forEach(function(dataRow){
                 dataRow.id = dataRowId;
@@ -541,7 +623,9 @@ List.prototype = {
                 for(var key in dataRow){
                     var th = document.createElement('th');
                     var element = document.createElement('span');
-                    element.innerHTML = key;
+                    let table_header_name = key;
+                    table_header_name = table_header_name.replaceAll('_', ' ');
+                    element.innerHTML = table_header_name;
                     th.appendChild(element);
                     tr.appendChild(th);
                 }
@@ -578,17 +662,48 @@ List.prototype = {
         createDataRows: function(list){
             var self = this;
             var tbody = document.createElement('tbody');
-            list.data.forEach(function(dataRow){
-                var tr = document.createElement('tr');
-                for(var key in dataRow){
-                    var td = document.createElement('td');
-                    var element = document.createElement('span');
-                    element.innerHTML = dataRow[key];
-                    td.appendChild(element);
-                    tr.appendChild(td);
-                }
-                tbody.appendChild(tr);
-            });
+
+            if(list.is_wysiwyg_table){
+                list.data.forEach(function(dataRow){
+                    var tr = document.createElement('tr');
+
+                    const actual_arr = dataRow['`'] || dataRow['~'];
+                    if(actual_arr.length === 3 && list.config.wysiwyg_table_settings.number_of_columns === 6){
+                        actual_arr.unshift('');
+                        actual_arr.unshift('');
+                        actual_arr.unshift('');
+                    }
+
+
+                    console.log('actual_arr.length', actual_arr.length)
+                    console.log('list.config.wysiwyg_table_settings.number_of_columns', list.config.wysiwyg_table_settings.number_of_columns)
+                    console.log('dataRow', actual_arr)
+
+                    for(var item_value of actual_arr){
+                        var td = document.createElement('td');
+                        var element = document.createElement('span');
+                        element.innerHTML = item_value;
+                        td.appendChild(element);
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                });
+            }
+            else{
+                list.data.forEach(function(dataRow){
+                    var tr = document.createElement('tr');
+                    for(var key in dataRow){
+                        var td = document.createElement('td');
+                        var element = document.createElement('span');
+                        element.innerHTML = dataRow[key];
+                        td.appendChild(element);
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                });
+            }
+
+
             return tbody;
         }
     },
