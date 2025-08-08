@@ -5,6 +5,7 @@
     import ButtonElement from "$lib/button_manager/ButtonElement.svelte";
     import ButtonAdvancedSettingsPopup from "$lib/button_manager/ButtonAdvancedSettingsPopup.svelte";
     import HorizontalProfitAndLoss from "$lib/reports/custom_layouts/HorizontalProfitAndLoss.svelte";
+    import AccountTypeSummary from "$lib/reports/custom_layouts/AccountTypeSummary.svelte";
 
 
     let shall_show_report_advanced_settings_popup;
@@ -61,6 +62,12 @@
         switch (layout_type) {
             case 'horizontal_profit_and_loss_new':
                 svelte_instance = new HorizontalProfitAndLoss({
+                    target: container_element,
+                    props: props,
+                });
+                break;
+            case 'account_type_summary':
+                svelte_instance = new AccountTypeSummary({
                     target: container_element,
                     props: props,
                 });
