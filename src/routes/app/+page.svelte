@@ -15,6 +15,7 @@
     import ButtonManagerMountHelper from "$lib/button_manager/ButtonManagerMountHelper.svelte";
     import ChildWindowMountHelper from "$lib/child_window/ChildWindowMountHelper.svelte";
     import FilterManagerMountHelper from "$lib/filter_manager/FilterManagerMountHelper.svelte";
+    import CustomReportsMountHelper from "$lib/reports/CustomReportsMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -87,7 +88,7 @@
                 dashboard_configurations_for_reference = erp_instance.user.userDetails.dashboards || [];
                 tick().then(()=>{
                     for(const d_svelte_item of erp_instance.dashboards_arr){
-                        console.log('d_svelte_item', d_svelte_item)
+                        // console.log('d_svelte_item', d_svelte_item)
                         erp_instance.dashboards[d_svelte_item.dashboard_id] = d_svelte_item;
                     }
 
@@ -96,7 +97,8 @@
 
                     erp_instance.get_navigation_configuration().then((n_c)=>{
                         navigation_config = n_c;
-                        console.log('navigation_config', navigation_config );
+                        window._navigation_config = navigation_config;
+                        // console.log('navigation_config', navigation_config );
                         erp_instance.container.appendTo(erp_content__container_element);
 
                         erp_instance.setDefaultModule();
@@ -122,7 +124,7 @@
     });
 
     function handle_navigation_item_selected(evt) {
-        // console.log('handle_navigation_item_selected', evt.detail)
+        console.log('handle_navigation_item_selected', evt.detail)
 
         if(erp_instance.current_active_child_window){
             erp_instance.current_active_child_window.close(); // might need to check multiple levels
@@ -168,6 +170,8 @@
 <!--<CustomCardCustomizationPopup/>-->
 
 <PrintPopupDialog bind:this={print_popup_dialog_instance}/>
+
+<CustomReportsMountHelper/>
 
 <ButtonManagerMountHelper/>
 

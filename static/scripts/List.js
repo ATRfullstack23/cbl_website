@@ -82,6 +82,10 @@ List.prototype = {
             "class": "list-tableMain"
         }
     },
+    get has_custom_layout(){
+        return this.custom_layout?.enable_custom_layout || false;
+    },
+
     initialize: function () {
         var self = this;
         self.config.dataTables = self.config.dataTables || {
@@ -144,11 +148,11 @@ List.prototype = {
     },
     bindEvents: function () {
         var self = this;
-        self.elements.btnExportToExcel.on('click', function(){
+        self.elements.btnExportToExcel?.on('click', function(){
             self.exportToExcel();
         });
         // if(self.enablePdfDownload && self.enablePdfDownload.enable){
-        self.elements.btnExportToPdf.on('click', function(){
+        self.elements.btnExportToPdf?.on('click', function(){
             self.exportToPdf();
         });
         // }
@@ -301,6 +305,21 @@ List.prototype = {
     },
 
 
+    setup_custom_layout: function(data){
+        const self = this;
+        const table_data = [];
+
+
+        console.log('setup_custom_layout', data)
+
+        console.log('table_data', table_data)
+        window.__list = self;
+
+        this.svelte_element_instance.handle_new_data_received(data);
+
+
+    },
+
     setup_wysiwyg_table: function(data){
         const self = this;
         const table_data = [];
@@ -309,7 +328,6 @@ List.prototype = {
 
         table_data.shift();
         console.log('table_data', table_data)
-        console.log('list self', self)
         window.__list = self;
 
         self.tbody = self._creation.createTableBody(self);
@@ -334,6 +352,12 @@ List.prototype = {
         var listData = [];
         var dataRowId = 1;
         data = data || [];
+
+
+        if(self.has_custom_layout){
+            self.setup_custom_layout(data);
+            return;
+        }
 
 
         if(self.is_wysiwyg_table){
@@ -601,14 +625,22 @@ List.prototype = {
             list.container = container;
             list.elements.container = container;
 
-            var divMainContainer = self.createMainContainer(list);
-            var divHeader = self.createHeader(list);
-            var divContent = self.createContentContainer(list);
-
             if(list.hidden){
                 container.addClass('hidden');
-            };
-            divMainContainer.append(divHeader).append(divContent);
+            }
+
+            var divMainContainer = self.createMainContainer(list);
+
+            if(list.custom_layout?.enable_custom_layout){
+                const svelte_instance = window.mount_custom_report_element(divMainContainer, list, {}, list.custom_layout.layout_unique_id);
+                list.svelte_element_instance = svelte_instance;
+            }
+            else{
+                var divHeader = self.createHeader(list);
+                var divContent = self.createContentContainer(list);
+                divMainContainer.append(divHeader).append(divContent);
+            }
+
 
             container.append(divMainContainer);
             return self;
