@@ -16,6 +16,7 @@
     import ChildWindowMountHelper from "$lib/child_window/ChildWindowMountHelper.svelte";
     import FilterManagerMountHelper from "$lib/filter_manager/FilterManagerMountHelper.svelte";
     import CustomReportsMountHelper from "$lib/reports/CustomReportsMountHelper.svelte";
+    import GridViewCustomElementsMountHelper from "$lib/grid_view/GridViewCustomElementsMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -168,6 +169,8 @@
 </script>
 
 <!--<CustomCardCustomizationPopup/>-->
+
+<GridViewCustomElementsMountHelper/>
 
 <PrintPopupDialog bind:this={print_popup_dialog_instance}/>
 
