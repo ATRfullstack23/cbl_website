@@ -2,6 +2,37 @@
 
 
 
+Grid.prototype.move_grid_column = function (th_element, direction) {
+    console.log('move_grid_column', th_element, direction);
+
+
+    const context_item_id = th_element.attr('data-custom_element_id') || th_element.attr('data-column_id');
+
+    switch (direction) {
+        case 'left':
+            th_element.insertBefore(th_element.prev());
+            break;
+        case 'right':
+            th_element.insertAfter(th_element.next());
+            break;
+    }
+
+
+    for(const row_id in this.element_references.tbody){
+        const td_element = this.element_references.tbody[row_id][context_item_id];
+
+        switch (direction) {
+            case 'left':
+                td_element.insertBefore(td_element.prev());
+                break;
+            case 'right':
+                td_element.insertAfter(td_element.next());
+                break;
+        }
+    }
+
+}
+
 Grid.prototype.show_edit_grid_normal_element_popup = function (context_id, element_type, element) {
     console.log('show_edit_grid_normal_element_popup', context_id, element_type, element);
 
@@ -91,43 +122,23 @@ Grid.prototype.parse_customizations_css = function (new_config, div_holder_eleme
     return css_to_set;
 }
 
-Grid.prototype.load_customization_to_normal_column_element = function (column_info, th_or_td, new_config) {
-    console.log('load_customization_to_normal_column_element new_config', new_config);
-    console.log('load_customization_to_normal_column_element column_info', column_info);
-    // console.log('load_customization_to_normal_column_element div_holder_element', div_holder_element);
-
+Grid.prototype.load_common_customization_to_grid_view_element = function (column_info, custom_element_info, th_or_td, new_config) {
     let th_element;
+
+    const context_item_id = custom_element_info?.id || column_info?.id;
+
     if(th_or_td === 'th'){
-        th_element = this.element_references.thead[column_info.id];
+        th_element = this.element_references.thead[context_item_id];
         const inner_span = th_element.find('.grid_head_column_display_name_element');
         if(new_config.display_name){
             inner_span.text(new_config.display_name);
         }
-    }
-    else if(th_or_td === 'td'){
-        // need to handle here
-    }
 
-
-    // const css_to_set = this.parse_customizations_css(new_config, div_holder_element);
-    //
-    // if(Object.keys(css_to_set).length){
-    //     div_holder_element.css(css_to_set);
-    // }
-
-}
-
-
-Grid.prototype.load_customization_to_custom_column_element = function (custom_element_info, th_or_td, new_config) {
-
-
-
-    let th_element;
-    if(th_or_td === 'th'){
-        th_element = this.element_references.thead[custom_element_info.id];
-        const inner_span = th_element.find('.grid_head_column_display_name_element');
-        if(new_config.display_name){
-            inner_span.text(new_config.display_name);
+        if(new_config.min_width){
+            th_element.css('minWidth', new_config.min_width + 'px');
+        }
+        else{
+            th_element.css('minWidth', '');
         }
     }
     else if(th_or_td === 'td'){
@@ -136,6 +147,50 @@ Grid.prototype.load_customization_to_custom_column_element = function (custom_el
         // const svelte_instance = this.get_custom_element_svelte_instance(custom_element_info.id);
         // svelte_instance.handle_customizations_updated(new_config);
     }
+}
+
+Grid.prototype.load_customization_to_normal_column_element = function (column_info, th_or_td, new_config) {
+    console.log('load_customization_to_normal_column_element new_config', new_config);
+    console.log('load_customization_to_normal_column_element column_info', column_info);
+    // console.log('load_customization_to_normal_column_element div_holder_element', div_holder_element);
+
+    this.load_common_customization_to_grid_view_element(column_info, null, th_or_td, new_config)
+
+    // let th_element;
+    // if(th_or_td === 'th'){
+    //     th_element = this.element_references.thead[column_info.id];
+    //     const inner_span = th_element.find('.grid_head_column_display_name_element');
+    //     if(new_config.display_name){
+    //         inner_span.text(new_config.display_name);
+    //     }
+    // }
+    // else if(th_or_td === 'td'){
+    //     // need to handle here
+    // }
+
+
+}
+
+
+Grid.prototype.load_customization_to_custom_column_element = function (custom_element_info, th_or_td, new_config) {
+
+
+    this.load_common_customization_to_grid_view_element(null, custom_element_info, th_or_td, new_config)
+
+    // let th_element;
+    // if(th_or_td === 'th'){
+    //     th_element = this.element_references.thead[custom_element_info.id];
+    //     const inner_span = th_element.find('.grid_head_column_display_name_element');
+    //     if(new_config.display_name){
+    //         inner_span.text(new_config.display_name);
+    //     }
+    // }
+    // else if(th_or_td === 'td'){
+    //     // need to handle here
+    //
+    //     // const svelte_instance = this.get_custom_element_svelte_instance(custom_element_info.id);
+    //     // svelte_instance.handle_customizations_updated(new_config);
+    // }
 
 
 }
@@ -183,18 +238,15 @@ Grid.prototype.handle_custom_grid_element_config_updated = function (custom_elem
     const custom_element_info = this.get_custom_element_info(custom_element_id);
     custom_element_info.config = new_config;
 
-    const svelte_instance = this.get_custom_element_svelte_instance(custom_element_id);
-    console.log('new_config', new_config);
-    console.log('svelte_instance', svelte_instance);
-    svelte_instance.handle_config_updated(new_config);
+
+    for(const row_id in this.mounted_custom_element_svelte_instances.tbody){
+        const svelte_instance = this.mounted_custom_element_svelte_instances.tbody[row_id][custom_element_id];
+        svelte_instance.handle_config_updated(new_config);
+    }
+
 }
 
-Grid.prototype.handle_new_custom_grid_element_mounted = function (mounted_svelte_instance) {
-    mounted_svelte_instance.container_element_jquery.data('svelte_instance', mounted_svelte_instance);
-    if(this.is_in_styling_mode){
-        this.refresh_grid_column_holder_elements(mounted_svelte_instance.container_element);
-    }
-}
+
 
 Grid.prototype.get_custom_element_info = function (item_id) {
     return this.latest_styling_setting.custom_elements[item_id];
@@ -206,8 +258,26 @@ Grid.prototype.get_all_custom_elements = function () {
 
 
 Grid.prototype.delete_custom_element = function (custom_element_info) {
-    delete this.latest_styling_setting.custom_elements[custom_element_info.id];
-    this.get_custom_element_svelte_instance(custom_element_info.id).container_element.remove();
+
+    let custom_element_id = custom_element_info.id;
+
+    delete this.latest_styling_setting.custom_elements[custom_element_id];
+    delete this.latest_styling_setting.column_structure[custom_element_id];
+
+    const index = this.get_current_column_order().indexOf(custom_element_id);
+    this.get_current_column_order().splice(index, 1);
+
+    this.element_references.thead[custom_element_id].remove();
+    delete this.element_references.thead[custom_element_id];
+
+    for(const row_id in this.element_references.tbody){
+        const td_element = this.element_references.tbody[row_id][custom_element_id];
+        td_element.remove();
+        delete this.element_references.tbody[row_id][custom_element_id];
+    }
+
+    // might need to handle tfoot as well
+
 }
 
 Grid.prototype.get_custom_element_svelte_instance = function (item_id) {
@@ -222,61 +292,63 @@ Grid.prototype.detach_custom_elements_from_view = async function () {
     }
 }
 
-Grid.prototype.mount_custom_element = async function (item_id, item_type, target_element, existing_config) {
+Grid.prototype.mount_new_custom_element = async function (item_type) {
+    let _created_at_utc = Date.now();
+    let item_id = `ce_${item_type}__${_created_at_utc}`;
 
-    if(item_id && this.mounted_custom_element_svelte_instances[this.button.id][item_id]){
-        const svelte_instance = this.mounted_custom_element_svelte_instances[this.button.id][item_id];
-        console.log(`restoring : ${item_id}`, svelte_instance)
-        svelte_instance.container_element_jquery.appendTo(target_element);
-        return;
-    }
+    const custom_element_info = {
+        id: item_id,
+        type: item_type,
+        _created_at_utc : _created_at_utc,
+        unique_id: item_id,
+        config: {}
+    };
 
-    let is_new_item = false;
-    let _created_at_utc;
-    if(!item_id){
-        _created_at_utc = Date.now();
-        item_id = `ce_${this.button.id}_${item_type}__${_created_at_utc}`;
-        is_new_item = true;
-    }
+    this.latest_styling_setting.custom_elements[item_id] = custom_element_info;
+
+    const th = this._creation.create_table_head_cell(this, null, custom_element_info);
+    this.elements.grid_thead.children().append(th);
+    this.get_current_column_order().push(custom_element_info.id);
+    this.element_references.thead[item_id] = th;
+
+    // await this.mount_custom_element(item_id, item_type, th, null);
+
+    this.subModule.setDisplayMode();
+}
+
+
+Grid.prototype.mount_custom_element_to_data_row = async function (custom_element_info, target_parent_element, data_row) {
+
+    // if(item_id && this.mounted_custom_element_svelte_instances[this.button.id][item_id]){
+    //     const svelte_instance = this.mounted_custom_element_svelte_instances[this.button.id][item_id];
+    //     console.log(`restoring : ${item_id}`, svelte_instance)
+    //     svelte_instance.container_element_jquery.appendTo(target_element);
+    //     return;
+    // }
 
     let mounted_svelte_instance;
-    let current_custom_element_type;
-    switch (item_type){
-        case 'title_with_caption':
-            current_custom_element_type = 'title_with_caption';
-            mounted_svelte_instance = await this.styling_helper.mount_custom_element__title_with_caption(this, item_id, existing_config, target_element);
+    // let current_custom_element_type;
+    switch (custom_element_info.type){
+        case Grid.CUSTOM_ELEMENTS.inline_table_display.id:
+            // current_custom_element_type = item_type;
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__inline_table_display(this, custom_element_info, data_row, target_parent_element);
             break;
-        case 'alert_message':
-            current_custom_element_type = 'alert_message';
-            mounted_svelte_instance = await this.styling_helper.mount_custom_element__alert_message(this, item_id, existing_config, target_element);
-            break;
-        case 'caption_only':
-            mounted_svelte_instance = await this.styling_helper.mount_custom_element__caption_only(this, item_id, existing_config, target_element);
-            break;
-        case 'label_with_value':
-            mounted_svelte_instance = await this.styling_helper.mount_custom_element__label_with_value(this, item_id, existing_config, target_element);
-            break;
-        case 'stat_card_with_value':
-            mounted_svelte_instance = await this.styling_helper.mount_custom_element__stat_card_with_value(this, item_id, existing_config, target_element);
-            break;
-        case Grid.CUSTOM_ELEMENTS.number_display.id:
-            mounted_svelte_instance = await this.styling_helper.mount_custom_element__number_display(this, item_id, existing_config, target_element);
-            break;
+
     }
 
-    this.handle_new_custom_grid_element_mounted(mounted_svelte_instance);
-
-    if(is_new_item){
-        this.latest_styling_setting.custom_elements[item_id] = {
-            id: item_id,
-            type: item_type,
-            _created_at_utc : _created_at_utc,
-            unique_id: item_id,
-            config: {}
-        }
+    if(!this.mounted_custom_element_svelte_instances.tbody[data_row.id]){
+        this.mounted_custom_element_svelte_instances.tbody[data_row.id] = {};
     }
+    this.mounted_custom_element_svelte_instances.tbody[data_row.id][custom_element_info.id] = mounted_svelte_instance;
 
-    this.mounted_custom_element_svelte_instances[this.button.id][item_id] = mounted_svelte_instance;
+    // this.handle_new_custom_grid_element_mounted(mounted_svelte_instance);
+
+    // this.mounted_custom_element_svelte_instances[item_id] = mounted_svelte_instance;
+    //
+    // mounted_svelte_instance.container_element_jquery.data('svelte_instance', mounted_svelte_instance);
+    // if(this.is_in_styling_mode){
+    //     this.refresh_grid_column_holder_elements(mounted_svelte_instance.container_element);
+    // }
 
     return mounted_svelte_instance;
 }
@@ -285,12 +357,24 @@ Grid.prototype.mount_custom_element = async function (item_id, item_type, target
 Grid.prototype.styling_helper = {
     mount_custom_element__currency_amount_display: async function (grid, item_id, item_config, target_element) {
         if (!item_config) {
-            item_config = {label_text: '', value_text: ''};
+            item_config = {currency_static_value: '', value_text: ''};
         }
 
-        const svelte_instance = await window.mount_grid_custom_element(grid, target_element, Grid.CUSTOM_ELEMENTS.number_display.id, {
+        const svelte_instance = await window.mount_grid_custom_element(grid, target_element, Grid.CUSTOM_ELEMENTS.currency_amount_display.id, {
             unique_id: item_id,
             config: item_config
+        });
+
+        return svelte_instance;
+    },
+    mount_custom_element__inline_table_display: async function (grid, custom_element_info, data_row, target_element) {
+        if (!custom_element_info.config) {
+            custom_element_info.config = {currency_static_value: '', value_text: ''};
+        }
+
+        const svelte_instance = await window.mount_grid_custom_element(grid, target_element, data_row, Grid.CUSTOM_ELEMENTS.inline_table_display.id, {
+            unique_id: custom_element_info.id,
+            config: custom_element_info.config
         });
 
         return svelte_instance;
@@ -356,6 +440,7 @@ Grid.prototype.save_latest_styling_configuration = function () {
         let custom_element_id = th_element.attr('data-custom_element_id');
         let column_index  = th_element.index() - 1;
 
+        // console.log(`saving : ${context_item_id} at ${column_index} column_id : ${column_id} custom_id : ${custom_element_id}`);
 
         // console.log('context_item_id', context_item_id, column_index, th_element.get(0))
 
@@ -411,30 +496,30 @@ Grid.prototype.restore_custom_elements_from_config = async function (styling_con
 
         // console.log('restore_custom_elements_from_config', column_style_info, cell_element)
 
-        await self.mount_custom_element(custom_element_info.id, custom_element_info.type, cell_element, custom_element_info.config);
+        await self.mount_existing_custom_element(custom_element_info.id, custom_element_info.type, cell_element, custom_element_info.config);
     }
 
-},
+}
 
 Grid.prototype.get_latest_grid_item_style_info = function (context_item_id, context_info) {
     const self = this;
     let column_style_info = this.latest_styling_setting.column_structure[context_item_id];
     if(!column_style_info){
         const column_info = context_info.column_info;
-        const custom_element_info = context_info.custom_element;
+        const custom_element_info = context_info.custom_element_info || context_info.custom_element;
 
 
         column_style_info = {
             column_id : column_info?.id || undefined,
             custom_element_id : custom_element_info?.id || undefined,
-            column_stack_style : 'vertical_stack_1',
+            column_stack_style : 'vertical_stack_1_unused',
             customizations: {}
         }
         column_style_info.context_item_id = column_style_info.column_id || column_style_info.custom_element_id;
         this.latest_styling_setting.column_structure[context_item_id] = column_style_info;
     }
     return column_style_info;
-},
+}
 
 Grid.prototype.restore_styling_setting_from_config = async function (styling_config) {
     const self = this;
@@ -465,7 +550,10 @@ Grid.prototype.restore_styling_setting_from_config = async function (styling_con
     // }
 
 
-    await this.restore_custom_elements_from_config(styling_config);
+
+    // await this.restore_custom_elements_from_config(styling_config);
+
+
 
     // console.log('grid_column_holder_elements', grid_column_holder_elements)
     // console.log('restore_styling_setting_from_config', styling_config)
@@ -520,7 +608,7 @@ Grid.prototype.restore_styling_setting_from_config = async function (styling_con
                 self.load_customization_to_normal_column_element(column_info, 'th', column_style_info.customizations);
             }
             else if(column_style_info.customizations && custom_element_info){
-                self.load_customization_to_custom_column_element(custom_element_info, 'td', column_style_info.customizations);
+                self.load_customization_to_custom_column_element(custom_element_info, 'th', column_style_info.customizations);
             }
 
         }

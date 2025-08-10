@@ -5,8 +5,9 @@
     import CustomElementCustomizationPopup from "$lib/grid_view/CustomElementCustomizationPopup.svelte";
     import NormalElementCustomizationPopup from "$lib/grid_view/NormalElementCustomizationPopup.svelte";
     import CurrencyAmountDisplayCustomElement from "$lib/grid_view/CurrencyAmountDisplayCustomElement.svelte";
+    import InlineTableDisplayCustomElement from "$lib/grid_view/InlineTableDisplayCustomElement.svelte";
 
-    export async function mount_grid_custom_element(grid, target_container_element, element_type, outer_config) {
+    export async function mount_grid_custom_element(grid, target_container_element, data_row, element_type, outer_config) {
         // const target = document.querySelector(target_selector);
         if (!target_container_element) {
             console.error("Target element not found:", target_container_element);
@@ -23,16 +24,23 @@
         const props = {
             unique_id: outer_config.unique_id,
             config: outer_config.config,
+            data_row: data_row
         };
         // need to pass customizations as well
 
         switch (element_type) {
-            case Grid.CUSTOM_ELEMENTS.currency_amount_display.id:
-                svelte_instance = new CurrencyAmountDisplayCustomElement({
+            case Grid.CUSTOM_ELEMENTS.inline_table_display.id:
+                svelte_instance = new InlineTableDisplayCustomElement({
                     target: target_container_element,
                     props : props,
                 });
                 break;
+            // case Grid.CUSTOM_ELEMENTS.currency_amount_display.id:
+            //     svelte_instance = new CurrencyAmountDisplayCustomElement({
+            //         target: target_container_element,
+            //         props : props,
+            //     });
+            //     break;
         }
 
         await tick();

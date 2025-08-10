@@ -725,7 +725,7 @@ ButtonManager.prototype = {
                                     id: context_menu_key,
                                     displayName: `Add Element -> ${Grid.CUSTOM_ELEMENTS[key].display_name}`,
                                     onClick: ()=>{
-                                        self.subModule.grid.mount_custom_element(null, final_key, element, null).then(()=>{
+                                        self.subModule.grid.mount_new_custom_element(final_key).then(()=>{
                                             // custom element mounted
                                         });
                                     }
@@ -753,6 +753,28 @@ ButtonManager.prototype = {
                                     self.subModule.grid.show_edit_grid_normal_element_popup(column_id, 'column', element);
                                 }
                             }
+
+
+                            if(element.index() > 1){
+                                options.move_grid_column_to_left = {
+                                    id: 'move_grid_column_to_left',
+                                    displayName: 'Move Left',
+                                    onClick: ()=>{
+                                        self.subModule.grid.move_grid_column(element, 'left');
+                                    }
+                                }
+                            }
+
+                            if(element.index() < (element.parent().children().length - 1)){
+                                options.move_grid_column_to_right = {
+                                    id: 'move_grid_column_to_right',
+                                    displayName: 'Move Right',
+                                    onClick: ()=>{
+                                        self.subModule.grid.move_grid_column(element, 'right');
+                                    }
+                                }
+                            }
+
 
 
                             return options;

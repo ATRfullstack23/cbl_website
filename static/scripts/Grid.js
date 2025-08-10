@@ -41,6 +41,12 @@ Grid.prototype = {
             tfoot: {},
         };
 
+        this.mounted_custom_element_svelte_instances = {
+            thead: {},
+            tbody: {},
+            tfoot: {},
+        };
+
         self.setColumnIndex();
         self.pager = new Pager(self.pager, self);
         self.notifier = new Notifier({
@@ -80,9 +86,18 @@ Grid.prototype = {
             custom_elements: {}
         };
 
+        // self.latest_styling_setting = {
+        //     display_styling_mode: 'full_width',
+        //     last_updated_at_utc : null,
+        //     column_structure: {},
+        //     custom_elements: {}
+        // };
+
         // console.log('self.latest_styling_setting.column_order', self.latest_styling_setting.column_order)
 
         // self.latest_styling_setting.column_order = null;
+        // console.log('self.latest_styling_setting.', self.latest_styling_setting)
+        // self.latest_styling_setting.column_order[9] = 'ce_inline_table_display__1754809495429'
         if(!self.latest_styling_setting.column_order){
 
             let appended_columns_map = {};
@@ -524,6 +539,7 @@ Grid.prototype = {
     getData: function (options) {
         var self = this;
         self._db.getData(self, options);
+        window._grid = this;
         self.setFooterToLoadingMode();
         return self;
     },
@@ -960,7 +976,13 @@ Grid.prototype = {
             if (grid.subModule.conditionColorSetting && grid.subModule.conditionColorSetting.isEnabled) {
                 conditionColorSettings = grid.subModule.conditionColorSetting.conditionColorSetting;
             }
+
+            grid.element_references.tbody = {};
+
             grid.dataArr.forEach(function (dataRow) {
+                let data_row_id = dataRow['id'];
+                grid.element_references.tbody[data_row_id] = {};
+
                 var currentConditions = [];
                 if (conditionColorSettings) {
                     for (var conditionCount = 0; conditionCount < conditionColorSettings.length; conditionCount++) {
@@ -970,19 +992,27 @@ Grid.prototype = {
                     }
                 }
 
-                grid.elements.rows[dataRow['id']] = {};
-                var tr = document.createElement('tr');
-                tr.className = 'gridDataRow single_data_row_of_submodule';
-                tr.appendChild(self.createRowSelectorDataRow(grid.elements.rows[dataRow['id']], dataRow));
-                grid.get_current_column_order().forEach(function (columnId) {
-                    var column = subModule.columnManager.columns[columnId];
+                grid.elements.rows[data_row_id] = {};
+                var tr_data_row = document.createElement('tr');
+                tr_data_row.className = 'gridDataRow single_data_row_of_submodule';
+                tr_data_row.appendChild(self.createRowSelectorDataRow(grid.elements.rows[data_row_id], dataRow));
+                grid.get_current_column_order().forEach(function (context_item_id) {
+                    var column = subModule.columnManager.columns[context_item_id];
+                    let columnId;
 
                     // need to have custom element handling here as well;
+                    let custom_element_info;
+                    if(!column){
+                        custom_element_info = grid.get_custom_element_info(context_item_id);
+                    }
+                    const td_data_row_cell = document.createElement('td');
 
-                    if (!column.gridView.isHidden) {
-                        var th = document.createElement('td');
+                    if(column){
+                        columnId = column.id;
+                        td_data_row_cell.className = 'td_data_row_cell_normal_column';
+
                         var div = document.createElement('div');
-                        th.setAttribute('data-help', column.helpMessage);
+                        td_data_row_cell.setAttribute('data-help', column.helpMessage);
                         div.setAttribute('class', 'gridDataRowCellElement');
                         div.classList.add('text-align-' + (column.gridViewTextAlign || 'left'));
                         var element = column.createGridElement(dataRow);
@@ -992,22 +1022,34 @@ Grid.prototype = {
                             div.appendChild(customElement.get(0));
                         }
                         div.appendChild(element.get(0));
-                        th.appendChild(div);
-                        tr.appendChild(th);
+                        td_data_row_cell.appendChild(div);
 
-                        th.setAttribute('data-column-type', column.type);
+                        td_data_row_cell.setAttribute('data-column_id', columnId);
+                        td_data_row_cell.setAttribute('data-column-type', column.type);
                         if (column.controlledMaxWidthInGridView && column.controlledMaxWidthInGridView.isEnabled) {
-                            th.setAttribute('data-column-max-width', column.controlledMaxWidthInGridView.controlledMaxWidthInGridView);
+                            td_data_row_cell.setAttribute('data-column-max-width', column.controlledMaxWidthInGridView.controlledMaxWidthInGridView);
                         }
+                        grid.element_references.tbody[data_row_id][columnId] = jQuery(td_data_row_cell);
                     }
+                    else if(custom_element_info){
+                        td_data_row_cell.className = 'td_data_row_cell_custom_element';
+                        td_data_row_cell.setAttribute('data-custom_element_id', custom_element_info.id);
+                        grid.mount_custom_element_to_data_row(custom_element_info, td_data_row_cell, dataRow);
+
+                        grid.element_references.tbody[data_row_id][custom_element_info.id] = jQuery(td_data_row_cell);
+                    }
+
+                    tr_data_row.appendChild(td_data_row_cell);
+
+
                 });
                 if (currentConditions.length) {
                     currentConditions.forEach(function (currentCondition) {
-                        grid.setConditionColorSetting(currentCondition, tr);
+                        grid.setConditionColorSetting(currentCondition, tr_data_row);
                     });
                 }
-                grid.elements.rows[dataRow['id']].tr = $(tr).attr({id: dataRow['id']});
-                tbody.appendChild(tr);
+                grid.elements.rows[data_row_id].tr = $(tr_data_row).attr({id: data_row_id});
+                tbody.appendChild(tr_data_row);
             });
             return tbody;
         },
@@ -1097,9 +1139,13 @@ Grid.prototype = {
                 .appendTo(container);
 
             // grid.columnOrder
-            console.log('grid.latest_styling_setting', grid.latest_styling_setting)
+            // console.log('grid.latest_styling_setting', grid.latest_styling_setting)
             grid.latest_styling_setting.column_order.forEach(function (columnId) {
-                var column = grid.subModule.columnManager.columns[columnId]
+                var column = grid.subModule.columnManager.columns[columnId];
+                if(!column){
+                    return;
+                }
+
                 if (column.type == 'hyperLink') {
                     return;
                 }
@@ -1148,9 +1194,13 @@ Grid.prototype = {
             var div = document.createElement('div');
             var table = document.createElement('table');
             table.id = 'grid';
-            table.appendChild(self.createTableHead(grid));
+            const grid_thead = self.createTableHead(grid);
+            table.appendChild(grid_thead);
+
             if (grid.subModule.columnManager.hasFooterColumns) {
-                table.appendChild(self.createTableFoot(grid));
+                let grid_tfoot = self.createTableFoot(grid)
+                table.appendChild(grid_tfoot);
+                grid.elements.grid_tfoot = $(grid_tfoot);
             }
 
             grid.elements.table = $(table);
@@ -1158,65 +1208,90 @@ Grid.prototype = {
 
 
             grid.elements.gridTable = $(table);
+            grid.elements.grid_table = $(table);
+            grid.elements.grid_thead = $(grid_thead);
             return div;
         },
 
-        create_table_head_cell: function (grid, column) {
+        create_table_head_cell: function (grid, column, custom_element) {
             var th = document.createElement('th');
 
-            th.setAttribute('data-column-type', column.type);
-            th.setAttribute('data-column_type', column.type);
-
-            if (column.controlledMaxWidthInGridView && column.controlledMaxWidthInGridView.isEnabled) {
-                th.setAttribute('data-column-max-width', column.controlledMaxWidthInGridView.controlledMaxWidthInGridView);
-            }
-
-            // var thGroup = document.createElement('td');
             var div = document.createElement('div');
 
-            var imageContainer;
-            if (column.icon && column.icon.originalName) {
-                var imagePath = 'iconsGenerated/' + grid.module.id + '/' + grid.subModule.id + '/' + column.id + '_' + column.icon.name;
-                imageContainer = document.createElement('img');
-                imageContainer.className = 'gridHeadImageContainer';
-                imageContainer.setAttribute('src', imagePath);
-            }
             var span = document.createElement('span');
             span.className = 'gridHeadSpan grid_head_column_display_name_element';
-            if (!column.disableSort) {
-                div.className = 'grid-header-text-sortable';
+
+
+            if(column){
+
+                if (!column.disableSort) {
+                    div.className = 'grid-header-text-sortable';
+                }
+
+                th.setAttribute('data-column-type', column.type);
+                th.setAttribute('data-column_type', column.type);
+
+                if (column.controlledMaxWidthInGridView && column.controlledMaxWidthInGridView.isEnabled) {
+                    th.setAttribute('data-column-max-width', column.controlledMaxWidthInGridView.controlledMaxWidthInGridView);
+                }
+
+                var imageContainer;
+                if (column.icon && column.icon.originalName) {
+                    var imagePath = 'iconsGenerated/' + grid.module.id + '/' + grid.subModule.id + '/' + column.id + '_' + column.icon.name;
+                    imageContainer = document.createElement('img');
+                    imageContainer.className = 'gridHeadImageContainer';
+                    imageContainer.setAttribute('src', imagePath);
+                }
+
+
+                th.className = 'accept grid_view_th_column grid_view_normal_element_th_column';
+
+                th.setAttribute('data-help', column.helpMessage);
+                div.setAttribute('data-column-id', column.id);
+                div.setAttribute('data-column_id', column.id);
+                th.setAttribute('data-column_id', column.id);
+
+                if (grid.erp.deviceType === ERP.DEVICE_TYPES.MOBILE) {
+                    span.innerHTML = column.shortName;
+                }
+                else {
+                    span.innerHTML = column.displayName;
+                }
+                imageContainer && div.appendChild(imageContainer);
+                th.columnId = column.id;
+
+                if (column.tooltip) {
+                    th.title = column.tooltip || column.displayName;
+                }
+
+            }
+            else if(custom_element){
+                console.log('creating custom_element thead cell : ', custom_element)
+
+                th.className = 'accept grid_view_th_column grid_view_custom_element_th_column';
+
+                div.setAttribute('data-custom_element_id', custom_element.id);
+                th.setAttribute('data-custom_element_id', custom_element.id);
+
+
+                span.innerHTML = custom_element.display_name || custom_element.config.display_name;
             }
 
-            // if (column.gridView.groupId) {
-            //     thGroup.setAttribute('class', column.gridView.groupId)
-            // }
-            // else {
-            th.className = 'accept grid_view_th_column grid_view_normal_element_th_column';
-            // }
-            th.setAttribute('data-help', column.helpMessage);
-            div.setAttribute('data-column-id', column.id);
-            div.setAttribute('data-column_id', column.id);
-            th.setAttribute('data-column_id', column.id);
-
-            if (grid.erp.deviceType === ERP.DEVICE_TYPES.MOBILE) {
-                span.innerHTML = column.shortName;
-            }
-            else {
-                span.innerHTML = column.displayName;
-            }
-            imageContainer && div.appendChild(imageContainer);
             div.appendChild(span);
-
             th.appendChild(div);
 
 //                 thGroup.gridViewIndex = column.gridView.index;
-            th.columnId = column.id;
-            if (column.tooltip) {
-                th.title = column.tooltip || column.displayName;
-            }
+
             th = jQuery(th);
-            th.data('columnId', column.id)
-            th.data('column_id', column.id)
+
+            if(column){
+                th.data('columnId', column.id)
+                th.data('column_id', column.id)
+            }
+            else if(custom_element) {
+                th.data('custom_element_id', custom_element.id)
+            }
+
             return th;
         },
         createTableHead: function (grid) {
@@ -1224,11 +1299,11 @@ Grid.prototype = {
             var thead = document.createElement('thead');
             thead.className = 'grid-header'
             var tr = document.createElement('tr');
-            var trGroup = document.createElement('tr');
+            // var trGroup = document.createElement('tr');
             var subModule = grid.parentObject;
-            var thTemp = document.createElement('td')
+            // var thTemp = document.createElement('td')
             //if(grid.hasRowSelector){
-            trGroup.appendChild(thTemp);
+            // trGroup.appendChild(thTemp);
             tr.appendChild(self.createRowSelectorHeader(grid));
             //}
             var thObj = {};
@@ -1252,10 +1327,8 @@ Grid.prototype = {
 
                 appended_columns_map[context_item_id] = true;
 
-                const th = self.create_table_head_cell(grid, column_info || custom_element_info);
-
+                const th = self.create_table_head_cell(grid, column_info, custom_element_info);
                 tr.appendChild(th.get(0));
-
                 grid.element_references.thead[context_item_id] = th;
 
             }
@@ -1303,7 +1376,7 @@ Grid.prototype = {
             // }
 
             // grid.columnOrder = columnOrder;
-            thead.appendChild(trGroup);
+            // thead.appendChild(trGroup);
             thead.appendChild(tr);
             // var groupCount = {};
             // var groupFlag = {}

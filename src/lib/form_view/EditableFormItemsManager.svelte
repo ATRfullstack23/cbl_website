@@ -5,6 +5,7 @@
     import EditableFormforArrayofObjects from "$lib/form_view/EditableFormforArrayofObjects.svelte";
 
     export let sub_module;
+    export let grid;
     export let form_view;
     export let editable_data;
     export let editable_items_arr;

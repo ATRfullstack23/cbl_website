@@ -51,6 +51,7 @@
         {#if grid}
             <EditableFormItemsManager
                     grid="{grid}"
+                    sub_module="{grid.subModule}"
                     editable_data="{editable_data}"
                     editable_items_arr="{editable_items_arr}"
             />
