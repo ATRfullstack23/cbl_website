@@ -17,6 +17,7 @@
     import FilterManagerMountHelper from "$lib/filter_manager/FilterManagerMountHelper.svelte";
     import CustomReportsMountHelper from "$lib/reports/CustomReportsMountHelper.svelte";
     import GridViewCustomElementsMountHelper from "$lib/grid_view/GridViewCustomElementsMountHelper.svelte";
+    import ErpClientMountHelper from "$lib/erp_client/ErpClientMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -169,6 +170,8 @@
 </script>
 
 <!--<CustomCardCustomizationPopup/>-->
+
+<ErpClientMountHelper/>
 
 <GridViewCustomElementsMountHelper/>
 
