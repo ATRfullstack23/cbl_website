@@ -2172,7 +2172,9 @@ Column.prototype = {
             str += '_'+ self.id;
             str += '.'+ dataRow.text.substring(dataRow.text.lastIndexOf('.')+1);
         }
-        return str;
+
+        let url = self.erp.backend_root_url + str;
+        return url;
     },
     getToolTipData: function(dataRow){
         var self = this;
@@ -2250,6 +2252,7 @@ Column.prototype = {
                     break;
                 case Column.COLUMN_TYPES.DOCUMENT:
                     element = document.createElement('a');
+                    element.target = '_blank';
                     element.classList.add('gridViewDocumentElement');
                     break;
                 case Column.COLUMN_TYPES.SINGLELINE:

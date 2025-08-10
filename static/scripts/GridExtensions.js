@@ -2,9 +2,101 @@
 
 
 
-Grid.prototype.move_grid_column = function (th_element, direction) {
-    console.log('move_grid_column', th_element, direction);
+Grid.prototype.hide_grid_column = function (th_element) {
 
+    const context_item_id = th_element.attr('data-custom_element_id') || th_element.attr('data-column_id');
+
+    const column_style_info = this.get_latest_grid_item_style_info(context_item_id);
+    column_style_info.grid_view_column_index = -1;
+
+    const index = this.get_current_column_order().indexOf(context_item_id);
+    this.get_current_column_order().splice(index, 1);
+
+    this.element_references.thead[context_item_id].remove();
+    delete this.element_references.thead[context_item_id];
+
+    for(const row_id in this.element_references.tbody){
+        const td_element = this.element_references.tbody[row_id][context_item_id];
+        td_element.remove();
+        delete this.element_references.tbody[row_id][context_item_id];
+    }
+
+}
+
+Grid.prototype.show_restore_hidden_grid_column_flow = function () {
+
+    const self = this;
+
+    const custom_columns_arr = [];
+
+    for(const key in this.latest_styling_setting.column_structure){
+        const style_info = this.latest_styling_setting.column_structure[key];
+        if(style_info.grid_view_column_index === -1){
+            custom_columns_arr.push({
+                value: style_info.context_item_id,
+                text : style_info.customizations?.display_name || style_info.context_item_id
+            });
+        }
+
+    }
+
+    if(!custom_columns_arr.length){
+        alert('No column are hidden.')
+        return;
+    }
+
+    window.show_single_choice_item_picker_popup({
+        options: custom_columns_arr,
+        confirm_button_text : 'Restore',
+        title : 'Select column to show'
+    }, null, {
+        confirm: (selected_value)=>{
+            console.log('selected_value', selected_value);
+
+            self.restore_hidden_column_to_grid_view(selected_value);
+        }
+    });
+
+
+    // const column_style_info = this.get_latest_grid_item_style_info(context_item_id);
+    // column_style_info.grid_view_column_index = -1;
+    //
+    // const index = this.get_current_column_order().indexOf(context_item_id);
+    // this.get_current_column_order().splice(index, 1);
+    //
+    // this.element_references.thead[context_item_id].remove();
+    // delete this.element_references.thead[context_item_id];
+    //
+    // for(const row_id in this.element_references.tbody){
+    //     const td_element = this.element_references.tbody[row_id][context_item_id];
+    //     td_element.remove();
+    //     delete this.element_references.tbody[row_id][context_item_id];
+    // }
+
+}
+
+Grid.prototype.restore_hidden_column_to_grid_view = function (context_item_id) {
+
+    const style_info = this.latest_styling_setting.column_structure[context_item_id];
+    style_info.grid_view_column_index = this.get_current_column_order().length;
+
+    const column_info = this.subModule.get_column_from_id(context_item_id);
+
+    let custom_element_info;
+    if(!column_info){
+        custom_element_info = this.get_custom_element_info(context_item_id);
+    }
+
+    const th = this._creation.create_table_head_cell(this, column_info, custom_element_info);
+    this.elements.grid_thead.children().append(th);
+    this.get_current_column_order().push(context_item_id);
+    this.element_references.thead[context_item_id] = th;
+
+    this.subModule.setDisplayMode(); // -- need to do better here
+
+}
+
+Grid.prototype.move_grid_column = function (th_element, direction) {
 
     const context_item_id = th_element.attr('data-custom_element_id') || th_element.attr('data-column_id');
 
@@ -238,12 +330,10 @@ Grid.prototype.handle_custom_grid_element_config_updated = function (custom_elem
     const custom_element_info = this.get_custom_element_info(custom_element_id);
     custom_element_info.config = new_config;
 
-
     for(const row_id in this.mounted_custom_element_svelte_instances.tbody){
         const svelte_instance = this.mounted_custom_element_svelte_instances.tbody[row_id][custom_element_id];
         svelte_instance.handle_config_updated(new_config);
     }
-
 }
 
 
@@ -505,7 +595,7 @@ Grid.prototype.get_latest_grid_item_style_info = function (context_item_id, cont
     const self = this;
     let column_style_info = this.latest_styling_setting.column_structure[context_item_id];
     if(!column_style_info){
-        const column_info = context_info.column_info;
+        const column_info = context_info.column_info || context_info.column;
         const custom_element_info = context_info.custom_element_info || context_info.custom_element;
 
 

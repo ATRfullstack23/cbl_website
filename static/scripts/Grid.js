@@ -1341,6 +1341,12 @@ Grid.prototype = {
                 if(appended_columns_map[column.id]){
                     return;
                 }
+
+                const style_info = grid.get_latest_grid_item_style_info(column.id, {column});
+                if(style_info.grid_view_column_index === -1){
+                    return;
+                }
+
                 appended_columns_map[column.id] = true;
 
                 const th = self.create_table_head_cell(grid, column);

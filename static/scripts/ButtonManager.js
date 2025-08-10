@@ -732,6 +732,14 @@ ButtonManager.prototype = {
                                 }
                             }
 
+                            options.re_enable_hidden_column_in_grid_view = {
+                                id: 're_enable_hidden_column_in_grid_view',
+                                displayName: 'Restore hidden Column',
+                                onClick: ()=>{
+                                    self.subModule.grid.show_restore_hidden_grid_column_flow(element);
+                                }
+                            }
+
                             return options;
                         }
                     },
@@ -772,6 +780,14 @@ ButtonManager.prototype = {
                                     onClick: ()=>{
                                         self.subModule.grid.move_grid_column(element, 'right');
                                     }
+                                }
+                            }
+
+                            options.hide_column_from_grid = {
+                                id: 'hide_column_from_grid',
+                                displayName: 'Hide Column',
+                                onClick: ()=>{
+                                    self.subModule.grid.hide_grid_column(element);
                                 }
                             }
 

@@ -10,6 +10,8 @@
     import NormalElementCustomizationPopup from "$lib/form_view/NormalElementCustomizationPopup.svelte";
     import NumberDisplayCustomElement from "$lib/form_view/NumberDisplayCustomElement.svelte";
     import AlertCustomElement from "$lib/form_view/AlertCustomElement.svelte";
+    import SingleColumnPickerPopup from "$lib/form_view/SingleColumnPickerPopup.svelte";
+    import SingleChoiceItemPicker from "$lib/form_view/SingleChoiceItemPicker.svelte";
 
     export async function mount_form_view_custom_element(form_view, target_container_element, element_type, outer_config) {
         // const target = document.querySelector(target_selector);
@@ -111,6 +113,8 @@
        window.show_form_view_custom_element_customization_popup = show_form_view_custom_element_customization_popup;
 
        window.show_form_view_normal_element_customization_popup = show_form_view_normal_element_customization_popup;
+       window.show_single_column_picker_popup = show_single_column_picker_popup;
+       window.show_single_choice_item_picker_popup = show_single_choice_item_picker_popup;
     });
 
 
@@ -147,7 +151,102 @@
         to_edit__custom_element_info = null;
     }
 
+
+
+
+
+    let shall_show_single_column_picker_popup = false;
+    let to_pick__erp_instance, to_pick__single_column_picker_existing_config, to_pick__single_column_picker_options;
+    let to_pick__callbacks;
+
+    export function show_single_column_picker_popup(erp_instance, custom_element_info, existing_config, options, to_pick__callbacks) {
+        to_pick__erp_instance = erp_instance;
+        to_pick__single_column_picker_existing_config = existing_config;
+        to_pick__single_column_picker_options = options;
+        to_pick__callbacks = to_pick__callbacks;
+
+        shall_show_single_column_picker_popup = true;
+    }
+
+    function handle_single_column_picker_popup_confirm(evt) {
+        to_pick__callbacks.confirm(evt.detail.new_config);
+
+        to_pick__callbacks = null;
+        to_pick__erp_instance = null;
+        to_pick__single_column_picker_existing_config = null;
+        to_pick__single_column_picker_options = null;
+        shall_show_single_column_picker_popup = false;
+    }
+
+    function handle_single_column_picker_popup_cancel() {
+        to_pick__callbacks.cancel && to_pick__callbacks.cancel();
+
+        to_pick__callbacks = null;
+        to_pick__erp_instance = null;
+        to_pick__single_column_picker_existing_config = null;
+        to_pick__single_column_picker_options = null;
+        shall_show_single_column_picker_popup = false;
+    }
+
+
+
+    let shall_show_single_choice_item_picker_popup = false;
+    let to_pick_choice__erp_instance, to_pick_choice__existing_value, to_pick_choice__single_column_picker_config;
+    let to_pick_choice__callbacks;
+
+    export function show_single_choice_item_picker_popup(config, existing_value, to_pick__callbacks) {
+        // to_pick_choice__erp_instance = erp_instance;
+        to_pick_choice__existing_value = existing_value;
+        to_pick_choice__single_column_picker_config = config;
+        to_pick_choice__callbacks = to_pick__callbacks;
+
+        shall_show_single_choice_item_picker_popup = true;
+    }
+
+    function handle_single_choice_item_picker_popup_confirm(evt) {
+        to_pick_choice__callbacks.confirm(evt.detail.selected_value);
+
+        to_pick_choice__erp_instance = null;
+        to_pick_choice__existing_value = null;
+        to_pick_choice__single_column_picker_config = null;
+        to_pick_choice__callbacks = null;
+
+        shall_show_single_choice_item_picker_popup = false;
+    }
+
+    function handle_single_choice_item_picker_popup_cancel() {
+        to_pick_choice__callbacks.cancel && to_pick_choice__callbacks.cancel();
+
+        to_pick_choice__erp_instance = null;
+        to_pick_choice__existing_value = null;
+        to_pick_choice__single_column_picker_config = null;
+        to_pick_choice__callbacks = null;
+
+        shall_show_single_choice_item_picker_popup = false;
+    }
+
 </script>
+
+
+
+{#if shall_show_single_choice_item_picker_popup}
+    <SingleChoiceItemPicker
+            erp_instance="{to_pick_choice__erp_instance}"
+            existing_value="{to_pick_choice__existing_value}"
+            config="{to_pick_choice__single_column_picker_config}"
+            on:confirm={handle_single_choice_item_picker_popup_confirm} on:cancel={handle_single_choice_item_picker_popup_cancel}/>
+{/if}
+
+
+
+
+{#if shall_show_single_column_picker_popup}
+    <SingleColumnPickerPopup
+            erp_instance="{to_pick__erp_instance}"
+            existing_config="{to_pick__single_column_picker_existing_config}"
+            options="{to_pick__single_column_picker_options}"
+            on:confirm={handle_single_column_picker_popup_confirm} on:cancel={handle_single_column_picker_popup_cancel}/>
+{/if}
 
 
 
