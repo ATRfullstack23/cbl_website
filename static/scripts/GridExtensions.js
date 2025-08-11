@@ -225,6 +225,18 @@ Grid.prototype.load_common_customization_to_grid_view_element = function (column
         if(new_config.display_name){
             inner_span.text(new_config.display_name);
         }
+        if (new_config.display_icon_left) {
+            // Remove any existing icon span to avoid duplicates
+            inner_span.find('.display_icon_left').remove();
+
+            // Create and prepend the icon span
+            const iconSpan = jQuery('<span>')
+                .addClass('display_icon_left')
+                .text(new_config.display_icon_left)
+                .css('paddingRight', '5px');
+
+            inner_span.prepend(iconSpan);
+        }
 
         if(new_config.min_width){
             th_element.css('minWidth', new_config.min_width + 'px');

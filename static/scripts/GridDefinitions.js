@@ -20,6 +20,12 @@ Grid.NORMAL_ELEMENTS = {
                     "input_type": "single_line",
                 },
                 {
+                    "unique_id": "display_icon_left",
+                    "display_name": "Display Icon",
+                    "data_type": "text",
+                    "input_type": "emoji",
+                },
+                {
                     "unique_id": "min_width",
                     "display_name": "Minimum Width",
                     "data_type": "int",
