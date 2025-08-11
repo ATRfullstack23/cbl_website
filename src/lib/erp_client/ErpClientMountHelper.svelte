@@ -11,11 +11,11 @@
     let to_edit__existing_config;
     let to_edit__erp_instance;
 
-    export function show_edit_main_navigation_popup(erp_instance, existing_navigation_config) {
+    export function show_edit_main_navigation_popup(erp_instance) {
         to_edit__erp_instance = erp_instance;
-        to_edit__existing_config = existing_navigation_config;
+        to_edit__existing_config = erp_instance.latest_navigation_configuration;
 
-        console.log('show_edit_main_navigation_popup existing_navigation_config', existing_navigation_config)
+        console.log('show_edit_main_navigation_popup existing_navigation_config', to_edit__existing_config)
 
         shall_show_edit_main_navigation_popup = true;
     }

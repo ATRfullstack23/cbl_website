@@ -780,7 +780,7 @@ export class ERP {
                                 id: 'edit_main_navigation_settings',
                                 displayName: 'Edit Navigation Settings',
                                 onClick: ()=>{
-                                    window.show_edit_main_navigation_popup();
+                                    window.show_edit_main_navigation_popup(self);
                                 }
                             };
 

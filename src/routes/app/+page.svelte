@@ -99,6 +99,7 @@
 
                     erp_instance.get_navigation_configuration().then((n_c)=>{
                         navigation_config = n_c;
+                        erp_instance.latest_navigation_configuration = n_c;
                         window._navigation_config = navigation_config;
                         // console.log('navigation_config', navigation_config );
                         erp_instance.container.appendTo(erp_content__container_element);
