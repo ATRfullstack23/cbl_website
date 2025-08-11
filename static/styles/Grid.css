@@ -86,7 +86,7 @@
     padding: 1rem 1.5rem;
     text-transform: capitalize;
     font-weight: 500;
-    font-size: 12px;
+    font-size: var(--default_grid_view_text_size, 12px);
 }
 .grid-container.pc #grid > tbody > tr > td{
     /* font-family: "Open Sans", sans-serif; */
@@ -100,7 +100,7 @@
     border-right: 1px solid rgb(195 195 195 / 6%);
     --tw-text-opacity: 1;
     color: rgb(17 24 39 / var(--tw-text-opacity));
-    font-size: 12px;
+    font-size: var(--default_grid_view_text_size, 12px);
 }
 
 .grid-container.pc #grid > thead > tr > th[data-column-max-width="small"] > div{
