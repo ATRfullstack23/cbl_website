@@ -1,5 +1,7 @@
 <script>
-    export let horizontal_balance_sheet_data = {
+    import {onMount} from "svelte";
+
+    export let horizontal_balance_sheet_data_old = {
         company_name: 'Xentra',
         report_title: 'Horizontal Balance Sheet',
         period_from: '01-July-2025',
@@ -62,8 +64,220 @@
         ]
     };
 
+    let horizontal_balance_sheet_data;
 
 
+    let data_from_erp = [[
+            {
+                "company_name": "Xentra",
+                "report_title": "Horizontal Balance Sheet",
+                "current_date": "12 August 2025"
+            }
+        ],
+        [
+            {
+                "title": "Current Liabilities"
+            }
+        ],
+        [
+            {
+                "name": "Accounts Payable",
+                "sub_name": null,
+                "sub_amount": null,
+                "amount": "0.00"
+            },
+            {
+                "name": null,
+                "sub_name": "Sundry Creditors",
+                "sub_amount": "0.00",
+                "amount": null
+            },
+            {
+                "name": "Duties and Tax",
+                "sub_name": null,
+                "sub_amount": null,
+                "amount": "-12038.00"
+            }
+        ],
+        [
+            {
+                "title": "Non-Current Liabilities"
+            }
+        ],
+        [
+            {
+                "title": "Total Liabilities",
+                "amount": -12038
+            }
+        ],
+        [
+            {
+                "title": "Owner’s Equity"
+            }
+        ],
+        [
+            {
+                "sub_name": "Retained Earnings",
+                "sub_amount": 94080
+            }
+        ],
+        [
+            {
+                "title": "Total Equity",
+                "amount": 94080
+            }
+        ],
+        [
+            {
+                "title": "Total Liabilities + Equity",
+                "amount": 82042
+            }
+        ],
+        [
+            {
+                "title": "Current Asset"
+            }
+        ],
+        [
+            {
+                "name": "Cash and Cash Equivalents",
+                "sub_name": null,
+                "sub_amount": null,
+                "amount": "87712.00"
+            },
+            {
+                "name": null,
+                "sub_name": "Cash",
+                "sub_amount": "49525.00",
+                "amount": null
+            },
+            {
+                "name": null,
+                "sub_name": "ICICI",
+                "sub_amount": "7297.00",
+                "amount": null
+            },
+            {
+                "name": null,
+                "sub_name": "AXIS",
+                "sub_amount": "30890.00",
+                "amount": null
+            },
+            {
+                "name": "Accounts Receivable",
+                "sub_name": null,
+                "sub_amount": null,
+                "amount": "3100.00"
+            },
+            {
+                "name": null,
+                "sub_name": "Sundry Debtors",
+                "sub_amount": "3100.00",
+                "amount": null
+            }
+        ],
+        [
+            {
+                "title": "Total Current Assets",
+                "amount": 90812
+            }
+        ],
+        [
+            {
+                "title": "Non-Current Assets"
+            }
+        ],
+        [
+            {
+                "title": "Total Non-Current Assets",
+                "amount": 0
+            }
+        ],
+        [
+            {
+                "title": "Total Assets",
+                "amount": 90812
+            }
+        ]
+    ]
+
+    function transform_horizontal_balance_sheet(raw_data) {
+        const [meta_row] = raw_data[0];
+        const structured_data = {
+            company_name: meta_row.company_name || '',
+            report_title: meta_row.report_title || '',
+            period_from: meta_row.period_from || meta_row.current_date || '',
+            period_to: meta_row.period_to || meta_row.current_date || '',
+            liabilities: [],
+            assets: []
+        };
+
+        let i = 1;
+        let current_section = null;
+        let current_side = null;
+
+        while (i < raw_data.length) {
+            const block = raw_data[i];
+
+            if (block.length === 1 && block[0].title) {
+                const title = block[0].title;
+
+                if (title.includes('Liabilities') || title.includes('Equity')) {
+                    current_side = 'liabilities';
+                } else if (title.includes('Asset')) {
+                    current_side = 'assets';
+                }
+
+                if (!title.toLowerCase().startsWith('total')) {
+                    current_section = {
+                        title,
+                        children: [],
+                        total: 0
+                    };
+                    structured_data[current_side].push(current_section);
+                }
+                i++;
+                continue;
+            }
+
+            if (block.length === 1 && block[0].title && block[0].title.toLowerCase().startsWith('total')) {
+                if (current_section) {
+                    current_section.total = parseFloat(block[0].amount || 0);
+                }
+                i++;
+                continue;
+            }
+
+            if (Array.isArray(block)) {
+                for (let row of block) {
+                    if (row.name) {
+                        current_section.children.push({
+                            name: row.name,
+                            amount: parseFloat(row.amount || 0)
+                        });
+                    }
+                    if (row.sub_name) {
+                        current_section.children.push({
+                            name: row.sub_name,
+                            amount: parseFloat(row.sub_amount || 0)
+                        });
+                    }
+                }
+            }
+
+            i++;
+        }
+
+        return structured_data;
+    }
+
+
+    // onMount(()=>{
+        horizontal_balance_sheet_data = transform_horizontal_balance_sheet(data_from_erp)
+        console.log(horizontal_balance_sheet_data,"horizontal_balance_sheet_data")
+        console.log(horizontal_balance_sheet_data.company_name,"company name")
+        horizontal_balance_sheet_data = horizontal_balance_sheet_data
+    // })
 
 </script>
 

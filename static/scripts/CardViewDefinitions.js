@@ -949,6 +949,32 @@ CardView.TEMPLATES = {
             ]
         }
     },
+    download_card_compact: {
+        id: "download_card_compact",
+        display_name: 'Download Compact Card',
+        data_mapping_config: {
+            items: [
+                {
+                    "unique_id": "main_header_text",
+                    "display_name": "Main header text",
+                    "data_type": "text",
+                    "input_type": "column_id",
+                },
+                {
+                    "unique_id": "main_header_caption",
+                    "display_name": "Main header caption",
+                    "data_type": "text",
+                    "input_type": "column_id",
+                },
+                {
+                    "unique_id": "download_content",
+                    "display_name": "Downloadable File",
+                    "data_type": "text",
+                    "input_type": "column_id",
+                }
+            ]
+        }
+    },
 
 }
 

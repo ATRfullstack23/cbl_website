@@ -22,6 +22,7 @@
     import FullWidthDetailedCard from "$lib/card_view/templates/FullWidthDetailedCard.svelte";
     import FullWidthMinimalCard from "$lib/card_view/templates/FullWidthMinimalCard.svelte";
     import FullWidthCompactCard from "$lib/card_view/templates/FullWidthCompactCard.svelte";
+    import DownloadCardCompact from "$lib/card_view/templates/DownloadCardCompact.svelte";
 
     export let container;
     export let container_element;
@@ -355,6 +356,10 @@
 
                     {#if selected_cardview_template === CardView.TEMPLATES.full_width_card_compact.id}
                         <FullWidthCompactCard submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
+                    {/if}
+
+                    {#if selected_cardview_template === CardView.TEMPLATES.download_card_compact.id}
+                        <DownloadCardCompact submodule="{submodule}" data_row="{item}" config="{cardview_settings}" data_mapping="{card_view_data_mapping_processed}"/>
                     {/if}
 
                 </div>
