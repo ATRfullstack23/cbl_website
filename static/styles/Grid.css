@@ -86,7 +86,7 @@
     padding: 1rem 1.5rem;
     text-transform: capitalize;
     font-weight: 500;
-    font-size: 12px;
+    font-size: var(--default_grid_view_text_size, 12px);
 }
 .grid-container.pc #grid > tbody > tr > td{
     /* font-family: "Open Sans", sans-serif; */
@@ -100,7 +100,7 @@
     border-right: 1px solid rgb(195 195 195 / 6%);
     --tw-text-opacity: 1;
     color: rgb(17 24 39 / var(--tw-text-opacity));
-    font-size: 12px;
+    font-size: var(--default_grid_view_text_size, 12px);
 }
 
 .grid-container.pc #grid > thead > tr > th[data-column-max-width="small"] > div{
@@ -153,18 +153,23 @@
     cursor: pointer;
     position: relative;
 }
+.grid-container.pc #grid .grid-header-text-sortable[data-column-id="id"]:after{
+    left: auto;
+    right: -8px;
+}
+.grid-container.pc #grid .grid-header-text-sortable:after{
+    position: absolute;
+    left: -12px;
+    top: 10%;
+}
+
 .grid-container.pc #grid .grid-header-text-sortable.sorted-desc:after{
     content: '↓';
-    position: absolute;
-    left: -3px;
-    top: 10%;
 }
 .grid-container.pc #grid .grid-header-text-sortable.sorted-asc:after{
-    content: ' ↑';
-    position: absolute;
-    left: -5px;
-    top: 10%;
+    content: '↑';
 }
+
 .grid-container.pc .grid-no-data-message-row{
     text-align: center;
 }
@@ -516,4 +521,14 @@
         }
 
     }
+}
+
+
+.gridViewDocumentElement {
+    width: 40px;
+    height: 30px;
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }

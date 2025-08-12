@@ -155,7 +155,7 @@ ContextMenu.prototype={
                 // break;
             }
         }
-        console.log(options, element.get(0))
+        // console.log(options, element.get(0))
         return options;
     },
     showContextMenu: function(e, options){

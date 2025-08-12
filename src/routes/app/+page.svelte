@@ -16,6 +16,8 @@
     import ChildWindowMountHelper from "$lib/child_window/ChildWindowMountHelper.svelte";
     import FilterManagerMountHelper from "$lib/filter_manager/FilterManagerMountHelper.svelte";
     import CustomReportsMountHelper from "$lib/reports/CustomReportsMountHelper.svelte";
+    import GridViewCustomElementsMountHelper from "$lib/grid_view/GridViewCustomElementsMountHelper.svelte";
+    import ErpClientMountHelper from "$lib/erp_client/ErpClientMountHelper.svelte";
 
     export let data;
     export let is_dark_theme;
@@ -97,6 +99,7 @@
 
                     erp_instance.get_navigation_configuration().then((n_c)=>{
                         navigation_config = n_c;
+                        erp_instance.latest_navigation_configuration = n_c;
                         window._navigation_config = navigation_config;
                         // console.log('navigation_config', navigation_config );
                         erp_instance.container.appendTo(erp_content__container_element);
@@ -168,6 +171,10 @@
 </script>
 
 <!--<CustomCardCustomizationPopup/>-->
+
+<ErpClientMountHelper/>
+
+<GridViewCustomElementsMountHelper/>
 
 <PrintPopupDialog bind:this={print_popup_dialog_instance}/>
 

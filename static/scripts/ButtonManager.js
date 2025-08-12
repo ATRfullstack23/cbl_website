@@ -231,44 +231,44 @@ ButtonManager.prototype = {
                         }
                     },
 
-                    {
-                        selector: ".pager",
-                        getOptions: function(actualElement, contextMenu, targetElement){
-                            var options = {};
-                            var option = {};
-                            option.displayName = 'Re-Arrange Grid';
-                            option.id = 'reArrangeGrid';
-                            option.onClick = function(){
-                                self.subModule.grid.setToReArrangeMode(self);
-                            }
-                            options[option.id] = option;
-                            if(targetElement.data('help')){
-                                option = {};
-                                option.displayName = 'Help';
-                                option.id = 'help';
-                                option.onClick = function(clickedElementContainer, contextMenu, rightClickedEvent){
-                                    var containerData = $(rightClickedEvent.target).data('help');
-                                    self.erp.helpBox.show(rightClickedEvent.pageX, rightClickedEvent.pageY, containerData);
-                                }
-                                options[option.id] = option;
-                            }
-                            return options;
-                        }
-                    },
+                    // {
+                    //     selector: ".pager",
+                    //     getOptions: function(actualElement, contextMenu, targetElement){
+                    //         var options = {};
+                    //         var option = {};
+                    //         option.displayName = 'Re-Arrange Grid';
+                    //         option.id = 'reArrangeGrid';
+                    //         option.onClick = function(){
+                    //             self.subModule.grid.setToReArrangeMode(self);
+                    //         }
+                    //         options[option.id] = option;
+                    //         if(targetElement.data('help')){
+                    //             option = {};
+                    //             option.displayName = 'Help';
+                    //             option.id = 'help';
+                    //             option.onClick = function(clickedElementContainer, contextMenu, rightClickedEvent){
+                    //                 var containerData = $(rightClickedEvent.target).data('help');
+                    //                 self.erp.helpBox.show(rightClickedEvent.pageX, rightClickedEvent.pageY, containerData);
+                    //             }
+                    //             options[option.id] = option;
+                    //         }
+                    //         return options;
+                    //     }
+                    // },
 
                     {
                         selector: ".grid-header",
                         getOptions: function(actualElement, contextMenu, targetElement){
                             var options = {};
-                            var option = {};
-                            option.displayName = 'Re-Arrange Grid';
-                            option.id = 'reArrangeGrid';
-                            option.onClick = function(){
-                                self.subModule.grid.setToReArrangeMode(self);
-                            }
-                            options[option.id] = option;
+                            // var option = {};
+                            // option.displayName = 'Re-Arrange Grid';
+                            // option.id = 'reArrangeGrid';
+                            // option.onClick = function(){
+                            //     self.subModule.grid.setToReArrangeMode(self);
+                            // }
+                            // options[option.id] = option;
 
-                            option = {};
+                            let option = {};
                             option.displayName = 'Download As Excel File';
                             option.id = 'downloadAsExcelFile';
                             option.onClick = function(){
@@ -667,7 +667,179 @@ ButtonManager.prototype = {
 
                             return options;
                         }
-                    }
+                    },
+
+
+
+                    {
+                        selector: ".setDisplayModeToGridView ",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.grid.is_in_styling_mode){
+                                options.go_to_styling_mode = {
+                                    id: 'go_to_styling_mode',
+                                    displayName: 'Edit Styling',
+                                    onClick: ()=>{
+                                        self.subModule.grid.go_to_styling_mode();
+                                    }
+                                }
+                            }
+                            else{
+
+
+                                options.save_styling_settings = {
+                                    id: 'save_styling_settings',
+                                    displayName: 'Save New Styling',
+                                    onClick: ()=>{
+                                        self.subModule.grid.exit_styling_mode(true);
+                                    }
+                                }
+
+                                options.cancel_styling_settings = {
+                                    id: 'cancel_styling_settings',
+                                    displayName: 'Cancel Styling',
+                                    onClick: ()=>{
+                                        self.subModule.grid.exit_styling_mode(false);
+                                    }
+                                }
+                            }
+
+                            return options;
+                        }
+                    },
+                    {
+                        selector: ".pager",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.grid.is_in_styling_mode){
+                               return;
+                            }
+
+                            for (const key of Object.keys(Grid.CUSTOM_ELEMENTS)) {
+
+                                const final_key = key + '';
+                                const context_menu_key = `add_custom_element__${key}`;
+                                options[context_menu_key] = {
+                                    id: context_menu_key,
+                                    displayName: `Add Element -> ${Grid.CUSTOM_ELEMENTS[key].display_name}`,
+                                    onClick: ()=>{
+                                        self.subModule.grid.mount_new_custom_element(final_key).then(()=>{
+                                            // custom element mounted
+                                        });
+                                    }
+                                }
+                            }
+
+                            options.re_enable_hidden_column_in_grid_view = {
+                                id: 're_enable_hidden_column_in_grid_view',
+                                displayName: 'Restore hidden Column',
+                                onClick: ()=>{
+                                    self.subModule.grid.show_restore_hidden_grid_column_flow(element);
+                                }
+                            }
+
+                            return options;
+                        }
+                    },
+                    {
+                        selector: ".grid_view_th_column",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.grid.is_in_styling_mode){
+                                return {};
+                            }
+
+                            const column_id = element.attr('data-column_id')
+
+                            options.edit_grid_view_normal_element_settings = {
+                                id: 'edit_grid_view_normal_element_settings',
+                                displayName: 'Edit Settings',
+                                onClick: ()=>{
+                                    self.subModule.grid.show_edit_grid_normal_element_popup(column_id, 'column', element);
+                                }
+                            }
+
+
+                            if(element.index() > 1){
+                                options.move_grid_column_to_left = {
+                                    id: 'move_grid_column_to_left',
+                                    displayName: 'Move Left',
+                                    onClick: ()=>{
+                                        self.subModule.grid.move_grid_column(element, 'left');
+                                    }
+                                }
+                            }
+
+                            if(element.index() < (element.parent().children().length - 1)){
+                                options.move_grid_column_to_right = {
+                                    id: 'move_grid_column_to_right',
+                                    displayName: 'Move Right',
+                                    onClick: ()=>{
+                                        self.subModule.grid.move_grid_column(element, 'right');
+                                    }
+                                }
+                            }
+
+                            options.hide_column_from_grid = {
+                                id: 'hide_column_from_grid',
+                                displayName: 'Hide Column',
+                                onClick: ()=>{
+                                    self.subModule.grid.hide_grid_column(element);
+                                }
+                            }
+
+
+
+                            return options;
+                        }
+                    },
+                    {
+                        selector: ".grid_view_custom_element_th_column",
+                        getOptions: function(element, contextMenu, targetElement){
+                            var options = {};
+
+                            if(!self.subModule.grid.is_in_styling_mode){
+                                return {};
+                            }
+
+                            const custom_element_id = element.attr('data-custom_element_id')
+
+
+                            // console.log('formview-column-holder contextMenu', contextMenu)
+                            // console.log('formview-column-holder targetElement', targetElement)
+
+                            options.edit_grid_view_normal_element_settings = {
+                                id: 'edit_grid_view_normal_element_settings',
+                                displayName: 'Edit Settings',
+                                onClick: ()=>{
+                                    self.subModule.grid.show_edit_grid_normal_element_popup(custom_element_id, 'custom', element);
+                                }
+                            }
+
+
+                            options.edit_custom_element_settings = {
+                                id: 'edit_custom_element_settings',
+                                displayName: 'Edit Custom Element',
+                                onClick: ()=>{
+                                    self.subModule.grid.show_edit_custom_element_popup(custom_element_id, element);
+                                }
+                            }
+
+                            options.delete_custom_element = {
+                                id: 'delete_custom_element',
+                                displayName: 'Delete Custom Element',
+                                onClick: ()=>{
+                                    self.subModule.grid.verify_with_user_and_delete_custom_element(custom_element_id, element);
+                                }
+                            }
+
+
+                            return options;
+                        }
+                    },
                 ]
             }, self);
         }

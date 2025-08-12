@@ -771,6 +771,23 @@ export class ERP {
                             return options;
                         }
                     },
+                    {
+                        selector: ".navigation_header",
+                        getOptions: function (actualElement, contextMenu, targetElement) {
+                            var options = {};
+
+                            options.edit_main_navigation_settings = {
+                                id: 'edit_main_navigation_settings',
+                                displayName: 'Edit Navigation Settings',
+                                onClick: ()=>{
+                                    window.show_edit_main_navigation_popup(self);
+                                }
+                            };
+
+
+                            return options;
+                        }
+                    },
 
                     {
                         selector: "#applicationSettings",
