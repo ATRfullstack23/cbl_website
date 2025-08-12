@@ -26,6 +26,14 @@
         id = '';
         display = '';
     }
+
+    function handle_id_input() {
+        id =  id.replace(/([a-z])([A-Z])/g, '$1_$2') // separate camelCase
+            .replace(/[\s\-]+/g, '_')            // replace spaces & hyphens
+            .replace(/[^a-zA-Z0-9_]/g, '')       // remove non-alphanumeric chars except _
+            .toLowerCase();
+    }
+
 </script>
 
 <dialog bind:this={dialog} class="dialog">
@@ -34,7 +42,7 @@
 
         <label>
             Group ID:
-            <input type="text" bind:value={id} required/>
+            <input type="text" bind:value={id} required on:input={handle_id_input}/>
         </label>
 
         <label>
