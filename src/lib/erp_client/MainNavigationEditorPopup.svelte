@@ -13,9 +13,28 @@
     let editable_items_arr = [];
     let editable_data = {};
 
+    let module_items_arr = [];
+
     onMount(() => {
         console.log('edit nav erp_instance', erp_instance)
         console.log('edit nav config', config)
+
+        // config.items
+
+        for(const key in erp_instance.allModules){
+            const module_info = erp_instance.allModules[key];
+            module_items_arr.push({
+                item_type: 'item',
+                action_type: 'go_to_module',
+                display_name: module_info.displayName,
+                id: module_info.id,
+                context_data: {
+                    "module_id" : module_info.id,
+                    "submodule_id" : module_info.getDefaultSubModule()?.id
+                }
+            })
+        }
+        module_items_arr = module_items_arr;
 
         editable_data = JSON.parse(JSON.stringify(config || {}));
         console.log("editable_data", editable_data)
@@ -110,7 +129,7 @@
                     <header class="card-header">
                         <p class="card-header-title">Module Items</p>
                     </header>
-                    {#each config.items as item}
+                    {#each module_items_arr as item}
                         <div class="card-content scrollable-content">
                             <div class="item-row">
                                 <span class="item-name">{item.display_name}</span>
@@ -159,10 +178,12 @@
             <!--                <pre class="json-output">{JSON.stringify(configured, null, 2)}</pre>-->
             <!--            </div>-->
         </div>
-    </div>
-    <div class="button_container">
-        <button class="button confirm_button" on:click={confirm_update}>Confirm</button>
-        <button class="button cancel_button" on:click={cancel_popup}>Cancel</button>
+
+
+        <div class="button_container">
+            <button class="button confirm_button" on:click={confirm_update}>Confirm</button>
+            <button class="button cancel_button" on:click={cancel_popup}>Cancel</button>
+        </div>
     </div>
 
 
@@ -186,10 +207,10 @@
 
 
     .main_content {
-        width: 60%;
+        width: 80vw;
         margin: 0 auto;
         min-height: 200px;
-        max-height: 400px;
+        max-height: 90vh;
         overflow-y: scroll;
         border-bottom: 1px solid #ddd;
         margin-top: 50px;
