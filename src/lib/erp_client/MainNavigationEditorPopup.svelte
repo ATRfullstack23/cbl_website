@@ -5,8 +5,7 @@
     import EditableFormItemsManager from "$lib/form_view/EditableFormItemsManager.svelte";
 
     export let erp_instance;
-    export let config;
-
+    export let config
     let editorContainer;
     let editor
     let dispatch = createEventDispatcher()
@@ -14,13 +13,10 @@
     let editable_data = {};
 
     let module_items_arr = [];
+    let dashboard_items_arr = [];
+    let report_items_arr = [];
 
-    onMount(() => {
-        console.log('edit nav erp_instance', erp_instance)
-        console.log('edit nav config', config)
-
-        // config.items
-
+    function adjust_erp_modules_array() {
         for(const key in erp_instance.allModules){
             const module_info = erp_instance.allModules[key];
             module_items_arr.push({
@@ -35,9 +31,59 @@
             })
         }
         module_items_arr = module_items_arr;
+    }
+    function adjust_erp_dashboards_array() {
+        for(const key in erp_instance.dashboards){
+            const dashboard_info = erp_instance.dashboards[key];
+            dashboard_items_arr.push({
+                item_type: 'item',
+                action_type: 'go_to_dashboard',
+                display_name: dashboard_info.displayName,
+                id: dashboard_info.id,
+                context_data: {
+                    dashboard_id: dashboard_info.id
+                }
+            })
+        }
+        dashboard_items_arr = dashboard_items_arr;
+    }
+    function adjust_erp_reports_array() {
+        for(const key in erp_instance.reports){
+            const report_info = erp_instance.reports[key];
+            report_items_arr.push({
+                item_type: 'item',
+                action_type: 'go_to_dashboard',
+                display_name: report_info.displayName,
+                id: report_info.id,
+                context_data: {
+                    dashboard_id:""
+                }
+            })
+        }
+        report_items_arr = report_items_arr;
+    }
+
+
+    onMount(() => {
+        console.log('edit nav erp_instance', erp_instance)
+        console.log('edit nav config', config)
+
+        // config.items
+
+        adjust_erp_modules_array()
+        adjust_erp_dashboards_array()
+        adjust_erp_reports_array()
 
         editable_data = JSON.parse(JSON.stringify(config || {}));
         console.log("editable_data", editable_data)
+        editable_data.items.unshift({id: 'root', display_name: 'Root', item_type: 'group', items: []})
+        for(let single_item of editable_data.items){
+            console.log("SINGLE ITEM", single_item)
+            if(!single_item.items){
+                single_item.items = [];
+            }
+        }
+        editable_data = editable_data;
         window._nav_editable_data = editable_data;
     });
 
@@ -54,7 +100,7 @@
 
 
     function confirm_update() {
-        console.log("configured_data===========", configured)
+        console.log("configured_data===========", editable_data)
         dispatch('confirm', {new_config: editable_data});
     }
 
@@ -63,47 +109,49 @@
         dispatch('cancel');
     }
 
-    let configured = {
-        version: '1.0',
-        display_name: 'Demo',
-        id: 'demo',
-        items: [
-            {id: 'root', display_name: 'Root', item_type: 'group', items: []}
-        ]
-    };
+    // let configured = {
+    //     version: '1.0',
+    //     display_name: 'Demo',
+    //     id: 'demo',
+    //     items: [
+    //         {id: 'root', display_name: 'Root', item_type: 'group', items: []}
+    //     ]
+    // };
+
+
 
     let open_add_group_popup = false;
 
     function add_item_to_root(item) {
-        const root_group = configured.items.find(group => group.id === 'root');
+        const root_group = editable_data.items.find(group => group.id === 'root');
         if (root_group.items.some(existing => existing.id === item.id)) {
             alert(`"${item.display_name}" already exists in root group.`);
             return;
         }
         root_group.items.push(item);
-        configured = configured
+        editable_data = editable_data
     }
 
     function handle_add_group({detail}) {
-        configured.items.push({
+        editable_data.items.push({
             id: detail.id,
             display_name: detail.display,
             item_type: 'group',
             items: []
         });
         // configured = structuredClone(configured);
-        configured = configured
+        editable_data = editable_data
         open_add_group_popup = false;
     }
 
     function handleDndGroupItems({detail}, groupIndex) {
-        configured.items[groupIndex].items = detail.items;
-        configured = configured
+        editable_data.items[groupIndex].items = detail.items;
+        editable_data = editable_data
     }
 
     function handleDndFinalize({detail}, groupIndex) {
-        configured.items[groupIndex].items = detail.items;
-        configured = configured
+        editable_data.items[groupIndex].items = detail.items;
+        editable_data = editable_data
 
     }
 
@@ -125,21 +173,27 @@
         <!--        </div>-->
         <div class="navigation_configuration_container">
             <div class="flex-wrap-container">
-                <div class="card item-card">
-                    <header class="card-header">
-                        <p class="card-header-title">Module Items</p>
-                    </header>
-                    {#each module_items_arr as item}
+                {#each [
+                    {title: 'Modules', items: module_items_arr},
+                    {title: 'Dashboards', items: dashboard_items_arr},
+                    {title: 'Reports', items: report_items_arr}
+                ] as section}
+                    <div class="card item-card">
+                        <header class="card-header">
+                            <p class="card-header-title">{section.title}</p>
+                        </header>
                         <div class="card-content scrollable-content">
-                            <div class="item-row">
-                                <span class="item-name">{item.display_name}</span>
-                                <button class="add-btn" on:click={() => add_item_to_root(item)}><i
-                                        class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
+                            {#each section.items as item}
+                                <div class="item-row">
+                                    <span class="item-name">{item.display_name}</span>
+                                    <button class="add-btn" on:click={() => add_item_to_root(item)}><i
+                                            class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            {/each}
                         </div>
-                    {/each}
-                </div>
+                    </div>
+                {/each}
             </div>
 
 
@@ -149,27 +203,29 @@
                         class="fa-solid fa-plus"></i><span>ADD</span></button>
             </div>
             <div class="flex-wrap-container">
-                {#each configured.items as group, groupIndex (group.id)}
-                    <div class="card item-card">
-                        <header class="card-header">
-                            <p class="card-header-title">{group.display_name}</p>
-                        </header>
-                        <div
+                {#if editable_data && editable_data.items && editable_data.items.length}
+                    {#each editable_data.items as group, groupIndex (group.id)}
+                        <div class="card item-card">
+                            <header class="card-header">
+                                <p class="card-header-title">{group.display_name}</p>
+                            </header>
+                            <div
                                 use:dndzone={{
-                    items: group.items,
-                    flipDurationMs: 150,
-                    dragDisabled: false
-                }}
+                                items: group.items,
+                                flipDurationMs: 150,
+                                dragDisabled: false
+                                }}
                                 on:consider={(e) => handleDndGroupItems(e, groupIndex)}
                                 on:finalize="{(e) =>handleDndFinalize(e, groupIndex)}"
                                 class="card-content scrollable-content group-drop-area"
-                        >
-                            {#each group.items as item (item.id)}
-                                <div class="box is-light mb-2">{item.display_name}</div>
-                            {/each}
+                            >
+                                {#each group.items as item (item.id)}
+                                    <div class="box is-light mb-2">{item.display_name}</div>
+                                {/each}
+                            </div>
                         </div>
-                    </div>
-                {/each}
+                    {/each}
+                {/if}
             </div>
 
 
@@ -310,7 +366,7 @@
         display: flex;
         flex-direction: column;
         height: 300px;
-        overflow-y: scroll;
+        /*overflow-y: scroll;*/
         border: 1px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
@@ -426,6 +482,11 @@
         color: #fff;
         font-size: 18px;
         font-weight: 700;
+    }
+
+    .card-content{
+        overflow-y: scroll;
+        max-height: 300px;
     }
 
 

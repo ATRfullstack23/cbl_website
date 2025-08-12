@@ -1455,20 +1455,22 @@ Grid.prototype = {
             div.innerHTML = 'S.Total';
             th.appendChild(div);
             tr.appendChild(th);
+            if(grid.columnOrder){
+                grid.columnOrder.forEach(function (columnId) {
+                    var column = grid.subModule.columnManager.columns[columnId];
+                    var th = document.createElement('th');
+                    var div = document.createElement('div');
+                    div.setAttribute('data-column-id', column.id);
+                    if (column.typeSpecific && column.typeSpecific.showTotal) {
+                        // div.innerHTML = '...';
+                        div.innerHTML = ' ';
+                    }
+                    th.appendChild(div);
+                    tr.appendChild(th);
+                    column.elements.divGridFooterSubTotal = $(div);
+                });
+            }
 
-            grid.columnOrder.forEach(function (columnId) {
-                var column = grid.subModule.columnManager.columns[columnId];
-                var th = document.createElement('th');
-                var div = document.createElement('div');
-                div.setAttribute('data-column-id', column.id);
-                if (column.typeSpecific && column.typeSpecific.showTotal) {
-                    // div.innerHTML = '...';
-                    div.innerHTML = ' ';
-                }
-                th.appendChild(div);
-                tr.appendChild(th);
-                column.elements.divGridFooterSubTotal = $(div);
-            });
             return tr;
         },
         createTableFootGrandTotal: function (grid) {
@@ -1479,19 +1481,21 @@ Grid.prototype = {
             div.innerHTML = 'G.Total';
             th.appendChild(div);
             tr.appendChild(th);
+            if(grid.columnOrder){
+                grid.columnOrder.forEach(function (columnId) {
+                    var column = grid.subModule.columnManager.columns[columnId];
+                    var th = document.createElement('th');
+                    var div = document.createElement('div');
+                    div.setAttribute('data-column-id', column.id);
+                    if (column.typeSpecific && column.typeSpecific.showTotal) {
+                        div.innerHTML = '...';
+                    }
+                    th.appendChild(div);
+                    tr.appendChild(th);
+                    column.elements.divGridFooterGrandTotal = $(div);
+                });
+            }
 
-            grid.columnOrder.forEach(function (columnId) {
-                var column = grid.subModule.columnManager.columns[columnId];
-                var th = document.createElement('th');
-                var div = document.createElement('div');
-                div.setAttribute('data-column-id', column.id);
-                if (column.typeSpecific && column.typeSpecific.showTotal) {
-                    div.innerHTML = '...';
-                }
-                th.appendChild(div);
-                tr.appendChild(th);
-                column.elements.divGridFooterGrandTotal = $(div);
-            });
             return tr;
         },
         createRowSelectorHeader: function (grid) {
