@@ -52,6 +52,36 @@
     }
 
 
+    function get_all_conditions_as_array() {
+        return [
+            {
+                text: "Equals",
+                value: 'equals'
+            },
+            {
+                text: "Not Equals",
+                value: 'not_equals'
+            },
+            {
+                text: "Greater than",
+                value: 'greater_than'
+            },
+            {
+                text: "Less than",
+                value: 'less_than'
+            },
+            {
+                text: "Greater than or Equal To",
+                value: 'greater_than_or_equals'
+            },
+            {
+                text: "Less than or Equal To",
+                value: 'less_than_or_equals'
+            },
+        ];
+    }
+
+
 
 </script>
 
@@ -121,6 +151,15 @@
                                     on:change={handle_value_changed}>
                                 {#each get_all_columns_as_array() as option}
                                     <option value="{option.id}">{option.displayName}</option>
+                                {/each}
+                            </select>
+                        {/if}
+
+                        {#if item.input_type === 'condition'}
+                            <select class="form_input_element" bind:this={item.form_element} bind:value={editable_data[item.unique_id]}
+                                    on:change={handle_value_changed}>
+                                {#each get_all_conditions_as_array() as option}
+                                    <option value="{option.value}">{option.text}</option>
                                 {/each}
                             </select>
                         {/if}
@@ -198,7 +237,7 @@
     }
 
     .editor-container {
-        width: 60%;
+        /*width: 100%;*/
         margin: 0 auto;
         min-height: 200px;
         border-bottom: 1px solid #ddd;
@@ -209,6 +248,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        max-height: 75vh;
+        overflow: auto;
     }
 
     .form_input_element{

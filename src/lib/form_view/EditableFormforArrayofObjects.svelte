@@ -70,12 +70,44 @@
     }
 
     function delete_editable_data_array_item(index) {
-        if(editable_data[editable_array_of_object_item.unique_id].length === 1){
+        if(editable_data[editable_array_of_object_item.unique_id].length === 0){
             return
         }
         editable_data[editable_array_of_object_item.unique_id].splice(index, 1);
         editable_data = editable_data;
     }
+
+
+
+    function get_all_conditions_as_array() {
+        return [
+            {
+                text: "Equals",
+                value: 'equals'
+            },
+            {
+                text: "Not Equals",
+                value: 'not_equals'
+            },
+            {
+                text: "Greater than",
+                value: 'greater_than'
+            },
+            {
+                text: "Less than",
+                value: 'less_than'
+            },
+            {
+                text: "Greater than or Equal To",
+                value: 'greater_than_or_equals'
+            },
+            {
+                text: "Less than or Equal To",
+                value: 'less_than_or_equals'
+            },
+        ];
+    }
+
 
 
 </script>
@@ -106,6 +138,18 @@
                                        type="text"/>
 
                             {/if}
+
+
+                            {#if item.input_type === 'condition'}
+                                <select class="form_input_element" bind:this={item.form_element} bind:value={data_row[item.unique_id]}
+                                        on:change={handle_value_changed}>
+                                    {#each get_all_conditions_as_array() as option}
+                                        <option value="{option.value}">{option.text}</option>
+                                    {/each}
+                                </select>
+                            {/if}
+
+
                             {#if item.postfix}
                                 <span class="form_input_postfix">{item.postfix}</span>
                             {/if}
@@ -124,7 +168,7 @@
 
 <style>
     .outer_container{
-        height: 150px;
+        min-height: 50px;
         /*max-height: 200px;*/
         overflow-y: scroll;
     }
