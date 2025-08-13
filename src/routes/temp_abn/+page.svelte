@@ -646,6 +646,7 @@
     // module, submodule, columnManager, buttonManger, filterManager
 
     const side_cards_nav_config = {
+        module : 'invoice',
         card_view_style : 'basic',
         data_mapping : {
             main_header_text : {
@@ -837,17 +838,19 @@
             </div>
 
             <!-- Next Step Banner -->
-            <div class="next_step_banner">
-                <div class="banner_content">
-                    <span class="star_icon">⭐</span>
-                    <span class="banner_text">
-                        <strong>WHAT'S NEXT?</strong> Send this invoice to your customer or mark it as Sent.
-                    </span>
-                    <button class="banner_btn primary" on:click={handleSendInvoice}>Send Invoice</button>
-                    <button class="banner_btn secondary" on:click={handleMarkAsSent}>Mark As Sent</button>
+            {#if side_cards_nav_config.module === 'invoice'}
+                <div class="next_step_banner">
+                    <div class="banner_content">
+                        <span class="star_icon">⭐</span>
+                        <span class="banner_text">
+                            <strong>WHAT'S NEXT?</strong> Send this invoice to your customer or mark it as Sent.
+                        </span>
+                        <button class="banner_btn primary" on:click={handleSendInvoice}>Send Invoice</button>
+                        <button class="banner_btn secondary" on:click={handleMarkAsSent}>Mark As Sent</button>
+                    </div>
                 </div>
-            </div>
-            <InvoiceUI bind:selected_item/>
+                <InvoiceUI bind:selected_item data_mapping_config = {side_cards_nav_config.data_mapping}/>
+            {/if}
 
         </div>
     </div>

@@ -45,9 +45,11 @@
 
 </script>
 
-<div bind:this={container_element} data-custom_element_id="{unique_id}" data-unique_id="{unique_id}" style="--font_size:{font_size}; --content_alignment:{content_alignment}; --font_size:{font_size};" class="form_view_custom_element alert_message alert-box">
-    <span class="icon">{alert_icon}</span>
-    <span>{caption_text}</span>
+<div bind:this={container_element} data-custom_element_id="{unique_id}" data-unique_id="{unique_id}" style="--text_font_size:{font_size}px; --content_alignment:{content_alignment}; --font_size:{font_size};" class="form_view_custom_element alert_message alert-box">
+    <div class="alert_container">
+        <span class="icon">{alert_icon}</span>
+        <span class="caption_text">{caption_text}</span>
+    </div>
 </div>
 
 <style>
@@ -60,6 +62,10 @@
     .icon {
         margin-right: 3px;
         font-weight: bold;
-        font-size: var(--font_size);
+        font-size: calc(var(--text_font_size) + 5px);
+    }
+    .caption_text{
+        font-size: var(--text_font_size);
+
     }
 </style>

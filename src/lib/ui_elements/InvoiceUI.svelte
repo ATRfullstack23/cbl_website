@@ -1,5 +1,6 @@
 <script>
     export let selected_item;
+    export let data_mapping_config;
     function formatDate(dateString) {
         return new Date(dateString).toLocaleDateString('en-GB');
     }
@@ -105,6 +106,47 @@
         },
         "parentDataRowId": "1000068"
     }
+    function get_column_instance(column_id){
+        const column_obj = {
+            column_id
+        };
+
+        if(column_id === 'customer_profile_id'){
+            column_obj.data_type = 'lookup_dropdownlist'
+        }
+
+        if(column_id === 'invoice_date'){
+            column_obj.data_type = 'date'
+        }
+
+        if(column_id === 'total_amount'){
+            column_obj.data_type = 'amount'
+        }
+
+
+        column_obj.parseDisplayValue = (data_row) => {
+            if(column_obj.data_type === 'lookup_dropdownlist'){
+                return data_row[column_id]?.text;
+            }
+            else if(column_obj.data_type === 'date'){
+                let value = data_row[column_id]?.value;
+                return moment(value).format('dd MMMM YYYY');
+            }
+            else if(column_obj.data_type === 'amount'){
+                let value = data_row[column_id]?.value;
+                return formatCurrency(value);
+            }
+            return data_row[column_id]?.value;
+        };
+
+        return column_obj;
+        // return subModule.columnManager.getColumnById(column_id);
+    }
+    function get_column_display_value(column_id, data_row){
+        const column_instance = get_column_instance(column_id);
+        let display_value = column_instance.parseDisplayValue(data_row);
+        return display_value;
+    }
 
 
 </script>
@@ -117,7 +159,7 @@
     </div>
     <div class="bill_to_section">
         <h3 class="section_title">Bill To</h3>
-        <p class="customer_name">{selected_item.customer_profile_id__text}</p>
+        <p class="customer_name">{get_column_display_value(data_mapping_config.main_header_text.column_id, selected_item)}</p>
     </div>
 
 
@@ -126,7 +168,7 @@
             <div class="detail_row_outer">
                 <div class="detail_row">
                     <span class="label">#</span>
-                    <span class="value">{selected_item.invoice_number.value}-{selected_item.id}</span>
+                    <span class="value">{get_column_display_value(data_mapping_config.main_caption_text_left.column_id, selected_item)}</span>
                 </div>
                 <div class="detail_row">
                     <span class="label">Invoice Date</span>
