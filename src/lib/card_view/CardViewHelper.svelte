@@ -66,11 +66,13 @@
 
 
         for(const item of items){
-            const value = cardview_settings.data_mapping[item.unique_id];
+            let value = cardview_settings.data_mapping[item.unique_id];
             let processed_value;
             if(item.data_type === 'array_of_objects'){
+                if(value && typeof value === 'string'){
+                    value = cardview_settings.data_mapping[item.unique_id] = [];
+                }
                 processed_value = value || [];
-
                 // iterate through value here
             }
             else if(item.input_type === 'column_id'){

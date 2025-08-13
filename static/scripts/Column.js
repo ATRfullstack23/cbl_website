@@ -2436,7 +2436,7 @@ Column.prototype = {
                 var formViewObj = {};
                 formViewObj.mode = self.subModule.formView.mode;
                 formViewObj.data = self.subModule.formView.getFormData();
-                self.getLookUpDataFromServer(formViewObj, function(result){
+                self.getLookUpDataFromServerViaAjax(formViewObj, function(result){
                     if(!result.success){
                         console.log(result);
                         return;
@@ -2548,7 +2548,7 @@ Column.prototype = {
                 var formViewObj = {};
                 formViewObj.mode = self.subModule.formView.mode;
                 formViewObj.data = self.subModule.formView.getFormData();
-                self.getLookUpDataFromServer(formViewObj, function(result){
+                self.getLookUpDataFromServerViaAjax(formViewObj, function(result){
                     if(!result.success){
                         console.log(result);
                         return;

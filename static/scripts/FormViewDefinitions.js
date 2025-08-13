@@ -183,20 +183,20 @@ FormView.NORMAL_ELEMENTS = {
 }
 
 FormView.CUSTOM_ELEMENTS = {
-    title_only: {
-        id: 'title_only',
-        display_name: 'Title Only',
-        customization_config: {
-            items: [
-                {
-                    "unique_id": "title_text",
-                    "display_name": "title_text",
-                    "data_type": "text",
-                    "input_type": "single_line",
-                }
-            ]
-        }
-    },
+    // title_only: {
+    //     id: 'title_only',
+    //     display_name: 'Title Only',
+    //     customization_config: {
+    //         items: [
+    //             {
+    //                 "unique_id": "title_text",
+    //                 "display_name": "title_text",
+    //                 "data_type": "text",
+    //                 "input_type": "single_line",
+    //             }
+    //         ]
+    //     }
+    // },
     title_with_caption: {
         id: 'title_with_caption',
         display_name: 'Title With Caption',

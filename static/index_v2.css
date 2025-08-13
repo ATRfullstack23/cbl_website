@@ -37,6 +37,7 @@ body{
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+    background-color:  var(--white_theme_module_bg_color);
 }
 ul{
     padding: 0;

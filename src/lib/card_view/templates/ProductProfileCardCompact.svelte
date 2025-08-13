@@ -1,11 +1,14 @@
 <script>
     import dayjs from "dayjs";
+    import {CARD_VIEW_STATUS_BADGE_STYLES, get_card_status_conditions_value, get_column_display_value, get_column_type} from "$lib/card_view/CardViewUtils.js";
 
+    export let submodule;
     export let data_row;
     export let config;
 
     export let data_mapping = {
             main_header_text: "product_name",
+            main_header_caption_display_name: "hsn_code",
             main_header_caption: "hsn_code",
             status_badge: "available_quantity",
             main_detail_items: [
@@ -13,51 +16,53 @@
                 { item_value: "sale_price" , item_text: ""},
                 { item_value: "sales_tax" , item_text: ""},
                 { item_value: "purchase_tax" , item_text: ""}
-            ]
+            ],
+            status_badge_default_negative_conditions: "",
+            status_badge_default_positive_conditions: "",
+            status_badge_default_neutral_conditions: "",
         }
 
 
-    function get_column_display_value(column_id){
-        // const column_instance = get_column_instance(column_id);
-        // let display_value = column_instance.parseDisplayValue(data_row);
 
-        // if(column_id === 'due_date'){
-        //     display_value = dayjs(display_value).format('DD MMM YYYY')
-        // }
-        // return display_value;
+    let status_badge_style = get_card_status_conditions_value(submodule, data_row, data_mapping);
+    let container_element;
 
-        return data_row[column_id]?.text || data_row[column_id]?.value || data_row[column_id]?.name;
-    }
-
-
-    function get_column_display_name(column_id){
-        return column_id?.toUpperCase() || '-';
-    }
 
 </script>
 
 
-<div class="common_card_product">
+<div class="common_card_product single_card_view_item"
+     bind:this={container_element}
+     data-data_row_id="{data_row.id}"
+     class:default_positive={status_badge_style === CARD_VIEW_STATUS_BADGE_STYLES.default_positive}
+     class:default_neutral={status_badge_style === CARD_VIEW_STATUS_BADGE_STYLES.default_neutral}
+     class:default_negative={status_badge_style === CARD_VIEW_STATUS_BADGE_STYLES.default_negative}>
+
     <div class="card_header">
         <div class="product_info">
-            <h3 class="product_name">{get_column_display_value(data_mapping.main_header_text) || ""}</h3>
+            <h3 class="product_name" data-column_id="{data_mapping.main_header_text}" data-column_type="{get_column_type({submodule, column_id: data_mapping.main_header_text})}">{get_column_display_value({submodule, data_row, column_id: data_mapping.main_header_text}) || ""}</h3>
             <div class="product_meta">
-                <span class="product_id">{get_column_display_name(data_mapping.main_header_caption) || ""}:</span>
-                <span class="hsn_code">{get_column_display_value(data_mapping.main_header_caption) || ""}</span>
+                {#if data_mapping.main_header_caption_display_name }
+                    <span class="product_id">{data_mapping.main_header_caption_display_name || ""}:</span>
+                {/if}
+                <span class="hsn_code">{get_column_display_value({submodule, column_id: data_mapping.main_header_caption, data_row}) || ""}</span>
             </div>
         </div>
-        <div class="stock_status in_stock">{get_column_display_value(data_mapping.status_badge)|| ""}</div>
+        <div class="stock_status">{get_column_display_value({submodule, column_id: data_mapping.status_badge, data_row})|| ""}</div>
     </div>
 
     <div class="card_body">
         {#each data_mapping.main_detail_items as item}
-            <div class="data_row">
-                <span class="label">{get_column_display_name(item.item_text) || ""}:</span>
-                <span class="value">{get_column_display_value(item.item_value) || ""}</span>
+            <div class="data_row card_view_actionable_item"
+                 data-column_id="{item.item_value}"
+                 data-column_type="{get_column_type({submodule, column_id: item.item_value})}">
+                <span class="label">{item.item_text}:</span>
+                <span class="value">{get_column_display_value({submodule, column_id: item.item_value, data_row}) || ""}</span>
             </div>
         {/each}
     </div>
 </div>
+
 
 <style>
     .common_card_product {
@@ -69,6 +74,8 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         height: -webkit-fill-available;
     }
+
+
 
     .card_header {
         display: flex;
@@ -111,23 +118,26 @@
         min-width: 80px;
     }
 
-    .in_stock {
+
+
+    .single_card_view_item.default_positive .stock_status{
         background: #d1fae5;
         color: #065f46;
         border: 1px solid #a7f3d0;
     }
 
-    .low_stock {
+    .single_card_view_item.default_neutral .stock_status{
         background: #fef3c7;
         color: #92400e;
         border: 1px solid #fcd34d;
     }
 
-    .out_of_stock {
+    .single_card_view_item.default_negative .stock_status{
         background: #fee2e2;
         color: #991b1b;
         border: 1px solid #fca5a5;
     }
+
 
     .card_body {
         padding: 16px;

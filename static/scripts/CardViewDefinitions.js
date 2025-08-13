@@ -1,5 +1,89 @@
 const CardView = {};
 
+const CARD_VIEW_CONDITION_BASE_ITEMS = [
+    {
+        "unique_id": "positive_conditions",
+        "display_name": "Positive Conditions",
+        "data_type": "array_of_objects",
+        "input_type": "array_of_objects",
+        "custom_schema" : [
+            {
+                "unique_id": "column_id",
+                "display_name": "Column",
+                "data_type": "text",
+                "input_type": "column_id",
+            },
+            {
+                "unique_id": "condition",
+                "display_name": "Condition",
+                "data_type": "text",
+                "input_type": "condition",
+            },
+            {
+                "unique_id": "condition_value",
+                "display_name": "Value",
+                "placeholder": "Value",
+                "data_type": "text",
+                "input_type": "single_line",
+            },
+        ]
+    },
+    {
+        "unique_id": "neutral_conditions",
+        "display_name": "Neutral Conditions",
+        "data_type": "array_of_objects",
+        "input_type": "array_of_objects",
+        "custom_schema" : [
+            {
+                "unique_id": "column_id",
+                "display_name": "Column",
+                "data_type": "text",
+                "input_type": "column_id",
+            },
+            {
+                "unique_id": "condition",
+                "display_name": "Condition",
+                "data_type": "text",
+                "input_type": "condition",
+            },
+            {
+                "unique_id": "condition_value",
+                "display_name": "Value",
+                "placeholder": "Value",
+                "data_type": "text",
+                "input_type": "single_line",
+            },
+        ]
+    },
+    {
+        "unique_id": "negative_conditions",
+        "display_name": "Negative Conditions",
+        "data_type": "array_of_objects",
+        "input_type": "array_of_objects",
+        "custom_schema" : [
+            {
+                "unique_id": "column_id",
+                "display_name": "Column",
+                "data_type": "text",
+                "input_type": "column_id",
+            },
+            {
+                "unique_id": "condition",
+                "display_name": "Condition",
+                "data_type": "text",
+                "input_type": "condition",
+            },
+            {
+                "unique_id": "condition_value",
+                "display_name": "Value",
+                "placeholder": "Value",
+                "data_type": "text",
+                "input_type": "single_line",
+            },
+        ]
+    }
+];
+
 CardView.TEMPLATES = {
     classic_card: {
         id: 'classic_card',
@@ -174,6 +258,7 @@ CardView.TEMPLATES = {
     product_profile_card_detailed: {
         id: "product_profile_card_detailed",
         display_name: "Product Profile Detailed",
+        supports_condition_based_styles: true,
         data_mapping_config: {
             items: [
                 {
@@ -260,6 +345,7 @@ CardView.TEMPLATES = {
     product_profile_card_compact: {
         id: "product_profile_card_compact",
         display_name: "Product Profile Compact",
+        supports_condition_based_styles: true,
         data_mapping_config: {
             items: [
                 {
@@ -267,6 +353,12 @@ CardView.TEMPLATES = {
                     display_name: "Main header text",
                     data_type: "text",
                     input_type: "column_id",
+                },
+                {
+                    unique_id: "main_header_caption_display_name",
+                    display_name: "Main header caption display name",
+                    data_type: "text",
+                    input_type: "single_line",
                 },
                 {
                     unique_id: "main_header_caption",
@@ -300,7 +392,9 @@ CardView.TEMPLATES = {
                             "input_type": "column_id",
                         },
                     ]
-                }
+                },
+
+
             ]
         }
     },
@@ -976,6 +1070,15 @@ CardView.TEMPLATES = {
         }
     },
 
+}
+
+
+for (const template_id in CardView.TEMPLATES) {
+    let template = CardView.TEMPLATES[template_id];
+    console.log('template', template.id, template.supports_condition_based_styles)
+    if(template.supports_condition_based_styles){
+        template.data_mapping_config.items.push(...CARD_VIEW_CONDITION_BASE_ITEMS);
+    }
 }
 
 

@@ -32,7 +32,7 @@ ContextMenu.prototype={
     _creation:{
         createElements: function(contextMenu){
             var self = this;
-            var container = self.createContainer(contextMenu).appendTo(document.body);
+            var container = self.createContainer(contextMenu).appendTo( contextMenu.config.appendToContainer || document.body);
             var rightClickMenuUl = self.createRightClickMenu(contextMenu).appendTo(container);
             contextMenu.elements.rightClickMenuUl = rightClickMenuUl;
             contextMenu.elements.container = container;

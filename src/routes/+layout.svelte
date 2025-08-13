@@ -314,6 +314,7 @@
   }
   footer {
     display: flex;
+    display: none;
     flex-direction: row;
     justify-content: end;
     align-items: center;
