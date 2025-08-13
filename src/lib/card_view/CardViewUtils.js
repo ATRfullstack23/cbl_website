@@ -69,7 +69,15 @@ export function get_card_status_conditions_value(submodule, data_row, conditions
 
 export function get_column_display_value({submodule, column_id, data_row}) {
     // console.log('get_column_display_value', arguments.length, arguments);
-    return data_row[column_id]?.text || data_row[column_id]?.value || data_row[column_id]?.name;
+    let value_to_return = data_row[column_id]?.text || data_row[column_id]?.value || data_row[column_id]?.name;
+
+    const column_info = submodule.get_column_from_id(column_id);
+    if(column_info.type === 'image' && data_row[column_id]?.value){
+        value_to_return = data_row[column_id].value;
+        value_to_return.url = submodule.get_backend_erp_root_url() + data_row[column_id].url;
+    }
+
+    return value_to_return;
 }
 
 export function get_column_actual_value(submodule, column_id, data_row) {

@@ -25,7 +25,9 @@
         const props = {
             unique_id: outer_config.unique_id,
             config: outer_config.config,
-            data_row: data_row
+            data_row: data_row,
+            grid_instance: grid,
+            submodule: grid.subModule
         };
         // need to pass customizations as well
 
