@@ -2406,6 +2406,10 @@ SubModule.prototype = {
             arr: data_arr,
             map: data_map
         };
+    },
+
+    get_backend_erp_root_url: function () {
+        return this.erp.config.backend_root_url;
     }
 };
 

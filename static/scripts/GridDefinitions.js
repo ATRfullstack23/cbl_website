@@ -72,24 +72,23 @@ Grid.CUSTOM_ELEMENTS = {
         customization_config: {
             items: [
                 {
-                    "unique_id": "icon_image",
-                    "display_name": "Icon",
-                    "placeholder": "Icon Image",
+                    "unique_id": "main_image",
+                    "display_name": "Image",
                     "data_type": "text",
-                    "input_type": "single_line",
+                    "input_type": "column_id",
                 },
                 {
                     "unique_id": "header_text",
                     "display_name": "Heading",
                     "placeholder": "Header Display text",
                     "data_type": "text",
-                    "input_type": "single_line",
+                    "input_type": "column_id",
                 },
                 {
                     "unique_id": "caption_text",
                     "display_name": "Caption",
                     "data_type": "text",
-                    "input_type": "single_line",
+                    "input_type": "column_id",
                 },
             ]
         }
