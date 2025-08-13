@@ -3010,13 +3010,13 @@ export class ERP {
 
     disableNavigation() {
         var self = this
-        document.body.style.pointerEvents = 'none';
+        // document.body.style.pointerEvents = 'none';
         return self;
     }
 
     enableNavigation() {
         var self = this;
-        document.body.style.pointerEvents = '';
+        // document.body.style.pointerEvents = '';
         return self;
     }
 

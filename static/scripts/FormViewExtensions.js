@@ -1,6 +1,253 @@
 
 
 
+FormView.prototype.initializeContextMenu = function () {
+    var self = this;
+    if(self.erp.deviceType === ERP.DEVICE_TYPES.MOBILE){
+        return self;
+    }
+    
+    self.contextMenu = new ContextMenu({
+        targetContainer: self.container,
+        appendToContainer : self.container,
+        targetAreas: [
+
+            {
+                selector: ".simpleDataTable-container",
+                getOptions: function(element, contextMenu, targetElement){
+                    var options = {};
+                    var option = {};
+                    option.displayName = 'Re-Arrange Columns';
+                    option.id = 'reArrangeGrid';
+                    option.onClick = function(){
+                        self.setSimpleDataTableToReSizeMode(element.closest('.formView-subForm_create').data('id'));
+                    }
+                    options[option.id] = option;
+                    if(targetElement.data('help')){
+                        option = {};
+                        option.displayName = 'Help';
+                        option.id = 'help';
+                        option.onClick = function(clickedElementContainer, contextMenu, rightClickedEvent){
+                            var containerData = $(rightClickedEvent.target).data('help');
+                            self.erp.helpBox.show(rightClickedEvent.pageX, rightClickedEvent.pageY, containerData);
+                        }
+                        options[option.id] = option;
+                    }
+
+                    return options;
+                }
+            },
+            {
+                selector: ".formview-header-table",
+                getOptions: function(element, contextMenu, targetElement){
+                    var options = {};
+
+                    if(!self.is_in_styling_mode){
+                        options.go_to_styling_mode = {
+                            id: 'go_to_styling_mode',
+                            displayName: 'Edit Styling',
+                            onClick: ()=>{
+                                self.go_to_styling_mode();
+                            }
+                        }
+                    }
+                    else{
+                        if(self.display_styling_mode === 'custom_size'){
+                            options.set_to_full_size_mode = {
+                                id: 'set_to_full_size_mode',
+                                displayName: 'Use Full Size',
+                                onClick: ()=>{
+                                    self.set_to_full_size_mode();
+                                }
+                            }
+                        }
+                        else{
+                            options.set_to_custom_size_mode = {
+                                id: 'set_to_custom_size_mode',
+                                displayName: 'Use Custom Size',
+                                onClick: ()=>{
+                                    self.set_to_custom_size_mode();
+                                }
+                            }
+                        }
+
+
+                        options.save_styling_settings = {
+                            id: 'save_styling_settings',
+                            displayName: 'Save New Styling',
+                            onClick: ()=>{
+                                self.exit_styling_mode(true);
+                            }
+                        }
+                        options.cancel_styling_settings = {
+                            id: 'cancel_styling_settings',
+                            displayName: 'Cancel Styling',
+                            onClick: ()=>{
+                                self.exit_styling_mode(false);
+                            }
+                        }
+                    }
+
+                    return options;
+                }
+            },
+            {
+                selector: ".formview-column-holder",
+                getOptions: function(element, contextMenu, targetElement){
+                    var options = {};
+
+                    if(!self.is_in_styling_mode){
+                        return {};
+                    }
+
+                    const column_id = element.attr('data-column_id')
+
+
+                    options.edit_formview_normal_element_settings = {
+                        id: 'edit_formview_normal_element_settings',
+                        displayName: 'Edit Settings',
+                        onClick: ()=>{
+                            self.show_edit_formview_normal_element_popup(column_id, 'column', element);
+                        }
+                    }
+
+                    // console.log('formview-column-holder contextMenu', contextMenu)
+                    // console.log('formview-column-holder targetElement', targetElement)
+
+                    for (const key of Object.keys(FormView.COLUMN_STACK_STYLES)) {
+
+                        const final_key = key + '';
+                        const context_menu_key = `set_column_style__${key}`;
+                        options[context_menu_key] = {
+                            id: context_menu_key,
+                            displayName: `Set Style -> ${FormView.COLUMN_STACK_STYLES[key].display_name}`,
+                            onClick: ()=>{
+                                self.update_column_stack_style(column_id, element, final_key);
+                            }
+                        }
+                    }
+
+                    options.move_all_form_items_to_next_row_upwards = {
+                        id: 'move_all_form_items_to_next_row_upwards',
+                        displayName: 'Move All Row Items -> Up',
+                        onClick: ()=>{
+                            self.move_all_form_items_to_next_row(column_id, element, 'up');
+                        }
+                    }
+
+                    options.move_all_form_items_to_next_row_downwards = {
+                        id: 'move_all_form_items_to_next_row_downwards',
+                        displayName: 'Move All Row Items -> Down',
+                        onClick: ()=>{
+                            self.move_all_form_items_to_next_row(column_id, element, 'down');
+                        }
+                    }
+
+
+                    // options.set_column_style_to_horizontal_stack_display_name_100px = {
+                    //     id: 'set_column_style_to_horizontal_stack_display_name_100px',
+                    //     displayName: 'Form Element Style -> Horizontal Short Name',
+                    //     onClick: ()=>{
+                    //         self.update_column_stack_style(column_id, element, 'horizontal_stack_display_name_100px');
+                    //     }
+                    // }
+                    // options.set_column_style_to_horizontal_stack_display_name_200px = {
+                    //     id: 'set_column_style_to_horizontal_stack_display_name_200px',
+                    //     displayName: 'Form Element Style -> Horizontal Long Name',
+                    //     onClick: ()=>{
+                    //         self.update_column_stack_style(column_id, element, 'horizontal_stack_display_name_200px');
+                    //     }
+                    // }
+
+
+                    return options;
+                }
+            },
+            {
+                selector: ".form_view_custom_element",
+                getOptions: function(element, contextMenu, targetElement){
+                    var options = {};
+
+                    if(!self.is_in_styling_mode){
+                        return {};
+                    }
+
+                    const custom_element_id = element.attr('data-custom_element_id')
+
+
+                    // console.log('formview-column-holder contextMenu', contextMenu)
+                    // console.log('formview-column-holder targetElement', targetElement)
+
+                    options.edit_formview_normal_element_settings = {
+                        id: 'edit_formview_normal_element_settings',
+                        displayName: 'Edit Settings',
+                        onClick: ()=>{
+                            self.show_edit_formview_normal_element_popup(custom_element_id, 'custom', element);
+                        }
+                    }
+
+
+                    options.edit_custom_element_settings = {
+                        id: 'edit_custom_element_settings',
+                        displayName: 'Edit Custom Element',
+                        onClick: ()=>{
+                            self.show_edit_custom_element_popup(custom_element_id, element);
+                        }
+                    }
+
+                    options.delete_custom_element = {
+                        id: 'delete_custom_element',
+                        displayName: 'Delete Custom Element',
+                        onClick: ()=>{
+                            self.verify_with_user_and_delete_custom_element(custom_element_id, element);
+                        }
+                    }
+
+
+                    return options;
+                }
+            },
+            {
+                selector: ".form_view_table_cell:is(:empty)",
+                getOptions: function(element, contextMenu, targetElement){
+                    var options = {};
+
+                    if(!self.is_in_styling_mode){
+                        return {};
+                    }
+
+
+
+                    // console.log('formview-column-holder contextMenu', contextMenu)
+                    // console.log('formview-column-holder targetElement', targetElement)
+
+                    for (const key of Object.keys(FormView.CUSTOM_ELEMENTS)) {
+
+                        const final_key = key + '';
+                        const context_menu_key = `add_custom_element__${key}`;
+                        options[context_menu_key] = {
+                            id: context_menu_key,
+                            displayName: `Add Element -> ${FormView.CUSTOM_ELEMENTS[key].display_name}`,
+                            onClick: ()=>{
+                                self.mount_custom_element(null, final_key, element, null).then(()=>{
+                                    // custom element mounted
+                                });
+                            }
+                        }
+                    }
+
+
+
+                    return options;
+                }
+            },
+        ]
+    }, self);
+
+    return self;
+}
+
+
 
 FormView.prototype.handle_normal_column_value_changed = function(column, column_form_element){
     const self = this;

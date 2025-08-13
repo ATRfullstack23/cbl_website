@@ -96,6 +96,7 @@ FormView.prototype = {
 
 
         self.createElements();
+        self.initializeContextMenu();
 
         self.initializeTabs();
 
@@ -1675,6 +1676,7 @@ FormView.prototype = {
         },
         insert_done: function(formView, data){
             var self = this;
+            console.log('insert_done', formView.dynamicCallBacks, data);
             formView.clearSimpleDataTableLookUpDataBlock();
             formView.clearCarryForwardValue();
             formView.enableSaveAndCancelButtons();
@@ -1682,6 +1684,7 @@ FormView.prototype = {
                 .css('position', '')
                 .removeClass('showLoadingOverlay');
             if(data.success){
+                console.log('insert_done 2', formView);
                 formView.notifier.showSuccessNotification(data.successMessage);
                 var ret = false;
                 if(formView.dynamicCallBacks && formView.dynamicCallBacks.onAfterInsert){

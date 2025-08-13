@@ -1593,9 +1593,9 @@ SubModule.prototype = {
         var self = this;
         var button = self.buttonManager.getDefaultButton(Button.BUTTON_TYPES.CREATE);
         var formViewType;
-        if(options.showQuickAddView){
-            formViewType = 'smallQuickAddView';
-        }
+        // if(options.showQuickAddView){
+        //     formViewType = 'smallQuickAddView';
+        // }
         self.formView.setZIndex(9999999999999999);
         self.formView.show(FormView.CREATE_MODE, {}, button, {
             onAfterInsert: function(data, formView){
