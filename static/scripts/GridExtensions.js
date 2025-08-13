@@ -435,6 +435,10 @@ Grid.prototype.mount_custom_element_to_data_row = async function (custom_element
             // current_custom_element_type = item_type;
             mounted_svelte_instance = await this.styling_helper.mount_custom_element__inline_table_display(this, custom_element_info, data_row, target_parent_element);
             break;
+        case Grid.CUSTOM_ELEMENTS.table_display_with_image.id:
+            // current_custom_element_type = item_type;
+            mounted_svelte_instance = await this.styling_helper.mount_custom_element__table_display_with_image(this, custom_element_info, data_row, target_parent_element);
+            break;
 
     }
 
@@ -475,6 +479,18 @@ Grid.prototype.styling_helper = {
         }
 
         const svelte_instance = await window.mount_grid_custom_element(grid, target_element, data_row, Grid.CUSTOM_ELEMENTS.inline_table_display.id, {
+            unique_id: custom_element_info.id,
+            config: custom_element_info.config
+        });
+
+        return svelte_instance;
+    },
+    mount_custom_element__table_display_with_image: async function (grid, custom_element_info, data_row, target_element) {
+        if (!custom_element_info.config) {
+            custom_element_info.config = {header_text: '', caption_text: '', icon_image: ''};
+        }
+
+        const svelte_instance = await window.mount_grid_custom_element(grid, target_element, data_row, Grid.CUSTOM_ELEMENTS.table_display_with_image.id, {
             unique_id: custom_element_info.id,
             config: custom_element_info.config
         });

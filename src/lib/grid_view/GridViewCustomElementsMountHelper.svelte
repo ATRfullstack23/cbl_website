@@ -6,6 +6,7 @@
     import NormalElementCustomizationPopup from "$lib/grid_view/NormalElementCustomizationPopup.svelte";
     import CurrencyAmountDisplayCustomElement from "$lib/grid_view/CurrencyAmountDisplayCustomElement.svelte";
     import InlineTableDisplayCustomElement from "$lib/grid_view/InlineTableDisplayCustomElement.svelte";
+    import TableDisplayWithImageCustomElement from "$lib/grid_view/TableDisplayWithImageCustomElement.svelte";
 
     export async function mount_grid_custom_element(grid, target_container_element, data_row, element_type, outer_config) {
         // const target = document.querySelector(target_selector);
@@ -31,6 +32,12 @@
         switch (element_type) {
             case Grid.CUSTOM_ELEMENTS.inline_table_display.id:
                 svelte_instance = new InlineTableDisplayCustomElement({
+                    target: target_container_element,
+                    props : props,
+                });
+                break;
+            case Grid.CUSTOM_ELEMENTS.table_display_with_image.id:
+                svelte_instance = new TableDisplayWithImageCustomElement({
                     target: target_container_element,
                     props : props,
                 });

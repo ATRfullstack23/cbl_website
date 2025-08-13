@@ -66,6 +66,34 @@ Grid.CUSTOM_ELEMENTS = {
             ]
         }
     },
+    table_display_with_image: {
+        id: 'table_display_with_image',
+        display_name: 'Table Display with Image',
+        customization_config: {
+            items: [
+                {
+                    "unique_id": "icon_image",
+                    "display_name": "Icon",
+                    "placeholder": "Icon Image",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "header_text",
+                    "display_name": "Heading",
+                    "placeholder": "Header Display text",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+                {
+                    "unique_id": "caption_text",
+                    "display_name": "Caption",
+                    "data_type": "text",
+                    "input_type": "single_line",
+                },
+            ]
+        }
+    },
     // currency_amount_display: {
     //     id: 'currency_amount_display',
     //     display_name: 'Money Display',
