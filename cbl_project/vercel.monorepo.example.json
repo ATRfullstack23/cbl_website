@@ -1,13 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd cbl_project && npm ci",
+  "installCommand": "cd cbl_project && npm install",
   "buildCommand": "cd cbl_project && npm run build",
   "outputDirectory": "cbl_project/dist",
-  "build": {
-    "env": {
-      "NODE_VERSION": "20"
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",

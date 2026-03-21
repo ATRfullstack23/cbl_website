@@ -1,30 +1,61 @@
-# Deploy without NOT_FOUND or build surprises
+# Deploy the React (Vite) app
 
-## Vercel (this folder is the Git root)
+The live site is **`npm run build` → `dist/`** (React + Vite).  
+The **`cbl-website/`** folder is an old static HTML demo — it is **not** deployed unless you change the whole setup.
 
-`vercel.json` is already set: `npm ci`, `npm run build`, publish `dist`, SPA rewrite to `index.html`, Node 20.
+---
 
-Link the repo, accept defaults, deploy.
+## If you see **404** on Vercel
 
-## Vercel (monorepo: Git root is the parent folder)
+### 1. Correct **Root Directory** (most common)
 
-Vercel must build **this** app, not the repo root.
+If your GitHub repo looks like:
 
-**Option A (recommended):** In the project on Vercel: **Settings → General → Root Directory** → set to `cbl_project` (path from repo root). Keep using the `vercel.json` inside `cbl_project`.
+```text
+Projects/
+  cbl_project/
+    package.json
+    src/
+```
 
-**Option B:** At the **repository root** (parent of `cbl_project`), add a `vercel.json` copied from **`vercel.monorepo.example.json`** in this folder. Do **not** commit a root `vercel.json` if your Git repo **is only** this folder (no parent) — that would duplicate or confuse settings.
+then Vercel’s default root is **`Projects/`**, which has **no** Vite app → **404**.
 
-**Note:** The live site is the **Vite app** (`npm run build` → `dist/`). The **`cbl-website/`** folder is a separate static prototype and is **not** what Vercel publishes unless you change the project to a static export of that folder.
+**Fix:** Vercel → Project → **Settings → General → Root Directory** → set to **`cbl_project`** → **Redeploy**.
 
-## Netlify
+Or put the contents of **`vercel.monorepo.example.json`** at the **repository root** as **`vercel.json`** (same folder as `cbl_project`).
 
-Use `netlify.toml` in this folder. Set **Base directory** to `cbl_project` if the Git root is above this project.
+If the repo **is only** the app (root = `package.json` + `src/`), leave Root Directory **empty**.
 
-## Quick local check
+### 2. **Build** must succeed
+
+Open the deployment → **Building** logs. You must see `vite build` and **no errors**.
+
+- If **`npm ci`** failed → ensure **`package-lock.json`** is committed, or we use **`npm install`** in `vercel.json` (already set).
+- If **Module not found** → fix locally first: `npm install` then `npm run build`.
+
+### 3. **Output directory** must be `dist`
+
+Vercel → **Settings → General → Build & Output**
+
+- **Output Directory** should be **`dist`** or **empty** (Vite preset uses `dist`).
+- If it was changed to `build`, `public`, or `cbl-website` → set back to **`dist`** or clear it.
+
+### 4. SPA fallback
+
+`vercel.json` already rewrites all routes to **`/index.html`** so React loads.  
+If you remove `vercel.json`, add the same **rewrites** again or deep links can 404.
+
+### 5. Quick local check
 
 ```bash
-npm ci
+npm install
 npm run build
 ```
 
-You must see `dist/index.html` and `dist/assets/*`. If that fails, fix it before deploying.
+Open **`dist/index.html`** — it should reference **`/assets/...`** scripts, not **`/src/...`**.
+
+---
+
+## Netlify
+
+Use **`netlify.toml`**. If the Git root is above this app, set **Base directory** to **`cbl_project`**.
