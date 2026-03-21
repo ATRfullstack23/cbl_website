@@ -40,10 +40,15 @@ Vercel → **Settings → General → Build & Output**
 - **Output Directory** should be **`dist`** or **empty** (Vite preset uses `dist`).
 - If it was changed to `build`, `public`, or `cbl-website` → set back to **`dist`** or clear it.
 
-### 4. SPA fallback
+### 4. SPA fallback (fixes most `NOT_FOUND` on client routes)
 
-`vercel.json` already rewrites all routes to **`/index.html`** so React loads.  
-If you remove `vercel.json`, add the same **rewrites** again or deep links can 404.
+`vercel.json` **rewrites** every path to **`/index.html`** so the server always serves your app shell; React then handles the URL.
+
+**Mental model:** Vercel only sees **static files** — it does not run React Router. Without a rewrite, `/dashboard` looks like a **missing file** → 404. With a rewrite, `/dashboard` → **`index.html`** → React Router can render `/dashboard`.
+
+**Vercel dashboard:** Framework **Vite**, Build **`npm run build`**, Output **`dist`** (or leave defaults if they match).
+
+**If rewrites work but you still suspect routing:** temporarily try **`HashRouter`** — if that fixes deep links, the issue was server rewrite/config; ugly URLs (`#/path`) confirm it.
 
 ### 5. Quick local check
 
