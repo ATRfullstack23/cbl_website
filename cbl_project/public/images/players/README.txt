@@ -1,6 +1,4 @@
-Place player profile images here. Expected filenames (used by the app):
-  elby.png, amal.png, amaldev.png, febin.png, arun.png, sanjay.png,
-  player7.png, player8.png
+Player PNGs now live under: public/assets/images/players/
 
-Images will appear on the player cards and in the profile popup.
-Square or portrait images work best.
+Old path /images/players/ is no longer used by the app.
+Copy or symlink files to /assets/images/players/ if you only have them here.

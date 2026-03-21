@@ -1,29 +1,29 @@
 import { useState } from 'react';
+import { public_asset_url } from './lib/public_asset_url';
 import Nav from './components/Nav';
 import TeamCarousel from './components/TeamCarousel';
-import PlayerCard from './components/PlayerCard';
+import PlayerCardsSlider from './components/PlayerCardsSlider';
 import PlayerProfilePopup from './components/PlayerProfilePopup';
 import PointsTable from './components/PointsTable';
 import Footer from './components/Footer';
 import use_scroll_reveal from './hooks/use_scroll_reveal';
-
-function player_image_path(name) {
-  var slug = name.toLowerCase().replace(/\s+/g, '_');
-  return '/images/players/' + slug + '.png';
-}
 
 function player_placeholder_url(name, hex_color) {
   var color = (hex_color || '7c3aed').replace('#', '');
   return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&size=400&background=' + color + '&color=fff';
 }
 
+function player_profile_png(slug) {
+  return public_asset_url('assets/images/players/' + slug + '.png');
+}
+
 var PLAYERS = [
-  { name: 'Elby', team: 'Thunder Boys', role: 'Singles', nickname: 'THE WALL', skill_type: 'Defense', skill_desc: 'Immovable at the net. Blocks and lifts turn into counter-attacks.', theme_primary: '#6a0dad', theme_accent: '#ffd700', stats: { smash_power: 72, defense: 99, agility: 78, strategy: 85, stamina: 88 }, icon: 'shield', image: player_image_path('elby'), placeholder_image: player_placeholder_url('Elby', '6a0dad') },
-  { name: 'Amal', team: 'Thunder Boys', role: 'Doubles', nickname: 'THE POWERHOUSE', skill_type: 'Power', skill_desc: 'Devastating smashes and explosive jumps. Opponents fear the kill shot.', theme_primary: '#e65100', theme_accent: '#ffeb3b', stats: { smash_power: 98, defense: 70, agility: 82, strategy: 68, stamina: 85 }, icon: 'explosion', image: player_image_path('amal'), placeholder_image: player_placeholder_url('Amal', 'e65100') },
-  { name: 'Amaldev', team: 'Smash Masters', role: 'Singles', nickname: 'THE STRATEGIST', skill_type: 'Strategy', skill_desc: 'Reads the game like a chess master. Drops and placement win points.', theme_primary: '#00897b', theme_accent: '#00e5ff', stats: { smash_power: 75, defense: 82, agility: 80, strategy: 97, stamina: 78 }, icon: 'tactics', image: player_image_path('amaldev'), placeholder_image: player_placeholder_url('Amaldev', '00897b') },
-  { name: 'Febin', team: 'Smash Masters', role: 'Doubles', nickname: 'THE SPEEDSTER', skill_type: 'Agility', skill_desc: 'Lightning-fast footwork and reflexes. Covers the court in a flash.', theme_primary: '#7cb342', theme_accent: '#ffeb3b', stats: { smash_power: 78, defense: 75, agility: 98, strategy: 72, stamina: 90 }, icon: 'lightning', image: player_image_path('febin'), placeholder_image: player_placeholder_url('Febin', '7cb342') },
-  { name: 'Arun', team: 'Smart Boys', role: 'Singles', nickname: 'THE ENGINE', skill_type: 'Stamina', skill_desc: 'Relentless pace. Outlasts opponents in long rallies.', theme_primary: '#2e7d32', theme_accent: '#69f0ae', stats: { smash_power: 80, defense: 85, agility: 82, stamina: 96, strategy: 74 }, icon: 'gauge', image: player_image_path('arun'), placeholder_image: player_placeholder_url('Arun', '2e7d32') },
-  { name: 'Sanjay', team: 'Smart Boys', role: 'Doubles', nickname: 'THE PLAYMAKER', skill_type: 'Playmaking', skill_desc: 'Sets up partners and creates openings. The court conductor.', theme_primary: '#ff8f00', theme_accent: '#ffd54f', stats: { smash_power: 72, defense: 78, agility: 85, strategy: 92, stamina: 80 }, icon: 'playmaker', image: player_image_path('sanjay'), placeholder_image: player_placeholder_url('Sanjay', 'ff8f00') },
+  { name: 'Elby', team: 'Thunder Boys', role: 'Doubles', nickname: 'THE WALL', skill_type: 'Defense', skill_desc: 'Immovable at the net. Blocks and lifts turn into counter-attacks.', theme_primary: '#6a0dad', theme_accent: '#ffd700', stats: { smash_power: 72, defense: 99, agility: 78, strategy: 85, stamina: 88 }, icon: 'shield', profile_photo: player_profile_png('elby'), image: player_profile_png('elby'), placeholder_image: player_placeholder_url('Elby', '6a0dad'), comic_card_art: true },
+  { name: 'Amaldev', team: 'Thunder Boys', role: 'Doubles', nickname: 'THE STRATEGIST', skill_type: 'Strategy', skill_desc: 'Reads the game like a chess master. Drops and placement win points.', theme_primary: '#00897b', theme_accent: '#00e5ff', stats: { smash_power: 75, defense: 82, agility: 80, strategy: 97, stamina: 78 }, icon: 'tactics', profile_photo: player_profile_png('amaldev'), image: player_profile_png('amaldev'), placeholder_image: player_placeholder_url('Amaldev', '00897b'), comic_card_art: true },
+  { name: 'Amal', team: 'Smart Boys', role: 'Doubles', nickname: 'THE POWERHOUSE', skill_type: 'Power', skill_desc: 'Devastating smashes and explosive jumps. Opponents fear the kill shot.', theme_primary: '#e65100', theme_accent: '#ffeb3b', stats: { smash_power: 98, defense: 70, agility: 82, strategy: 68, stamina: 85 }, icon: 'explosion', profile_photo: player_profile_png('amal'), image: player_profile_png('amal'), placeholder_image: player_placeholder_url('Amal', 'e65100'), comic_card_art: true },
+  { name: 'Sanjay', team: 'Smart Boys', role: 'Doubles', nickname: 'THE PLAYMAKER', skill_type: 'Playmaking', skill_desc: 'Sets up partners and creates openings. The court conductor.', theme_primary: '#ff8f00', theme_accent: '#ffd54f', stats: { smash_power: 72, defense: 78, agility: 85, strategy: 92, stamina: 80 }, icon: 'playmaker', profile_photo: player_profile_png('sanjay'), image: player_profile_png('sanjay'), placeholder_image: player_placeholder_url('Sanjay', 'ff8f00'), comic_card_art: true },
+  { name: 'Arun', team: 'Smash Masters', role: 'Doubles', nickname: 'THE ENGINE', skill_type: 'Stamina', skill_desc: 'Relentless pace. Outlasts opponents in long rallies.', theme_primary: '#2e7d32', theme_accent: '#69f0ae', stats: { smash_power: 80, defense: 85, agility: 82, stamina: 96, strategy: 74 }, icon: 'gauge', profile_photo: player_profile_png('arun'), image: player_profile_png('arun'), placeholder_image: player_placeholder_url('Arun', '2e7d32'), comic_card_art: true },
+  { name: 'Febin', team: 'Smash Masters', role: 'Doubles', nickname: 'THE SPEEDSTER', skill_type: 'Agility', skill_desc: 'Lightning-fast footwork and reflexes. Covers the court in a flash.', theme_primary: '#7cb342', theme_accent: '#ffeb3b', stats: { smash_power: 78, defense: 75, agility: 98, strategy: 72, stamina: 90 }, icon: 'lightning', profile_photo: player_profile_png('febin'), image: player_profile_png('febin'), placeholder_image: player_placeholder_url('Febin', '7cb342'), comic_card_art: true },
 ];
 
 function SectionDivider() {
@@ -76,11 +76,11 @@ export default function App() {
               <div className="stat_label">Matches Played</div>
             </div>
             <div className="stat_card">
-              <div className="stat_number">50<span className="unit">+</span></div>
+              <div className="stat_number">6</div>
               <div className="stat_label">Active Players</div>
             </div>
             <div className="stat_card">
-              <div className="stat_number">1<span className="unit">K+</span></div>
+              <div className="stat_number">100<span className="unit">+</span></div>
               <div className="stat_label">Fans & Supporters</div>
             </div>
           </div>
@@ -99,17 +99,7 @@ export default function App() {
             Each player brings their own flair to the court.
           </p>
         </div>
-        <div className="players_grid fade_up delay_2">
-          {PLAYERS.map(function (player, i) {
-            return (
-              <PlayerCard
-                key={i}
-                player={player}
-                on_profile_click={set_selected_player}
-              />
-            );
-          })}
-        </div>
+        <PlayerCardsSlider players={PLAYERS} on_profile_click={set_selected_player} />
       </section>
 
       {selected_player ? (

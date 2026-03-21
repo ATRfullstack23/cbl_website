@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { public_asset_url } from '../lib/public_asset_url';
 
 var SLIDES = [
-  { team_name: 'Thunder Boys', team_tag: 'Speed & Power', image: '/images/thunder_boys.png' },
-  { team_name: 'Smash Masters', team_tag: 'Precision & Strength', image: '/images/smash_masters.png' },
-  { team_name: 'Smart Boys', team_tag: 'Strategy & Skill', image: '/images/smart_boys.png' },
+  { team_name: 'Thunder Boys', team_tag: 'Speed & Power', image: public_asset_url('images/thunder_boys.png') },
+  { team_name: 'Smash Masters', team_tag: 'Precision & Strength', image: public_asset_url('images/smash_masters.png') },
+  { team_name: 'Smart Boys', team_tag: 'Strategy & Skill', image: public_asset_url('images/smart_boys.png') },
 ];
 
 var INTERVAL_MS = 6000;

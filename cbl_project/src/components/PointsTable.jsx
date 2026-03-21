@@ -1,8 +1,10 @@
+import { public_asset_url } from '../lib/public_asset_url';
+
 var POINTS_DATA = [
   {
     rank: 1,
     team: 'Smash Masters',
-    image: '/images/smash_masters.png',
+    image: public_asset_url('images/smash_masters.png'),
     mp: 18,
     w: 13,
     l: 5,
@@ -11,7 +13,7 @@ var POINTS_DATA = [
   {
     rank: 2,
     team: 'Thunder Boys',
-    image: '/images/thunder_boys.png',
+    image: public_asset_url('images/thunder_boys.png'),
     mp: 18,
     w: 13,
     l: 5,
@@ -20,7 +22,7 @@ var POINTS_DATA = [
   {
     rank: 3,
     team: 'Smart Boys',
-    image: '/images/smart_boys.png',
+    image: public_asset_url('images/smart_boys.png'),
     mp: 18,
     w: 1,
     l: 17,

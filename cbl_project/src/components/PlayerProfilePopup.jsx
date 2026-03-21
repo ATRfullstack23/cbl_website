@@ -62,23 +62,30 @@ export default function PlayerProfilePopup({ player, on_close }) {
         <button type="button" className="profile_popup_close" onClick={on_close} aria-label="Close">×</button>
 
         <div className="profile_popup_frame">
-          <div className="profile_popup_art" style={{ background: 'linear-gradient(160deg, ' + primary + ' 0%, ' + (player.theme_accent || '#1a1a2e') + ' 70%)' }}>
-            <div className="profile_popup_halftone" aria-hidden="true" />
-            <span className="profile_popup_name" id="profile_popup_title">{player.name.toUpperCase()}</span>
+          <div className={'profile_popup_art' + (player.comic_card_art ? ' profile_popup_art--comic' : '')} style={{ background: 'linear-gradient(160deg, ' + primary + ' 0%, ' + (player.theme_accent || '#1a1a2e') + ' 70%)' }}>
+            {player.comic_card_art ? null : <div className="profile_popup_halftone" aria-hidden="true" />}
+            {player.comic_card_art ? null : (
+              <span className="profile_popup_name" id="profile_popup_title">{player.name.toUpperCase()}</span>
+            )}
+            {player.comic_card_art ? (
+              <span className="profile_popup_sr_only" id="profile_popup_title">{player.name}</span>
+            ) : null}
             {player.image ? (
               <img
                 src={popup_img_src}
                 alt=""
-                className="profile_popup_avatar_img"
+                className={'profile_popup_avatar_img' + (player.comic_card_art ? ' profile_popup_avatar_img--comic' : '')}
                 onError={function () { set_image_error(true); }}
               />
             ) : null}
             {!player.image ? <div className="profile_popup_avatar">🏸</div> : null}
-            <SkillIcon icon_key={player.icon} />
+            {player.comic_card_art ? null : <SkillIcon icon_key={player.icon} />}
           </div>
+          {player.comic_card_art ? null : (
           <div className="profile_popup_footer">
             <span className="profile_popup_nickname">{player.nickname}</span>
           </div>
+          )}
         </div>
 
         <div className="profile_popup_details">
