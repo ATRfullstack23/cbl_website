@@ -12,7 +12,9 @@ Vercel must build **this** app, not the repo root.
 
 **Option A (recommended):** In the project on Vercel: **Settings → General → Root Directory** → set to `cbl_project` (path from repo root). Keep using the `vercel.json` inside `cbl_project`.
 
-**Option B:** At the **repository root** (parent of `cbl_project`), add a `vercel.json` with the contents of `vercel.monorepo.example.json` in this folder (same directory as this file).
+**Option B:** At the **repository root** (parent of `cbl_project`), add a `vercel.json` copied from **`vercel.monorepo.example.json`** in this folder. Do **not** commit a root `vercel.json` if your Git repo **is only** this folder (no parent) — that would duplicate or confuse settings.
+
+**Note:** The live site is the **Vite app** (`npm run build` → `dist/`). The **`cbl-website/`** folder is a separate static prototype and is **not** what Vercel publishes unless you change the project to a static export of that folder.
 
 ## Netlify
 
