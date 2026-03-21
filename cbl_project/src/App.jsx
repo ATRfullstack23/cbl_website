@@ -8,6 +8,11 @@ import PointsTable from './components/PointsTable';
 import Footer from './components/Footer';
 import use_scroll_reveal from './hooks/use_scroll_reveal';
 
+function player_image_path(name) {
+  var slug = name.toLowerCase().replace(/\s+/g, '_');
+  return '/images/players/' + slug + '.png';
+}
+
 function player_placeholder_url(name, hex_color) {
   var color = (hex_color || '7c3aed').replace('#', '');
   return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&size=400&background=' + color + '&color=fff';
@@ -76,6 +81,7 @@ export default function App() {
               <div className="stat_label">Matches Played</div>
             </div>
             <div className="stat_card">
+              <div className="stat_number">8<span className="unit">+</span></div>
               <div className="stat_number">6</div>
               <div className="stat_label">Active Players</div>
             </div>
