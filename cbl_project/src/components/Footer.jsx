@@ -20,7 +20,6 @@ export default function Footer() {
               <li><a href="#about" onClick={function (e) { handle_click(e, 'about'); }}>About</a></li>
               <li><a href="#players" onClick={function (e) { handle_click(e, 'players'); }}>Players</a></li>
               <li><a href="#points" onClick={function (e) { handle_click(e, 'points'); }}>Points</a></li>
-              <li><a href="#contact" onClick={function (e) { handle_click(e, 'contact'); }}>Contact</a></li>
             </ul>
           </div>
           <div>

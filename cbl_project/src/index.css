@@ -1083,10 +1083,10 @@ img {
 
 
 /* ===========================
-   POINTS TABLE
+   POINTS TABLE — glassmorphism, mobile-first grid
    =========================== */
 .points_section {
-  background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-700) 100%);
+  background: linear-gradient(165deg, #050810 0%, #0c1222 38%, #0a1628 72%, #020617 100%);
   color: var(--white);
   position: relative;
   overflow: hidden;
@@ -1095,157 +1095,247 @@ img {
 .points_section::before {
   content: '';
   position: absolute;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(192, 132, 252, 0.12) 0%, transparent 70%);
-  top: -100px;
-  left: -100px;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(59, 130, 246, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.points_section::after {
+  content: '';
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 68%);
+  bottom: -120px;
+  left: -80px;
   pointer-events: none;
 }
 
 .points_section .section_label {
-  color: var(--cyan-400);
-}
-
-.points_section .section_title {
-  color: var(--white);
+  color: rgba(125, 211, 252, 0.95);
 }
 
 .points_section .section_desc {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 26rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.points_table_wrap {
-  max-width: 860px;
-  margin: 0 auto;
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1px solid rgba(192, 132, 252, 0.15);
-  box-shadow: var(--shadow-glow);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(4px);
+.points_section_header_min .section_title {
+  display: none;
 }
 
-.points_table {
+/* ——— CBL points UI ——— */
+.cbl_points_shell {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  border-collapse: collapse;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
 }
 
-.points_table th,
-.points_table td {
-  padding: 1.1rem 1.5rem;
-  text-align: left;
+.cbl_points_title {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 4.2vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #f8fafc;
+  text-shadow: 0 1px 24px rgba(59, 130, 246, 0.25);
 }
 
-.points_table th {
-  background: rgba(192, 132, 252, 0.1);
-  color: var(--neon-bright);
+.cbl_points_subtitle {
+  margin: 0 0 1.25rem;
+  font-size: clamp(0.68rem, 2.8vw, 0.78rem);
+  line-height: 1.35;
+  text-align: center;
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.cbl_points_glass {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.cbl_points_grid {
+  display: grid;
+  grid-template-columns:
+    minmax(2.5rem, 3rem)
+    minmax(0, 1fr)
+    repeat(4, minmax(1.35rem, 1.75rem));
+  gap: 0.2rem 0.35rem;
+  align-items: center;
+  padding: 0.45rem 0.5rem;
+  min-width: 0;
+}
+
+.cbl_points_grid--head {
+  padding: 0.5rem 0.5rem 0.4rem;
+  background: rgba(30, 41, 59, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: clamp(0.58rem, 2.4vw, 0.68rem);
   font-weight: 700;
-  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border-bottom: 1px solid rgba(192, 132, 252, 0.15);
+  letter-spacing: 0.06em;
+  color: rgba(186, 230, 253, 0.85);
 }
 
-.points_table td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
-  transition: background 0.2s;
+.cbl_points_grid--head .cbl_points_cell--stat {
+  text-align: center;
 }
 
-.points_table tr:last-child td {
+.cbl_points_grid--head abbr {
+  text-decoration: none;
+  cursor: help;
+  border-bottom: 1px dotted rgba(125, 211, 252, 0.35);
+}
+
+.cbl_points_row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s ease;
+}
+
+.cbl_points_row:last-child {
   border-bottom: none;
 }
 
-.points_table tr:hover td {
-  background: rgba(192, 132, 252, 0.06);
+.cbl_points_row--p1 {
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 23, 42, 0.2) 100%);
 }
 
-.points_table .rank {
-  font-weight: 800;
-  color: var(--gold);
-  font-family: var(--font-display);
-  font-size: 1.1rem;
+.cbl_points_row--p2 {
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.14) 0%, rgba(15, 23, 42, 0.15) 100%);
 }
 
-.points_table .team_col {
-  font-weight: 700;
-  color: var(--white);
+.cbl_points_row--p3 {
+  background: linear-gradient(90deg, rgba(180, 83, 9, 0.14) 0%, rgba(15, 23, 42, 0.15) 100%);
 }
 
-.points_col {
-  font-weight: 800;
-  color: var(--cyan-400);
-  font-family: var(--font-display);
-  font-size: 1.1rem;
+.cbl_points_cell {
+  min-width: 0;
+  padding: 0.15rem 0;
 }
 
-/* Mobile points cards */
-.points_cards_mobile {
-  display: none;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.points_card_mobile {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(192, 132, 252, 0.12);
-  border-radius: var(--radius-sm);
-  padding: 1.25rem;
-  backdrop-filter: blur(4px);
-}
-
-.points_card_mobile_header {
+.cbl_points_cell--rank {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
+  justify-content: center;
+  gap: 0.05rem;
 }
 
-.points_card_mobile_rank {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1.2rem;
-  color: var(--gold);
+.cbl_points_medal {
+  font-size: clamp(0.85rem, 3.2vw, 1rem);
+  line-height: 1;
 }
 
-.points_card_mobile_team {
+.cbl_points_rank_num {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--white);
-}
-
-.points_card_mobile_pts {
-  font-family: var(--font-display);
+  font-size: clamp(0.58rem, 2.3vw, 0.65rem);
   font-weight: 800;
-  color: var(--cyan-400);
-  font-size: 1.3rem;
+  color: rgba(248, 250, 252, 0.75);
 }
 
-.points_card_mobile_stats {
-  display: flex;
-  gap: 1.5rem;
+.cbl_points_cell--team {
+  text-align: center;
 }
 
-.points_card_mobile_stat {
+.cbl_points_team_stack {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 0.28rem;
+  width: 100%;
 }
 
-.points_card_mobile_stat_label {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.45);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.cbl_points_team_img {
+  width: clamp(32px, 9vw, 40px);
+  height: clamp(32px, 9vw, 40px);
+  object-fit: cover;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
 }
 
-.points_card_mobile_stat_value {
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+.cbl_points_team_name {
+  display: block;
+  width: 100%;
+  font-size: clamp(0.62rem, 2.6vw, 0.72rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #f1f5f9;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.cbl_points_cell--stat {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.cbl_points_stat_val {
+  font-size: clamp(0.65rem, 2.6vw, 0.78rem);
+  font-weight: 700;
+  color: rgba(226, 232, 240, 0.92);
+}
+
+.cbl_points_stat_val--tp {
+  color: #7dd3fc;
+  font-weight: 800;
+}
+
+.cbl_points_th_inner {
+  display: block;
+  line-height: 1.2;
+}
+
+@media (min-width: 480px) {
+  .cbl_points_shell {
+    max-width: 560px;
+    padding: 0 1rem;
+  }
+
+  .cbl_points_grid {
+    gap: 0.35rem 0.5rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .cbl_points_grid--head {
+    padding: 0.65rem 0.75rem 0.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cbl_points_shell {
+    max-width: 640px;
+  }
+
+  .cbl_points_grid {
+    grid-template-columns:
+      3.25rem
+      minmax(0, 1fr)
+      repeat(4, 2rem);
+    padding: 0.65rem 1rem;
+  }
+
+  .cbl_points_title {
+    font-size: 1.55rem;
+  }
 }
 
 
@@ -1736,14 +1826,6 @@ img {
     font-size: 0.78rem;
   }
 
-  .points_table_wrap {
-    display: none;
-  }
-
-  .points_cards_mobile {
-    display: flex;
-  }
-
   .section_divider {
     padding: 0 1rem;
   }
@@ -1850,20 +1932,6 @@ img {
   .btn_card {
     flex: 1;
     text-align: center;
-  }
-
-  .points_cards_mobile {
-    padding: 0 0.25rem;
-  }
-
-  .points_card_mobile {
-    padding: 1rem;
-  }
-
-  .points_card_mobile_header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
   }
 
   .contact_card {

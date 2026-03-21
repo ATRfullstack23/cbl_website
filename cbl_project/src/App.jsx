@@ -24,8 +24,6 @@ var PLAYERS = [
   { name: 'Febin', team: 'Smash Masters', role: 'Doubles', nickname: 'THE SPEEDSTER', skill_type: 'Agility', skill_desc: 'Lightning-fast footwork and reflexes. Covers the court in a flash.', theme_primary: '#7cb342', theme_accent: '#ffeb3b', stats: { smash_power: 78, defense: 75, agility: 98, strategy: 72, stamina: 90 }, icon: 'lightning', image: player_image_path('febin'), placeholder_image: player_placeholder_url('Febin', '7cb342') },
   { name: 'Arun', team: 'Smart Boys', role: 'Singles', nickname: 'THE ENGINE', skill_type: 'Stamina', skill_desc: 'Relentless pace. Outlasts opponents in long rallies.', theme_primary: '#2e7d32', theme_accent: '#69f0ae', stats: { smash_power: 80, defense: 85, agility: 82, stamina: 96, strategy: 74 }, icon: 'gauge', image: player_image_path('arun'), placeholder_image: player_placeholder_url('Arun', '2e7d32') },
   { name: 'Sanjay', team: 'Smart Boys', role: 'Doubles', nickname: 'THE PLAYMAKER', skill_type: 'Playmaking', skill_desc: 'Sets up partners and creates openings. The court conductor.', theme_primary: '#ff8f00', theme_accent: '#ffd54f', stats: { smash_power: 72, defense: 78, agility: 85, strategy: 92, stamina: 80 }, icon: 'playmaker', image: player_image_path('sanjay'), placeholder_image: player_placeholder_url('Sanjay', 'ff8f00') },
-  { name: 'Player Seven', team: 'Thunder Boys', role: 'Mixed', nickname: 'THE ALL-ROUNDER', skill_type: 'Versatile', skill_desc: 'Balanced in every department. Reliable in any format.', theme_primary: '#5c6bc0', theme_accent: '#8c9eff', stats: { smash_power: 82, defense: 82, agility: 82, strategy: 82, stamina: 82 }, icon: 'star', image: player_image_path('player_seven'), placeholder_image: player_placeholder_url('Player Seven', '5c6bc0') },
-  { name: 'Player Eight', team: 'Smash Masters', role: 'Mixed', nickname: 'THE FINISHER', skill_type: 'Clutch', skill_desc: 'Rises when it matters. Closes out tight games with confidence.', theme_primary: '#c62828', theme_accent: '#ff8a80', stats: { smash_power: 90, defense: 72, agility: 85, strategy: 80, stamina: 75 }, icon: 'target', image: player_image_path('player_eight'), placeholder_image: player_placeholder_url('Player Eight', 'c62828') },
 ];
 
 function SectionDivider() {
@@ -41,10 +39,6 @@ function SectionDivider() {
 export default function App() {
   use_scroll_reveal();
   var [selected_player, set_selected_player] = useState(null);
-
-  function handle_submit(e) {
-    e.preventDefault();
-  }
 
   return (
     <>
@@ -124,9 +118,8 @@ export default function App() {
 
       {/* ===== POINTS TABLE ===== */}
       <section className="section points_section" id="points">
-        <div className="section_header fade_up">
+        <div className="section_header fade_up points_section_header_min">
           <div className="section_label">Standings</div>
-          <h2 className="section_title">CBL Points Table</h2>
           <p className="section_desc">
             Track every win, every loss, and every point in the league.
           </p>
@@ -137,47 +130,6 @@ export default function App() {
       </section>
 
       <SectionDivider />
-
-      {/* ===== CONTACT ===== */}
-      <section className="section contact_section" id="contact">
-        <div className="section_header fade_up">
-          <div className="section_label">Get in Touch</div>
-          <h2 className="section_title">Contact CBL</h2>
-          <p className="section_desc">
-            Have questions? Want to join or sponsor? Reach out to us.
-          </p>
-        </div>
-        <div className="contact_inner">
-          <div className="contact_cards fade_up delay_1">
-            <div className="contact_card">
-              <div className="contact_icon">📍</div>
-              <h3>Venue</h3>
-              <p>Chendamangalam Badminton Court, Kerala</p>
-            </div>
-            <div className="contact_card">
-              <div className="contact_icon">📧</div>
-              <h3>Email</h3>
-              <p>cbl.league@example.com</p>
-            </div>
-            <div className="contact_card">
-              <div className="contact_icon">📱</div>
-              <h3>Phone</h3>
-              <p>+91 XXXXX XXXXX</p>
-            </div>
-          </div>
-          <div className="contact_form_wrap fade_up delay_3">
-            <form className="contact_form" onSubmit={handle_submit}>
-              <div className="form_row">
-                <input type="text" name="name" placeholder="Your Name" required />
-                <input type="email" name="email" placeholder="Your Email" required />
-              </div>
-              <input type="text" name="subject" placeholder="Subject" />
-              <textarea name="message" rows={5} placeholder="Your message..." required />
-              <button type="submit" className="btn_submit">Send Message</button>
-            </form>
-          </div>
-        </div>
-      </section>
 
       <Footer />
     </>

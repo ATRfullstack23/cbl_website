@@ -5,7 +5,6 @@ var NAV_ITEMS = [
   { label: 'About', href: '#about' },
   { label: 'Players', href: '#players' },
   { label: 'Points', href: '#points' },
-  { label: 'Contact', href: '#contact' },
 ];
 
 export default function Nav() {
