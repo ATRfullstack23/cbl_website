@@ -76,11 +76,11 @@ export default function App() {
               <div className="stat_label">Matches Played</div>
             </div>
             <div className="stat_card">
-              <div className="stat_number">50<span className="unit">+</span></div>
+              <div className="stat_number">8<span className="unit">+</span></div>
               <div className="stat_label">Active Players</div>
             </div>
             <div className="stat_card">
-              <div className="stat_number">1<span className="unit">K+</span></div>
+              <div className="stat_number">100<span className="unit">+</span></div>
               <div className="stat_label">Fans & Supporters</div>
             </div>
           </div>
