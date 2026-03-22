@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { public_asset_url } from '../lib/public_asset_url';
+import { public_asset_url } from '../public_asset_url.js';
 
 var SLIDES = [
   { team_name: 'Thunder Boys', team_tag: 'Speed & Power', image: public_asset_url('images/thunder_boys.png') },

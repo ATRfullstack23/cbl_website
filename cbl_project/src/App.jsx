@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { public_asset_url } from './lib/public_asset_url';
-import Nav from './components/Nav';
-import TeamCarousel from './components/TeamCarousel';
-import PlayerCardsSlider from './components/PlayerCardsSlider';
-import PlayerProfilePopup from './components/PlayerProfilePopup';
-import PointsTable from './components/PointsTable';
-import Footer from './components/Footer';
-import use_scroll_reveal from './hooks/use_scroll_reveal';
+import { public_asset_url } from './public_asset_url.js';
+import Nav from './components/Nav.jsx';
+import TeamCarousel from './components/TeamCarousel.jsx';
+import PlayerCardsSlider from './components/PlayerCardsSlider.jsx';
+import PlayerProfilePopup from './components/PlayerProfilePopup.jsx';
+import PointsTable from './components/PointsTable.jsx';
+import Footer from './components/Footer.jsx';
+import use_scroll_reveal from './hooks/use_scroll_reveal.js';
 
 function player_placeholder_url(name, hex_color) {
   var color = (hex_color || '7c3aed').replace('#', '');

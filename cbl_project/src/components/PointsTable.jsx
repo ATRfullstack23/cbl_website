@@ -1,4 +1,4 @@
-import { public_asset_url } from '../lib/public_asset_url';
+import { public_asset_url } from '../public_asset_url.js';
 
 var POINTS_DATA = [
   {
