@@ -4,7 +4,9 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 const PORT = Number(process.env.PORT) || 5000;
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = `https://cbl-api.onrender.com`;
+
+
 
 if (!MONGO_URI) {
   console.error('Set MONGO_URI in .env (see .env.example)');
@@ -45,6 +47,7 @@ app.get('/api/health', function (req, res) {
 });
 
 /** Sorted by tp desc; rank computed */
+
 app.get('/api/teams', async function (req, res) {
   try {
     var teams = await Team.find().lean();
