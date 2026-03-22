@@ -17,10 +17,13 @@ export default ({ mode }) => {
     base: env.VITE_BASE_PATH || '/',
     server: {
       proxy: api_proxy,
+      host: true,
+      port: 5173
     },
     // Same proxy for `npm run preview` so /api/teams works when API runs on localhost:5000
     preview: {
       proxy: api_proxy,
+
     },
   })
 }

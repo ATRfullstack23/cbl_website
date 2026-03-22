@@ -43,6 +43,7 @@ export default function PlayerProfilePopup({ player, on_close }) {
     document.body.style.right = '0';
     document.body.style.width = '100%';
     document.documentElement.style.overflow = 'hidden';
+    document.body.classList.add('profile_popup_open');
 
     return function () {
       document.removeEventListener('keydown', handle_key);
@@ -52,6 +53,7 @@ export default function PlayerProfilePopup({ player, on_close }) {
       document.body.style.right = '';
       document.body.style.width = '';
       document.documentElement.style.overflow = '';
+      document.body.classList.remove('profile_popup_open');
       window.scrollTo(0, scroll_y);
     };
   }, [on_close]);

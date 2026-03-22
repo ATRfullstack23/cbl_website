@@ -269,28 +269,6 @@ img {
   margin-bottom: 2.25rem;
 }
 
-.hero_defi_cta {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  padding: 0.95rem 2.25rem;
-  background: var(--white);
-  color: #030303;
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  border-radius: var(--radius-full);
-  transition: transform 0.25s var(--ease), box-shadow 0.25s;
-  box-shadow: 0 0 0 0 rgba(192, 132, 252, 0);
-}
-
-.hero_defi_cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(192, 132, 252, 0.35), 0 0 40px rgba(232, 121, 249, 0.2);
-}
-
 /* Stage: team visuals */
 .hero_defi_stage {
   position: relative;
@@ -342,41 +320,6 @@ img {
   background: linear-gradient(90deg, #030303 0%, transparent 18%),
     linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
   pointer-events: none;
-}
-
-.hero_defi_arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.94);
-  color: #6b7280;
-  font-size: 1.35rem;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-}
-
-.hero_defi_arrow:hover {
-  background: var(--white);
-  color: #111;
-  transform: translateY(-50%) scale(1.05);
-}
-
-.hero_defi_arrow_prev {
-  left: 1rem;
-}
-
-.hero_defi_arrow_next {
-  right: 1rem;
 }
 
 .hero_defi_team_strip {
@@ -722,12 +665,15 @@ img {
   padding: 0 2.75rem 2.75rem;
 }
 
-/* Let horizontal drags hit Swiper (helps when body / #root use overflow-x: hidden) */
+/*
+ * Do NOT use touch-action: pan-x here — on mobile it blocks vertical page scroll
+ * while the finger is on the carousel. Swiper still handles horizontal swipes in JS.
+ */
 .players_swiper.swiper {
   overflow: hidden;
   width: 100%;
   padding-bottom: 0.25rem;
-  touch-action: pan-x;
+  touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -745,36 +691,6 @@ img {
   max-width: 320px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.players_swiper_wrap .swiper-button-prev,
-.players_swiper_wrap .swiper-button-next {
-  color: rgba(255, 255, 255, 0.95);
-  width: 2.65rem;
-  height: 2.65rem;
-  margin-top: 0;
-  top: 42%;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(192, 132, 252, 0.35);
-  border-radius: 50%;
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
-}
-
-.players_swiper_wrap .swiper-button-prev::after,
-.players_swiper_wrap .swiper-button-next::after {
-  font-size: 0.95rem;
-  font-weight: 800;
-}
-
-.players_swiper_wrap .swiper-button-prev:hover,
-.players_swiper_wrap .swiper-button-next:hover {
-  background: rgba(192, 132, 252, 0.22);
-  border-color: rgba(192, 132, 252, 0.55);
-}
-
-.players_swiper_wrap .swiper-button-disabled {
-  opacity: 0.35;
-  pointer-events: none;
 }
 
 .players_swiper_wrap .swiper-pagination {
@@ -1202,6 +1118,12 @@ img {
 /* ===========================
    PLAYER PROFILE POPUP (comic / polaroid style)
    =========================== */
+/* While open: Swiper/touches on #root must not steal vertical scroll (portal sits on body). */
+body.profile_popup_open #root {
+  pointer-events: none;
+  touch-action: none;
+}
+
 .profile_popup_overlay {
   position: fixed;
   inset: 0;
@@ -1212,27 +1134,30 @@ img {
   -webkit-backdrop-filter: blur(12px);
   animation: profile_popup_fade 0.3s var(--ease);
   transform: translateZ(0);
+  pointer-events: auto;
+  touch-action: auto;
 }
 
-/* Inner layer: iOS/Safari need a dedicated overflow node (not the fixed overlay). */
+/* Scroll layer: block flow (not flex) — flex+overflow breaks iOS touch scroll. */
 .profile_popup_scroll {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
+  width: 100%;
   height: 100%;
   max-height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
   padding: max(1rem, env(safe-area-inset-top, 12px)) 1rem max(1.25rem, env(safe-area-inset-bottom, 16px));
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  pointer-events: auto;
+  -webkit-transform: translateZ(0);
+  will-change: scroll-position;
 }
 
 @keyframes profile_popup_fade {
@@ -1244,9 +1169,7 @@ img {
   position: relative;
   max-width: 420px;
   width: 100%;
-  margin-top: auto;
-  margin-bottom: auto;
-  flex-shrink: 0;
+  margin: 0.5rem auto 2rem;
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 2px solid rgba(192, 132, 252, 0.2);
@@ -2075,12 +1998,6 @@ img {
     min-height: 46vh;
   }
 
-  .hero_defi_arrow {
-    width: 2.65rem;
-    height: 2.65rem;
-    font-size: 1.15rem;
-  }
-
   .hero_defi_team_strip {
     bottom: 2.25rem;
     padding: 0.5rem 1.15rem;
@@ -2118,17 +2035,6 @@ img {
 
   .players_swiper_wrap {
     padding: 0 0.25rem 2.5rem;
-  }
-
-  .players_swiper_wrap .swiper-button-prev,
-  .players_swiper_wrap .swiper-button-next {
-    width: 2.2rem;
-    height: 2.2rem;
-  }
-
-  .players_swiper_wrap .swiper-button-prev::after,
-  .players_swiper_wrap .swiper-button-next::after {
-    font-size: 0.8rem;
   }
 
   .player_card {
@@ -2250,11 +2156,6 @@ img {
     font-size: 0.9rem;
   }
 
-  .hero_defi_cta {
-    padding: 0.85rem 1.85rem;
-    font-size: 0.9rem;
-  }
-
   .btn_primary,
   .btn_outline {
     width: 100%;
@@ -2306,20 +2207,6 @@ img {
 
   .players_swiper_wrap {
     padding: 0 0 2.75rem;
-  }
-
-  .players_swiper_wrap .swiper-button-prev,
-  .players_swiper_wrap .swiper-button-next {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .players_swiper_wrap .swiper-button-prev {
-    left: 2px;
-  }
-
-  .players_swiper_wrap .swiper-button-next {
-    right: 2px;
   }
 
   .player_card {

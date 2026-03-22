@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Pagination } from 'swiper/modules';
 import PlayerCard from './PlayerCard.jsx';
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 export default function PlayerCardsSlider({ players, on_profile_click }) {
@@ -45,7 +44,7 @@ export default function PlayerCardsSlider({ players, on_profile_click }) {
   return (
     <div ref={wrap_ref} className="players_swiper_wrap fade_up delay_2">
       <Swiper
-        modules={[Navigation, Pagination]}
+        modules={[Pagination]}
         className="players_swiper"
         onSwiper={function (swiper) {
           swiper_ref.current = swiper;
@@ -69,8 +68,8 @@ export default function PlayerCardsSlider({ players, on_profile_click }) {
         threshold={8}
         touchRatio={1}
         touchAngle={45}
+        touchReleaseOnEdges={true}
         resistance={false}
-        navigation={true}
         pagination={{ clickable: true, dynamicBullets: true }}
         breakpoints={{
           480: { slidesPerView: 1.35, spaceBetween: 16 },

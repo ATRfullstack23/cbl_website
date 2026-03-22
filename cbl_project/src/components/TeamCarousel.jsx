@@ -41,14 +41,6 @@ export default function TeamCarousel() {
     set_current(((i % total) + total) % total);
   }
 
-  function prev_slide() {
-    go_to(current - 1);
-  }
-
-  function next_slide() {
-    go_to(current + 1);
-  }
-
   function handle_touch_start(e) {
     touch_start_x.current = e.touches[0].clientX;
     set_is_paused(true);
@@ -85,10 +77,9 @@ export default function TeamCarousel() {
           <p className="hero_defi_sub">
             Three teams. One court. Thunder Boys, Smash Masters &amp; Smart Boys — live energy, every match.
           </p>
-          <a href="#players" className="hero_defi_cta">Get started</a>
         </div>
 
-        {/* Right: carousel + purple glow + arrows */}
+        {/* Right: carousel + purple glow */}
         <div className="hero_defi_stage">
           {SLIDES.map(function (s, i) {
             return (
@@ -102,23 +93,6 @@ export default function TeamCarousel() {
           })}
           <div className="hero_defi_glow" aria-hidden="true" />
           <div className="hero_defi_vignette" aria-hidden="true" />
-
-          <button
-            type="button"
-            className="hero_defi_arrow hero_defi_arrow_prev"
-            onClick={prev_slide}
-            aria-label="Previous slide"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            className="hero_defi_arrow hero_defi_arrow_next"
-            onClick={next_slide}
-            aria-label="Next slide"
-          >
-            ›
-          </button>
 
           <div className="hero_defi_team_strip">
             <span className="hero_defi_team_name">{slide.team_name}</span>
