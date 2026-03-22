@@ -45,15 +45,13 @@ export default function PlayerCard({ player, on_profile_click }) {
   return (
     <div className={'player_card ' + team_class} onClick={handle_click} role="button" tabIndex={0} onKeyDown={function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handle_click(); } }} aria-label={'View profile of ' + name}>
       <div className={'player_avatar' + (player && player.profile_photo ? ' player_avatar--profile' : '')}>
-        {show_avatar_img ? (
+        {(show_avatar_img)}
+
           <img
             src={img_src}
             alt={name}
             onError={handle_img_error}
           />
-        ) : (
-          '🏸'
-        )}
       </div>
       <div className="player_name">{name}</div>
       {nickname ? <div className="player_nickname_tag">{nickname}</div> : null}

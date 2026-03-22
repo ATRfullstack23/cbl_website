@@ -837,6 +837,7 @@ img {
 }
 
 .player_avatar {
+  position: relative;
   width: 100%;
   max-width: 168px;
   aspect-ratio: 1;
@@ -860,11 +861,15 @@ img {
 }
 
 .player_avatar img {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center center;
+  border-radius: inherit;
 }
 
 /* circular profile photo on player cards (see profile_photo in App.jsx) */
@@ -878,7 +883,6 @@ img {
 }
 
 .player_avatar--profile img {
-  object-fit: cover;
   border-radius: 50%;
 }
 
