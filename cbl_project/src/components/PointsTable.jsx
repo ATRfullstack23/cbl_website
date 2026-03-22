@@ -51,7 +51,7 @@ function medal_for_rank(rank) {
   return '';
 }
 
-/** Shown when /api/teams fails (local = no server; live = no VITE_API_URL or API down). */
+/** Shown when /api/teams fails (local = no backend; live = no VITE_API_URL or API down). */
 function api_fallback_help_text() {
   if (import.meta.env.DEV) {
     return 'Showing offline data (API unreachable). In a second terminal run: npm run server';
