@@ -35,10 +35,24 @@ export default function PlayerProfilePopup({ player, on_close }) {
       if (e.key === 'Escape') on_close();
     }
     document.addEventListener('keydown', handle_key);
-    document.body.style.overflow = 'hidden';
+
+    var scroll_y = window.scrollY || window.pageYOffset;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + scroll_y + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.documentElement.style.overflow = 'hidden';
+
     return function () {
       document.removeEventListener('keydown', handle_key);
-      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.documentElement.style.overflow = '';
+      window.scrollTo(0, scroll_y);
     };
   }, [on_close]);
 
@@ -56,46 +70,81 @@ export default function PlayerProfilePopup({ player, on_close }) {
 
   var popup_img_src = image_error && player.placeholder_image ? player.placeholder_image : player.image;
 
+  function handle_overlay_click(e) {
+    if (e.target.closest('.profile_popup_card')) return;
+    on_close();
+  }
+
   var content = (
-    <div className="profile_popup_overlay" onClick={on_close} role="dialog" aria-modal="true" aria-labelledby="profile_popup_title">
-      <div className="profile_popup_card" onClick={function (e) { e.stopPropagation(); }} style={{ '--profile-primary': primary, '--profile-accent': accent }}>
-        <button type="button" className="profile_popup_close" onClick={on_close} aria-label="Close">×</button>
+    <div
+      className="profile_popup_overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="profile_popup_title"
+    >
+      <div className="profile_popup_scroll" onClick={handle_overlay_click}>
+        <div
+          className="profile_popup_card"
+          onClick={function (e) {
+            e.stopPropagation();
+          }}
+          style={{ '--profile-primary': primary, '--profile-accent': accent }}
+        >
+          <button type="button" className="profile_popup_close" onClick={on_close} aria-label="Close">
+            ×
+          </button>
 
-        <div className="profile_popup_frame">
-          <div className={'profile_popup_art' + (player.comic_card_art ? ' profile_popup_art--comic' : '')} style={{ background: 'linear-gradient(160deg, ' + primary + ' 0%, ' + (player.theme_accent || '#1a1a2e') + ' 70%)' }}>
-            {player.comic_card_art ? null : <div className="profile_popup_halftone" aria-hidden="true" />}
+          <div className="profile_popup_frame">
+            <div
+              className={'profile_popup_art' + (player.comic_card_art ? ' profile_popup_art--comic' : '')}
+              style={{
+                background: 'linear-gradient(160deg, ' + primary + ' 0%, ' + (player.theme_accent || '#1a1a2e') + ' 70%)',
+              }}
+            >
+              {player.comic_card_art ? null : <div className="profile_popup_halftone" aria-hidden="true" />}
+              {player.comic_card_art ? null : (
+                <span className="profile_popup_name" id="profile_popup_title">
+                  {player.name.toUpperCase()}
+                </span>
+              )}
+              {player.comic_card_art ? (
+                <span className="profile_popup_sr_only" id="profile_popup_title">
+                  {player.name}
+                </span>
+              ) : null}
+              {player.image ? (
+                <img
+                  src={popup_img_src}
+                  alt=""
+                  className={'profile_popup_avatar_img' + (player.comic_card_art ? ' profile_popup_avatar_img--comic' : '')}
+                  onError={function () {
+                    set_image_error(true);
+                  }}
+                />
+              ) : null}
+              {!player.image ? <div className="profile_popup_avatar">🏸</div> : null}
+              {player.comic_card_art ? null : <SkillIcon icon_key={player.icon} />}
+            </div>
             {player.comic_card_art ? null : (
-              <span className="profile_popup_name" id="profile_popup_title">{player.name.toUpperCase()}</span>
+              <div className="profile_popup_footer">
+                <span className="profile_popup_nickname">{player.nickname}</span>
+              </div>
             )}
-            {player.comic_card_art ? (
-              <span className="profile_popup_sr_only" id="profile_popup_title">{player.name}</span>
-            ) : null}
-            {player.image ? (
-              <img
-                src={popup_img_src}
-                alt=""
-                className={'profile_popup_avatar_img' + (player.comic_card_art ? ' profile_popup_avatar_img--comic' : '')}
-                onError={function () { set_image_error(true); }}
-              />
-            ) : null}
-            {!player.image ? <div className="profile_popup_avatar">🏸</div> : null}
-            {player.comic_card_art ? null : <SkillIcon icon_key={player.icon} />}
           </div>
-          {player.comic_card_art ? null : (
-          <div className="profile_popup_footer">
-            <span className="profile_popup_nickname">{player.nickname}</span>
-          </div>
-          )}
-        </div>
 
-        <div className="profile_popup_details">
-          <p className="profile_popup_team">{player.team} · {player.role}</p>
-          <p className="profile_popup_skill_desc">{player.skill_desc}</p>
-          <div className="profile_popup_stats">
-            {stat_keys.map(function (key) {
-              var label = key.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
-              return <StatBar key={key} label={label} value={stats[key]} color={primary} />;
-            })}
+          <div className="profile_popup_details">
+            <p className="profile_popup_team">
+              {player.team} · {player.role}
+            </p>
+            <p className="profile_popup_skill_desc">{player.skill_desc}</p>
+            <div className="profile_popup_stats">
+              {stat_keys.map(function (key) {
+                var label = key.replace(/_/g, ' ').replace(/\b\w/g, function (c) {
+                  return c.toUpperCase();
+                });
+                return <StatBar key={key} label={label} value={stats[key]} color={primary} />;
+              })}
+            </div>
           </div>
         </div>
       </div>

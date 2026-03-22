@@ -1206,22 +1206,33 @@ img {
   position: fixed;
   inset: 0;
   z-index: 2000;
+  overflow: hidden;
   background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(12px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  -webkit-backdrop-filter: blur(12px);
+  animation: profile_popup_fade 0.3s var(--ease);
+  transform: translateZ(0);
+}
+
+/* Inner layer: iOS/Safari need a dedicated overflow node (not the fixed overlay). */
+.profile_popup_scroll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  min-height: 100vh;
-  min-height: 100dvh;
-  min-height: -webkit-fill-available;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
   padding: max(1rem, env(safe-area-inset-top, 12px)) 1rem max(1.25rem, env(safe-area-inset-bottom, 16px));
   box-sizing: border-box;
-  animation: profile_popup_fade 0.3s var(--ease);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 @keyframes profile_popup_fade {
