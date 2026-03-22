@@ -128,6 +128,17 @@ export default function PointsTable() {
     };
   }, []);
 
+  useEffect(function () {
+    if (!edit_open) {
+      return undefined;
+    }
+    var prev_overflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return function () {
+      document.body.style.overflow = prev_overflow;
+    };
+  }, [edit_open]);
+
   function handle_secret_tap() {
     if (rows === null || rows.length === 0) {
       return;

@@ -981,6 +981,10 @@ img {
   justify-content: center;
   padding: 1rem;
   box-sizing: border-box;
+  /* Fill real mobile viewport (address bar / iOS quirks) */
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
 }
 
 .points_edit_panel {
@@ -988,12 +992,17 @@ img {
   width: 100%;
   max-width: 420px;
   max-height: min(90vh, 640px);
+  max-height: min(90dvh, 640px);
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   background: linear-gradient(165deg, #1e1e2e 0%, #12121a 100%);
   border: 1px solid rgba(192, 132, 252, 0.35);
   border-radius: var(--radius);
   padding: 1.35rem 1.25rem 1.25rem;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
 }
 
 .points_edit_close {
@@ -1124,6 +1133,72 @@ img {
   }
 }
 
+/* Full-screen edit sheet on phones — avoids clipped / centered modal */
+@media (max-width: 640px) {
+  .points_edit_overlay {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+  }
+
+  .points_edit_panel {
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    min-height: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+    padding-top: max(0.85rem, env(safe-area-inset-top, 12px));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 16px));
+  }
+
+  .points_edit_title {
+    flex-shrink: 0;
+  }
+
+  .points_edit_hint,
+  .points_edit_msg {
+    flex-shrink: 0;
+  }
+
+  .points_edit_list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .points_edit_close {
+    top: max(0.5rem, env(safe-area-inset-top, 0px));
+    right: max(0.65rem, env(safe-area-inset-right, 0px));
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+  }
+
+  /* iOS: avoid zoom when focusing number inputs */
+  .points_edit_input {
+    font-size: 16px;
+    padding: 0.55rem 0.4rem;
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+
+  .points_edit_save_btn {
+    min-height: 48px;
+    padding: 0.65rem 0.75rem;
+  }
+}
+
 /* ===========================
    PLAYER PROFILE POPUP (comic / polaroid style)
    =========================== */
@@ -1134,9 +1209,18 @@ img {
   background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(12px);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  padding: max(1rem, env(safe-area-inset-top, 12px)) 1rem max(1.25rem, env(safe-area-inset-bottom, 16px));
+  box-sizing: border-box;
   animation: profile_popup_fade 0.3s var(--ease);
 }
 
@@ -1149,6 +1233,9 @@ img {
   position: relative;
   max-width: 420px;
   width: 100%;
+  margin-top: auto;
+  margin-bottom: auto;
+  flex-shrink: 0;
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 2px solid rgba(192, 132, 252, 0.2);
