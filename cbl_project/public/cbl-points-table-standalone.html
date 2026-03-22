@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🏆 CBL Points Table</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: linear-gradient(165deg, #050810 0%, #0c1222 38%, #0a1628 72%, #020617 100%);
+      color: #f8fafc;
+    }
+    .points_section {
+      position: relative;
+      overflow: hidden;
+      padding: 2rem 0.5rem 3rem;
+    }
+    .points_section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(59, 130, 246, 0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .cbl_points_shell {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 0.5rem;
+    }
+    .cbl_points_title {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.15rem, 4.2vw, 1.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-align: center;
+      text-shadow: 0 1px 24px rgba(59, 130, 246, 0.25);
+    }
+    .cbl_points_subtitle {
+      margin: 0 0 1.25rem;
+      font-size: clamp(0.68rem, 2.8vw, 0.78rem);
+      line-height: 1.35;
+      text-align: center;
+      color: rgba(226, 232, 240, 0.55);
+    }
+    .cbl_points_glass {
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+    .cbl_points_grid {
+      display: grid;
+      grid-template-columns:
+        minmax(2.5rem, 3rem)
+        minmax(0, 1fr)
+        repeat(4, minmax(1.35rem, 1.75rem));
+      gap: 0.2rem 0.35rem;
+      align-items: center;
+      padding: 0.45rem 0.5rem;
+      min-width: 0;
+    }
+    .cbl_points_grid--head {
+      padding: 0.5rem 0.5rem 0.4rem;
+      background: rgba(30, 41, 59, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: clamp(0.58rem, 2.4vw, 0.68rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(186, 230, 253, 0.85);
+    }
+    .cbl_points_grid--head .cbl_points_cell--stat { text-align: center; }
+    .cbl_points_grid--head abbr {
+      text-decoration: none;
+      cursor: help;
+      border-bottom: 1px dotted rgba(125, 211, 252, 0.35);
+    }
+    .cbl_points_row { border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    .cbl_points_row:last-child { border-bottom: none; }
+    .cbl_points_row--p1 {
+      background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 23, 42, 0.2) 100%);
+    }
+    .cbl_points_row--p2 {
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.14) 0%, rgba(15, 23, 42, 0.15) 100%);
+    }
+    .cbl_points_row--p3 {
+      background: linear-gradient(90deg, rgba(180, 83, 9, 0.14) 0%, rgba(15, 23, 42, 0.15) 100%);
+    }
+    .cbl_points_cell { min-width: 0; padding: 0.15rem 0; }
+    .cbl_points_cell--rank {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.05rem;
+    }
+    .cbl_points_medal { font-size: clamp(0.85rem, 3.2vw, 1rem); line-height: 1; }
+    .cbl_points_rank_num {
+      font-size: clamp(0.58rem, 2.3vw, 0.65rem);
+      font-weight: 800;
+      color: rgba(248, 250, 252, 0.75);
+    }
+    .cbl_points_cell--team { text-align: center; }
+    .cbl_points_team_stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.28rem;
+      width: 100%;
+    }
+    .cbl_points_team_img {
+      width: clamp(32px, 9vw, 40px);
+      height: clamp(32px, 9vw, 40px);
+      object-fit: cover;
+      border-radius: 0.45rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .cbl_points_team_name {
+      display: block;
+      width: 100%;
+      font-size: clamp(0.62rem, 2.6vw, 0.72rem);
+      font-weight: 700;
+      line-height: 1.25;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+    .cbl_points_cell--stat {
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .cbl_points_stat_val {
+      font-size: clamp(0.65rem, 2.6vw, 0.78rem);
+      font-weight: 700;
+      color: rgba(226, 232, 240, 0.92);
+    }
+    .cbl_points_stat_val--tp { color: #7dd3fc; font-weight: 800; }
+    @media (min-width: 480px) {
+      .cbl_points_shell { max-width: 560px; padding: 0 1rem; }
+      .cbl_points_grid { gap: 0.35rem 0.5rem; padding: 0.55rem 0.75rem; }
+      .cbl_points_grid--head { padding: 0.65rem 0.75rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <section class="points_section">
+    <div class="cbl_points_shell">
+      <h1 class="cbl_points_title">🏆 CBL Points Table</h1>
+      <p class="cbl_points_subtitle">League standings — compact view, full team names.</p>
+      <div class="cbl_points_glass">
+        <div class="cbl_points_grid cbl_points_grid--head">
+          <div class="cbl_points_cell cbl_points_cell--rank"><span>Rank</span></div>
+          <div class="cbl_points_cell cbl_points_cell--team"><span>Team</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><abbr title="Matches Played">MP</abbr></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><abbr title="Wins">W</abbr></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><abbr title="Losses">L</abbr></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><abbr title="Total Points">TP</abbr></div>
+        </div>
+        <div class="cbl_points_grid cbl_points_row cbl_points_row--p1">
+          <div class="cbl_points_cell cbl_points_cell--rank"><span class="cbl_points_medal">🥇</span><span class="cbl_points_rank_num">#1</span></div>
+          <div class="cbl_points_cell cbl_points_cell--team">
+            <div class="cbl_points_team_stack">
+              <img class="cbl_points_team_img" src="images/smash_masters.png" alt="" width="40" height="40" />
+              <span class="cbl_points_team_name">Smash Masters</span>
+            </div>
+          </div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">18</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">13</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">5</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val cbl_points_stat_val--tp">26</span></div>
+        </div>
+        <div class="cbl_points_grid cbl_points_row cbl_points_row--p2">
+          <div class="cbl_points_cell cbl_points_cell--rank"><span class="cbl_points_medal">🥈</span><span class="cbl_points_rank_num">#2</span></div>
+          <div class="cbl_points_cell cbl_points_cell--team">
+            <div class="cbl_points_team_stack">
+              <img class="cbl_points_team_img" src="images/thunder_boys.png" alt="" width="40" height="40" />
+              <span class="cbl_points_team_name">Thunder Boys</span>
+            </div>
+          </div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">18</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">13</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">5</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val cbl_points_stat_val--tp">26</span></div>
+        </div>
+        <div class="cbl_points_grid cbl_points_row cbl_points_row--p3">
+          <div class="cbl_points_cell cbl_points_cell--rank"><span class="cbl_points_medal">🥉</span><span class="cbl_points_rank_num">#3</span></div>
+          <div class="cbl_points_cell cbl_points_cell--team">
+            <div class="cbl_points_team_stack">
+              <img class="cbl_points_team_img" src="images/smart_boys.png" alt="" width="40" height="40" />
+              <span class="cbl_points_team_name">Smart Boys</span>
+            </div>
+          </div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">18</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">1</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val">17</span></div>
+          <div class="cbl_points_cell cbl_points_cell--stat"><span class="cbl_points_stat_val cbl_points_stat_val--tp">2</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
