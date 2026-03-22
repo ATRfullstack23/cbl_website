@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || `mongodb+srv://tramaldev:amal1234@cluster0.ng7jotu.mongodb.net/?appName=Cluster0` ;
 
 if (!MONGO_URI) {
   console.error('Set MONGO_URI in .env (see .env.example)');
