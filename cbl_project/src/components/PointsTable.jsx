@@ -51,6 +51,16 @@ function medal_for_rank(rank) {
   return '';
 }
 
+/** Shown when /api/teams fails (local = no server; live = no VITE_API_URL or API down). */
+function api_fallback_help_text() {
+  if (import.meta.env.DEV) {
+    return 'Showing offline data (API unreachable). In a second terminal run: npm run server';
+  }
+  return (
+    'Showing offline data. For production, deploy the Express API (e.g. Render/Railway), set env VITE_API_URL to that API base URL in your frontend host (e.g. Vercel), then redeploy.'
+  );
+}
+
 function normalize_rows_from_api(rows) {
   return rows.map(function (row) {
     return {
@@ -247,9 +257,7 @@ export default function PointsTable() {
 
         {using_fallback ? (
           <p className="cbl_points_api_note" role="status">
-            {load_error
-              ? 'Showing offline data (API unavailable). Start the server: npm run server'
-              : 'Showing default data.'}
+            {load_error ? api_fallback_help_text() : 'Showing default data.'}
           </p>
         ) : null}
 
