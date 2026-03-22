@@ -14,7 +14,8 @@ function player_placeholder_url(name, hex_color) {
 }
 
 function player_profile_png(slug) {
-  return public_asset_url('assets/images/players/' + slug + '.png');
+  return public_asset_url('/images/players/' + slug + '.png');
+
 }
 
 var PLAYERS = [
